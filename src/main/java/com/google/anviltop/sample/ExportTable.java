@@ -15,7 +15,7 @@ public class ExportTable {
       System.err.println("Usage: wordcount-hbase <table-name> <output-file>");
       System.exit(2);
     }
-    Job job = Export.createSubmittableJob(conf, args);
+    Job job = Export.createSubmittableJob(conf, otherArgs);
     System.exit(job.waitForCompletion(true) ? 0 : 1);
   }
 }
