@@ -19,7 +19,7 @@
 
   <properties>
     <hadoop.version>2.4.1</hadoop.version>
-    <hbase.version>0.99.2</hbase.version>
+    <hbase.version>1.0.0</hbase.version>
     <compileSource>1.7</compileSource>
   </properties>
 
@@ -118,7 +118,7 @@
     </repository>
     <repository>
       <id>Apache HBase Temporary Repository</id>
-      <url>https://repository.apache.org/content/repositories/orgapachehbase-1048/</url>
+      <url>https://repository.apache.org/content/repositories/orgapachehbase-1058/</url>
     </repository>
   </repositories>
 </project>

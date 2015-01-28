@@ -18,7 +18,6 @@ import java.util.List;
 
 /**
  * Writes the results of WordCount to a new table
- *
  * @author sduskis
  */
 public class CreateTable {
@@ -39,35 +38,42 @@ public class CreateTable {
 
   public static void createTable(TableName tableName, Configuration conf,
       List<String> columnFamilies) throws IOException {
-    Connection connection = null;
+    
+    LOG.info("Creating Table " + tableName);
+    Connection connection = ConnectionFactory.createConnection(conf);
     Admin admin = null;
-
     try {
-      connection = ConnectionFactory.createConnection(conf);
       admin = connection.getAdmin();
-      // TODO: re-add this once admin.isTableAvailable() is implemented in anviltop
-      // if (!admin.isTableAvailable(tableName)) {
-      HTableDescriptor tableDescriptor = new HTableDescriptor(tableName);
-      for (String columnFamily : columnFamilies) {
-        tableDescriptor.addFamily(new HColumnDescriptor(columnFamily));
+      if (tableExists(tableName, admin)) {
+        LOG.info("Table " + tableName + " already exists");
+      } else {
+        HTableDescriptor tableDescriptor = new HTableDescriptor(tableName);
+        for (String columnFamily : columnFamilies) {
+          tableDescriptor.addFamily(new HColumnDescriptor(columnFamily));
+        }
+
+        // NOTE: Anviltop createTable is synchronous while HBASE creation is not.
+        admin.createTable(tableDescriptor);
       }
-      
-      // NOTE: Anviltop createTable is synchronous while HBASE creation is not.
-      admin.createTable(tableDescriptor);
     } catch (Exception e) {
       LOG.error("Could not create table " + tableName, e);
     } finally {
-      // TODO: remove the try/catch once admin.close() doesn't throw exceptions anymore.
       try {
-        if (admin != null) {
-          admin.close();
-        }
+        admin.close();
       } catch (Exception e) {
-        LOG.error("Admin.close() threw an exception.", e);
+        LOG.error("Could not close the admin", e);
       }
-      if (connection != null) {
-        connection.close();
-      }
+      connection.close();
+    }
+  }
+
+  private static boolean tableExists(TableName tableName, Admin admin)  {
+    try {
+      return admin.tableExists(tableName);
+    } catch (Exception e) {
+      LOG.error("Could not figure out if table " + tableName + " exists.", e);
+      return false;
+    } finally {
     }
   }
 }
