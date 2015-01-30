@@ -38,15 +38,10 @@ public class WordCountHBase {
       Mapper<Object, Text, ImmutableBytesWritable, IntWritable> {
 
     private final static IntWritable one = new IntWritable(1);
-    
-    public TokenizerMapper() {
-      LOG.info("Creating a " + getClass().getName());
-    }
 
     @Override
     public void map(Object key, Text value, Context context) throws IOException,
         InterruptedException {
-      LOG.info("mapping");
       StringTokenizer itr = new StringTokenizer(value.toString());
       ImmutableBytesWritable word = new ImmutableBytesWritable();
       while (itr.hasMoreTokens()) {
@@ -59,14 +54,9 @@ public class WordCountHBase {
   public static class MyTableReducer extends
       TableReducer<ImmutableBytesWritable, IntWritable, ImmutableBytesWritable> {
 
-    public MyTableReducer() {
-      LOG.info("Creating a " + getClass().getName());
-    }
-
     @Override
     public void reduce(ImmutableBytesWritable key, Iterable<IntWritable> values, Context context)
         throws IOException, InterruptedException {
-      LOG.info("reducing");
       int sum = sum(values);
       Put put = new Put(key.get());
       put.add(COLUMN_FAMILY, COUNT_COLUMN_NAME, Bytes.toBytes(sum));
