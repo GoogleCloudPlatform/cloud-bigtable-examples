@@ -75,9 +75,6 @@ public class WordCountHBase {
   public static void main(String[] args) throws Exception {
     Configuration conf = HBaseConfiguration.create();
     String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
-    for (String arg : otherArgs) {
-      System.out.println(arg);
-    }
     if (otherArgs.length < 2) {
       System.err.println("Usage: wordcount-hbase <in> [<in>...] <table-name>");
       System.exit(2);
