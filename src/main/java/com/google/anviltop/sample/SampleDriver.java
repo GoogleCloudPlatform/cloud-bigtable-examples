@@ -1,5 +1,6 @@
 package com.google.anviltop.sample;
 
+import org.apache.hadoop.hbase.mapreduce.Export;
 import org.apache.hadoop.util.ProgramDriver;
 
 public class SampleDriver {
@@ -12,7 +13,7 @@ public class SampleDriver {
         "A map/reduce program that counts the words in the input files.");
       programDriver.addClass("wordcount-hbase", WordCountHBase.class,
           "A map/reduce program that counts the words in the input files.");
-      programDriver.addClass("export-table", ExportTable.class,
+      programDriver.addClass("export-table", Export.class,
           "A map/reduce program that exports a table to a file.");
       programDriver.driver(args);
       exitCode = programDriver.run(args);
