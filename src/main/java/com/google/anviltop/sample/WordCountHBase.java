@@ -59,7 +59,7 @@ public class WordCountHBase {
         throws IOException, InterruptedException {
       int sum = sum(values);
       Put put = new Put(key.get());
-      put.add(COLUMN_FAMILY, COUNT_COLUMN_NAME, Bytes.toBytes(sum));
+      put.addColumn(COLUMN_FAMILY, COUNT_COLUMN_NAME, Bytes.toBytes(sum));
       context.write(null, put);
     }
 

@@ -38,7 +38,6 @@ public class CreateTable {
 
   public static void createTable(TableName tableName, Configuration conf,
       List<String> columnFamilies) throws IOException {
-    
     LOG.info("Creating Table " + tableName);
     Connection connection = ConnectionFactory.createConnection(conf);
     Admin admin = null;
