@@ -22,7 +22,7 @@ Then you can clone the repository and build the sample:
 
 A sample hbase-site.xml is located in conf/hbase-site.xml.example. Copy it and enter the values for your project.
 
-    $ cd conf
+    $ src/main/resources
     $ cp hbase-site.xml.example hbase-site.xml
     $ vim hbase-site.xml
 
