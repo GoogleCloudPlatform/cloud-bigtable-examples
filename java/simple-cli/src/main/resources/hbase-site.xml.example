@@ -43,22 +43,6 @@
   </property>
   <property>
     <name>google.bigtable.cluster.name</name>
-    <value>cluster</value>
-  </property>
-  <property>
-   <name>google.bigtable.auth.service.account.email</name>
-   <value><!-- Service Account email <some code>@developer.gserviceaccount.com --></value>
-  </property>
-  <property>
-    <name>google.bigtable.auth.service.account.keyfile</name>
-    <value><!-- Path to service account p12 key file --></value>
-  </property>
-  <property>
-    <name>google.bigtable.auth.service.account.enable</name>
-    <value>true</value>
-  </property>
-  <property>
-     <name>hbase.cluster.distributed</name>
-     <value>false</value>
+    <value><!-- CLUSTER NAME --></value>
   </property>
 </configuration>

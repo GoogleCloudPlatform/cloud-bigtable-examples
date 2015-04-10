@@ -78,11 +78,8 @@
   <build>
     <resources>
       <resource>
-       <directory>conf</directory>
-       <includes>
-        <include>hbase-site.xml</include>
-       </includes>
-       <targetPath>${project.build.directory}/classes</targetPath>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering> 
       </resource>
     </resources>
     <plugins>
