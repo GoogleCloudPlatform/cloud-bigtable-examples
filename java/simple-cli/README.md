@@ -73,8 +73,6 @@ You will need to [create a service account](https://developers.google.com/accoun
 
 ## Run the code
 
-You can run a sample command using the maven exec plugin which will get values from the row with key "row1" in the table "test".
+You can run a command using the hbasecli.sh script. The following command will get values from the row with key "row1" in the table "test".
 
-    $ mvn exec:exec
-
-This mechanism could be expanded more by allowing user input via [Maven properties](https://maven.apache.org/pom.html#Properties).
+    $ ./hbasecli.sh get test row1
