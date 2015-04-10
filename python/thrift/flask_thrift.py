@@ -25,8 +25,8 @@ import struct
 
 def _encode_int(n):
     """
-    This encodes a little-endian integer as a string of bytes for efficient
-    network transfer and HBase storage
+    This encodes an integer as a string of bytes in a 4-byte
+    big-endian format for efficient network transfer and HBase storage
     :param n: the integer to encode
     :return: A string of 4 bytes representing the integer
     """
@@ -35,7 +35,7 @@ def _encode_int(n):
 
 def _decode_int(s):
     """
-    Decodes the 4-byte strings representing a 4 byte little endian integer
+    Decodes the 4-byte strings representing a 4 byte big endian integer
     into an int.
     :param s: A 4 byte string representing an integer
     :return: The integer the string passed represents
