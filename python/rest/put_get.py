@@ -30,7 +30,7 @@ import string
 from collections import OrderedDict
 
 tablename = 'some-table2'
-baseurl = "http://localhost:8000"
+baseurl = 'http://130.211.170.242:8080'
 
 rows = []
 jsonOutput = { "Row": rows }
@@ -60,3 +60,5 @@ requests.delete(baseurl + "/" + tablename + "/your")
 
 request = requests.get(baseurl + "/" + tablename + "/your", headers={"Accept" : "application/json"})
 assert request.status_code == 404
+
+print "Done!"
