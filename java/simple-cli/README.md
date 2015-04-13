@@ -14,8 +14,8 @@ First download the Cloud Bigtable client library and install it in your maven re
 
 Then you can clone the repository and build the sample:
 
-    $ git clone sso://user/ianlewis/bigtable-test
-    $ cd bigtable-test
+    $ git clone git@github.com:GoogleCloudPlatform/cloud-bigtable-examples.git
+    $ cd cloud-bigtable-examples/java/simple-cli
     $ mvn install
 
 ## Set up your hbase-site.xml configuration
