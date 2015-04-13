@@ -25,6 +25,8 @@ In order to provision a Cloud Bigtable cluster you will first need to create a G
 After you have created a project you can create a new Cloud Bigtable cluster by clicking on the "Storage" -> "Cloud Bigtable" menu item and clicking on the "New Cluster" button.
 After that, enter the cluster name, ID, zone, and number of nodes. Once you have entered those values, click the "Create" button to provision the cluster.
 
+![New Cluster Form](java/simple-cli/docs/new-cluster.png?raw=true)
+
 TODO: add a link to docs.
 
 ## Set up your hbase-site.xml configuration
