@@ -24,18 +24,16 @@ import base64
 import json
 import random
 import requests
-import string
-
-
 from collections import OrderedDict
+from string import ascii_uppercase, digits
 
 tablename = 'some-table2'
 baseurl = 'http://130.211.170.242:8080'
 
 rows = []
-jsonOutput = { "Row": rows }
+jsonOutput = {"Row": rows }
 
-row_key = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+row_key = ''.join(random.choice(ascii_uppercase + digits) for _ in range(10))
 column = "cf:count"
 value = "hello world"
 
@@ -43,12 +41,22 @@ rowKeyEncoded = base64.b64encode(row_key)
 encodedColumn = base64.b64encode(column)
 encodedValue = base64.b64encode(value)
 
-cell = OrderedDict([ ("key", rowKeyEncoded), ("Cell", [ {"column": encodedColumn, "$" : encodedValue }]) ])
+cell = OrderedDict([
+                    ("key", rowKeyEncoded),
+                    ("Cell", [ {"column": encodedColumn, "$" : encodedValue}])
+                    ])
 rows.append(cell)
 
-requests.post(baseurl + "/" + tablename + "/" +  row_key, json.dumps(jsonOutput), headers={"Content-Type" : "application/json", "Accept" : "application/json"})
+requests.post(baseurl + "/" + tablename + "/" + row_key,
+                json.dumps(jsonOutput),
+                headers={
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                }
+              )
 
-request = requests.get(baseurl + "/" + tablename + "/" + row_key, headers={"Accept" : "application/json"})
+request = requests.get(baseurl + "/" + tablename + "/" + row_key,
+                       headers={"Accept": "application/json"})
 
 text = json.loads(request.text)
 got_value = base64.b64decode(text['Row'][0]['Cell'][0]['$'])
@@ -56,9 +64,11 @@ assert got_value == value
 
 
 # now we can delete the value
-requests.delete(baseurl + "/" + tablename + "/your")
+requests.delete(baseurl + "/" + tablename + row_key)
 
-request = requests.get(baseurl + "/" + tablename + "/your", headers={"Accept" : "application/json"})
+request = requests.get(baseurl + "/" + tablename + row_key,
+                       headers={"Accept": "application/json"})
+print request.status_code
 assert request.status_code == 404
 
 print "Done!"
