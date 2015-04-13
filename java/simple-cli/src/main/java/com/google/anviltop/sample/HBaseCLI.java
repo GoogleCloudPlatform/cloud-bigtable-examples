@@ -1,3 +1,21 @@
+/**
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.google.anviltop.sample;
 
 import org.apache.hadoop.hbase.client.ConnectionFactory;
@@ -40,7 +58,7 @@ public class HBaseCLI {
                         list(connection, null);
                     }
                 } else if ("put".equals(args[0])) {
-                    put(connection, args[1], args[2], args[3], args[4], args[5]);    
+                    put(connection, args[1], args[2], args[3], args[4], args[5]);
                 } else if ("get".equals(args[0])) {
                     get(connection, args[1], args[2]);
                 } else if ("scan".equals(args[0])) {
@@ -59,7 +77,7 @@ public class HBaseCLI {
             e.printStackTrace();
         }
     }
-    
+
     public static void scan(Connection connection, String tableName, String filterVal) throws IOException {
         Table table = connection.getTable(TableName.valueOf(tableName));
         Scan scan = new Scan();

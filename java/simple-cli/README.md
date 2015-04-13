@@ -76,3 +76,12 @@ You will need to [create a service account](https://developers.google.com/accoun
 You can run a command using the hbasecli.sh script. The following command will get values from the row with key "row1" in the table "test".
 
     $ ./hbasecli.sh get test row1
+
+## Contributing changes
+
+* See [CONTRIBUTING.md](../..CONTRIBUTING.md)
+
+
+## Licensing
+
+* See [LICENSE](../../LICENSE)
