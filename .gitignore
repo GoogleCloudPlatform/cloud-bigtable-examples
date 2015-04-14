@@ -1,0 +1,5 @@
+**/target/
+**/resources/hbase-site.xml
+*.o
+*.class
+*.pyc
