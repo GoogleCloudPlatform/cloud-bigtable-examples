@@ -38,16 +38,38 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class HelloInfoServlet extends HttpServlet {
-  Logger logger = LoggerFactory.getLogger("com.example.bigtable.HelloInfoServlet");
+/**
+ * You need to set your PROJECT_ID, CLUSTER_UNIQUE_ID (typically 'cluster') here, and if different,
+ * your Zone.
+ **/
+  private static final String PROJECT_ID = "PROJECT_ID_HERE";
+  private static final String CLUSTER_ID = "CLUSTER_UNIQUE_ID";
+  private static final String ZONE = "us-central1-b";
+  private static final TableName TABLE = TableName.valueOf("gae-hello");
 
 // The initial connection to Cloud Bigtable is an expensive operation -- We cache this Connection
 // to speed things up.  For this sample, keeping them here is a good idea, for
 // your application, you may wish to keep this somewhere else.
   public static Connection connection = null;     // The authenticated connection
+
+/**
+ * Connect will establish the connection to Cloud Bigtable.
+ **/
+  public void connect() throws IOException {
+    Configuration c = HBaseConfiguration.create();
+
+    c.setClass("hbase.client.connection.impl",
+        org.apache.hadoop.hbase.client.BigtableConnection.class,
+        org.apache.hadoop.hbase.client.Connection.class);   // Required for Cloud Bigtable
+    c.set("google.bigtable.endpoint.host", "bigtable.googleapis.com");
+
+    c.set("google.bigtable.project.id", PROJECT_ID);
+    c.set("google.bigtable.cluster.name", CLUSTER_ID);
+    c.set("google.bigtable.zone.name", ZONE);
+
+    connection = ConnectionFactory.createConnection(c);
+  }
 
 /**
  * init() in this case is called at Deploy time as this servlet is marked to load-on-start.  The
@@ -58,8 +80,7 @@ public class HelloInfoServlet extends HttpServlet {
     try {
       connect();
     } catch (IOException io) {
-      logger.error("init ***"+io.toString());
-      io.printStackTrace();
+      log("init ***", io);
     }
   }
 
@@ -72,29 +93,9 @@ public class HelloInfoServlet extends HttpServlet {
     try {
       if(connection != null) connection.close();
     } catch (IOException io) {
-      logger.error("destroy ***"+io.toString());
-      io.printStackTrace();
+      log("destroy ***", io);
     }
     connection = null;
-  }
-
-/**
- * Connect will establish the connection to Cloud Bigtable.  You need to set your PROJECT_ID,
- * CLUSTER_UNIQUE_ID (typically 'cluster') here, and if different, your Zone.
- **/
-  public void connect() throws IOException {
-    Configuration c = HBaseConfiguration.create();
-
-    c.setClass("hbase.client.connection.impl",
-        org.apache.hadoop.hbase.client.BigtableConnection.class,
-        org.apache.hadoop.hbase.client.Connection.class);   // Required for Cloud Bigtable
-    c.set("google.bigtable.endpoint.host", "bigtable.googleapis.com");
-
-    c.set("google.bigtable.project.id","PROJECT_ID_HERE");
-    c.set("google.bigtable.cluster.name","CLUSTER_UNIQUE_ID");
-    c.set("google.bigtable.zone.name", "us-central1-b");  // ZONE NAME IF DIFFERENT
-
-    connection = ConnectionFactory.createConnection(c);
   }
 
 /**
@@ -111,13 +112,13 @@ public class HelloInfoServlet extends HttpServlet {
 
     if( connection == null ) connect();
 
-    try (Table t = connection.getTable(TableName.valueOf("gae-hello"))) {
+    try (Table t = connection.getTable( TABLE )) {
 
       // incrementColumnValue(row, family, column qualifier, amount)
       result = t.incrementColumnValue(Bytes.toBytes(id), Bytes.toBytes("visits"),
                                               Bytes.toBytes("visits"), 1);
     } catch (IOException e) {
-      e.printStackTrace();
+      log("getAndUpdateVisit", e);
       return "0 error "+e.toString();
     }
     return String.valueOf(result);
