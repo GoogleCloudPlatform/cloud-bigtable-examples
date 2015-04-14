@@ -79,8 +79,7 @@ You can run a command using the hbasecli.sh script. The following command will g
 
 ## Contributing changes
 
-* See [CONTRIBUTING.md](../..CONTRIBUTING.md)
-
+* See [CONTRIBUTING.md](../../CONTRIBUTING.md)
 
 ## Licensing
 
