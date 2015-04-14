@@ -18,8 +18,8 @@ SDK. Please follow the instructions on the [Google Cloud SDK homepage](https://c
 
 ### Install bdutil
 
-We will be using the  to provision resources for our Hadoop cluster. Please
-download bdutil from the [downloads page](https://cloud.google.com/hadoop/downloads)
+We will be using the bdutil tool to provision resources for our Hadoop cluster.
+Please download bdutil from the [downloads page](https://cloud.google.com/hadoop/downloads)
 and follow the instructions to install it on the
 [bdutil page](https://cloud.google.com/hadoop/bdutil).
 
@@ -59,7 +59,7 @@ files to the VMs.  There are two ways to make a GCS Bucket,
    yours long and unique) 
 1. Use the gsutil tool's Make Bucket command:
 
-    $ gsutil mb -p <project ID> gs://<bucketName>
+       $ gsutil mb -p <project ID> gs://<bucketName>
 
 ### Create Compute Engine VMs
 
@@ -113,7 +113,7 @@ Start up the HBase shell.
     hbase(main):001:0>
 
 You can now verify that you can connect to Cloud Bigtable properly by running
-some sample commands. You should see output similar to below for each command.
+some sample commands.
 
     hbase(main):001:0> create 'test', 'cf'
     hbase(main):001:0> list 'test'
@@ -123,6 +123,43 @@ some sample commands. You should see output similar to below for each command.
     hbase(main):001:0> put 'test', 'row4', 'cf:d', 'value4'
     hbase(main):001:0> scan 'test'
     hbase(main):001:0> get 'test', 'row1'
+
+You should see output similar to below for each command.
+
+    hbase(main):008:0> create 'test','cf'
+    0 row(s) in 0.6810 seconds
+
+    => Hbase::Table - test
+    hbase(main):009:0> list 'test'
+    TABLE                                                                                                                                                                              
+    test                                                                                                                                                                               
+    1 row(s) in 0.1890 seconds
+
+    => ["test"]
+    hbase(main):010:0> put 'test', 'row1', 'cf:a', 'value1'
+    0 row(s) in 0.7450 seconds
+
+    hbase(main):011:0> put 'test', 'row2', 'cf:b', 'value2'
+    0 row(s) in 0.1800 seconds
+
+    hbase(main):012:0> put 'test', 'row3', 'cf:c', 'value3'
+    0 row(s) in 0.1830 seconds
+
+    hbase(main):013:0> put 'test', 'row4', 'cf:d', 'value4'
+    0 row(s) in 0.1790 seconds
+
+    hbase(main):014:0> scan 'test'
+    ROW                                           COLUMN+CELL                                                                                                                          
+     row1                                         column=cf:a, timestamp=1429010379631, value=value1                                                                                   
+     row2                                         column=cf:b, timestamp=1429010386078, value=value2                                                                                   
+     row3                                         column=cf:c, timestamp=1429010392175, value=value3                                                                                   
+     row4                                         column=cf:d, timestamp=1429010398124, value=value4                                                                                   
+    4 row(s) in 0.2080 seconds
+
+    hbase(main):015:0> get 'test', 'row1'
+    COLUMN                                        CELL                                                                                                                                 
+     cf:a                                         timestamp=1429010379631, value=value1                                                                                                
+    1 row(s) in 0.1910 seconds
 
 Finish by exiting the shell.
 
@@ -144,7 +181,13 @@ Run the MapReduce job on the sample input using the following command. This
 will segment the input file into words and count each unique word writing the
 output to `output-table`.
 
-    $ HADOOP_CLASSPATH=$(hbase classpath) hadoop jar /tmp/cloud-bigtable-mapreduce-example-SNAPSHOT.jar wordcount-hbase -libjars hbase-install/lib/bigtable/bigtable-hbase-0.1.3.jar input output-table
+    $ HADOOP_CLASSPATH=$(hbase classpath) hadoop jar \
+        /tmp/cloud-bigtable-mapreduce-example-SNAPSHOT.jar \
+        wordcount-hbase \
+        -libjars hbase-install/lib/bigtable/bigtable-hbase-0.1.3.jar \
+        input output-table
+
+Verify the output using the HBase shell.
 
     $ hbase shell
     hbase(main):001:0> list
