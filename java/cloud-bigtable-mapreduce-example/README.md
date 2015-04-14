@@ -201,16 +201,6 @@ Verify the output using the HBase shell.
     hbase(main):002:0> scan 'some-table'
     <Lots of output here!>
 
-## Troubleshooting & useful tools
-
-### Examples of common tasks
-
-e.g.
-* How to make curl requests while authenticated via oauth.
-* How to monitor background jobs.
-* How to run the app through a proxy.
-
-
 ## Contributing changes
 
 * See [CONTRIBUTING.md](../../CONTRIBUTING.md)
