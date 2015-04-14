@@ -8,12 +8,16 @@ There are many examples / sample / demo programs here, each with its own README.
 
 [Java/simple-cli](java/simple-cli) - 
 
-[Java/Cloud Bigtable Map/Reduce](java/cloud-bigtable-mapreduce-example) - how to use Cloud Bigtable both with GCE Map/Reduce
+[Java/Cloud Bigtable Map/Reduce](java/cloud-bigtable-mapreduce-example) - How to use Cloud Bigtable both with GCE Map/Reduce
 
-[Java/Managed VM Hello World]() - 
+[Java/Managed VM Hello World](java/managed-vms) - Accessing Cloud Bigtable from a Managed VM
 
+## TODO
+* Add copyright to all code files
 
-Google Cloud Developer Relations
+* Make all **pom.xml** reference released JAR
+
+* README's for each sample
 
 
 ## Contributing changes
