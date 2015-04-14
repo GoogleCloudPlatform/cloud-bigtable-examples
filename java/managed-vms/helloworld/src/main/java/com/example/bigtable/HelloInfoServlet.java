@@ -45,14 +45,15 @@ public class HelloInfoServlet extends HttpServlet {
   Logger logger = LoggerFactory.getLogger("com.example.bigtable.HelloInfoServlet");
 
 // The initial connection to Cloud Bigtable is an expensive operation -- We cache this Connection
-// to speed things up a bit.  For this sample, keeping them here is a good idea, for
-// your application, you may wish to keep these somewhere else.
-  public static Connection conn = null;     // The authenticated connection
+// to speed things up.  For this sample, keeping them here is a good idea, for
+// your application, you may wish to keep this somewhere else.
+  public static Connection connection = null;     // The authenticated connection
 
 /**
  * init() in this case is called at Deploy time as this servlet is marked to load-on-start.  The
  * only thing it does is setup the connection to the Cloud Bigtable server.
  **/
+  @Override
   public void init() {
     try {
       connect();
@@ -60,6 +61,21 @@ public class HelloInfoServlet extends HttpServlet {
       logger.error("init ***"+io.toString());
       io.printStackTrace();
     }
+  }
+
+/**
+ * destroy() is called when the Servlet container (jetty) wants to get rid if this, typically when
+ * shutting down.  We'll get rid of our connection here.
+ **/
+  @Override
+  public void destroy() {
+    try {
+      if(connection != null) connection.close();
+    } catch (IOException io) {
+      logger.error("destroy ***"+io.toString());
+      io.printStackTrace();
+    }
+    connection = null;
   }
 
 /**
@@ -78,7 +94,7 @@ public class HelloInfoServlet extends HttpServlet {
     c.set("google.bigtable.cluster.name","CLUSTER_UNIQUE_ID");
     c.set("google.bigtable.zone.name", "us-central1-b");  // ZONE NAME IF DIFFERENT
 
-    conn = ConnectionFactory.createConnection(c);
+    connection = ConnectionFactory.createConnection(c);
   }
 
 /**
@@ -86,17 +102,21 @@ public class HelloInfoServlet extends HttpServlet {
  * incrementColumnValue does the equivalent of locking the row, getting the value, incrementing
  * the value, and writing it back.  Also, unlike most other APIs, the column is assumed to have
  * a Counter data type (actually very long as it's 8 bytes)
+ *
+ * You will note that we get a new table with each request, this is a lightweight operation and it
+ * is preferred to caching.
  **/
   public String getAndUpdateVisit(String id) throws IOException {
     long result;
 
-    if( conn == null ) connect();
-    Table t = conn.getTable(TableName.valueOf("gae-hello"));
+    if( connection == null ) connect();
 
     try {
+      Table t = connection.getTable(TableName.valueOf("gae-hello"));
       // incrementColumnValue(row, family, column qualifier, amount)
       result = t.incrementColumnValue(Bytes.toBytes(id), Bytes.toBytes("visits"),
                                               Bytes.toBytes("visits"), 1);
+      t.close(); // We are done with our table.
     } catch (IOException e) {
       e.printStackTrace();
       return "0 error "+e.toString();
