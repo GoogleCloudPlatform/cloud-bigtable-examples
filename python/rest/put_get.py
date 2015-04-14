@@ -17,8 +17,14 @@
 """ This example demonstrates how to put a single value in a cell in HBase via
 the REST interface, then GET it back and print it back. Finally we delete it
 and assert that we get a 404 when trying to get it again.
-"""
 
+This example requires that the table already exists with the appropriate
+column family schema established.
+
+To see an example that uses a class that wraps many of these operations,
+including creation of the table with its column family, see
+put_get_with_client.py
+"""
 
 import base64
 import json
@@ -27,11 +33,11 @@ import requests
 from collections import OrderedDict
 from string import ascii_uppercase, digits
 
-tablename = 'some-table2'
-baseurl = 'http://130.211.170.242:8080'
+table_name = 'some-table2'
+base_url = 'http://130.211.170.242:8080'
 
 rows = []
-jsonOutput = {"Row": rows }
+jsonOutput = {"Row": rows}
 
 row_key = ''.join(random.choice(ascii_uppercase + digits) for _ in range(10))
 column = "cf:count"
@@ -42,20 +48,20 @@ encodedColumn = base64.b64encode(column)
 encodedValue = base64.b64encode(value)
 
 cell = OrderedDict([
-                    ("key", rowKeyEncoded),
-                    ("Cell", [ {"column": encodedColumn, "$" : encodedValue}])
-                    ])
+    ("key", rowKeyEncoded),
+    ("Cell", [{"column": encodedColumn, "$": encodedValue}])
+])
 rows.append(cell)
 
-requests.post(baseurl + "/" + tablename + "/" + row_key,
-                json.dumps(jsonOutput),
-                headers={
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                }
+requests.post(base_url + "/" + table_name + "/" + row_key,
+              json.dumps(jsonOutput),
+              headers={
+                  "Content-Type": "application/json",
+                  "Accept": "application/json",
+              }
               )
 
-request = requests.get(baseurl + "/" + tablename + "/" + row_key,
+request = requests.get(base_url + "/" + table_name + "/" + row_key,
                        headers={"Accept": "application/json"})
 
 text = json.loads(request.text)
@@ -64,9 +70,9 @@ assert got_value == value
 
 
 # now we can delete the value
-requests.delete(baseurl + "/" + tablename + row_key)
+requests.delete(base_url + "/" + table_name + row_key)
 
-request = requests.get(baseurl + "/" + tablename + row_key,
+request = requests.get(base_url + "/" + table_name + row_key,
                        headers={"Accept": "application/json"})
 print request.status_code
 assert request.status_code == 404

@@ -12,7 +12,7 @@ You can install the dependencies by
 Note: it is always recommended you install Python dependencies in a 
 [virtualenv](https://virtualenv.pypa.io/en/latest/).
  
-While it's possible to interface with the REST server via a tradational 
+While it's possible to interface with the REST server via a traditional 
 command  line tool such as curl, because the values are returned and accepted
 in a base64 format, and since you often want to iterate through rows and 
 objects, using a programming language like Python which provides excellent
