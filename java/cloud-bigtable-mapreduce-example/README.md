@@ -1,34 +1,58 @@
 # Cloud Bigtable MapReduce Example
 
-The Map/Reduce code for Cloud Bigtable should look identical to HBase Map/Reduce jobs. The main issue of running against specific HBase and Hadoop versions. Take note of the dependencies in pom.xml. The HBase codebase has gone through quite a bit of churn related to its API. Due to the API churn, jobs that require the Google BigTable Cloud HBase compatibility layer require very specific versions of HBase in order to execute correctly. Compiling Map/Reduce code against different HBase versions may have problems executing relating to class incompatibility issues.
+The Map/Reduce code for Cloud Bigtable should look identical to HBase
+Map/Reduce jobs. The main issue of running against specific HBase and Hadoop
+versions. Take note of the dependencies in pom.xml. The HBase codebase has gone
+through quite a bit of churn related to its API. Due to the API churn, jobs
+that require the Google BigTable Cloud HBase compatibility layer require very
+specific versions of HBase in order to execute correctly. Compiling Map/Reduce
+code against different HBase versions may have problems executing relating to
+class incompatibility issues.
 
-## Project setup, installation, and configuration
+## Project setup
 
-How do I, as a developer, start working on the project?
+### Install the Google Cloud Platform SDK
 
-1. What dependencies does it have (where are they expressed) and how do I install them?
-1. Can I see the project working before I change anything?
+TODO
 
+### Install bdutil
 
-## Testing
+TODO
 
-How do I run the project's automated tests?
+### Provision a Bigtable Cluster
 
-* Unit Tests
+In order to provision a Cloud Bigtable cluster you will first need to create a Google Cloud Platform project. You can create a project using the [Developer Console](https://cloud.google.com/console).
 
-* Integration Tests
+After you have created a project you can create a new Cloud Bigtable cluster by clicking on the "Storage" -> "Cloud Bigtable" menu item and clicking on the "New Cluster" button.
+After that, enter the cluster name, ID, zone, and number of nodes. Once you have entered those values, click the "Create" button to provision the cluster.
 
+![New Cluster Form](../../../../blob/master/java/simple-cli/docs/new-cluster.png?raw=true)
+
+### Build the Jar File
+
+TODO
 
 ## Deploying
 
-### How to setup the deployment environment
+### Make a GCS Bucket
 
-* Addons, packages, or other dependencies required for deployment.
-* Required environment variables or credentials not included in git.
-* Monitoring services and logging.
+TODO
 
-### How to deploy
+### Create Compute Engine VMs
 
+TODO
+
+### Connect to Master
+
+TODO
+
+### Use the HBase Shell to Verify the Deploy
+
+TODO
+
+### Launch a Hadoop Cloud Bigtable Job
+
+TODO
 
 ## Troubleshooting & useful tools
 
@@ -43,7 +67,6 @@ e.g.
 ## Contributing changes
 
 * See [CONTRIBUTING.md](../../CONTRIBUTING.md)
-
 
 ## Licensing
 
