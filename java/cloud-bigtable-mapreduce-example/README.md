@@ -50,23 +50,109 @@ After running Maven the jar file should be located in the `target` directory.
 
 ### Make a GCS Bucket
 
-TODO
+Make a GCS bucket that will be used by bdutil to store its output and to copy
+files to the VMs.  There are two ways to make a GCS Bucket, 
+
+1. In the Cloud Console, select "Storage" > "Cloud Storage" > "Storage
+   browser" and click on the "Add bucket" button. Type the name for your
+   bucket and click "Create".  (Note - Names are a global resource, so make
+   yours long and unique) 
+1. Use the gsutil tool's Make Bucket command:
+
+    $ gsutil mb -p <project ID> gs://<bucketName>
 
 ### Create Compute Engine VMs
 
-TODO
+You can use the bdutil tool to start a few VMs with Cloud Bigtable enabled and Hadoop and the HBase client installed in them.
+
+You will need to create a `cluster_config.sh` file with the following variables:
+
+    CONFIGBUCKET='<bucketName>'
+    PROJECT='<project ID>'
+    PREFIX='<prefix for vm instances>'
+    NUM_WORKERS=<num hadoop worker instances, 2 is perfectly reasonable value>
+    GCE_IMAGE='debian-7-backports'
+    GCE_ZONE='us-central1-b'
+
+You can change the parameters to suit your needs. Then you can run the bdutil passing your environment, the Hadoop environment, and the Cloud Bigtable environment:
+
+    $ ./bdutil -e cluster_config.sh -e hadoop2_env.sh -e extensions/bigtable/bigtable_env.sh deploy
+
+This will start the VMs and install Hadoop and HBase in them.
+
+The last two lines of output from will look like:
+
+    Thu Jan 15 16:30:17 PST 2015: Cleanup complete.
+    Thu Jan 15 16:30:17 PST 2015: To log in to the master: gcloud --project=<project ID> compute ssh --zone=us-central1-b <PREFIX>-m
+
+Your instances should now be created. You can verify the VMs have been created
+in the "Compute" -> "Compute Engine" section of the [Developer Console](https://cloud.google.com/console).
 
 ### Connect to Master
 
-TODO
+You can now connect to the master via ssh. Use the Google Cloud SDK to connect to the master node.
+
+    $ gcloud --project=<project ID> compute ssh --zone=us-central1-b <PREFIX>-m
 
 ### Use the HBase Shell to Verify the Deploy
 
-TODO
+Hbase shell will work on a properly configured VM.
+
+Become the hadoop user.
+
+    $ sudo su -l hadoop
+
+Start up the HBase shell.
+
+    $ hbase shell
+
+    hbase Shell; enter 'help<RETURN>' for list of supported commands.
+    type "exit<RETURN>" to leave the HBase Shell
+    version 0.99.2, r6a0c4f3bae1e92109393423472bd84097f096e75, Tue Dec  2 20:47:47 PST 2014
+
+    hbase(main):001:0>
+
+You can now verify that you can connect to Cloud Bigtable properly by running
+some sample commands. You should see output similar to below for each command.
+
+    hbase(main):001:0> create 'test', 'cf'
+    hbase(main):001:0> list 'test'
+    hbase(main):001:0> put 'test', 'row1', 'cf:a', 'value1'
+    hbase(main):001:0> put 'test', 'row2', 'cf:b', 'value2'
+    hbase(main):001:0> put 'test', 'row3', 'cf:c', 'value3'
+    hbase(main):001:0> put 'test', 'row4', 'cf:d', 'value4'
+    hbase(main):001:0> scan 'test'
+    hbase(main):001:0> get 'test', 'row1'
+
+Finish by exiting the shell.
+
+    hbase(main):001:0> exit
 
 ### Launch a Hadoop Cloud Bigtable Job
 
-TODO
+Fetch the jar file that we built for the MapReduce job.
+
+    $ gsutil cp gs://<bucket name>/cloud-bigtable-mapreduce-example-SNAPSHOT.jar /tmp/
+
+Make sure you are the hadoop user and run the following commands to create some sample input.
+
+    $ hadoop fs -mkdir input
+    $ curl http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/ClusterSetup.html > setup.html
+    $ hadoop fs -copyFromLocal setup.html input
+
+Run the MapReduce job on the sample input using the following command. This
+will segment the input file into words and count each unique word writing the
+output to `output-table`.
+
+    $ HADOOP_CLASSPATH=$(hbase classpath) hadoop jar /tmp/cloud-bigtable-mapreduce-example-SNAPSHOT.jar wordcount-hbase -libjars hbase-install/lib/bigtable/bigtable-hbase-0.1.3.jar input output-table
+
+    $ hbase shell
+    hbase(main):001:0> list
+    TABLE 
+    some-table
+
+    hbase(main):002:0> scan 'some-table'
+    <Lots of output here!>
 
 ## Troubleshooting & useful tools
 
