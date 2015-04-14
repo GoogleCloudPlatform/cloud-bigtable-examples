@@ -111,12 +111,11 @@ public class HelloInfoServlet extends HttpServlet {
 
     if( connection == null ) connect();
 
-    try {
-      Table t = connection.getTable(TableName.valueOf("gae-hello"));
+    try (Table t = connection.getTable(TableName.valueOf("gae-hello"))) {
+
       // incrementColumnValue(row, family, column qualifier, amount)
       result = t.incrementColumnValue(Bytes.toBytes(id), Bytes.toBytes("visits"),
                                               Bytes.toBytes("visits"), 1);
-      t.close(); // We are done with our table.
     } catch (IOException e) {
       e.printStackTrace();
       return "0 error "+e.toString();
