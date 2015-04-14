@@ -58,6 +58,14 @@ visited.
 
 1. Set `PROJECT_ID`, `CLUSTER_UNIQUE_ID`, and `Zone` (if necessary) in `src/main/java/com/example/bigtable/HelloInfoServlet.java`
 
+1. Copy your keyfile *.json to `src/main/webapp/WEB-INF`
+
+1. In `src/main/webapp/Dockerfile`, add the line 
+
+ `env GOOGLE_APPLICATION_CREDENTIALS=/app/WEB-INF/KEYFILENAME.json`
+
+ Note - this step is only required for running locally in a container.
+
 1. Build the java artifacts
  
  `mvn clean package`
