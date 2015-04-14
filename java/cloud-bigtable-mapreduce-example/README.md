@@ -1,4 +1,4 @@
-# Cloud Bigtable MapReduce Example
+#https://storage.googleapis.com/hadoop-tools/bdutil/bdutil-latest.tar.gz Cloud Bigtable MapReduce Example
 
 The Map/Reduce code for Cloud Bigtable should look identical to HBase
 Map/Reduce jobs. The main issue of running against specific HBase and Hadoop
@@ -13,20 +13,29 @@ class incompatibility issues.
 
 ### Install the Google Cloud Platform SDK
 
-TODO
+In order to run this mapreduce sample you will need to install the Google Cloud
+SDK. Please follow the instructions on the [Google Cloud SDK homepage](https://cloud.google.com/sdk/).
 
 ### Install bdutil
 
-TODO
+We will be using the  to provision resources for our Hadoop cluster. Please
+download bdutil from the [downloads page](https://cloud.google.com/hadoop/downloads)
+and follow the instructions to install it on the
+[bdutil page](https://cloud.google.com/hadoop/bdutil).
 
 ### Provision a Bigtable Cluster
 
-In order to provision a Cloud Bigtable cluster you will first need to create a Google Cloud Platform project. You can create a project using the [Developer Console](https://cloud.google.com/console).
+In order to provision a Cloud Bigtable cluster you will first need to create a
+Google Cloud Platform project. You can create a project using the
+[Developer Console](https://cloud.google.com/console).
 
-After you have created a project you can create a new Cloud Bigtable cluster by clicking on the "Storage" -> "Cloud Bigtable" menu item and clicking on the "New Cluster" button.
-After that, enter the cluster name, ID, zone, and number of nodes. Once you have entered those values, click the "Create" button to provision the cluster.
+After you have created a project you can create a new Cloud Bigtable cluster by
+clicking on the "Storage" -> "Cloud Bigtable" menu item and clicking on the
+"New Cluster" button.  After that, enter the cluster name, ID, zone, and number
+of nodes. Once you have entered those values, click the "Create" button to
+provision the cluster.
 
-![New Cluster Form](../../../../blob/master/java/simple-cli/docs/new-cluster.png?raw=true)
+TODO: Add link to docs
 
 ### Build the Jar File
 
