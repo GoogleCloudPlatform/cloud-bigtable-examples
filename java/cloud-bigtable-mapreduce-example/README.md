@@ -131,8 +131,8 @@ You should see output similar to below for each command.
 
     => Hbase::Table - test
     hbase(main):009:0> list 'test'
-    TABLE                                                                                                                                                                              
-    test                                                                                                                                                                               
+    TABLE
+    test
     1 row(s) in 0.1890 seconds
 
     => ["test"]
@@ -149,16 +149,16 @@ You should see output similar to below for each command.
     0 row(s) in 0.1790 seconds
 
     hbase(main):014:0> scan 'test'
-    ROW                                           COLUMN+CELL                                                                                                                          
-     row1                                         column=cf:a, timestamp=1429010379631, value=value1                                                                                   
-     row2                                         column=cf:b, timestamp=1429010386078, value=value2                                                                                   
-     row3                                         column=cf:c, timestamp=1429010392175, value=value3                                                                                   
-     row4                                         column=cf:d, timestamp=1429010398124, value=value4                                                                                   
+    ROW                                           COLUMN+CELL
+     row1                                         column=cf:a, timestamp=1429010379631, value=value1
+     row2                                         column=cf:b, timestamp=1429010386078, value=value2
+     row3                                         column=cf:c, timestamp=1429010392175, value=value3
+     row4                                         column=cf:d, timestamp=1429010398124, value=value4
     4 row(s) in 0.2080 seconds
 
     hbase(main):015:0> get 'test', 'row1'
-    COLUMN                                        CELL                                                                                                                                 
-     cf:a                                         timestamp=1429010379631, value=value1                                                                                                
+    COLUMN                                        CELL
+     cf:a                                         timestamp=1429010379631, value=value1
     1 row(s) in 0.1910 seconds
 
 Finish by exiting the shell.
