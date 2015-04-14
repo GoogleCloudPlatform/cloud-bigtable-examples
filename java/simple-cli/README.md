@@ -20,7 +20,7 @@ Then you can clone the repository and build the sample:
 
 ## Provision a Bigtable Cluster
 
-In order to provision a Cloud Bigtable cluster you will first need to create a Google Cloud Platform project. You can create a project using the [Developer Console](https://console.developers.google.com/).
+In order to provision a Cloud Bigtable cluster you will first need to create a Google Cloud Platform project. You can create a project using the [Developer Console](https://cloud.google.com/console).
 
 After you have created a project you can create a new Cloud Bigtable cluster by clicking on the "Storage" -> "Cloud Bigtable" menu item and clicking on the "New Cluster" button.
 After that, enter the cluster name, ID, zone, and number of nodes. Once you have entered those values, click the "Create" button to provision the cluster.
