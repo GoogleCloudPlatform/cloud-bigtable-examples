@@ -1,4 +1,4 @@
-#https://storage.googleapis.com/hadoop-tools/bdutil/bdutil-latest.tar.gz Cloud Bigtable MapReduce Example
+# Cloud Bigtable MapReduce Example
 
 The Map/Reduce code for Cloud Bigtable should look identical to HBase
 Map/Reduce jobs. The main issue of running against specific HBase and Hadoop
