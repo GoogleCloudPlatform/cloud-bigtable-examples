@@ -33,26 +33,33 @@ import requests
 from collections import OrderedDict
 from string import ascii_uppercase, digits
 
-table_name = 'some-table2'
 base_url = 'http://130.211.170.242:8080'
+table_name = 'some-table2'
 
-rows = []
-jsonOutput = {"Row": rows}
-
+# Generate a random row_key to minimize chances of collision during testing
 row_key = ''.join(random.choice(ascii_uppercase + digits) for _ in range(10))
+
+# Use a column that you have already created the column family for in the
+# database (or look at the other example, put_get_with_client.py to see how
+# this can be done via the REST API)
 column = "cf:count"
 value = "hello world"
 
+#HBase REST interface requires all these values be encoded.
 rowKeyEncoded = base64.b64encode(row_key)
 encodedColumn = base64.b64encode(column)
 encodedValue = base64.b64encode(value)
 
+# We are only mutating one cell in the row, so we create a list of 1 element.
+rows = []
 cell = OrderedDict([
     ("key", rowKeyEncoded),
     ("Cell", [{"column": encodedColumn, "$": encodedValue}])
 ])
 rows.append(cell)
 
+# Post our value to our row
+jsonOutput = {"Row": rows}
 requests.post(base_url + "/" + table_name + "/" + row_key,
               json.dumps(jsonOutput),
               headers={
@@ -61,9 +68,11 @@ requests.post(base_url + "/" + table_name + "/" + row_key,
               }
               )
 
+# Get our row back so we can check the value is there
 request = requests.get(base_url + "/" + table_name + "/" + row_key,
                        headers={"Accept": "application/json"})
 
+# Verify we receive the value we put there
 text = json.loads(request.text)
 got_value = base64.b64decode(text['Row'][0]['Cell'][0]['$'])
 assert got_value == value
@@ -72,6 +81,7 @@ assert got_value == value
 # now we can delete the value
 requests.delete(base_url + "/" + table_name + row_key)
 
+# verify we now get a 404 when attempting to GET the value
 request = requests.get(base_url + "/" + table_name + row_key,
                        headers={"Accept": "application/json"})
 print request.status_code
