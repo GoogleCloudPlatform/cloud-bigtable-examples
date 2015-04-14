@@ -79,10 +79,10 @@ assert got_value == value
 
 
 # now we can delete the value
-requests.delete(base_url + "/" + table_name + row_key)
+requests.delete(base_url + "/" + table_name + "/" +row_key)
 
 # verify we now get a 404 when attempting to GET the value
-request = requests.get(base_url + "/" + table_name + row_key,
+request = requests.get(base_url + "/" + table_name + "/" + row_key,
                        headers={"Accept": "application/json"})
 print request.status_code
 assert request.status_code == 404
