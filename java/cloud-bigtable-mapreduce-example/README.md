@@ -39,7 +39,12 @@ TODO: Add link to docs
 
 ### Build the Jar File
 
-TODO
+You can build the jar file for the MapReduce job using maven.
+
+    $ cd java/cloud-bigtable-mapreduce-example
+    $ mvn install
+
+After running Maven the jar file should be located in the `target` directory.
 
 ## Deploying
 
