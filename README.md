@@ -4,8 +4,6 @@ There are many examples / sample / demo programs here, each with its own README.
 
 [Python/Thrift](python/thrift) - Setup Thrift server(s), then a Python App that will connect and do basic operations.
 
-[Java/Word Count](java/wordcount) -
-
 [Java/simple-cli](java/simple-cli) - 
 
 [Java/Cloud Bigtable Map/Reduce](java/cloud-bigtable-mapreduce-example) - How to use Cloud Bigtable both with GCE Map/Reduce
