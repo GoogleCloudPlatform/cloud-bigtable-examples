@@ -44,12 +44,10 @@ import org.slf4j.LoggerFactory;
 public class HelloInfoServlet extends HttpServlet {
   Logger logger = LoggerFactory.getLogger("com.example.bigtable.HelloInfoServlet");
 
-// The initial connection to Cloud Bigtable is an expensive operation -- We cache the Configuration
-// information to speed things up a bit.  For this sample, keeping them here is a good idea, for
+// The initial connection to Cloud Bigtable is an expensive operation -- We cache this Connection
+// to speed things up a bit.  For this sample, keeping them here is a good idea, for
 // your application, you may wish to keep these somewhere else.
-  public static Configuration conf = null;  // Initial blank Configuration
   public static Connection conn = null;     // The authenticated connection
-  public static Table table = null;         // A reference to our table - most operations use this.
 
 /**
  * init() in this case is called at Deploy time as this servlet is marked to load-on-start.  The
@@ -80,12 +78,7 @@ public class HelloInfoServlet extends HttpServlet {
     c.set("google.bigtable.cluster.name","CLUSTER_UNIQUE_ID");
     c.set("google.bigtable.zone.name", "us-central1-b");  // ZONE NAME IF DIFFERENT
 
-    Connection connection = ConnectionFactory.createConnection(c);
-    Table t = connection.getTable(TableName.valueOf("gae-hello"));
-
-    table = t;
-    conn = connection;
-    conf = c;   // set last as it's our trigger.
+    conn = ConnectionFactory.createConnection(c);
   }
 
 /**
@@ -97,11 +90,12 @@ public class HelloInfoServlet extends HttpServlet {
   public String getAndUpdateVisit(String id) throws IOException {
     long result;
 
-    if( conf == null ) connect();
+    if( conn == null ) connect();
+    Table t = conn.getTable(TableName.valueOf("gae-hello"));
 
     try {
       // incrementColumnValue(row, family, column qualifier, amount)
-      result = table.incrementColumnValue(Bytes.toBytes(id), Bytes.toBytes("visits"),
+      result = t.incrementColumnValue(Bytes.toBytes(id), Bytes.toBytes("visits"),
                                               Bytes.toBytes("visits"), 1);
     } catch (IOException e) {
       e.printStackTrace();
