@@ -37,8 +37,8 @@ A sample hbase-site.xml is located in src/main/resources/hbase-site.xml.example.
     $ cp hbase-site.xml.example hbase-site.xml
     $ vim hbase-site.xml
 
-You will need to [create a service account](https://developers.google.com/accounts/docs/OAuth2ServiceAccount#creatinganaccount) and download the JSON key file.
-After you have created the service account enter the project id and info for the service account in the locations shown.
+If one is not already created, you will need to [create a service account](https://developers.google.com/accounts/docs/OAuth2ServiceAccount#creatinganaccount)
+and download the JSON key file.  After you have created the service account enter the project id and info for the service account in the locations shown.
 
     <configuration>
       <property>
