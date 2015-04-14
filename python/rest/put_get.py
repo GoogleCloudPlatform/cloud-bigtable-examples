@@ -17,8 +17,14 @@
 """ This example demonstrates how to put a single value in a cell in HBase via
 the REST interface, then GET it back and print it back. Finally we delete it
 and assert that we get a 404 when trying to get it again.
-"""
 
+This example requires that the table already exists with the appropriate
+column family schema established.
+
+To see an example that uses a class that wraps many of these operations,
+including creation of the table with its column family, see
+put_get_with_client.py
+"""
 
 import base64
 import json
@@ -27,46 +33,56 @@ import requests
 from collections import OrderedDict
 from string import ascii_uppercase, digits
 
-tablename = 'some-table2'
-baseurl = 'http://130.211.170.242:8080'
+base_url = 'http://130.211.170.242:8080'
+table_name = 'some-table2'
 
-rows = []
-jsonOutput = {"Row": rows }
-
+# Generate a random row_key to minimize chances of collision during testing
 row_key = ''.join(random.choice(ascii_uppercase + digits) for _ in range(10))
+
+# Use a column that you have already created the column family for in the
+# database (or look at the other example, put_get_with_client.py to see how
+# this can be done via the REST API)
 column = "cf:count"
 value = "hello world"
 
+#HBase REST interface requires all these values be encoded.
 rowKeyEncoded = base64.b64encode(row_key)
 encodedColumn = base64.b64encode(column)
 encodedValue = base64.b64encode(value)
 
+# We are only mutating one cell in the row, so we create a list of 1 element.
+rows = []
 cell = OrderedDict([
-                    ("key", rowKeyEncoded),
-                    ("Cell", [ {"column": encodedColumn, "$" : encodedValue}])
-                    ])
+    ("key", rowKeyEncoded),
+    ("Cell", [{"column": encodedColumn, "$": encodedValue}])
+])
 rows.append(cell)
 
-requests.post(baseurl + "/" + tablename + "/" + row_key,
-                json.dumps(jsonOutput),
-                headers={
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                }
+# Post our value to our row
+jsonOutput = {"Row": rows}
+requests.post(base_url + "/" + table_name + "/" + row_key,
+              json.dumps(jsonOutput),
+              headers={
+                  "Content-Type": "application/json",
+                  "Accept": "application/json",
+              }
               )
 
-request = requests.get(baseurl + "/" + tablename + "/" + row_key,
+# Get our row back so we can check the value is there
+request = requests.get(base_url + "/" + table_name + "/" + row_key,
                        headers={"Accept": "application/json"})
 
+# Verify we receive the value we put there
 text = json.loads(request.text)
 got_value = base64.b64decode(text['Row'][0]['Cell'][0]['$'])
 assert got_value == value
 
 
 # now we can delete the value
-requests.delete(baseurl + "/" + tablename + row_key)
+requests.delete(base_url + "/" + table_name + "/" +row_key)
 
-request = requests.get(baseurl + "/" + tablename + row_key,
+# verify we now get a 404 when attempting to GET the value
+request = requests.get(base_url + "/" + table_name + "/" + row_key,
                        headers={"Accept": "application/json"})
 print request.status_code
 assert request.status_code == 404
