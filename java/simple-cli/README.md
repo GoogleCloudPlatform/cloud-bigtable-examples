@@ -13,7 +13,7 @@ repository:
     $ gsutil -m cp -R gs://cloud-bigtable-eap .
     $ cd cloud-bigtable-eap/jars/current/
     $ mvn install:install-file -Dfile=bigtable-hbase-0.1.3.jar \
-        -DgroupId=com.google.bigtable.anviltop \
+        -DgroupId=com.google.cloud.bigtable \
         -DartifactId=bigtable-hbase \
         -Dversion=0.1.3 -Dpackaging=jar -DgeneratePom=true
 
