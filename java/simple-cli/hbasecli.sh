@@ -7,4 +7,4 @@ mvn dependency:build-classpath -Dmdep.outputFile=cp.txt > /dev/null
 CPATH=`cat cp.txt`
 rm cp.txt
 
-java -classpath target/classes:${CPATH} -Xbootclasspath/p:${LOCAL_REPOSITORY}/org/mortbay/jetty/alpn/alpn-boot/${ALPN_VERSION}/alpn-boot-${ALPN_VERSION}.jar com.google.cloud.bigtable.samples.HBaseCLI $@
+java -classpath target/classes:${CPATH} -Xbootclasspath/p:${LOCAL_REPOSITORY}/org/mortbay/jetty/alpn/alpn-boot/${ALPN_VERSION}/alpn-boot-${ALPN_VERSION}.jar com.example.bigtable.simplecli.HBaseCLI $@

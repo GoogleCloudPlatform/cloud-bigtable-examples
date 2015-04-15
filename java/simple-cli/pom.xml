@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.google.cloud.bigtable.samples</groupId>
+  <groupId>com.example.bigtable.simplecli</groupId>
   <artifactId>cloud-bigtable-simple-cli</artifactId>
 
   <packaging>jar</packaging>
@@ -66,9 +66,9 @@
       <scope>runtime</scope>
     </dependency>
     <!-- for now -->
-    <!-- mvn install:install-file -Dfile=bigtable-hbase-0.1.3.jar -DgroupId=com.google.cloud.bigtable -DartifactId=bigtable-hbase -Dversion=0.1.3 -Dpackaging=jar -DgeneratePom=true -->
+    <!-- mvn install:install-file -Dfile=bigtable-hbase-0.1.3.jar -DgroupId=bigtable-client -DartifactId=bigtable-hbase -Dversion=0.1.3 -Dpackaging=jar -DgeneratePom=true -->
     <dependency>
-      <groupId>com.google.cloud.bigtable</groupId>
+      <groupId>bigtable-client</groupId>
       <artifactId>bigtable-hbase</artifactId>
       <version>0.1.3</version>
       <scope>runtime</scope>
