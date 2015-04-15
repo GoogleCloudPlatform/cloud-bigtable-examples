@@ -30,7 +30,7 @@
   </security-constraint>
   <servlet>
     <servlet-name>hello</servlet-name>
-    <servlet-class>com.example.bigtable.HelloInfoServlet</servlet-class>
+    <servlet-class>com.example.bigtable.HelloServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>

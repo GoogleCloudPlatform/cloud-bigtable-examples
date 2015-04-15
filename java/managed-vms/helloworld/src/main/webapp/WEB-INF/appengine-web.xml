@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
+<!-- 
   ~ Copyright (c) 2013 Google Inc. All Rights Reserved.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License"); you
@@ -13,17 +13,21 @@
   ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
   ~ implied. See the License for the specific language governing
   ~ permissions and limitations under the License.
-  -->
-
+ -->
+ 
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
-    <application>PROJECT_ID_HERE</application>
 
+  <application>PROJECT_ID_HERE</application>
+  
     <version>hellojava</version>
     <threadsafe>true</threadsafe>
     <vm>true</vm>
-  
+
+<!-- 
+  Requesting bigtable.data scope is very important.
+ -->
     <beta-settings>
-      <setting name="service_account_scopes" value="https://www.googleapis.com/auth/cloud-platform, https://www.googleapis.com/auth/devstorage.full_control, https://www.googleapis.com/auth/cloud-bigtable.data" />
+      <setting name="service_account_scopes" value="https://www.googleapis.com/auth/bigtable.data, https://www.googleapis.com/auth/cloud-platform, https://www.googleapis.com/auth/devstorage.full_control" />
     </beta-settings>
   
     <manual-scaling>
