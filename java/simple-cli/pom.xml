@@ -99,12 +99,19 @@
 
   <repositories>
     <repository>
-      <id>Apache Snapshots Repository</id>
-      <url>https://repository.apache.org/content/repositories/snapshots/</url>
-    </repository>
-    <repository>
-      <id>Apache HBase Temporary Repository</id>
-      <url>https://repository.apache.org/content/repositories/orgapachehbase-1058/</url>
+      <id>apache-releases</id>
+      <url>https://repository.apache.org/content/repositories/releases/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+        <checksumPolicy>warn</checksumPolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+        <updatePolicy>never</updatePolicy>
+        <checksumPolicy>fail</checksumPolicy>
+      </snapshots>
     </repository>
   </repositories>
 </project>
