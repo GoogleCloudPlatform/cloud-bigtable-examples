@@ -31,7 +31,7 @@
   </property>
   <property>
     <name>google.bigtable.admin.endpoint.host</name>
-    <value>table-admin-bigtable.googleapis.com</value>
+    <value>bigtabletableadmin.googleapis.com</value>
   </property>
   <property>
     <name>google.bigtable.project.id</name>
