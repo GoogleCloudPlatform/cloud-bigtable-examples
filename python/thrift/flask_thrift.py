@@ -15,13 +15,20 @@
 # limitations under the License.
 #
 
+import os
+from optparse import OptionParser
+
 from flask import Flask, request
 
 app = Flask(__name__)
+app.config["THRIFT_HOST"] = os.environ.get("THRIFT_HOST")
+app.config["THRIFT_PORT"] = os.environ.get("THRIFT_PORT") 
 
 from client import ThriftClient
 import struct
 
+def thrift_client(host, port):
+    return ThriftClient(app.config["THRIFT_HOST"], app.config["THRIFT_PORT"]);
 
 def _encode_int(n):
     """
@@ -65,7 +72,7 @@ def get(table, key, column, type_):
         _delete_column(table, key, column)
         return "Deleted."
 
-    with ThriftClient() as client:
+    with thrift_client() as client:
         value = client.get_row(table, key)
         if not value:
             return "Not found"
@@ -87,7 +94,7 @@ def _put(table, row_key, column, value, type_):
      4 byte stream.
     :return: None
     """
-    with ThriftClient() as client:
+    with thrift_client() as client:
         if type_ == 'int':
             value = _encode_int(int(value))
         client.put_row(table, row_key, column, value)
@@ -102,9 +109,20 @@ def _delete_column(table, row_key, column):
      format, such as 'cf:count'
     :return: None
     """
-    with ThriftClient() as client:
+    with thrift_client() as client:
         client.delete_column(table, row_key, column)
 
 # set debug=True in the run() call to see better debugging messages
 if __name__ == '__main__':
+    parser = OptionParser()
+    parser.add_option("-h", "--host", dest="host", default="127.0.0.1",
+                              help="The host or IP address of your Thrift server.")
+    parser.add_option("-p", "--port",
+                              action="store_false", dest="port", default=9090,
+                              help="The port of your Thrift server.")
+
+    (options, args) = parser.parse_args()
+
+    app.config["THRIFT_HOST"] = options.host
+    app.config["THRIFT_PORT"] = options.port
     app.run()

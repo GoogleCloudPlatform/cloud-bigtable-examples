@@ -35,15 +35,14 @@ Run the provisioning script to install Thrift and Flask
 
   `$ ./provision.sh`
 
-Edit HOST and PORT in client.py to point to the appropriate external IP for your Thrift server.
-
 Activate the virtualenv:
 
   `$ source flaskthrift/bin/activate`
 
-Start the Flask server in the background
+Start the Flask server in the background with the appropriate host and port to point to your Thrift server.
 
-  `$ python flask_thrift.py &`
+
+  `$ python flask_thrift.py --host 123.123.123.123 --port 9090 &`
 
 You can test the server works by making sure there are no errors from the requests tests.
 

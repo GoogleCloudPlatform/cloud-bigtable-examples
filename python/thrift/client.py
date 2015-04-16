@@ -25,11 +25,6 @@ from thrift.transport import TTransport
 from thrift import Thrift
 from hbase import Hbase
 
-# The external IP of a GCE Instance running your HBase Thrift Server
-HOST = '130.211.170.242'
-# This is the default port so you probably don't need to change it
-PORT = 9090
-
 
 class ThriftClient(object):
     """ A class that provides some CRUD operations using a Thrift client
@@ -38,11 +33,11 @@ class ThriftClient(object):
        operations such as putting a row, getting a row, and deleting a column.
     """
 
-    def __init__(self):
+    def __init__(self, host="127.0.0.1", port=9090):
         """ Creates a new instance of the client, initializing the Thrift transport
         :return:
         """
-        self.transport = TSocket.TSocket(HOST, PORT)
+        self.transport = TSocket.TSocket(host, port)
         self.transport = TTransport.TBufferedTransport(self.transport)
         protocol = TBinaryProtocol.TBinaryProtocol(self.transport)
 
