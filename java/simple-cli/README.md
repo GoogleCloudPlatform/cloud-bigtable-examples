@@ -1,4 +1,4 @@
-# Bigtable Sample app packaging test
+# Cloud Bigtable Simple Command Line Interface
 
 This is a sample app using the HBase native API to interact with Cloud
 Bigtable.
