@@ -84,7 +84,12 @@ public class HBaseCLI {
             try {
                 Command command = commands.get(args[0]);
                 List<String> argsList = Arrays.asList(args);
-                command.run(connection, argsList.subList(1, argsList.size())); 
+                try {
+                    command.run(connection, argsList.subList(1, argsList.size())); 
+                } catch (InvalidArgsException e) {
+                    System.out.println("ERROR: Invalid arguments");
+                    System.out.println("Usage: ./hbasecli.sh " + args[0] + " " + command.getOptions());
+                }
             } finally {
                 connection.close();
             }
@@ -97,6 +102,18 @@ public class HBaseCLI {
         System.out.println("Usage: hbasecli.sh <command> <options>");
     }
 
+    protected static class InvalidArgsException extends Exception {
+        private List<String> args;
+
+        public InvalidArgsException(List<String> args) {
+           this.args = args;
+        }
+
+        public List<String> getArgs() {
+            return this.args;
+        }
+    }
+
     protected static abstract class Command {
         private String name;
 
@@ -105,10 +122,11 @@ public class HBaseCLI {
         }
 
         public String getName() {
-            return this.name;
+            return name;
         }
 
-        public abstract void run(Connection connection, List<String> args) throws IOException;
+        public abstract void run(Connection connection, List<String> args) throws InvalidArgsException, IOException;
+        public abstract String getOptions();
     }
 
     protected static class CreateCommand extends Command {
@@ -117,7 +135,10 @@ public class HBaseCLI {
             super(name);
         }
 
-        public void run(Connection connection, List<String> args) throws IOException {
+        public void run(Connection connection, List<String> args) throws InvalidArgsException, IOException {
+            if (args.size() != 1) {
+                throw new InvalidArgsException(args);
+            }
             String tableName = args.get(0);
             ArrayList<String> columnFamilies = new ArrayList<String>();
             for (String arg : args.subList(1, args.size() - 1)) {
@@ -131,6 +152,10 @@ public class HBaseCLI {
             }
             admin.createTable(tableDescriptor);
         }
+
+        public String getOptions() {
+            return "TABLENAME";
+        }
     }
 
     protected static class ScanCommand extends Command {
@@ -139,9 +164,12 @@ public class HBaseCLI {
             super(name);
         }
 
-        public void run(Connection connection, List<String> args) throws IOException {
+        public void run(Connection connection, List<String> args) throws InvalidArgsException, IOException {
+            if (args.size() < 1 || args.size() > 2) {
+                throw new InvalidArgsException(args);
+            }
             String tableName = args.get(0);
-            String filterVal = args.get(1); // TODO 
+            String filterVal = args.get(1);
 
             Table table = connection.getTable(TableName.valueOf(tableName));
             Scan scan = new Scan();
@@ -178,6 +206,10 @@ public class HBaseCLI {
                 }
             }
         }
+
+        public String getOptions() {
+            return "TABLENAME [FILTER]";
+        }
     }
 
     protected static class GetCommand extends Command {
@@ -186,7 +218,10 @@ public class HBaseCLI {
             super(name);
         }
 
-        public void run(Connection connection, List<String> args) throws IOException {
+        public void run(Connection connection, List<String> args) throws InvalidArgsException, IOException {
+            if (args.size() != 2) {
+                throw new InvalidArgsException(args);
+            }
 
             String tableName = args.get(0);
             String rowId = args.get(1);
@@ -202,6 +237,10 @@ public class HBaseCLI {
                 System.out.printf("%-20s column=%s:%s, timestamp=%s, value=%s\n", row, family, column, timestamp, value);
             }
         }
+
+        public String getOptions() {
+            return "TABLENAME ROWID";
+        }
     }
 
     protected static class PutCommand extends Command {
@@ -210,7 +249,11 @@ public class HBaseCLI {
             super(name);
         }
 
-        public void run(Connection connection, List<String> args) throws IOException {
+        public void run(Connection connection, List<String> args) throws InvalidArgsException, IOException {
+            if (args.size() != 5) {
+                throw new InvalidArgsException(args);
+            }
+
             String tableName = args.get(0);
             String rowId = args.get(1);
             String columnFamily = args.get(2);
@@ -222,6 +265,10 @@ public class HBaseCLI {
             put.addColumn(Bytes.toBytes(columnFamily), Bytes.toBytes(column), Bytes.toBytes(value));
             table.put(put);
         }
+
+        public String getOptions() {
+            return "TABLENAME ROWID COLUMNFAMILY COLUMN VALUE";
+        }
     }
 
     protected static class ListCommand extends Command {
@@ -230,8 +277,13 @@ public class HBaseCLI {
             super(name);
         }
 
-        public void run(Connection connection, List<String> args) throws IOException {
-            String pattern = args.get(0); // TODO        
+        public void run(Connection connection, List<String> args) throws InvalidArgsException, IOException {
+            String pattern = null;
+            if (args.size() == 1) {
+                pattern = args.get(0);
+            } else if (args.size() != 0) {
+                throw new InvalidArgsException(args);
+            }
 
             Admin admin = connection.getAdmin();
             HTableDescriptor[] tables;
@@ -252,6 +304,10 @@ public class HBaseCLI {
 
                 System.out.println(table.getTableName() + columnFamilyNames);
             }
+        }
+
+        public String getOptions() {
+            return "[TABLENAME]";
         }
     }
 
