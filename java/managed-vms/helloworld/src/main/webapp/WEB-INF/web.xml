@@ -30,13 +30,16 @@
   </security-constraint>
   <servlet>
     <servlet-name>hello</servlet-name>
-    <servlet-class>com.example.bigtable.HelloServlet</servlet-class>
+    <servlet-class>com.example.bigtable.managedvms.HelloServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
     <servlet-name>hello</servlet-name>
     <url-pattern>/</url-pattern>
   </servlet-mapping>
+  <listener>
+    <listener-class>com.example.bigtable.managedvms.BigtableHelper</listener-class>
+  </listener>
 
 <!-- 
   <welcome-file-list>

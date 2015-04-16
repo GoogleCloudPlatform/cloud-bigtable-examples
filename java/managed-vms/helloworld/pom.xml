@@ -27,7 +27,9 @@
   <artifactId>hello</artifactId>
 
   <properties>
+    <projectid>PROJECT_ID_HERE</projectid>
     <appengine.target.version>1.9.19</appengine.target.version>
+    <gcloud.plugin.version>0.9.56.v20150415a</gcloud.plugin.version>
     <compileSource>1.7</compileSource>
 
     <hbase.version>1.0.0</hbase.version>
@@ -709,9 +711,12 @@
         </configuration>
       </plugin>
       <plugin>
-         <groupId>com.google.appengine</groupId>
-         <artifactId>gcloud-maven-plugin</artifactId>
-         <version>1.9.17a</version>
+        <groupId>com.google.appengine</groupId>
+        <artifactId>gcloud-maven-plugin</artifactId>
+        <version>${gcloud.plugin.version}</version>
+        <configuration>
+          <gcloud_project>${projectid}</gcloud_project>
+        </configuration>
       </plugin>
 
     </plugins>

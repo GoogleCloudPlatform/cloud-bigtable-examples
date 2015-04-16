@@ -14,7 +14,7 @@
  * permissions and limitations under the License.
  */
 
-package com.example.bigtable;
+package com.example.bigtable.managedvms;
 
 
 import org.apache.hadoop.conf.Configuration;
@@ -39,64 +39,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class HelloServlet extends HttpServlet {
-/**
- * You need to set your PROJECT_ID, CLUSTER_UNIQUE_ID (typically 'cluster') here, and if different,
- * your Zone.
- **/
-  private static final String PROJECT_ID = "PROJECT_ID_HERE";
-  private static final String CLUSTER_ID = "CLUSTER_UNIQUE_ID";
-  private static final String ZONE = "us-central1-b";
   private static final TableName TABLE = TableName.valueOf("gae-hello");
-
-// The initial connection to Cloud Bigtable is an expensive operation -- We cache this Connection
-// to speed things up.  For this sample, keeping them here is a good idea, for
-// your application, you may wish to keep this somewhere else.
-  public static Connection connection = null;     // The authenticated connection
-
-/**
- * Connect will establish the connection to Cloud Bigtable.
- **/
-  public void connect() throws IOException {
-    Configuration c = HBaseConfiguration.create();
-
-    c.setClass("hbase.client.connection.impl",
-        org.apache.hadoop.hbase.client.BigtableConnection.class,
-        org.apache.hadoop.hbase.client.Connection.class);   // Required for Cloud Bigtable
-    c.set("google.bigtable.endpoint.host", "bigtable.googleapis.com");
-
-    c.set("google.bigtable.project.id", PROJECT_ID);
-    c.set("google.bigtable.cluster.name", CLUSTER_ID);
-    c.set("google.bigtable.zone.name", ZONE);
-
-    connection = ConnectionFactory.createConnection(c);
-  }
-
-/**
- * init() in this case is called at Deploy time as this servlet is marked to load-on-start.  The
- * only thing it does is setup the connection to the Cloud Bigtable server.
- **/
-  @Override
-  public void init() {
-    try {
-      connect();
-    } catch (IOException io) {
-      log("init ***", io);
-    }
-  }
-
-/**
- * destroy() is called when the Servlet container (jetty) wants to get rid if this, typically when
- * shutting down.  We'll get rid of our connection here.
- **/
-  @Override
-  public void destroy() {
-    try {
-      if(connection != null) connection.close();
-    } catch (IOException io) {
-      log("destroy ***", io);
-    }
-    connection = null;
-  }
 
 /**
  * getAndUpdateVisit will just increment and get the visits:visits column, using
@@ -110,9 +53,7 @@ public class HelloServlet extends HttpServlet {
   public String getAndUpdateVisit(String id) throws IOException {
     long result;
 
-    if( connection == null ) connect();
-
-    try (Table t = connection.getTable( TABLE )) {
+    try (Table t = BigtableHelper.getConnection().getTable( TABLE )) {
 
       // incrementColumnValue(row, family, column qualifier, amount)
       result = t.incrementColumnValue(Bytes.toBytes(id), Bytes.toBytes("visits"),

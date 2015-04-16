@@ -25,7 +25,7 @@ visited.
 
 1. Install driver jar into your local repo **TO BE REMOVED**
 
- `mvn install:install-file -Dfile=bigtable-hbase-0.1.3-SNAPSHOT.jar -DgroupId=bigtable-client -DartifactId=bigtable-client -Dversion=0.1.3-SNAPSHOT -Dpackaging=jar -DgeneratePom=true`
+ `mvn install:install-file -Dfile=bigtable-hbase-0.1.4.jar -DgroupId=bigtable-client -DartifactId=bigtable-client -Dversion=0.1.4 -Dpackaging=jar -DgeneratePom=true`
 
 1. Build the Docker Image
 
@@ -54,9 +54,9 @@ visited.
 
 1. `cd ../helloworld`
 
-1. Set the `project_ID` in `src/main/webapp/WEB-INF/appengine-web.xml`
+1. Set the `project_ID` in `pom.xml`
 
-1. Set `PROJECT_ID`, `CLUSTER_UNIQUE_ID`, and `Zone` (if necessary) in `src/main/java/com/example/bigtable/HelloInfoServlet.java`
+1. Set `PROJECT_ID`, `CLUSTER_UNIQUE_ID`, and `Zone` (if necessary) in `src/main/java/com/example/bigtable/managedvms/BigtableHelper.java`
 
 1. Copy your keyfile *.json to `src/main/webapp/WEB-INF`
 
@@ -72,17 +72,19 @@ visited.
 
 1. run the application
 
- `gcloud preview app run target/hello-1.0-SNAPSHOT --project PROJECT_ID`
+ `mvn clean gcloud:run`
  
 1. go to [localhost:8080](localhost:8080)
 
 ### Deploying as a managed VM app
 
-1. After running the application above.
+1. Set the `project_ID` in `pom.xml`
+
+1. Set `PROJECT_ID`, `CLUSTER_UNIQUE_ID`, and `Zone` (if necessary) in `src/main/java/com/example/bigtable/managedvms/BigtableHelper.java`
 
 1. Deploy the application
 
- `gcloud preview app deploy target/hello-1.0-SNAPSHOT --project PROJECT_ID`
+ `mvn clean gcloud:deploy`
  
 1. go to **ProjectID.appspot.com**
 
