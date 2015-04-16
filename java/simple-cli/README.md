@@ -84,10 +84,29 @@ key file to the `GOOGLE_APPLICATION_CREDENTIALS` environment variable.
 
     $ export GOOGLE_APPLICATION_CREDENTIALS=/path/to/json-key-file.json
 
-You can run a command using the hbasecli.sh script. The following command will
-get values from the row with key "row1" in the table "test".
+You can run a command using the hbasecli.sh script.
 
-    $ ./hbasecli.sh get test row1
+You can create a new table using the `create` command:
+
+    $ ./hbasecli.sh create mytable
+
+You can verify that the table was created using the `list` command:
+
+    $ ./hbasecli.sh list
+
+You can then add some data to the table using the put command:
+
+    $ ./hbasecli.sh put mytable rowid columnfamily columnname value
+
+You can then get all the values for the row using the `get` command:
+
+    $ ./hbasecli.sh get mytable rowid
+
+You can also `scan` the table to get all rows:
+
+    $ ./hbasecli.sh get mytable scan
+
+
 
 ## Contributing changes
 
