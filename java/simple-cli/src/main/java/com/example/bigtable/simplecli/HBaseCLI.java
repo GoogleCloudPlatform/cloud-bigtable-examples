@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.anviltop.sample;
+package com.example.bigtable.simplecli;
 
 import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.Connection;
@@ -41,6 +41,8 @@ import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.ArrayList;
 
 public class HBaseCLI {
     public static void main(String[] args) {
@@ -51,7 +53,13 @@ public class HBaseCLI {
         try {
             Connection connection  = ConnectionFactory.createConnection();
             try {
-                if ("list".equals(args[0])) {
+                if ("create".equals(args[0])) {
+                    ArrayList<String> columnFamilies = new ArrayList<String>();
+                    for (int i=2; i < args.length; i++) {
+                        columnFamilies.add(args[i]);
+                    }
+                    create(connection, args[1], columnFamilies);
+                } else if ("list".equals(args[0])) {
                     if (args.length > 1) {
                         list(connection, args[1]);
                     } else {
@@ -76,6 +84,15 @@ public class HBaseCLI {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void create(Connection connection, String tableName, ArrayList<String> columnFamilies) throws IOException {
+        Admin admin = connection.getAdmin();
+        HTableDescriptor tableDescriptor = new HTableDescriptor(tableName);
+        for (String colFamily : columnFamilies) {
+            tableDescriptor.addFamily(new HColumnDescriptor(colFamily));
+        }
+        admin.createTable(tableDescriptor);
     }
 
     public static void scan(Connection connection, String tableName, String filterVal) throws IOException {
