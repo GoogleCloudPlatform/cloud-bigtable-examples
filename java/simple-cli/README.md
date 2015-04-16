@@ -83,7 +83,9 @@ key file to the `GOOGLE_APPLICATION_CREDENTIALS` environment variable.
 
     $ export GOOGLE_APPLICATION_CREDENTIALS=/path/to/json-key-file.json
 
-You can run a command using the hbasecli.sh script.
+You can run a command using the hbasecli.sh script. Try checking the available commands:
+
+    $ ./hbasecli.sh -help
 
 You can create a new table using the `create` command:
 
