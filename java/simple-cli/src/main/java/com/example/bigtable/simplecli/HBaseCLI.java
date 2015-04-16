@@ -216,7 +216,10 @@ public class HBaseCLI {
                 throw new InvalidArgsException(args);
             }
             String tableName = args.get(0);
-            String filterVal = args.get(1);
+            String filterVal = null;
+            if (args.size() > 1) {
+                filterVal = args.get(1);
+            }
 
             Table table = connection.getTable(TableName.valueOf(tableName));
             Scan scan = new Scan();
