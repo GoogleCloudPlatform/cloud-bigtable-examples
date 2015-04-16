@@ -49,6 +49,7 @@ import org.apache.hadoop.hbase.HColumnDescriptor;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,9 +62,10 @@ public class HBaseCLI {
 
         // create the parser
         CommandLineParser parser = new BasicParser();
+        CommandLine line = null;
         try {
             // parse the command line arguments
-            CommandLine line = parser.parse( options, args );
+            line = parser.parse( options, args );
         } catch( ParseException exp ) {
             // oops, something went wrong
             System.err.println(exp.getMessage());
@@ -78,17 +80,35 @@ public class HBaseCLI {
         commands.put("put", new PutCommand("put"));
         commands.put("list", new ListCommand("list"));
 
+        Command command = null;
+        List<String> argsList = Arrays.asList(args);
+        if (argsList.size() > 0) {
+            command = commands.get(argsList.get(0));
+        }
+
+        if (line.hasOption("help")) {
+            if (command == null) {
+                help(commands.values());
+            } else {
+                help(command);
+            }
+            System.exit(0);
+        } else if (command == null) {
+            usage();
+            System.exit(0);
+        }
+
+
         try {
             Connection connection  = ConnectionFactory.createConnection();
             
             try {
-                Command command = commands.get(args[0]);
-                List<String> argsList = Arrays.asList(args);
                 try {
                     command.run(connection, argsList.subList(1, argsList.size())); 
                 } catch (InvalidArgsException e) {
                     System.out.println("ERROR: Invalid arguments");
-                    System.out.println("Usage: ./hbasecli.sh " + args[0] + " " + command.getOptions());
+                    usage(command);
+                    System.exit(0);
                 }
             } finally {
                 connection.close();
@@ -99,7 +119,29 @@ public class HBaseCLI {
     }
 
     public static void usage() {
-        System.out.println("Usage: hbasecli.sh <command> <options>");
+        System.out.println("Usage: hbasecli.sh COMMAND [OPTIONS ...]");
+        System.out.println("Try hbasecli.sh -help for more details.");
+    }
+
+    public static void usage(Command command) {
+        System.out.println("Usage: ./hbasecli.sh " + command.getName() + " " + command.getOptions());
+    }
+
+    public static void help(Collection<Command> commands) {
+        usage();
+        System.out.println("");
+        System.out.println("Commands:");
+        System.out.println("");
+        for (Command command : commands) {
+            System.out.println("    " + command.getName() + ": " + command.getDescription());
+        }
+        System.out.println("");
+        System.out.println("Try hbasecli.sh COMMAND -help for command usage.");
+    }
+
+    public static void help(Command command) {
+        usage(command);
+        System.out.println(command.getDescription());
     }
 
     protected static class InvalidArgsException extends Exception {
@@ -127,6 +169,7 @@ public class HBaseCLI {
 
         public abstract void run(Connection connection, List<String> args) throws InvalidArgsException, IOException;
         public abstract String getOptions();
+        public abstract String getDescription();
     }
 
     protected static class CreateCommand extends Command {
@@ -154,7 +197,11 @@ public class HBaseCLI {
         }
 
         public String getOptions() {
-            return "TABLENAME";
+            return "TABLENAME [COLUMNFAMILY ...]";
+        }
+
+        public String getDescription() {
+            return "Create a new table";
         }
     }
 
@@ -210,6 +257,10 @@ public class HBaseCLI {
         public String getOptions() {
             return "TABLENAME [FILTER]";
         }
+
+        public String getDescription() {
+            return "Scan a table";
+        }
     }
 
     protected static class GetCommand extends Command {
@@ -241,6 +292,10 @@ public class HBaseCLI {
         public String getOptions() {
             return "TABLENAME ROWID";
         }
+
+        public String getDescription() {
+            return "Get all columns from a single row";
+        }
     }
 
     protected static class PutCommand extends Command {
@@ -268,6 +323,10 @@ public class HBaseCLI {
 
         public String getOptions() {
             return "TABLENAME ROWID COLUMNFAMILY COLUMN VALUE";
+        }
+
+        public String getDescription() {
+            return "Put a column value";
         }
     }
 
@@ -308,6 +367,10 @@ public class HBaseCLI {
 
         public String getOptions() {
             return "[TABLENAME]";
+        }
+
+        public String getDescription() {
+            return "List tables";
         }
     }
 
