@@ -35,8 +35,6 @@ clicking on the "Storage" -> "Cloud Bigtable" menu item and clicking on the
 of nodes. Once you have entered those values, click the "Create" button to
 provision the cluster.
 
-![New Cluster Form](../../../../blob/master/java/simple-cli/docs/new-cluster.png?raw=true)
-
 TODO: add a link to docs.
 
 ## Set up your hbase-site.xml configuration
