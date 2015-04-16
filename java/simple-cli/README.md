@@ -41,12 +41,10 @@ TODO: add a link to docs.
 
 ## Set up your hbase-site.xml configuration
 
-A sample hbase-site.xml is located in
-src/main/resources/hbase-site.xml.example. Copy it and enter the values for
-your project.
+A sample hbase-site.xml is located in src/main/resources/hbase-site.xml.
+Copy it and enter the values for your project.
 
-    $ src/main/resources
-    $ cp hbase-site.xml.example hbase-site.xml
+    $ cd src/main/resources
     $ vim hbase-site.xml
 
 If one is not already created, you will need to 
