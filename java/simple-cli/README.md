@@ -3,26 +3,6 @@
 This is a sample app using the HBase native API to interact with Cloud
 Bigtable.
 
-## Install
-
-You can Install the dependencies using maven.
-
-First download the Cloud Bigtable client library and install it in your maven
-repository:
-
-    $ gsutil -m cp -R gs://cloud-bigtable-eap .
-    $ cd cloud-bigtable-eap/jars/current/
-    $ mvn install:install-file -Dfile=bigtable-hbase-0.1.3.jar \
-        -DgroupId=bigtable-client \
-        -DartifactId=bigtable-hbase \
-        -Dversion=0.1.3 -Dpackaging=jar -DgeneratePom=true
-
-Then you can clone the repository and build the sample:
-
-    $ git clone git@github.com:GoogleCloudPlatform/cloud-bigtable-examples.git
-    $ cd cloud-bigtable-examples/java/simple-cli
-    $ mvn install
-
 ## Provision a Bigtable Cluster
 
 In order to provision a Cloud Bigtable cluster you will first need to create a
@@ -42,8 +22,9 @@ TODO: add a link to docs.
 A sample hbase-site.xml is located in src/main/resources/hbase-site.xml.
 Copy it and enter the values for your project.
 
-    $ cd src/main/resources
-    $ vim hbase-site.xml
+    $ git clone git@github.com:GoogleCloudPlatform/cloud-bigtable-examples.git
+    $ cd cloud-bigtable-examples/java/simple-cli
+    $ vim src/main/resources/hbase-site.xml
 
 If one is not already created, you will need to 
 [create a service account](https://developers.google.com/accounts/docs/OAuth2ServiceAccount#creatinganaccount)
@@ -76,6 +57,24 @@ enter the project id and info for the service account in the locations shown.
         <value><!-- ZONE WHERE CLUSTER IS PROVISIONED --></value>
       </property>
     </configuration>
+
+## Build
+
+You can install the dependencies and build the project using maven.
+
+First download the Cloud Bigtable client library and install it in your maven
+repository:
+
+    $ gsutil -m cp -R gs://cloud-bigtable-eap .
+    $ cd cloud-bigtable-eap/jars/current/
+    $ mvn install:install-file -Dfile=bigtable-hbase-0.1.3.jar \
+        -DgroupId=bigtable-client \
+        -DartifactId=bigtable-hbase \
+        -Dversion=0.1.3 -Dpackaging=jar -DgeneratePom=true
+
+Then you can clone the repository and build the sample:
+
+    $ mvn install
 
 ## Run the code
 
