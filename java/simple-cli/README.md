@@ -107,7 +107,27 @@ You can also `scan` the table to get all rows:
 
     $ ./hbasecli.sh get mytable scan
 
+## Understanding the code
 
+The simple CLI uses the [HBase Native API](http://hbase.apache.org/book.html#hbase_apis)
+to make calls to Cloud Bigtable. This should be a simple example to allow you to
+get started connecting to Cloud Bigtable and using the API.
+
+Connections are created using the ConnectionFactory class. Calling createConnection()
+with no arguments uses the default configuration which is loaded from the hbase-site.xml
+file on the classpath.
+
+    Connection connection  = ConnectionFactory.createConnection();
+
+Actions on tables and other administration can be done via the Admin class.
+
+    Admin admin = connection.getAdmin();
+    // List tables
+    HTableDescriptor[] tables = admin.listTables();
+    // Create table
+    admin.createTable(new HTableDescriptor("mytable"));
+
+For more information see the [HBase Native API documentation](https://hbase.apache.org/apidocs/).
 
 ## Contributing changes
 
