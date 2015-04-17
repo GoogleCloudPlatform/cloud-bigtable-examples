@@ -1,27 +1,7 @@
-# Bigtable Sample app packaging test
+# Cloud Bigtable Simple Command Line Interface
 
 This is a sample app using the HBase native API to interact with Cloud
 Bigtable.
-
-## Install
-
-You can Install the dependencies using maven.
-
-First download the Cloud Bigtable client library and install it in your maven
-repository:
-
-    $ gsutil -m cp -R gs://cloud-bigtable-eap .
-    $ cd cloud-bigtable-eap/jars/current/
-    $ mvn install:install-file -Dfile=bigtable-hbase-0.1.3.jar \
-        -DgroupId=bigtable-client \
-        -DartifactId=bigtable-hbase \
-        -Dversion=0.1.3 -Dpackaging=jar -DgeneratePom=true
-
-Then you can clone the repository and build the sample:
-
-    $ git clone git@github.com:GoogleCloudPlatform/cloud-bigtable-examples.git
-    $ cd cloud-bigtable-examples/java/simple-cli
-    $ mvn install
 
 ## Provision a Bigtable Cluster
 
@@ -42,8 +22,9 @@ TODO: add a link to docs.
 A sample hbase-site.xml is located in src/main/resources/hbase-site.xml.
 Copy it and enter the values for your project.
 
-    $ cd src/main/resources
-    $ vim hbase-site.xml
+    $ git clone git@github.com:GoogleCloudPlatform/cloud-bigtable-examples.git
+    $ cd cloud-bigtable-examples/java/simple-cli
+    $ vim src/main/resources/hbase-site.xml
 
 If one is not already created, you will need to 
 [create a service account](https://developers.google.com/accounts/docs/OAuth2ServiceAccount#creatinganaccount)
@@ -77,6 +58,24 @@ enter the project id and info for the service account in the locations shown.
       </property>
     </configuration>
 
+## Build
+
+You can install the dependencies and build the project using maven.
+
+First download the Cloud Bigtable client library and install it in your maven
+repository:
+
+    $ gsutil -m cp -R gs://cloud-bigtable-eap .
+    $ cd cloud-bigtable-eap/jars/current/
+    $ mvn install:install-file -Dfile=bigtable-hbase-0.1.3.jar \
+        -DgroupId=bigtable-client \
+        -DartifactId=bigtable-hbase \
+        -Dversion=0.1.3 -Dpackaging=jar -DgeneratePom=true
+
+Then you can clone the repository and build the sample:
+
+    $ mvn install
+
 ## Run the code
 
 Before running the application, make sure you have set the path to your JSON
@@ -84,7 +83,9 @@ key file to the `GOOGLE_APPLICATION_CREDENTIALS` environment variable.
 
     $ export GOOGLE_APPLICATION_CREDENTIALS=/path/to/json-key-file.json
 
-You can run a command using the hbasecli.sh script.
+You can run a command using the hbasecli.sh script. Try checking the available commands:
+
+    $ ./hbasecli.sh -help
 
 You can create a new table using the `create` command:
 
@@ -106,7 +107,27 @@ You can also `scan` the table to get all rows:
 
     $ ./hbasecli.sh get mytable scan
 
+## Understanding the code
 
+The simple CLI uses the [HBase Native API](http://hbase.apache.org/book.html#hbase_apis)
+to make calls to Cloud Bigtable. This should be a simple example to allow you to
+get started connecting to Cloud Bigtable and using the API.
+
+Connections are created using the ConnectionFactory class. Calling createConnection()
+with no arguments uses the default configuration which is loaded from the hbase-site.xml
+file on the classpath.
+
+    Connection connection  = ConnectionFactory.createConnection();
+
+Actions on tables and other administration can be done via the Admin class.
+
+    Admin admin = connection.getAdmin();
+    // List tables
+    HTableDescriptor[] tables = admin.listTables();
+    // Create table
+    admin.createTable(new HTableDescriptor("mytable"));
+
+For more information see the [HBase Native API documentation](https://hbase.apache.org/apidocs/).
 
 ## Contributing changes
 
