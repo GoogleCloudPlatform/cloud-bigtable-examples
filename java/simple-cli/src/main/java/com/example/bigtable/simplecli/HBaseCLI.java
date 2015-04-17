@@ -54,8 +54,24 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * A simple command line interface to Cloud Bigtable using
+ * the native HBase API. This application does not use anything
+ * that is specific to Cloud Bigtable so it should work on a
+ * normal HBase installation as well.
+ *
+ * This is not meant to be a full featured command line interface
+ * or shell but to illustrate how to do some simple operations
+ * on Cloud Bigtable using the HBase native API.
+ */
 public class HBaseCLI {
+
+    /**
+     * The main method for the CLI. This method takes the command line
+     * arguments and runs the appropriate commands.
+     */
     public static void main(String[] args) {
+        // We use Apache commons-cli to check for a help option.
         Options options = new Options();
         Option help = new Option( "help", "print this message" );
         options.addOption(help);
@@ -72,7 +88,11 @@ public class HBaseCLI {
             usage();
             System.exit(1);
         }
-
+        
+        // Create a list of commands that are supported. Each
+        // command defines a run method and some methods for
+        // printing help.
+        // See the definition of each command below.
         HashMap<String, Command> commands = new HashMap<String, Command>();
         commands.put("create", new CreateCommand("create"));
         commands.put("scan", new ScanCommand("scan"));
@@ -86,7 +106,11 @@ public class HBaseCLI {
             command = commands.get(argsList.get(0));
         }
 
+        // Check for the help option and if it's there
+        // display the appropriate help.
         if (line.hasOption("help")) {
+            // If there is a command listed (e.g. create -help)
+            // then show the help for that command
             if (command == null) {
                 help(commands.values());
             } else {
@@ -94,6 +118,7 @@ public class HBaseCLI {
             }
             System.exit(0);
         } else if (command == null) {
+            // No valid command was given so print the usage.
             usage();
             System.exit(0);
         }
@@ -104,6 +129,7 @@ public class HBaseCLI {
             
             try {
                 try {
+                    // Run the command with the arguments after the command name.
                     command.run(connection, argsList.subList(1, argsList.size())); 
                 } catch (InvalidArgsException e) {
                     System.out.println("ERROR: Invalid arguments");
@@ -111,6 +137,8 @@ public class HBaseCLI {
                     System.exit(0);
                 }
             } finally {
+                // Make sure the connection is closed even if
+                // an exception occurs.
                 connection.close();
             }
         } catch (IOException e) {
@@ -118,15 +146,26 @@ public class HBaseCLI {
         }
     }
 
+    /**
+     * Print the usage for the program.
+     */
     public static void usage() {
         System.out.println("Usage: hbasecli.sh COMMAND [OPTIONS ...]");
         System.out.println("Try hbasecli.sh -help for more details.");
     }
 
+    /**
+     * Print the usage for a specific command.
+     * @param command The command whose usage you want to print.
+     */
     public static void usage(Command command) {
         System.out.println("Usage: ./hbasecli.sh " + command.getName() + " " + command.getOptions());
     }
 
+    /**
+     * Print the program help message. Includes a list of the supported commands.
+     * @param commands A collection of the available commands.
+     */
     public static void help(Collection<Command> commands) {
         usage();
         System.out.println("");
@@ -139,11 +178,19 @@ public class HBaseCLI {
         System.out.println("Try hbasecli.sh COMMAND -help for command usage.");
     }
 
+    /**
+     * Prints the help for a specific command.
+     * @param command The command whose help you want to print.
+     */
     public static void help(Command command) {
         usage(command);
         System.out.println(command.getDescription());
     }
 
+    /**
+     * An exception that is thrown when invalid arguments are
+     * passed to a command.
+     */
     protected static class InvalidArgsException extends Exception {
         private List<String> args;
 
@@ -156,6 +203,9 @@ public class HBaseCLI {
         }
     }
 
+    /**
+     * Defines the interface for commands that can be run by the CLI
+     */
     protected static abstract class Command {
         private String name;
 
@@ -167,11 +217,31 @@ public class HBaseCLI {
             return name;
         }
 
+        /**
+         * Run the command.
+         * @param connection The HBase/Cloud Bigtable connection object.
+         * @param args A list of args to the command.
+         */
         public abstract void run(Connection connection, List<String> args) throws InvalidArgsException, IOException;
+
+        /**
+         * Gets a string describing command line arguments of the command.
+         * Used when printing usage and help.
+         */
         public abstract String getOptions();
+
+        /**
+         * Gets a string describing what the command does.
+         * Used when printing usage and help.
+         */
         public abstract String getDescription();
     }
 
+    /**
+     * This command creates a new Bigtable table. It uses the 
+     * HBase Admin class to create the table based on a
+     * HTableDescriptior.
+     */
     protected static class CreateCommand extends Command {
 
         public CreateCommand(String name) {
@@ -188,6 +258,8 @@ public class HBaseCLI {
                 columnFamilies.add(arg);
             }
 
+            // Create the table based on the passed in arguments.
+            // We used the standard HBase Admin and HTableDescriptor classes.
             Admin admin = connection.getAdmin();
             HTableDescriptor tableDescriptor = new HTableDescriptor(tableName);
             for (String colFamily : columnFamilies) {
@@ -205,6 +277,13 @@ public class HBaseCLI {
         }
     }
 
+    /**
+     * This command will scan a Bigtable table. Scanning,
+     * by default, returns all columns from all rows in the table.
+     * Many more options are available when scanning a table so
+     * please see the documentation for the standard HBase Scan
+     * and ResultScanner classes.
+     */
     protected static class ScanCommand extends Command {
 
         public ScanCommand(String name) {
@@ -222,7 +301,13 @@ public class HBaseCLI {
             }
 
             Table table = connection.getTable(TableName.valueOf(tableName));
+
+            // Create a new Scan instance.
             Scan scan = new Scan();
+
+            // This command supports using a columnvalue filter.
+            // The filter takes the form of <columnfamily>:<column><operator><value>
+            // An example would be cf:col>=10
             if (filterVal != null) {
                 String splitVal = "=";
                 CompareFilter.CompareOp op = CompareFilter.CompareOp.EQUAL;
@@ -266,6 +351,10 @@ public class HBaseCLI {
         }
     }
 
+    /**
+     * A simple get command. This command takes the form of
+     * "get [rowid]" and prints all columns for the row.
+     */
     protected static class GetCommand extends Command {
 
         public GetCommand(String name) {
@@ -281,8 +370,15 @@ public class HBaseCLI {
             String rowId = args.get(1);
 
             Table table = connection.getTable(TableName.valueOf(tableName));
+
+            // Create a new Get request and specify the rowId passed by the user.
             Result result = table.get(new Get(rowId.getBytes()));
+
+            // Iterate of the results. Each Cell is a value for column
+            // so multiple Cells will be processed for each row.
             for (Cell cell : result.listCells()) {
+                // We use the CellUtil class to clone values
+                // from the returned cells.
                 String row = new String(CellUtil.cloneRow(cell));
                 String family = new String(CellUtil.cloneFamily(cell));
                 String column = new String(CellUtil.cloneQualifier(cell));
@@ -301,6 +397,10 @@ public class HBaseCLI {
         }
     }
 
+    /**
+     * This command puts a single column value to a table.
+     * It takes the form of "put [table] [rowid] [columnfamily] [column] [value]
+     */
     protected static class PutCommand extends Command {
 
         public PutCommand(String name) {
@@ -312,6 +412,7 @@ public class HBaseCLI {
                 throw new InvalidArgsException(args);
             }
 
+            // Get the arguments passed by the user.
             String tableName = args.get(0);
             String rowId = args.get(1);
             String columnFamily = args.get(2);
@@ -319,8 +420,16 @@ public class HBaseCLI {
             String value = args.get(4);
 
             Table table = connection.getTable(TableName.valueOf(tableName));
+
+            // Create a new Put request.
             Put put = new Put(Bytes.toBytes(rowId));
+
+            // Here we add only one column value to the row but
+            // multiple column values can be added to the row at
+            // once by calling this method multiple times.
             put.addColumn(Bytes.toBytes(columnFamily), Bytes.toBytes(column), Bytes.toBytes(value));
+            
+            // Execute the put on the table.
             table.put(put);
         }
 
@@ -333,6 +442,11 @@ public class HBaseCLI {
         }
     }
 
+    /**
+     * This command lists the tables in your Cloud Bigtable Cluster
+     * It also accepts a glob pattern argument which can be used to limit
+     * the number of tables listed.
+     */
     protected static class ListCommand extends Command {
 
         public ListCommand(String name) {
@@ -349,11 +463,17 @@ public class HBaseCLI {
 
             Admin admin = connection.getAdmin();
             HTableDescriptor[] tables;
+
+            // We use the listTables() method on the Admin instance
+            // to get a list of HTableDescriptor objects.
             if (pattern != null) {
                 tables = admin.listTables(pattern);
             } else {
                 tables = admin.listTables();
             }
+
+            // For each of the tables we get the table name and column families
+            // registered with the table, and print them out.
             for (HTableDescriptor table : tables) {
                 HColumnDescriptor[] columnFamilies = table.getColumnFamilies();
                 String columnFamilyNames = "";
@@ -369,7 +489,7 @@ public class HBaseCLI {
         }
 
         public String getOptions() {
-            return "[TABLENAME]";
+            return "[TABLENAME PATTERN]";
         }
 
         public String getDescription() {
