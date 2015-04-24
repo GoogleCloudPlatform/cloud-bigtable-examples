@@ -1,3 +1,5 @@
-FROM gae-bt-v01
+FROM gae-bt-v02
+
+ENV GOOGLE_APPLICATION_CREDENTIALS=/app/WEB-INF/BigTable-WL-5ca655910529.json
 
 ADD . /app
