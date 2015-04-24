@@ -93,7 +93,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>com.google.anviltop.sample.SampleDriver</mainClass>
+              <mainClass>com.example.bigtable.sample.SampleDriver</mainClass>
             </manifest>
           </archive>
         </configuration>
@@ -121,10 +121,6 @@
     <repository>
       <id>Apache Snapshots Repository</id>
       <url>https://repository.apache.org/content/repositories/snapshots/</url>
-    </repository>
-    <repository>
-      <id>Apache HBase Temporary Repository</id>
-      <url>https://repository.apache.org/content/repositories/orgapachehbase-1058/</url>
     </repository>
   </repositories>
 </project>
