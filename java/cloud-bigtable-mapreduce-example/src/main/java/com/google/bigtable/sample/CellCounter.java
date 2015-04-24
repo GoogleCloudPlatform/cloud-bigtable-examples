@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.anviltop.sample;
+package com.google.bigtable.sample;
 
 import java.io.IOException;
 
