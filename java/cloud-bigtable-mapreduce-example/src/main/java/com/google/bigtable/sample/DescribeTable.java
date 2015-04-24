@@ -16,29 +16,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.anviltop.sample;
+package com.google.bigtable.sample;
 
 import java.io.IOException;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.HColumnDescriptor;
+import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.util.GenericOptionsParser;
 
-public class TestUnclosedConnection {
+public class DescribeTable {
 
   public static void main(String[] args) throws IOException {
     Configuration conf = HBaseConfiguration.create();
     String[] otherArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
+    if (otherArgs.length < 1) {
+      System.err.println("Usage: <table-name> [other table names]");
+      System.exit(2);
+    }
 
-    Connection conn = ConnectionFactory.createConnection(conf);
-    Admin admin = conn.getAdmin();
-    TableName[] listTableNames = admin.listTableNames();
-    System.out.println(listTableNames);
-    System.out.println("done");
+    try (Connection connection = ConnectionFactory.createConnection(conf);
+        Admin admin = connection.getAdmin();) {
+      for (String name : otherArgs) {
+        TableName tableName = TableName.valueOf(name);
+        try {
+          HTableDescriptor tableDescriptor = admin.getTableDescriptor(tableName);
+          System.out.println(tableDescriptor);
+
+          HColumnDescriptor[] families = tableDescriptor.getColumnFamilies();
+
+          System.out.println(String.format("%d families", families.length));
+          for (HColumnDescriptor column : families) {
+            System.out.println(column);
+          }
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    }
   }
 
 }
