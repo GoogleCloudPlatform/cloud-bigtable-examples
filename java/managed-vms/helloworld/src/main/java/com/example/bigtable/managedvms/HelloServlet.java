@@ -41,6 +41,8 @@ import javax.servlet.http.HttpServletResponse;
 public class HelloServlet extends HttpServlet {
   private static final TableName TABLE = TableName.valueOf("gae-hello");
 
+//  final static Logger logger = LoggerFactory.getLogger(HelloServlet.class);
+
 /**
  * getAndUpdateVisit will just increment and get the visits:visits column, using
  * incrementColumnValue does the equivalent of locking the row, getting the value, incrementing
@@ -53,11 +55,13 @@ public class HelloServlet extends HttpServlet {
   public String getAndUpdateVisit(String id) throws IOException {
     long result;
 
+    log("getAndUpdateVisit-b4 getConnection/getTable ****");
     try (Table t = BigtableHelper.getConnection().getTable( TABLE )) {
-
+      log("getAndUpdateVisit-after table, b4 incr");
       // incrementColumnValue(row, family, column qualifier, amount)
       result = t.incrementColumnValue(Bytes.toBytes(id), Bytes.toBytes("visits"),
                                               Bytes.toBytes("visits"), 1);
+      log("getAndUpdateVisit-after Incr");
     } catch (IOException e) {
       log("getAndUpdateVisit", e);
       return "0 error "+e.toString();

@@ -46,11 +46,12 @@ public class BigtableHelper implements ServletContextListener {
 // your application, you may wish to keep this somewhere else.
   private static Connection connection = null;     // The authenticated connection
 
-   final static Logger logger = LoggerFactory.getLogger(BigtableHelper.class);
+  private static final Logger LOG = LoggerFactory.getLogger(BigtableHelper.class);
 /**
  * Connect will establish the connection to Cloud Bigtable.
  **/
   public static void connect() throws IOException {
+    LOG.info("b4-HBaseConfiguration.create");
     Configuration c = HBaseConfiguration.create();
 
     c.setClass("hbase.client.connection.impl",
@@ -62,7 +63,9 @@ public class BigtableHelper implements ServletContextListener {
     c.set("google.bigtable.cluster.name", CLUSTER_ID);
     c.set("google.bigtable.zone.name", ZONE);
 
+    LOG.info("b4 - createConnection");
     connection = ConnectionFactory.createConnection(c);
+    LOG.info("after - createConnection");
   }
 
   public static Connection getConnection() {
@@ -70,7 +73,7 @@ public class BigtableHelper implements ServletContextListener {
       try {
         connect();
       } catch (IOException e) {
-        logger.error("connect "+e.toString());
+        LOG.error("connect ", e);
       }
     }
     return connection;
@@ -82,11 +85,17 @@ public class BigtableHelper implements ServletContextListener {
     try {
       connect();
     } catch (IOException e) {
-      logger.error("connect "+e.toString());
+      LOG.error("connect ", e);
     }
   }
 
   public void contextDestroyed(ServletContextEvent event) {
     // App Engine does not currently invoke this method.
+    try {
+      connection.close();
+    } catch(IOException io) {
+      LOG.error("contextDestroyed ", io);
+    }
+    connection = null;
   }
 }

@@ -5,6 +5,12 @@ visited.
 
 ## Project setup, installation, and configuration
 
+1. Get a copy of the [AppEngine Runtime for Managed VM's](https://github.com/GoogleCloudPlatform/appengine-java-vm-runtime/)
+
+1. Build the Docker Image -- You will need to do this when the SDK is updated.
+
+  `cd docker; docker build -t appengine-mvn-opensource .` 
+
 1. Go to the [Cloud Console](https://cloud.google.com/console) and create or select your project.
 
  You will need the ProjectID later.
@@ -27,9 +33,9 @@ visited.
 
  `mvn install:install-file -Dfile=bigtable-hbase-0.1.4.jar -DgroupId=bigtable-client -DartifactId=bigtable-client -Dversion=0.1.4 -Dpackaging=jar -DgeneratePom=true`
 
-1. Build the Docker Image
+1. Build the Docker Image for this project
 
- `cd docker; docker build -t gae-bt-v01 .;cd ..`
+ `cd docker; docker build -t gae-bt-v02 .;cd ..`
  
 1. Select **Storage > Cloud Bigtable > New Cluster**
 
