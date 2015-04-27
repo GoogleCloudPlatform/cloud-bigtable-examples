@@ -31,7 +31,7 @@ public class WordCountDriver {
           "A map/reduce program that counts the words in the input files.");
       programDriver.addClass("export-table", Export.class,
           "A map/reduce program that exports a table to a file.");
-      programDriver.addClass("cellcounter", CellCounter.class, "Count them cells!");
+      //programDriver.addClass("cellcounter", CellCounter.class, "Count them cells!");
       programDriver.driver(args);
       exitCode = programDriver.run(args);
     } catch (Throwable e) {
