@@ -194,11 +194,13 @@ output to `output-table`.
 Verify the output using the HBase shell.
 
     $ hbase shell
-    hbase(main):001:0> list
-    TABLE 
-    some-table
+    hbase(main):001:0> list 'output-table'
+    output-table                                                                                        
+    1 row(s) in 1.7820 seconds
 
-    hbase(main):002:0> scan 'some-table'
+    => ["output-table"]
+
+    hbase(main):002:0> scan 'output-table'
     <Lots of output here!>
 
 ## Contributing changes
