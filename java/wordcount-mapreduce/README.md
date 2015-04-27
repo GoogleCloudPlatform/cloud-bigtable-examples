@@ -37,6 +37,19 @@ provision the cluster.
 
 TODO: Add link to docs
 
+### Make a GCS Bucket
+
+Make a GCS bucket that will be used by bdutil to store its output and to copy
+files to the VMs.  There are two ways to make a GCS Bucket, 
+
+1. In the Cloud Console, select "Storage" > "Cloud Storage" > "Storage
+   browser" and click on the "Add bucket" button. Type the name for your
+   bucket and click "Create".  (Note - Names are a global resource, so make
+   yours long and unique) 
+1. Use the gsutil tool's Make Bucket command:
+
+       $ gsutil mb -p <project ID> gs://<bucketName>
+
 ### Build the Jar File
 
 You can build the jar file for the MapReduce job using maven.
@@ -51,19 +64,6 @@ We will upload it to our bucket so that we can use it later.
     $ gsutil cp target/wordcount-mapreduce-0.1.2-SNAPSHOT.jar gs://<bucketName>/
 
 ## Deploying
-
-### Make a GCS Bucket
-
-Make a GCS bucket that will be used by bdutil to store its output and to copy
-files to the VMs.  There are two ways to make a GCS Bucket, 
-
-1. In the Cloud Console, select "Storage" > "Cloud Storage" > "Storage
-   browser" and click on the "Add bucket" button. Type the name for your
-   bucket and click "Create".  (Note - Names are a global resource, so make
-   yours long and unique) 
-1. Use the gsutil tool's Make Bucket command:
-
-       $ gsutil mb -p <project ID> gs://<bucketName>
 
 ### Create Compute Engine VMs
 
