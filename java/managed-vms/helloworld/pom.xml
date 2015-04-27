@@ -29,7 +29,7 @@
   <properties>
     <projectid>PROJECT_ID_HERE</projectid>
     <appengine.target.version>1.9.19</appengine.target.version>
-    <gcloud.plugin.version>0.9.56.v20150418</gcloud.plugin.version>
+    <gcloud.plugin.version>0.9.57.v20150425</gcloud.plugin.version>
     <compileSource>1.7</compileSource>
 
     <hbase.version>1.0.0</hbase.version>
@@ -456,6 +456,12 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-jdk14</artifactId>
       <version>${slf4j.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.json</groupId>
+	    <artifactId>json</artifactId>
+	    <version>20140107</version>
     </dependency>
 
     <!-- Test related dependencies -->

@@ -1,7 +1,13 @@
-# Cloud Bigtable on Managed VM's (Hello World)
+# Cloud Bigtable on Managed VM's (Counter & JSON REST)
 
 A simple hello world app that takes your an opaque user ID and uses it as a key to count how often you've
-visited.
+visited.  This app also provides a simple JSON REST client that enables the GET, POST, and DELETE Verbs.
+
+# IMPORTANT – TEMPORARY
+# Roll back to this version of the SDK
+`gcloud config set --scope=installation component_manager/fixed_sdk_version 0.9.55`
+
+`gcloud components update`
 
 ## Project setup, installation, and configuration
 
@@ -53,6 +59,8 @@ visited.
 
  `create table 'gae-hello', 'visits'`
  
+ `create table 'from-json', 'cf1', 'cf2', 'cf3', 'cf4'`
+ 
 1. Exit `hbase shell` using ctrl-c
 
 
@@ -94,6 +102,18 @@ visited.
  
 1. go to **ProjectID.appspot.com**
 
+## Using JSON
+
+1. Entities (rows) can be accessed using //projectID.appspot.com/json/rowkey
+  * GET - Will wrap up everything as JSON
+  * POST - Will convert the JSON to ColumnFamily : Qualifier and write the data
+  * DELETE - Will remove the row.
+
+1. `curl -H "Content-Type: application/json" -X POST -d '{"username":"red","id":535}' http://localhost:8080/json/blueword`
+
+1. `curl -X GET http://localhost:8080/json/blueword`
+
+1. `curl -H "Content-Type: application/json" -X DELETE  http://localhost:8080/json/blueword`
 
 ## Contributing changes
 
