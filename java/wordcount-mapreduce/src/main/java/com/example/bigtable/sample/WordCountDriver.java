@@ -21,7 +21,7 @@ package com.example.bigtable.sample;
 import org.apache.hadoop.hbase.mapreduce.Export;
 import org.apache.hadoop.util.ProgramDriver;
 
-public class SampleDriver {
+public class WordCountDriver {
 
   public static void main(String[] args) {
     ProgramDriver programDriver = new ProgramDriver();

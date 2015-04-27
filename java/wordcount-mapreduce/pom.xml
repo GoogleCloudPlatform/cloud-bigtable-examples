@@ -93,7 +93,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>com.example.bigtable.sample.SampleDriver</mainClass>
+              <mainClass>com.example.bigtable.sample.WordCountDriver</mainClass>
             </manifest>
           </archive>
         </configuration>
