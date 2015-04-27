@@ -6,7 +6,7 @@ There are many examples / sample / demo programs here, each with its own README.
 
 [Java/simple-cli](java/simple-cli) - A simple command line interface for Cloud Bigtable that shows you how to do basic operations with the native HBase API.
 
-[Java/Cloud Bigtable Map/Reduce](java/cloud-bigtable-mapreduce-example) - How to use Cloud Bigtable both with GCE Map/Reduce
+[Java/Cloud Bigtable Map/Reduce](java/wordcount-mapreduce) - How to use Cloud Bigtable both with GCE Map/Reduce
 
 [Java/Managed VM Hello World](java/managed-vms) - Accessing Cloud Bigtable from a Managed VM
 

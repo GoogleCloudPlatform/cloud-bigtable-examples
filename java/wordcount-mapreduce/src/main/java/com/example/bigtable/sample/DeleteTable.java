@@ -31,7 +31,7 @@ import org.apache.hadoop.util.GenericOptionsParser;
 /**
  * <p>Deletes a set of tables. Usage:
  * <pre>
- * java -cp ~/cloud-bigtable-mapreduce-example-0.1.0-SNAPSHOT.jar:$(hbase classpath) $BIGTABLE_BOOT_OPTS com.google.anviltop.sample.DeleteTable [tablenames]
+ * java -cp ~/wordcount-mapreduce-0.1.0-SNAPSHOT.jar:$(hbase classpath) $BIGTABLE_BOOT_OPTS com.google.anviltop.sample.DeleteTable [tablenames]
  * </pre>
  * @author sduskis
  */

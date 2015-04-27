@@ -41,14 +41,14 @@ TODO: Add link to docs
 
 You can build the jar file for the MapReduce job using maven.
 
-    $ cd java/cloud-bigtable-mapreduce-example
+    $ cd java/wordcount-mapreduce
     $ mvn install
 
 After running Maven the jar file should be located in the `target` directory.
 
 We will upload it to our bucket so that we can use it later.
 
-    $ gsutil cp target/cloud-bigtable-mapreduce-example-0.1.2-SNAPSHOT.jar gs://<bucketName>/
+    $ gsutil cp target/wordcount-mapreduce-0.1.2-SNAPSHOT.jar gs://<bucketName>/
 
 ## Deploying
 
@@ -173,7 +173,7 @@ Finish by exiting the shell.
 
 Fetch the jar file that we built for the MapReduce job.
 
-    $ gsutil cp gs://<bucketName>/cloud-bigtable-mapreduce-example-0.1.2-SNAPSHOT.jar /tmp/
+    $ gsutil cp gs://<bucketName>/wordcount-mapreduce-0.1.2-SNAPSHOT.jar /tmp/
 
 Make sure you are the hadoop user and run the following commands to create some sample input.
 
@@ -186,7 +186,7 @@ will segment the input file into words and count each unique word writing the
 output to `output-table`.
 
     $ HADOOP_CLASSPATH=$(hbase classpath) hadoop jar \
-        /tmp/cloud-bigtable-mapreduce-example-0.1.2-SNAPSHOT.jar \
+        /tmp/wordcount-mapreduce-0.1.2-SNAPSHOT.jar \
         wordcount-hbase \
         -libjars hbase-install/lib/bigtable/bigtable-hbase-0.1.3.jar \
         input output-table
