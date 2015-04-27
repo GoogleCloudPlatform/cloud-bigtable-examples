@@ -188,7 +188,7 @@ output to `output-table`.
     $ HADOOP_CLASSPATH=$(hbase classpath) hadoop jar \
         /tmp/wordcount-mapreduce-0.1.2-SNAPSHOT.jar \
         wordcount-hbase \
-        -libjars hbase-install/lib/bigtable/bigtable-hbase-0.1.3.jar \
+        -libjars hbase-install/lib/bigtable/bigtable-hbase-0.1.4.jar \
         input output-table
 
 Verify the output using the HBase shell.
