@@ -19,9 +19,12 @@ SDK. Please follow the instructions on the [Google Cloud SDK homepage](https://c
 ### Install bdutil
 
 We will be using the bdutil tool to provision resources for our Hadoop cluster.
-Please download bdutil from the [downloads page](https://cloud.google.com/hadoop/downloads)
-and follow the instructions to install it on the
-[bdutil page](https://cloud.google.com/hadoop/bdutil).
+
+1. Download bdutil the tar.gz from the [downloads page](https://cloud.google.com/hadoop/downloads)
+1. Unpack bdutil to your home directory:
+
+   $ mkdir -p ~/bdutil
+   $ tar xzf bdutil-latest.tar.gz -C ~/bdutil
 
 ### Provision a Bigtable Cluster
 
@@ -80,7 +83,7 @@ You will need to create a `cluster_config.sh` file with the following variables:
 
 You can change the parameters to suit your needs. Then you can run the bdutil passing your environment, the Hadoop environment, and the Cloud Bigtable environment:
 
-    $ ./bdutil -e cluster_config.sh -e hadoop2_env.sh -e extensions/bigtable/bigtable_env.sh deploy
+    $ ~/bdutil/bdutil -e cluster_config.sh -e ~/bdutil/hadoop2_env.sh -e ~/bdutil/extensions/bigtable/bigtable_env.sh deploy
 
 This will start the VMs and install Hadoop and HBase in them.
 
