@@ -67,10 +67,10 @@ repository:
 
     $ gsutil -m cp -R gs://cloud-bigtable-eap .
     $ cd cloud-bigtable-eap/jars/current/
-    $ mvn install:install-file -Dfile=bigtable-hbase-0.1.3.jar \
+    $ mvn install:install-file -Dfile=bigtable-hbase-0.1.4.jar \
         -DgroupId=bigtable-client \
         -DartifactId=bigtable-hbase \
-        -Dversion=0.1.3 -Dpackaging=jar -DgeneratePom=true
+        -Dversion=0.1.4 -Dpackaging=jar -DgeneratePom=true
 
 Then you can clone the repository and build the sample:
 
