@@ -13,7 +13,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>cloud-bigtable</groupId>
-  <artifactId>cloud-bigtable-mapreduce-example</artifactId>
+  <artifactId>wordcount-mapreduce</artifactId>
   <version>0.1.2-SNAPSHOT</version>
   <packaging>jar</packaging>
 
@@ -93,7 +93,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>com.example.bigtable.sample.SampleDriver</mainClass>
+              <mainClass>com.example.bigtable.sample.WordCountDriver</mainClass>
             </manifest>
           </archive>
         </configuration>

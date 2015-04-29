@@ -19,9 +19,12 @@ SDK. Please follow the instructions on the [Google Cloud SDK homepage](https://c
 ### Install bdutil
 
 We will be using the bdutil tool to provision resources for our Hadoop cluster.
-Please download bdutil from the [downloads page](https://cloud.google.com/hadoop/downloads)
-and follow the instructions to install it on the
-[bdutil page](https://cloud.google.com/hadoop/bdutil).
+
+1. Download bdutil the tar.gz from the [downloads page](https://cloud.google.com/hadoop/downloads)
+1. Unpack bdutil to your home directory:
+
+   $ mkdir -p ~/bdutil
+   $ tar xzf bdutil-latest.tar.gz -C ~/bdutil
 
 ### Provision a Bigtable Cluster
 
@@ -37,21 +40,6 @@ provision the cluster.
 
 TODO: Add link to docs
 
-### Build the Jar File
-
-You can build the jar file for the MapReduce job using maven.
-
-    $ cd java/cloud-bigtable-mapreduce-example
-    $ mvn install
-
-After running Maven the jar file should be located in the `target` directory.
-
-We will upload it to our bucket so that we can use it later.
-
-    $ gsutil cp target/cloud-bigtable-mapreduce-example-0.1.2-SNAPSHOT.jar gs://<bucketName>/
-
-## Deploying
-
 ### Make a GCS Bucket
 
 Make a GCS bucket that will be used by bdutil to store its output and to copy
@@ -64,6 +52,21 @@ files to the VMs.  There are two ways to make a GCS Bucket,
 1. Use the gsutil tool's Make Bucket command:
 
        $ gsutil mb -p <project ID> gs://<bucketName>
+
+### Build the Jar File
+
+You can build the jar file for the MapReduce job using maven.
+
+    $ cd java/wordcount-mapreduce
+    $ mvn install
+
+After running Maven the jar file should be located in the `target` directory.
+
+We will upload it to our bucket so that we can use it later.
+
+    $ gsutil cp target/wordcount-mapreduce-0.1.2-SNAPSHOT.jar gs://<bucketName>/
+
+## Deploying
 
 ### Create Compute Engine VMs
 
@@ -80,7 +83,7 @@ You will need to create a `cluster_config.sh` file with the following variables:
 
 You can change the parameters to suit your needs. Then you can run the bdutil passing your environment, the Hadoop environment, and the Cloud Bigtable environment:
 
-    $ ./bdutil -e cluster_config.sh -e hadoop2_env.sh -e extensions/bigtable/bigtable_env.sh deploy
+    $ ~/bdutil/bdutil -e cluster_config.sh -e ~/bdutil/hadoop2_env.sh -e ~/bdutil/extensions/bigtable/bigtable_env.sh deploy
 
 This will start the VMs and install Hadoop and HBase in them.
 
@@ -173,7 +176,7 @@ Finish by exiting the shell.
 
 Fetch the jar file that we built for the MapReduce job.
 
-    $ gsutil cp gs://<bucketName>/cloud-bigtable-mapreduce-example-0.1.2-SNAPSHOT.jar /tmp/
+    $ gsutil cp gs://<bucketName>/wordcount-mapreduce-0.1.2-SNAPSHOT.jar /tmp/
 
 Make sure you are the hadoop user and run the following commands to create some sample input.
 
@@ -186,19 +189,21 @@ will segment the input file into words and count each unique word writing the
 output to `output-table`.
 
     $ HADOOP_CLASSPATH=$(hbase classpath) hadoop jar \
-        /tmp/cloud-bigtable-mapreduce-example-0.1.2-SNAPSHOT.jar \
+        /tmp/wordcount-mapreduce-0.1.2-SNAPSHOT.jar \
         wordcount-hbase \
-        -libjars hbase-install/lib/bigtable/bigtable-hbase-0.1.3.jar \
+        -libjars hbase-install/lib/bigtable/bigtable-hbase-0.1.4.jar \
         input output-table
 
 Verify the output using the HBase shell.
 
     $ hbase shell
-    hbase(main):001:0> list
-    TABLE 
-    some-table
+    hbase(main):001:0> list 'output-table'
+    output-table                                                                                        
+    1 row(s) in 1.7820 seconds
 
-    hbase(main):002:0> scan 'some-table'
+    => ["output-table"]
+
+    hbase(main):002:0> scan 'output-table'
     <Lots of output here!>
 
 ## Contributing changes
