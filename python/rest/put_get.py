@@ -33,6 +33,8 @@ import requests
 from collections import OrderedDict
 from string import ascii_uppercase, digits
 
+# Use localhost, change IP to external IP of REST server if running on remote
+# client. use gcloud compute firewall-rules to open firewall rules
 base_url = 'http://127.0.0.1:8080'
 table_name = 'some-table2'
 
