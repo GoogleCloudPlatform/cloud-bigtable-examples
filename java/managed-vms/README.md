@@ -1,7 +1,7 @@
-# Cloud Bigtable on Managed VM's (Counter & JSON REST)
+# Cloud Bigtable on Managed VM's (Hello World for Cloud Bigtable)
 
-A simple hello world app that takes your an opaque user ID and uses it as a key to count how often you've
-visited.  This app also provides a simple JSON REST client that enables the GET, POST, and DELETE Verbs.
+A simple Hello World app that takes your an opaque user ID and uses it as a key to count how often you've
+visited.  The app also provides a simple JSON REST client that enables the GET, POST, and DELETE Verbs.
 
 # IMPORTANT – TEMPORARY
 # Roll back to this version of the SDK
