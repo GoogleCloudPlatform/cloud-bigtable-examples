@@ -27,12 +27,17 @@
   Requesting bigtable.data scope is very important.
  -->
     <beta-settings>
-      <setting name="service_account_scopes" value="https://www.googleapis.com/auth/bigtable.data, https://www.googleapis.com/auth/cloud-platform, https://www.googleapis.com/auth/devstorage.full_control" />
+      <setting name="service_account_scopes" value="https://www.googleapis.com/auth/cloud-platform, https://www.googleapis.com/auth/devstorage.full_control" />
     </beta-settings>
   
-    <manual-scaling>
-      <instances>1</instances>
-    </manual-scaling>
+    <automatic-scaling>
+      <min-num-instances>1</min-num-instances>
+      <max-num-instances>20</max-num-instances>
+      <cool-down-period-sec>330</cool-down-period>
+      <cpu-utilization>
+        <target-utilization>0.8</target-utilization>
+      </cpu-utilization>
+    </automatic-scaling>
   
     <resources>
       <cpu>1</cpu>

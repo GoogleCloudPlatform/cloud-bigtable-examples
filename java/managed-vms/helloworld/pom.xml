@@ -24,15 +24,16 @@
   <version>1.0-SNAPSHOT</version>
 
   <groupId>com.example.bigtable</groupId>
-  <artifactId>hello</artifactId>
+  <artifactId>helloworld</artifactId>
 
   <properties>
     <projectid>PROJECT_ID_HERE</projectid>
     <appengine.target.version>1.9.19</appengine.target.version>
-    <gcloud.plugin.version>0.9.56.v20150418</gcloud.plugin.version>
+    <gcloud.plugin.version>0.9.57.v20150425</gcloud.plugin.version>
     <compileSource>1.7</compileSource>
 
-    <hbase.version>1.0.0</hbase.version>
+    <bigtable.version>0.1.5</bigtable.version>
+    <hbase.version>1.0.1</hbase.version>
     <hadoop.version>2.4.1</hadoop.version>
     <compat.module>hbase-hadoop2-compat</compat.module>
     <slf4j.version>1.7.12</slf4j.version>
@@ -69,13 +70,25 @@
     </repository>
   </repositories>
 
-<!-- mvn install:install-file -Dfile=bigtable-hbase-0.1.4.jar -DgroupId=bigtable-client -DartifactId=bigtable-client -Dversion=0.1.4 -Dpackaging=jar -DgeneratePom=true -->
+<!-- mvn install:install-file -Dfile=bigtable-hbase-0.1.5-SNAPSHOT.jar -DgroupId=com.google.cloud.bigtable -DartifactId=bigtable-hbase -Dversion=0.1.5 -Dpackaging=jar -DgeneratePom=true -->
 
   <dependencies>
     <dependency>
-      <groupId>bigtable-client</groupId>
-      <artifactId>bigtable-client</artifactId>
-      <version>0.1.4</version>
+      <groupId>com.google.cloud.bigtable</groupId>
+      <artifactId>bigtable-hbase</artifactId>
+      <version>${bigtable.version}</version>
+<!-- 
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.cloud.bigtable</groupId>
+          <artifactId>bigtable-grpc-interface</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.hbase</groupId>
+          <artifactId>hbase-server</artifactId>
+        </exclusion>
+      </exclusions>
+ -->
     </dependency>
     <!-- Compile/runtime dependencies -->
     <dependency>
@@ -456,6 +469,12 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-jdk14</artifactId>
       <version>${slf4j.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.json</groupId>
+	    <artifactId>json</artifactId>
+	    <version>20140107</version>
     </dependency>
 
     <!-- Test related dependencies -->
