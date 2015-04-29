@@ -27,7 +27,7 @@ from string import ascii_uppercase, digits
 import rest_client
 import sys
 
-base_url = 'http://130.211.170.242:8080'
+base_url = 'http://127.0.0.1:8080'
 table_name = 'new-table5001'
 
 client = rest_client.HbaseRestClient(base_url, table_name)

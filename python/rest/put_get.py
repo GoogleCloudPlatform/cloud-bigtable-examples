@@ -33,7 +33,7 @@ import requests
 from collections import OrderedDict
 from string import ascii_uppercase, digits
 
-base_url = 'http://130.211.170.242:8080'
+base_url = 'http://127.0.0.1:8080'
 table_name = 'some-table2'
 
 # Generate a random row_key to minimize chances of collision during testing
