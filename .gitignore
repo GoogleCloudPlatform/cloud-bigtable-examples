@@ -3,3 +3,6 @@
 *.o
 *.class
 *.pyc
+*.iml
+.idea
+.DS_Store
