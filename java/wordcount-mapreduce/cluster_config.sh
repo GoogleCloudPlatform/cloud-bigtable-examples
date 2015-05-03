@@ -1,6 +1,6 @@
-CONFIGBUCKET='rugged-memory-819-ian'
-PROJECT='rugged-memory-819'
-PREFIX='ian'
+CONFIGBUCKET='<bucket name>'
+PROJECT='<project ID>'
+PREFIX='wordcount-mapreduce'
 NUM_WORKERS=2
 GCE_IMAGE='debian-7-backports'
-GCE_ZONE='asia-east1-b'
+GCE_ZONE='<zone>'
