@@ -88,7 +88,7 @@ Following these steps should get you to the hbase shell in 5 minutes.
 
 ## Contributing changes
 
-* See [CONTRIBUTING.md](../CONTRIBUTING.md)
+* See [CONTRIBUTING.md](../../CONTRIBUTING.md)
 
 ## Licensing
 
