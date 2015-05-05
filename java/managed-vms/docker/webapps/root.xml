@@ -20,10 +20,4 @@
   <Set name="defaultsDescriptor">
     <SystemProperty name="jetty.home" default="."/>/etc/webdefault.xml
   </Set>
-    <!-- Allow directory symbolic links  -->
-  <!--Call name="addAliasCheck">
-    <Arg>
-      <New class="org.eclipse.jetty.server.handler.ContextHandler$ApprovePathPrefixAliases"/>
-    </Arg>
-  </Call-->
 </Configure>

@@ -9,6 +9,12 @@ visited.  The app also provides a simple JSON REST client that enables the GET, 
 
 `gcloud components update`
 
+### IMPORTANT - The java samples require that the hbase-bigtable jar be installed in your local maven repository manually:
+
+Download the [Jar](https://storage.googleapis.com/cloud-bigtable/jars/bigtable-hbase/bigtable-hbase-0.1.5.jar)
+
+```mvn install:install-file -Dfile=bigtable-hbase-0.1.5.jar -DgroupId=com.google.cloud.bigtable -DartifactId=bigtable-hbase -Dversion=0.1.5 -Dpackaging=jar -DgeneratePom=true```
+
 ## Project setup, installation, and configuration
 
 1. Get a copy of the [AppEngine Runtime for Managed VM's](https://github.com/GoogleCloudPlatform/appengine-java-vm-runtime/)
@@ -34,10 +40,6 @@ visited.  The app also provides a simple JSON REST client that enables the GET, 
 1. Set the environment variable `GOOGLE_APPLICATION_CREDENTIALS` to point to your json key
 
  `export GOOGLE_APPLICATION_CREDENTIALS=~/path_to_key.json`
-
-1. Install driver jar into your local repo **TO BE REMOVED**
-
- `mvn install:install-file -Dfile=bigtable-hbase-0.1.4.jar -DgroupId=bigtable-client -DartifactId=bigtable-client -Dversion=0.1.4 -Dpackaging=jar -DgeneratePom=true`
 
 1. Build the Docker Image for this project
 

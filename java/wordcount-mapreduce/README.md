@@ -32,13 +32,11 @@ In order to provision a Cloud Bigtable cluster you will first need to create a
 Google Cloud Platform project. You can create a project using the
 [Developer Console](https://cloud.google.com/console).
 
-After you have created a project you can create a new Cloud Bigtable cluster by
+After you have created a project you can create a new [Cloud Bigtable cluster](https://cloud.google.com/bigtable/docs/creating-cluster) by
 clicking on the "Storage" -> "Cloud Bigtable" menu item and clicking on the
 "New Cluster" button.  After that, enter the cluster name, ID, zone, and number
 of nodes. Once you have entered those values, click the "Create" button to
 provision the cluster.
-
-TODO: Add link to docs
 
 ### Make a GCS Bucket
 
@@ -58,7 +56,7 @@ files to the VMs.  There are two ways to make a GCS Bucket,
 You can build the jar file for the MapReduce job using maven.
 
     $ cd java/wordcount-mapreduce
-    $ mvn install
+    $ mvn package
 
 After running Maven the jar file should be located in the `target` directory.
 
@@ -191,7 +189,7 @@ output to `output-table`.
     $ HADOOP_CLASSPATH=$(hbase classpath) hadoop jar \
         /tmp/wordcount-mapreduce-0.1.2-SNAPSHOT.jar \
         wordcount-hbase \
-        -libjars hbase-install/lib/bigtable/bigtable-hbase-0.1.4.jar \
+        -libjars hbase-install/lib/bigtable/bigtable-hbase-0.1.5.jar \
         input output-table
 
 Verify the output using the HBase shell.

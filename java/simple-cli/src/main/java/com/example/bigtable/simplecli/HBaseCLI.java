@@ -1,4 +1,5 @@
 /**
+ * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -88,7 +89,7 @@ public class HBaseCLI {
             usage();
             System.exit(1);
         }
-        
+
         // Create a list of commands that are supported. Each
         // command defines a run method and some methods for
         // printing help.
@@ -126,11 +127,11 @@ public class HBaseCLI {
 
         try {
             Connection connection  = ConnectionFactory.createConnection();
-            
+
             try {
                 try {
                     // Run the command with the arguments after the command name.
-                    command.run(connection, argsList.subList(1, argsList.size())); 
+                    command.run(connection, argsList.subList(1, argsList.size()));
                 } catch (InvalidArgsException e) {
                     System.out.println("ERROR: Invalid arguments");
                     usage(command);
@@ -238,7 +239,7 @@ public class HBaseCLI {
     }
 
     /**
-     * This command creates a new Bigtable table. It uses the 
+     * This command creates a new Bigtable table. It uses the
      * HBase Admin class to create the table based on a
      * HTableDescriptior.
      */
@@ -428,7 +429,7 @@ public class HBaseCLI {
             // multiple column values can be added to the row at
             // once by calling this method multiple times.
             put.addColumn(Bytes.toBytes(columnFamily), Bytes.toBytes(column), Bytes.toBytes(value));
-            
+
             // Execute the put on the table.
             table.put(put);
         }

@@ -10,6 +10,7 @@
   <url>http://maven.apache.org</url>
 
   <properties>
+    <bigtable.version>0.1.5</bigtable.version>
     <hadoop.version>2.4.1</hadoop.version>
     <hbase.version>1.0.0</hbase.version>
     <alpn.version>7.0.0.v20140317</alpn.version>
@@ -65,12 +66,10 @@
       <version>${alpn.version}</version>
       <scope>runtime</scope>
     </dependency>
-    <!-- for now -->
-    <!-- mvn install:install-file -Dfile=bigtable-hbase-0.1.4.jar -DgroupId=bigtable-client -DartifactId=bigtable-hbase -Dversion=0.1.4 -Dpackaging=jar -DgeneratePom=true -->
     <dependency>
-      <groupId>bigtable-client</groupId>
+      <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase</artifactId>
-      <version>0.1.4</version>
+      <version>${bigtable.version}</version>
       <scope>runtime</scope>
     </dependency>
   </dependencies>
