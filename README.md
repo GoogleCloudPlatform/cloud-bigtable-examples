@@ -2,7 +2,7 @@
 
 There are many examples / sample / demo programs here, each with its own README.
 
-[Quickstart/HBase](quickstart/hbase) - Create a Bigtable Cluster and the hbase shell with in from your local machine.
+[Quickstart/HBase](quickstart) - Create a Bigtable Cluster and the hbase shell with in from your local machine.
 
 [Python/Thrift](python/thrift) - Setup Thrift server(s), then a Python App that will connect and do basic operations.
 
