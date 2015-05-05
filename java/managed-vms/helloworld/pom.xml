@@ -70,7 +70,7 @@
     </repository>
   </repositories>
 
-<!-- mvn install:install-file -Dfile=bigtable-hbase-0.1.5-SNAPSHOT.jar -DgroupId=com.google.cloud.bigtable -DartifactId=bigtable-hbase -Dversion=0.1.5 -Dpackaging=jar -DgeneratePom=true -->
+<!-- mvn install:install-file -Dfile=bigtable-hbase-0.1.5.jar -DgroupId=com.google.cloud.bigtable -DartifactId=bigtable-hbase -Dversion=0.1.5 -Dpackaging=jar -DgeneratePom=true -->
 
   <dependencies>
     <dependency>

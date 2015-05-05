@@ -9,13 +9,11 @@ In order to provision a Cloud Bigtable cluster you will first need to create a
 Google Cloud Platform project. You can create a project using the [Developer
 Console](https://cloud.google.com/console).
 
-After you have created a project you can create a new Cloud Bigtable cluster by
+After you have created a project you can create a new [Cloud Bigtable cluster](https://cloud.google.com/bigtable/docs/creating-cluster) by
 clicking on the "Storage" -> "Cloud Bigtable" menu item and clicking on the
 "New Cluster" button.  After that, enter the cluster name, ID, zone, and number
 of nodes. Once you have entered those values, click the "Create" button to
 provision the cluster.
-
-TODO: add a link to docs.
 
 ## Set up your hbase-site.xml configuration
 
@@ -33,6 +31,15 @@ enter the project id and info for the service account in the locations shown.
 
     <configuration>
       <property>
+        <name>google.bigtable.project.id</name><value><!-- PROJECT ID --></value>
+      </property>
+      <property>
+        <name>google.bigtable.cluster.name</name><value><!-- BIGTABLE CLUSTER ID --></value>
+      </property>
+      <property>
+        <name>google.bigtable.zone.name</name><value><!-- ZONE WHERE CLUSTER IS PROVISIONED --></value>
+      </property>
+      <property>
         <name>hbase.client.connection.impl</name>
         <value>org.apache.hadoop.hbase.client.BigtableConnection</value>
       </property>
@@ -44,37 +51,21 @@ enter the project id and info for the service account in the locations shown.
         <name>google.bigtable.admin.endpoint.host</name>
         <value>table-admin-bigtable.googleapis.com</value>
       </property>
-      <property>
-        <name>google.bigtable.project.id</name>
-        <value><!-- PROJECT ID --></value>
-      </property>
-      <property>
-        <name>google.bigtable.cluster.name</name>
-        <value><!-- BIGTABLE CLUSTER ID --></value>
-      </property>
-      <property>
-        <name>google.bigtable.zone.name</name>
-        <value><!-- ZONE WHERE CLUSTER IS PROVISIONED --></value>
-      </property>
     </configuration>
 
 ## Build
 
 You can install the dependencies and build the project using maven.
 
-First download the Cloud Bigtable client library and install it in your maven
-repository:
+### IMPORTANT - The java samples require that the hbase-bigtable jar be installed in your local maven repository manually:
 
-    $ gsutil -m cp -R gs://cloud-bigtable-eap .
-    $ cd cloud-bigtable-eap/jars/current/
-    $ mvn install:install-file -Dfile=bigtable-hbase-0.1.4.jar \
-        -DgroupId=bigtable-client \
-        -DartifactId=bigtable-hbase \
-        -Dversion=0.1.4 -Dpackaging=jar -DgeneratePom=true
+Download the [Jar](https://storage.googleapis.com/cloud-bigtable/jars/bigtable-hbase/bigtable-hbase-0.1.5.jar)
+
+```mvn install:install-file -Dfile=bigtable-hbase-0.1.5.jar -DgroupId=com.google.cloud.bigtable -DartifactId=bigtable-hbase -Dversion=0.1.5 -Dpackaging=jar -DgeneratePom=true```
 
 Then you can clone the repository and build the sample:
 
-    $ mvn install
+    $ mvn package
 
 ## Run the code
 
