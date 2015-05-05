@@ -1,0 +1,11 @@
+URL: https://github.com/eljefe6a/HBaseThrift/blob/master/Hbase.thrift
+
+Version: 3327d8a3f22185e241cb7e26a288cbf352e643a8
+License: Apache 2.0
+License File: LICENSE
+
+Description:
+Thrift Definition file for the HBase API
+
+Local Modifications;
+No modifications

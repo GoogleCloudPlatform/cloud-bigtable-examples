@@ -32,7 +32,7 @@ mkdir ~/thrift
 cp -r /tmp/thrift-0.9.2/lib/py/src/* thrift/
 
 # Generate our HBbase thrift bindings for Python
-thrift -gen py Hbase.thrift
+thrift -gen py third_party/Hbase.thrift
 
 # Now let's set up Flask
 # General best practice is to use virtualenv for isolated Python environments
