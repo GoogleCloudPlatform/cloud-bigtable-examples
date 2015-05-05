@@ -15,15 +15,16 @@ public class BigtableTopology {
         TopologyBuilder builder = new TopologyBuilder();
 
         builder.setSpout("word", new TestWordSpout(), 1);
-        builder.setBolt("bigtable", new BigtableBolt("WordCount2"), 1)
+        builder.setBolt("bigtable", new BigtableBolt(args[0]), 1)
                 .shuffleGrouping("word");
 
         Config conf = new Config();
         conf.setDebug(true);
 
-        if (args != null && args.length > 0) {
+        if (args != null && args.length > 1) {
             conf.setNumWorkers(3);
-            StormSubmitter.submitTopologyWithProgressBar(args[0], conf, builder.createTopology());
+            StormSubmitter.submitTopologyWithProgressBar(args[1], conf,
+                    builder.createTopology());
         }
         else {
             LocalCluster cluster = new LocalCluster();

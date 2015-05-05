@@ -46,6 +46,7 @@ public class BigtableBolt extends BaseRichBolt {
 
     @Override
     public void execute(Tuple tuple) {
+        LOG.info("Inside BigtableBolt execute");
         try {
             // Get the arguments passed by the user.
             String rowId = UUID.randomUUID().toString();
