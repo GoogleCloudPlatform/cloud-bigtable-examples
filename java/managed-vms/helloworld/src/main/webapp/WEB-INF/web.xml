@@ -35,8 +35,7 @@
 
   <servlet>
     <servlet-name>hello</servlet-name>
-    <servlet-class>com.example.bigtable.managedvms.HelloServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
+    <servlet-class>com.example.cloud.bigtable.helloworld.HelloServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>hello</servlet-name>
@@ -45,7 +44,7 @@
 
   <servlet>
     <servlet-name>json</servlet-name>
-    <servlet-class>com.example.bigtable.managedvms.JsonServlet</servlet-class>
+    <servlet-class>com.example.cloud.bigtable.helloworld.JsonServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>json</servlet-name>
@@ -53,7 +52,7 @@
   </servlet-mapping>
 
   <listener>
-    <listener-class>com.example.bigtable.managedvms.BigtableHelper</listener-class>
+    <listener-class>com.example.cloud.bigtable.helloworld.BigtableHelper</listener-class>
   </listener>
 
 <!-- 

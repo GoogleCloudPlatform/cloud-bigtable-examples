@@ -90,7 +90,9 @@ Download the [Jar](https://storage.googleapis.com/cloud-bigtable/jars/bigtable-h
 
 ### Deploying as a managed VM app
 
-1. Set the `project_ID` in `pom.xml`
+1. If you haven't already done so, set your project in the gcloud tool.
+
+  `gcloud config set project PROJECT_ID`
 
 1. Set `PROJECT_ID`, `CLUSTER_UNIQUE_ID`, and `Zone` (if necessary) in `src/main/java/com/example/bigtable/managedvms/BigtableHelper.java`
 
