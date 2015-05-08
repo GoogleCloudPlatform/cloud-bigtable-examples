@@ -33,7 +33,7 @@
     <automatic-scaling>
       <min-num-instances>1</min-num-instances>
       <max-num-instances>20</max-num-instances>
-      <cool-down-period-sec>330</cool-down-period>
+      <cool-down-period-sec>330</cool-down-period-sec>
       <cpu-utilization>
         <target-utilization>0.8</target-utilization>
       </cpu-utilization>

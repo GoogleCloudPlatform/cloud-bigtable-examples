@@ -3,10 +3,6 @@
 A simple Hello World app that takes your an opaque user ID and uses it as a key to count how often you've
 visited.  The app also provides a simple JSON REST client that enables the GET, POST, and DELETE Verbs.
 
-# IMPORTANT – TEMPORARY
-# Roll back to this version of the SDK
-`gcloud config set --scope=installation component_manager/fixed_sdk_version 0.9.55`
-
 `gcloud components update`
 
 ### IMPORTANT - The java samples require that the hbase-bigtable jar be installed in your local maven repository manually:
@@ -53,7 +49,7 @@ Download the [Jar](https://storage.googleapis.com/cloud-bigtable/jars/bigtable-h
 
  `gcloud auth login`
  
-1. Follow the instructions (?? WHERE ??) to enable `hbase shell`
+1. Follow the [instructions to enable `hbase shell`](https://cloud.google.com/bigtable/docs/hbase-shell-quickstart)
 
 1. Launch `hbase shell`
 

@@ -27,9 +27,9 @@
   <artifactId>helloworld</artifactId>
 
   <properties>
-    <projectid>PROJECT_ID_HERE</projectid>
+    <projectid>YOUR_PROJECT_ID_HERE</projectid>
     <appengine.target.version>1.9.19</appengine.target.version>
-    <gcloud.plugin.version>0.9.57.v20150425</gcloud.plugin.version>
+    <gcloud.plugin.version>0.9.58.v20150505</gcloud.plugin.version>
     <compileSource>1.7</compileSource>
 
     <bigtable.version>0.1.5</bigtable.version>
