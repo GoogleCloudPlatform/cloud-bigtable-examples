@@ -39,6 +39,7 @@ public class BigtableHelper implements ServletContextListener {
  **/
   private static final String PROJECT_ID = "PROJECT_ID_HERE";
   private static final String CLUSTER_ID = "CLUSTER_UNIQUE_ID";
+
   private static final String ZONE = "us-central1-b";
 
 // The initial connection to Cloud Bigtable is an expensive operation -- We cache this Connection
