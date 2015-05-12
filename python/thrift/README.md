@@ -9,11 +9,6 @@ GCE instance. Thrift supports many other languages besides Python, such as
 NodeJS, Ruby, and C#, and can be installed on many other platforms besides a 
 GCE Debian instance, but the installation instructions vary by platform.
 
-The Bigtable Thrift support currently depends on HBase patches that have not
-been fully merged into HBase releases. We are working to get those patches
-merged so that these examples work with official HBase releases. Until then
-you can either download our compiled binaries, or apply our patches yourself
-to an HBase source distribution.
 
 ## Installing an HBase Thrift Gateway
 
@@ -40,8 +35,9 @@ Instead of that release, you can download our forked binaries here:
 
 
 ****************************************************************************************************
-IMPORTANT -- This tgz is a SNAPSHOT of hbase-1.0.1 that allows users to use HBase with Bigtable on
-Google Cloud Platform.  These changes [1](https://issues.apache.org/jira/browse/HBASE-12993) 
+IMPORTANT -- The HBase temporary fork  is a SNAPSHOT of hbase-1.0.1 that allows users to use 
+HBase with Bigtable on Google Cloud Platform.  These changes [1]
+(https://issues.apache.org/jira/browse/HBASE-12993) 
 [2](https://issues.apache.org/jira/browse/HBASE-13664) have been submitted and accepted by the Apache
 HBase project and once they are released we will no longer offer this TEMPORARY fork of HBase.
 ****************************************************************************************************

@@ -6,12 +6,6 @@ and configuring an HBase client to serve as the REST gateway, and second
 installing and configuring a REST client. In this example we use a 
 Python REST client using the [requests](http://docs.python-requests.org/en/latest/) library.
 
-The Bigtable REST support currently depends on HBase patches that have not
-been fully merged into HBase releases. We are working to get those patches
-merged so that these examples work with official HBase releases. Until then
-you can either download our compiled binaries, or apply our patches yourself
-to an HBase source distribution.
-
 ## Cloud Bigtable Python REST Examples
 
 This project demonstrates how to use Python and the requests library to make
@@ -43,11 +37,12 @@ Instead of that release, you can download our forked binaries here:
 
 
 ****************************************************************************************************
-IMPORTANT -- This tgz is a SNAPSHOT of hbase-1.0.1 that allows users to use HBase with Bigtable on
-Google Cloud Platform.  These changes [1](https://issues.apache.org/jira/browse/HBASE-12993) 
+IMPORTANT -- The HBase temporary fork  is a SNAPSHOT of hbase-1.0.1 that allows users to use 
+HBase with Bigtable on Google Cloud Platform.  These changes [1]
+(https://issues.apache.org/jira/browse/HBASE-12993) 
 [2](https://issues.apache.org/jira/browse/HBASE-13664) have been submitted and accepted by the Apache
 HBase project and once they are released we will no longer offer this TEMPORARY fork of HBase.
-****************************************************************************************************
+*********************************
 
 If you prefer, you can download the HBase src releases, and apply our patches.
 
