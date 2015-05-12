@@ -4,7 +4,7 @@ This example demonstrates how to use the HBase client to serve as a
 REST Gateway to Cloud Bigtable. They involve two steps: first installing
 and configuring an HBase client to serve as the REST gateway, and second
 installing and configuring a REST client. In this example we use a 
-Python REST client using the *requests* library.
+Python REST client using the [requests](http://docs.python-requests.org/en/latest/) library.
 
 The Bigtable REST support currently depends on HBase patches that have not
 been fully merged into HBase releases. We are working to get those patches
