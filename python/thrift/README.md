@@ -1,7 +1,7 @@
 # Cloud Bigtable Python Thrift Examples
 
 This example demonstrates how to use the HBase client to serve as a 
-REST Gateway to Cloud Bigtable. They involve two steps: first installing
+Thrift Gateway to Cloud Bigtable. They involve two steps: first installing
 and configuring an HBase client to serve as the [Apache Thrift]
 (https://thrift.apache.org/) gateway, and second installing and configuring a 
 Thrift client. In this example, we use a Python Thrift client configured on a 
@@ -23,7 +23,7 @@ here:
 https://cloud-dot-devsite.googleplex.com/bigtable/docs/installing-hbase-client
 
 However, these instructions must be slightly modified in order for the 
-REST gateway to work.
+Thrift gateway to work.
 
 
 In the section "Downloading required files", we download an official HBase 
@@ -49,14 +49,14 @@ If you prefer, you can download the HBase src releases, and apply our patches.
 
 `patch -p1 < fix-bigtable-rest-thrift.patch`
  
-Then, to start the REST gateway, from the HBase release directory
+Then, to start the Thrift gateway, from the HBase release directory
 
 `./bin/hbase thrift start`
 
 If you would like to connect to your Thrift gateway using your external IP on a
  GCE instance, you will have to open up a firewall port.
 
-`gcloud compute firewall-rules create hbase-rest --allow=tcp:9090`
+`gcloud compute firewall-rules create <instance_name> --allow=tcp:9090`
 
 Note the security risk of an open firewall port, and also note that you can 
 connect to the HBase gateway from a different GCE instance without opening up

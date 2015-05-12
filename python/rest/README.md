@@ -60,10 +60,10 @@ Then, to start the REST gateway, from the HBase release directory
 If you would like to connect to your REST gateway using your external IP on a
  GCE instance, you will have to open up a firewall port.
 
-`gcloud compute firewall-rules create hbase-rest --allow=tcp:8080`
+`gcloud compute firewall-rules create <instance_name> --allow=tcp:8080`
 
 Note the security risk of an open firewall port, and also note that you can 
-conncect to the HBase gateway from a different GCE instance without opening up
+connect to the HBase gateway from a different GCE instance without opening up
  a firewall port using the private internal IP instead of the external IP.
  
 The internal IP can be found in the [Google Cloud Console](console.developer
