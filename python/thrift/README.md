@@ -80,7 +80,7 @@ on your instance.
 For this example, we will install Thrift on a separate machine from our
 gateway interface
 
-Then provision a new instance to serve as the client:
+First provision a new instance to serve as the client:
 
   `$ gcloud compute instances create thrift-client`
 
