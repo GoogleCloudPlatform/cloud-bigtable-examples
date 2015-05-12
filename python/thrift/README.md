@@ -38,6 +38,15 @@ Instead of that release, you can download our forked binaries here:
 
 [Google HBase Release](https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/releases/tag/v0.1.5)
 
+
+****************************************************************************************************
+IMPORTANT -- This tgz is a SNAPSHOT of hbase-1.0.1 that allows users to use HBase with Bigtable on
+Google Cloud Platform.  These changes [1](https://issues.apache.org/jira/browse/HBASE-12993) 
+[2](https://issues.apache.org/jira/browse/HBASE-13664) have been submitted and accepted by the Apache
+HBase project and once they are released we will no longer offer this TEMPORARY fork of HBase.
+****************************************************************************************************
+
+
 If you prefer, you can download the HBase src releases, and apply our patches.
 
 `curl -f -O http://mirror.reverse.net/pub/apache/hbase/hbase-1.0.1/hbase-1.0
