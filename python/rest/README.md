@@ -37,14 +37,19 @@ release:
 
 `$ tar xvf hbase-1.0.1-bin.tar.gz`
 
-Instead, you can download our forked binaries here:
+Instead of that release, you can download our forked binaries here:
 
-https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/releases/tag/v0.1.5
+[Google HBase Release](https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/releases/tag/v0.1.5)
 
 If you prefer, you can download the HBase src releases, and apply our patches.
 
+`curl -f -O http://mirror.reverse.net/pub/apache/hbase/hbase-1.0.1/hbase-1.0
+.1-src.tar.gz`
+
 `tar -xzf hbase-1.0.1-src.tar.gz`
+
 `cd hbase-1.0.1`
+
 `patch -p1 < fix-bigtable-rest-thrift.patch`
  
 
