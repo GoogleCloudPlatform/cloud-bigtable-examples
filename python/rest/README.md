@@ -27,7 +27,10 @@ HBase with Bigtable on Google Cloud Platform.  These changes [1]
 HBase project and once they are released we will no longer offer this TEMPORARY fork of HBase.
 ***************************************************************************************************
 
+
+************************************************************************************************
 If you prefer, you can download the HBase src releases, and apply our patches.
+
 
 `curl -f -O http://mirror.reverse.net/pub/apache/hbase/hbase-1.0.1/hbase-1.0.1-src.tar.gz`
 
@@ -37,15 +40,20 @@ If you prefer, you can download the HBase src releases, and apply our patches.
 
 `patch -p1 < fix-bigtable-rest-thrift.patch`
 
+`MAVEN_OPTS="-Xmx2g -XX:MaxPermSize=2g"  mvn install -DskipTests 
+assembly:single`
+
+The release is built in hbase-assembly/target/hbase-1.0.1-bin.tar.gz
+************************************************************************************************
+
 
 Once you have the HBase client, instructions for installing an HBase client for 
 Cloud Bigtable can be found here:
 
 https://cloud-dot-devsite.googleplex.com/bigtable/docs/installing-hbase-client
 
-These instructions must be slightly modified in order for the 
-REST gateway to work. Instead of the official HBase release in the section 
-"Downloading required files", you use the forked HBase binaries instead.
+Instead of the official HBase release in the section. "Downloading required 
+files", you use the forked HBase binaries instead.
 
 Then, to start the REST gateway, from the HBase release directory
 
