@@ -102,3 +102,12 @@ or
 `python put_get_with_client.py`
 
 should both print "Done!" if all the operations succeed.
+
+### Troubleshooting Notes
+
+### OS X
+If you run into a problem relating a java.net.UnknownHostException when 
+using localhost as the server on OS X, try explicitly setting an entry in the 
+the /etc/hosts file as described here:
+
+https://groups.google.com/forum/#!topic/h2-database/DuIlTLN5KOo
