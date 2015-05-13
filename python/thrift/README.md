@@ -95,7 +95,7 @@ Run the provisioning script to install Thrift and Flask
 
   `$ ./provision.sh`
 
-Edit HOST and PORT in client.py to point to the appropriate external IP for your Thrift server.
+Host and port can be changed by the parameters passed to the ThriftClient object.
 
 Activate the virtualenv:
 
