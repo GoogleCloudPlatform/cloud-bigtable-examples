@@ -12,16 +12,7 @@ GCE Debian instance, but the installation instructions vary by platform.
 
 ## Installing an HBase Thrift Gateway
 
-Instructions for installing an HBase client for Cloud Bigtable can be found
-here:
-
-https://cloud-dot-devsite.googleplex.com/bigtable/docs/installing-hbase-client
-
-However, these instructions must be slightly modified in order for the 
-Thrift gateway to work.
-
-Instead of the official HBase release in the section "Downloading required 
-files", you can download our forked binaries here:
+You can download our temporary HBase client fork here:
 
 [Google HBase Release](https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/releases/tag/v0.1.5)
 
@@ -32,8 +23,7 @@ HBase with Bigtable on Google Cloud Platform.  These changes [1]
 (https://issues.apache.org/jira/browse/HBASE-12993) 
 [2](https://issues.apache.org/jira/browse/HBASE-13664) have been submitted and accepted by the Apache
 HBase project and once they are released we will no longer offer this TEMPORARY fork of HBase.
-****************************************************************************************************
-
+***************************************************************************************************
 
 If you prefer, you can download the HBase src releases, and apply our patches.
 
@@ -44,6 +34,16 @@ If you prefer, you can download the HBase src releases, and apply our patches.
 `cd hbase-1.0.1`
 
 `patch -p1 < fix-bigtable-rest-thrift.patch`
+
+
+Once you have the HBase client, instructions for installing an HBase client for 
+Cloud Bigtable can be found here:
+
+https://cloud-dot-devsite.googleplex.com/bigtable/docs/installing-hbase-client
+
+These instructions must be slightly modified in order for the 
+REST gateway to work. Instead of the official HBase release in the section 
+"Downloading required files", you use the forked HBase binaries instead.
  
 Then, to start the Thrift gateway, from the HBase release directory
 

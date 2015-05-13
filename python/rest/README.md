@@ -15,19 +15,9 @@ operations.
 
 ## HBase REST Gateway setup and configuration
 
-Instructions for installing an HBase client for Cloud Bigtable can be found
-here:
-
-https://cloud-dot-devsite.googleplex.com/bigtable/docs/installing-hbase-client
-
-However, these instructions must be slightly modified in order for the 
-REST gateway to work.
-
-Instead of the official HBase release in the section "Downloading required 
-files", you can download our forked binaries here:
+You can download our temporary HBase client fork here:
 
 [Google HBase Release](https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/releases/tag/v0.1.5)
-
 
 ****************************************************************************************************
 IMPORTANT -- The HBase temporary fork  is a SNAPSHOT of hbase-1.0.1 that allows users to use 
@@ -46,7 +36,16 @@ If you prefer, you can download the HBase src releases, and apply our patches.
 `cd hbase-1.0.1`
 
 `patch -p1 < fix-bigtable-rest-thrift.patch`
- 
+
+
+Once you have the HBase client, instructions for installing an HBase client for 
+Cloud Bigtable can be found here:
+
+https://cloud-dot-devsite.googleplex.com/bigtable/docs/installing-hbase-client
+
+These instructions must be slightly modified in order for the 
+REST gateway to work. Instead of the official HBase release in the section 
+"Downloading required files", you use the forked HBase binaries instead.
 
 Then, to start the REST gateway, from the HBase release directory
 
