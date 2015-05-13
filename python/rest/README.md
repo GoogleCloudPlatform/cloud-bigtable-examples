@@ -35,7 +35,7 @@ HBase with Bigtable on Google Cloud Platform.  These changes [1]
 (https://issues.apache.org/jira/browse/HBASE-12993) 
 [2](https://issues.apache.org/jira/browse/HBASE-13664) have been submitted and accepted by the Apache
 HBase project and once they are released we will no longer offer this TEMPORARY fork of HBase.
-*********************************
+***************************************************************************************************
 
 If you prefer, you can download the HBase src releases, and apply our patches.
 
