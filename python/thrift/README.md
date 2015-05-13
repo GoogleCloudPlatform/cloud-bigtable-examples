@@ -121,3 +121,13 @@ pick "int" it will convert the passed integer string to an integer, serialize
 retrieve it. What this means is that storing an integer as an int or a string 
 looks very similar from an interface perspective, with the difference being 
 how it's internally stored.
+
+
+### Troubleshooting Notes
+
+### OS X
+If you run into a problem relating a java.net.UnknownHostException when 
+using localhost as the server on OS X, try explicitly setting an entry in the 
+the /etc/hosts file as described here:
+
+https://groups.google.com/forum/#!topic/h2-database/DuIlTLN5KOo
