@@ -23,15 +23,8 @@ https://cloud-dot-devsite.googleplex.com/bigtable/docs/installing-hbase-client
 However, these instructions must be slightly modified in order for the 
 REST gateway to work.
 
-In the section "Downloading required files", we download an official HBase 
-release:
-
-`$ curl -f -O http://storage.googleapis.com/cloud-bigtable/hbase-dist/hbase-1
-.0.1/hbase-1.0.1-bin.tar.gz`
-
-`$ tar xvf hbase-1.0.1-bin.tar.gz`
-
-Instead of that release, you can download our forked binaries here:
+Instead of the official HBase release in the section "Downloading required 
+files", you can download our forked binaries here:
 
 [Google HBase Release](https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/releases/tag/v0.1.5)
 
@@ -46,8 +39,7 @@ HBase project and once they are released we will no longer offer this TEMPORARY 
 
 If you prefer, you can download the HBase src releases, and apply our patches.
 
-`curl -f -O http://mirror.reverse.net/pub/apache/hbase/hbase-1.0.1/hbase-1.0
-.1-src.tar.gz`
+`curl -f -O http://mirror.reverse.net/pub/apache/hbase/hbase-1.0.1/hbase-1.0.1-src.tar.gz`
 
 `tar -xzf hbase-1.0.1-src.tar.gz`
 
