@@ -47,7 +47,7 @@ The release is built in hbase-assembly/target/hbase-1.0.1-bin.tar.gz
 Once you have the HBase client, instructions for installing an HBase client for 
 Cloud Bigtable can be found here:
 
-https://cloud-dot-devsite.googleplex.com/bigtable/docs/installing-hbase-client
+https://cloud.google.com/bigtable/docs/installing-hbase-client
 
 Instead of the official HBase release in the section "Downloading required 
 files", you use the forked HBase binaries instead.
