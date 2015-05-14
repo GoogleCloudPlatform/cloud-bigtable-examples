@@ -14,7 +14,7 @@ GCE Debian instance, but the installation instructions vary by platform.
 
 You can download our temporary HBase client fork here:
 
-[Google HBase Release](https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/releases/tag/v0.1.5)
+[Google TEMPORARY HBase Release](https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/releases/tag/v0.1.5)
 
 
 ****************************************************************************************************
