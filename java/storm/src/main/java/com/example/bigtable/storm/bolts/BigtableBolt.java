@@ -5,20 +5,24 @@ import backtype.storm.task.OutputCollector;
 import backtype.storm.task.TopologyContext;
 import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.topology.base.BaseRichBolt;
-import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
+import com.example.bigtable.storm.data.CoinbaseData;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
-import java.util.UUID;
 
 public class BigtableBolt extends BaseRichBolt {
 
@@ -30,8 +34,26 @@ public class BigtableBolt extends BaseRichBolt {
 
     private String tableName;
 
+    private static ObjectMapper objectMapper = new ObjectMapper();
+
     public BigtableBolt(String tableName) {
         this.tableName = tableName;
+    }
+
+    private long convertDateToTime(String date) {
+        // chop off Z at end
+        date = date.substring(0, date.length()-1);
+
+        DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
+        Date result = null;
+        try {
+            result = df1.parse(date);
+        } catch (ParseException e) {
+            LOG.error("erorr trying to parse date: " + date);
+            LOG.error(e.getMessage());
+            return -1;
+        }
+        return result.getTime();
     }
 
     @Override
@@ -48,12 +70,22 @@ public class BigtableBolt extends BaseRichBolt {
     public void execute(Tuple tuple) {
         LOG.info("Inside BigtableBolt execute");
         try {
-            // Get the arguments passed by the user.
-            String rowId = UUID.randomUUID().toString();
-            String columnFamily = "cf";
+            CoinbaseData data = (CoinbaseData)tuple.getValue(0);
 
-            String column = "any";
-            String value = "maybe this time?";
+            if (data == null) {
+                return;
+            }
+
+            String timeStr = data.getTime();
+            LOG.info("parsing timeStr" + timeStr);
+            long ts_long = convertDateToTime(timeStr);
+            LOG.info("got ts_long " + ts_long);
+            String ts = Long.toString(ts_long);
+
+            String rowKey = data.getType() + "_" + ts;
+            String columnFamily = "bc";
+
+            String column = "value";
 
             Table table = null;
             synchronized (connection) {
@@ -67,12 +99,13 @@ public class BigtableBolt extends BaseRichBolt {
             }
 
             // Create a new Put request.
-            Put put = new Put(Bytes.toBytes(rowId));
+            Put put = new Put(Bytes.toBytes(rowKey));
 
             // Here we add only one column value to the row but
             // multiple column values can be added to the row at
             // once by calling this method multiple times.
-            put.addColumn(Bytes.toBytes(columnFamily), Bytes.toBytes(column), Bytes.toBytes(value));
+            put.addColumn(Bytes.toBytes(columnFamily), Bytes.toBytes(column),
+                    Bytes.toBytes(objectMapper.writeValueAsString(data)));
 
             LOG.info("Executing table put");
             // Execute the put on the table.
@@ -85,6 +118,6 @@ public class BigtableBolt extends BaseRichBolt {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declare(new Fields("word"));
+
     }
 }

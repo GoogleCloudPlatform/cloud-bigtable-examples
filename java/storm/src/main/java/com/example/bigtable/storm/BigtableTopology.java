@@ -8,15 +8,16 @@ import backtype.storm.testing.TestWordSpout;
 import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.utils.Utils;
 import com.example.bigtable.storm.bolts.BigtableBolt;
+import com.example.bigtable.storm.spout.CoinbaseSpout;
 
 public class BigtableTopology {
 
     public static void main(String[] args) throws Exception {
         TopologyBuilder builder = new TopologyBuilder();
 
-        builder.setSpout("word", new TestWordSpout(), 1);
+        builder.setSpout("coinbase", new CoinbaseSpout(), 1);
         builder.setBolt("bigtable", new BigtableBolt(args[0]), 1)
-                .shuffleGrouping("word");
+                .shuffleGrouping("coinbase");
 
         Config conf = new Config();
         conf.setDebug(true);
