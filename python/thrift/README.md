@@ -1,20 +1,80 @@
-## Cloud Bigtable Python Thrift Examples
+# Cloud Bigtable Python Thrift Examples
 
-This project demonstrates how to start with a fresh GCE instance, and install
-the correct system libraries to build a Thrift client for the Google Cloud 
-Bigtable HBase Thrift Gateway. These assume you already have the Thrift 
-Gateway setup and running, following the linked instructions.
+This example demonstrates how to use the HBase client to serve as a 
+Thrift Gateway to Cloud Bigtable. They involve two steps: first installing
+and configuring an HBase client to serve as the [Apache Thrift]
+(https://thrift.apache.org/) gateway, and second installing and configuring a 
+Thrift client. In this example, we use a Python Thrift client configured on a 
+GCE instance. Thrift supports many other languages besides Python, such as 
+NodeJS, Ruby, and C#, and can be installed on many other platforms besides a 
+GCE Debian instance, but the installation instructions vary by platform.
 
-While the examples here use Thrift to generate Python, Thrift can generate 
-code for many languages such as NodeJS, Ruby, and C#.
 
-## Instructions
+## Installing an HBase Thrift Gateway
 
-First, follow the instructions to get a Thrift HBase server setup using bdutil.
+You can download our temporary HBase client fork here:
 
-https://docs.google.com/document/d/1NqjtdLiY5T2bZADanbWktUQ1-qP2bDgFnOf_3lX_PbA/edit
+[Google TEMPORARY HBase Release](https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/releases/tag/v0.1.5)
 
-Then provision a new instance to serve as the client:
+
+****************************************************************************************************
+IMPORTANT -- The HBase temporary fork  is a SNAPSHOT of hbase-1.0.1 that allows users to use 
+HBase with Bigtable on Google Cloud Platform.  These changes [1]
+(https://issues.apache.org/jira/browse/HBASE-12993) 
+[2](https://issues.apache.org/jira/browse/HBASE-13664) have been submitted and accepted by the Apache
+HBase project and once they are released we will no longer offer this TEMPORARY fork of HBase.
+***************************************************************************************************
+
+************************************************************************************************
+If you prefer, you can download the HBase src releases, and apply our patches.
+
+
+`curl -f -O http://mirror.reverse.net/pub/apache/hbase/hbase-1.0.1/hbase-1.0.1-src.tar.gz`
+
+`tar -xzf hbase-1.0.1-src.tar.gz`
+
+`cd hbase-1.0.1`
+
+`patch -p1 < fix-bigtable-rest-thrift.patch`
+
+`MAVEN_OPTS="-Xmx2g -XX:MaxPermSize=2g"  mvn install -DskipTests 
+assembly:single`
+
+The release is built in hbase-assembly/target/hbase-1.0.1-bin.tar.gz
+************************************************************************************************
+
+
+Once you have the HBase client, instructions for installing an HBase client for 
+Cloud Bigtable can be found here:
+
+https://cloud.google.com/bigtable/docs/installing-hbase-client
+
+Instead of the official HBase release in the section "Downloading required 
+files", you use the forked HBase binaries instead.
+ 
+Then, to start the Thrift gateway, from the HBase release directory
+
+`./bin/hbase thrift start`
+
+If you would like to connect to your Thrift gateway using your external IP on a
+ GCE instance, you will have to open up a firewall port.
+
+`gcloud compute firewall-rules create <instance_name> --allow=tcp:9090`
+
+Note the security risk of an open firewall port, and also note that you can 
+connect to the HBase gateway from a different GCE instance without opening up
+ a firewall port using the private internal IP instead of the external IP.
+ 
+The internal IP can be found in the [Google Cloud Console](console.developer
+.google.com) by going to Compute Engine > VM Instances and then clicking
+on your instance.
+
+## Installing an HBase Thrift Client
+
+For this example, we will install Thrift on a separate machine from our
+gateway interface
+
+First provision a new instance to serve as the client:
 
   `$ gcloud compute instances create thrift-client`
 
@@ -35,14 +95,15 @@ Run the provisioning script to install Thrift and Flask
 
   `$ ./provision.sh`
 
+Host and port can be changed by the parameters passed to the ThriftClient object.
+
 Activate the virtualenv:
 
   `$ source flaskthrift/bin/activate`
 
-Start the Flask server in the background with the appropriate host and port to point to your Thrift server.
+Start the Flask server in the background
 
-
-  `$ python flask_thrift.py --host 123.123.123.123 --port 9090 &`
+  `$ python flask_thrift.py &`
 
 You can test the server works by making sure there are no errors from the requests tests.
 
@@ -61,3 +122,13 @@ pick "int" it will convert the passed integer string to an integer, serialize
 retrieve it. What this means is that storing an integer as an int or a string 
 looks very similar from an interface perspective, with the difference being 
 how it's internally stored.
+
+
+### Troubleshooting Notes
+
+### OS X
+If you run into a problem relating a java.net.UnknownHostException when 
+using localhost as the server on OS X, try explicitly setting an entry in the 
+the /etc/hosts file as described here:
+
+https://groups.google.com/forum/#!topic/h2-database/DuIlTLN5KOo

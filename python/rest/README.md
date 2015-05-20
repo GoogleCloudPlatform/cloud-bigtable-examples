@@ -1,3 +1,11 @@
+# Python REST Examples
+
+This example demonstrates how to use the HBase client to serve as a 
+REST Gateway to Cloud Bigtable. They involve two steps: first installing
+and configuring an HBase client to serve as the REST gateway, and second
+installing and configuring a REST client. In this example we use a 
+Python REST client using the [requests](http://docs.python-requests.org/en/latest/) library.
+
 ## Cloud Bigtable Python REST Examples
 
 This project demonstrates how to use Python and the requests library to make
@@ -5,21 +13,67 @@ calls to interact with an HBase REST gateway to Google Cloud Bigtable. It is
 not an extensive library, but rather a simple demonstration of some common
 operations. 
 
-## Project setup, installation, deployment, and configuration
+## HBase REST Gateway setup and configuration
 
-First follow the instructions to create a Google Cloud project, enable Cloud
-Bigtable, and then the instructions on using bdutil to setup an HBase gateway.
+You can download our temporary HBase client fork here:
 
-https://docs.google.com/document/d/1k_NwGTYvInFZ_a0AVQ2LXBsdGV53bbqf_uD6586uoTc/edit
+[Google TEMPORARY HBase Release](https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/releases/tag/v0.1.5)
 
-Start the REST server in the background
+****************************************************************************************************
+IMPORTANT -- The HBase temporary fork  is a SNAPSHOT of hbase-1.0.1 that allows users to use 
+HBase with Bigtable on Google Cloud Platform.  These changes [1]
+(https://issues.apache.org/jira/browse/HBASE-12993) 
+[2](https://issues.apache.org/jira/browse/HBASE-13664) have been submitted and accepted by the Apache
+HBase project and once they are released we will no longer offer this TEMPORARY fork of HBase.
+***************************************************************************************************
 
-`hbase rest start`
 
-Unless you run these scripts on the HBase instance itself, you will have to
-open up the appropriate port:
+************************************************************************************************
+If you prefer, you can download the HBase src releases, and apply our patches.
 
-`gcloud compute firewall-rules create hbase-rest --allow=tcp:8080`
+
+`curl -f -O http://mirror.reverse.net/pub/apache/hbase/hbase-1.0.1/hbase-1.0.1-src.tar.gz`
+
+`tar -xzf hbase-1.0.1-src.tar.gz`
+
+`cd hbase-1.0.1`
+
+`patch -p1 < fix-bigtable-rest-thrift.patch`
+
+`MAVEN_OPTS="-Xmx2g -XX:MaxPermSize=2g"  mvn install -DskipTests 
+assembly:single`
+
+The release is built in hbase-assembly/target/hbase-1.0.1-bin.tar.gz
+************************************************************************************************
+
+
+Once you have the HBase client, instructions for installing an HBase client for 
+Cloud Bigtable can be found here:
+
+https://cloud.google.com/bigtable/docs/installing-hbase-client
+
+Instead of the official HBase release in the section. "Downloading required 
+files", you use the forked HBase binaries instead.
+
+Then, to start the REST gateway, from the HBase release directory
+
+`./bin/hbase rest start`
+
+If you would like to connect to your REST gateway using your external IP on a
+ GCE instance, you will have to open up a firewall port.
+
+`gcloud compute firewall-rules create <instance_name> --allow=tcp:8080`
+
+Note the security risk of an open firewall port, and also note that you can 
+connect to the HBase gateway from a different GCE instance without opening up
+ a firewall port using the private internal IP instead of the external IP.
+ 
+The internal IP can be found in the [Google Cloud Console](console.developer
+.google.com) by going to Compute Engine > VM Instances and then clicking
+on your instance.
+
+
+## REST client setup and configuration
 
 On a client machine of your choice, change `baseurl` to match the external IP of
 the rest server.
@@ -48,3 +102,12 @@ or
 `python put_get_with_client.py`
 
 should both print "Done!" if all the operations succeed.
+
+### Troubleshooting Notes
+
+### OS X
+If you run into a problem relating a java.net.UnknownHostException when 
+using localhost as the server on OS X, try explicitly setting an entry in the 
+the /etc/hosts file as described here:
+
+https://groups.google.com/forum/#!topic/h2-database/DuIlTLN5KOo
