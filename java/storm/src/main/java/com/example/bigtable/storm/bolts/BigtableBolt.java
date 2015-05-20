@@ -24,6 +24,18 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
+/**
+ * This is an example of a Storm Bolt that receives a Coinbase market feed
+ * object as a tuple input and insert its into Google Cloud Bigtable.
+ *
+ * Currently, it uses the order type followed by the timestamp. Timestamps
+ * are a natural key to use for time-series data, but since they arrive
+ * sequentially there is no ability to shard the computation, so it's better
+ * to prefix the timestamp by some other fields in the row key. You can
+ * read more about key design here:
+ *
+ * https://cloud.google.com/bigtable/docs/schema-design
+ */
 public class BigtableBolt extends BaseRichBolt {
 
     private static final Logger LOG = LoggerFactory.getLogger(BigtableBolt

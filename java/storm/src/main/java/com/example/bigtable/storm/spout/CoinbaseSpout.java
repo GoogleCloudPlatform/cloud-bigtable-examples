@@ -17,6 +17,10 @@ import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * This is a spout that reads from the Coinbase websocket feed, and emits
+ * it as a Storm spout.
+ */
 public class CoinbaseSpout extends BaseRichSpout {
 
     SpoutOutputCollector _collector;

@@ -3,6 +3,11 @@ package com.example.bigtable.storm.data;
 
 import java.io.Serializable;
 
+/**
+ * This is a POJO object that represents the JSON objects we get from the
+ * Coinbase WebSocket streaming API. We use Jackson to deserialize the JSON
+ * strings into this object.
+ */
 public class CoinbaseData implements Serializable {
 
     public String getType() {
