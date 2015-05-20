@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.example.bigtable.simplecli</groupId>
-  <artifactId>cloud-bigtable-simple-cli</artifactId>
+  <groupId>com.example.bigtable.coinstorm</groupId>
+  <artifactId>cloud-bigtable-coinstorm</artifactId>
 
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
-  <name>cloud-bigtable-simple-cli</name>
+  <version>1.0.0</version>
+  <name>cloud-bigtable-coinstorm</name>
   <url>http://maven.apache.org</url>
 
   <properties>
@@ -109,16 +109,13 @@
       <artifactId>jackson-core</artifactId>
       <version>2.5.3</version>
     </dependency>
-
-
-
   </dependencies>
 
   <build>
     <resources>
       <resource>
         <directory>src/main/resources</directory>
-        <filtering>true</filtering> 
+        <filtering>true</filtering>
       </resource>
     </resources>
     <plugins>
@@ -174,7 +171,7 @@
           <includeProjectDependencies>true</includeProjectDependencies>
           <includePluginDependencies>false</includePluginDependencies>
           <classpathScope>runtime</classpathScope>
-          <mainClass>com.example.bigtable.simplecli.BigtableTopology</mainClass>
+          <mainClass>com.example.bigtable.storm.CoinStormTopology</mainClass>
         </configuration>
       </plugin>
     </plugins>

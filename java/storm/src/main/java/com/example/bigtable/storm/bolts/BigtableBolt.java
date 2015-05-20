@@ -1,3 +1,23 @@
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ * <p/>
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.bigtable.storm.bolts;
 
 
@@ -41,9 +61,18 @@ public class BigtableBolt extends BaseRichBolt {
     private static final Logger LOG = LoggerFactory.getLogger(BigtableBolt
             .class);
 
+    // Standard Storm Output collector
     private OutputCollector _collector;
+
+    /**
+     * This is the connection to Cloud Bigtable.
+     */
     private Connection connection;
 
+    /**
+     * This is our Google Cloud Bigtable table name, which must be specified
+     * in the constructor.
+     */
     private String tableName;
 
     private static ObjectMapper objectMapper = new ObjectMapper();
@@ -52,12 +81,17 @@ public class BigtableBolt extends BaseRichBolt {
         this.tableName = tableName;
     }
 
+    /**
+     * Helper function that converts Coinbase timestamps to milliseconds
+     * since epoch.
+     * @return
+     */
     private long convertDateToTime(String date) {
         // chop off Z at end
-        date = date.substring(0, date.length()-1);
+        date = date.substring(0, date.length() - 1);
 
         DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
-        Date result = null;
+        Date result;
         try {
             result = df1.parse(date);
         } catch (ParseException e) {
@@ -68,66 +102,70 @@ public class BigtableBolt extends BaseRichBolt {
         return result.getTime();
     }
 
+    /**
+     * Sets up our connection to Google Cloud Bigtable.
+     */
     @Override
     public void prepare(Map conf, TopologyContext context, OutputCollector collector) {
         _collector = collector;
         try {
             this.connection = ConnectionFactory.createConnection();
-        } catch (IOException e){
+        } catch (IOException e) {
             LOG.error("Error creating Bigtable exception: ", e);
         }
     }
 
+    /**
+     * In this method we take a Coinbase data object from our tuple and
+     * insert a row into Bigtable. We construct a row key based on the type
+     * of the Coinbase data (such as open, or matched), preceded by an
+     * underscore and then a timestamp.
+     *
+     * See here for more info about the Coinbase market feed:
+     * https://docs.exchange.coinbase.com/#websocket-feed
+     * @param tuple
+     */
     @Override
     public void execute(Tuple tuple) {
-        LOG.info("Inside BigtableBolt execute");
+        LOG.debug("Inside BigtableBolt execute");
         try {
-            CoinbaseData data = (CoinbaseData)tuple.getValue(0);
+            CoinbaseData data = (CoinbaseData) tuple.getValue(0);
 
             if (data == null) {
                 return;
             }
 
-            String timeStr = data.getTime();
-            LOG.info("parsing timeStr" + timeStr);
-            long ts_long = convertDateToTime(timeStr);
-            LOG.info("got ts_long " + ts_long);
-            String ts = Long.toString(ts_long);
+            String ts = Long.toString(convertDateToTime(data.getTime()));
 
             String rowKey = data.getType() + "_" + ts;
             String columnFamily = "bc";
 
-            String column = "value";
+            String column = "data";
 
-            Table table = null;
+            Table table;
             synchronized (connection) {
                 try {
                     table = connection.getTable(TableName.valueOf
                             (this.tableName));
                 } catch (IOException e) {
-                    LOG.error("Caught error getting Bigtable Table: " , e);
+                    LOG.error("Caught error getting Bigtable Table: ", e);
                     return;
                 }
             }
 
-            // Create a new Put request.
             Put put = new Put(Bytes.toBytes(rowKey));
-
-            // Here we add only one column value to the row but
-            // multiple column values can be added to the row at
-            // once by calling this method multiple times.
             put.addColumn(Bytes.toBytes(columnFamily), Bytes.toBytes(column),
                     Bytes.toBytes(objectMapper.writeValueAsString(data)));
-
-            LOG.info("Executing table put");
-            // Execute the put on the table.
             table.put(put);
+            _collector.ack(tuple);
         } catch (IOException e) {
             LOG.error("Got exception executing Bigtable PUT ", e.getMessage());
         }
-        _collector.ack(tuple);
     }
 
+    /**
+     * This bolt only inserts into Cloud Bigtable, it doesn't emit any streams.
+     */
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
 
