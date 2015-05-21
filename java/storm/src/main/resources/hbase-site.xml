@@ -35,7 +35,7 @@
   </property>
   <property>
     <name>google.bigtable.project.id</name>
-    <value>rugged-memory-819</value>
+    <value><!-- PROJECT ID --></value>
   </property>
   <property>
     <name>google.bigtable.zone.name</name>
@@ -43,6 +43,6 @@
   </property>
   <property>
     <name>google.bigtable.cluster.name</name>
-    <value>cluster</value>
+    <value><!-- CLUSTER NAME --></value>
   </property>
 </configuration>

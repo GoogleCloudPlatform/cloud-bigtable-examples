@@ -23,10 +23,10 @@
 -->
 <configuration>
   <property>
-    <name>google.bigtable.project.id</name><value>rugged-memory-819</value>
+    <name>google.bigtable.project.id</name><value><!-- PROJECT ID --></value>
   </property>
   <property>
-    <name>google.bigtable.cluster.name</name><value>cluster</value>
+    <name>google.bigtable.cluster.name</name><value><!-- CLUSTER NAME --></value>
   </property>
   <property>
     <name>google.bigtable.zone.name</name><value>us-central1-b</value>
