@@ -26,6 +26,7 @@ import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.topology.base.BaseRichSpout;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
+import backtype.storm.utils.Time;
 import com.example.bigtable.storm.data.CoinbaseData;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
@@ -34,6 +35,7 @@ import org.eclipse.jetty.websocket.client.WebSocketClient;
 import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,6 +101,14 @@ public class CoinbaseSpout extends BaseRichSpout {
     @Override
     public void nextTuple() {
         CoinbaseData data = queue.poll();
-        _collector.emit(new Values(data));
+        if (data == null) {
+            try {
+                Time.sleep(50);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            _collector.emit(new Values(data));
+        }
     }
 }

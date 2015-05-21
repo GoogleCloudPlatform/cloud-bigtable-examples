@@ -46,6 +46,16 @@ public class CoinbaseData implements Serializable {
     private String size;
     private String client_oid;
     private String trade_id;
+    private String maker_order_id;
+    private String taken_order_id;
+
+    public String getTaken_order_id() {
+        return taken_order_id;
+    }
+
+    public void setTaken_order_id(String taken_order_id) {
+        this.taken_order_id = taken_order_id;
+    }
 
     public String getType() {
         return type;
@@ -141,5 +151,13 @@ public class CoinbaseData implements Serializable {
 
     public void setTrade_id(String trade_id) {
         this.trade_id = trade_id;
+    }
+
+    public String getMaker_order_id() {
+        return maker_order_id;
+    }
+
+    public void setMaker_order_id(String maker_order_id) {
+        this.maker_order_id = maker_order_id;
     }
 }

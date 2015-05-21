@@ -127,14 +127,11 @@ public class BigtableBolt extends BaseRichBolt {
      */
     @Override
     public void execute(Tuple tuple) {
-        LOG.debug("Inside BigtableBolt execute");
         try {
             CoinbaseData data = (CoinbaseData) tuple.getValue(0);
-
             if (data == null) {
                 return;
             }
-
             String ts = Long.toString(convertDateToTime(data.getTime()));
 
             String rowKey = data.getType() + "_" + ts;

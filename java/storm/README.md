@@ -2,7 +2,7 @@
 
 This is a sample app that creates a simple [Apache Storm](https://storm.apache.org/) 
 topology with a Spout that reads from the [Coinbase Exchange API WebSocket feed](https://docs.exchange.coinbase.com/#websocket-feed) 
-feed and inserts the data into [Google Cloud Bigtable](cloud.google.com/bigtable).
+feed and inserts the data into [Google Cloud Bigtable](https://cloud.google.com/bigtable).
 
 
 
@@ -17,28 +17,17 @@ clicking on the "Storage" -> "Cloud Bigtable" menu item and clicking on the
 "New Cluster" button.  After that, enter the cluster name, ID, zone, and number
 of nodes. Once you have entered those values, click the "Create" button to
 provision the cluster.
-
-
-## Download Storm
-
-If you would like to test your topologies locally, download sotrm. 
-
-    wget http://www.apache.org/dyn/closer.cgi/storm/apache-storm-0.9.4/apache-storm-0.9.4.tar.gz
-    tar -xzf apache-storm-0.9.4.tar.gz
-    export PATH=$PATH:$(pwd)/apache-storm-0.9.4/bin
-    
-Note that if you prefer, you can skip testing locally and develop straight in
- a cluster.
     
 # Create a Bigtable Table
 
 This examples writes to a table in Bigtable specified on the command line,
- but assuming it has the column family bc. See the HBase shell examples to see
- how to create a table with the column family name. The rest of this README
- assumes you have created a table called Coinbase with a column family "bc". 
- In the HBase shell, you would do the following:
+ but the specified table must have the column family \`bc\`. See the [HBase shell examples](https://cloud.google.com/bigtable/docs/hbase-shell-quickstart) 
+ to see how to create a table with the column family name.  In the HBase shell, you would do the following:
  
     create 'Coinbase' , { NAME => 'bc' }
+    
+The rest of this README assumes you have created a table called Coinbase with a 
+column family "bc".    
 
 ## Set up your hbase-site.xml configuration
 
@@ -97,7 +86,7 @@ repository:
 
 Then you can clone the repository and build the sample:
 
-    $ mvn install
+    $ mvn clean package
 
 ## Run the code
 
@@ -107,16 +96,15 @@ key file to the `GOOGLE_APPLICATION_CREDENTIALS` environment variable.
     $ export GOOGLE_APPLICATION_CREDENTIALS=/path/to/json-key-file.json
     
 Next, the Storm process will need to have the ALPN jar correctly set in it's 
-bootclass path. You can use _JAVA_OPTIONS to globally add it to all java
-calls. This will look something like this, depending on your ALPN version
-and Maven local repository location:
+bootclass path. Read more about picking the correct ALPN jar and installing 
+it into your local maven repo [here](https://cloud.google.com/bigtable/docs/installing-hbase-client#alpn) `
      
-    export _JAVA_OPTIONS="-Xbootclasspath/p:~/.m2/repository/org/mortbay/jetty/alpn/alpn-boot/7.1.3.v20150130/alpn-boot-7.1.3.v20150130.jar"
-   
-Finally, you can run the topology locally:
+Finally, you can run the topology locally. Change your ALPN jar location as 
+necessary.
 
-    storm jar target/cloud-bigtable-simple-cli-1.0-SNAPSHOT.jar com.example.bigtable.storm.CoinStormTopology
-    
+    export ALPN_JAR=~/.m2/repository/org/mortbay/jetty/alpn/alpn-boot/7.1.3.v20150130/alpn-boot-7.1.3.v20150130.jar
+    mvn exec:exec -Dexec.args="-Xbootclasspath/p:${ALPN_JAR}  -cp %classpath com.example.bigtable.storm.CoinStormTopology Coinbase"
+
 ## Deploy the Topology
 
 ### Create an uberjar
@@ -161,18 +149,35 @@ After that you can copy your jar to the master:
 
 Then ssh into the master:
     
-    gcloud compute ssh your-initials-m:
+    gcloud compute ssh your-initials-m
      
 And submit the topology to the Storm cluster (make sure the table Coinbase 
 exists):
 
-    storm jar cloud-bigtable-coinstorm-1.0.0.jar com.example.bigtable.storm.CoinStormTopology Coinbase coinbase_topolog
+     storm jar cloud-bigtable-coinstorm-1.0.0.jar com.example.bigtable.storm.CoinStormTopology Coinbase coinbase_topology
 
 ### View the Topology
 
 Get the external IP of your master instance in the [Cloud Console](console.developer.google.com)
-, then visit <your-ip>:8080 in your browser to view the Storm UI including
-details about your topology.
+, then visit \<your-master-ip>\:8080 in your browser to view the Storm UI 
+including details about your topology.
+
+### Configuring Storm Yourself
+
+While bdutil will provision and configure a Storm cluster for you, you may 
+want to add Bigtable support to an existing Storm cluster. The major 
+configuration change necessary to get Storm working is to add the ALPN jars 
+to the storm.yaml file like so:
+      
+     worker.childopts: "-Xbootclasspath/p:/home/hadoop/storm-install/lib/google/alpn-boot-7.0.0.v20140317.jar"
+     
+This will ensure that each Storm worker process will have the ALPN jar in its
+bootclass path.
+     
+Besides that, the only difference is all your instances trying to access 
+Bigtable must properly authenticate using either 
+GOOGLE_APPLICATION_CREDENTIALS, or by creating GCE instances with the proper 
+Bigtable scopes already added as described [here](https://cloud.google.com/bigtable/docs/creating-vm-instance)
 
 ## Contributing changes
 

@@ -86,7 +86,7 @@
       <groupId>bigtable-client</groupId>
       <artifactId>bigtable-hbase</artifactId>
       <version>0.1.4</version>
-      <scope>runtime</scope>
+      <!--<scope>runtime</scope>-->
     </dependency>
 
     <dependency>
@@ -162,7 +162,7 @@
         <executions>
           <execution>
             <goals>
-              <goal>exec</goal>
+              <goal>java</goal>
             </goals>
           </execution>
         </executions>
@@ -170,7 +170,7 @@
           <executable>java</executable>
           <includeProjectDependencies>true</includeProjectDependencies>
           <includePluginDependencies>false</includePluginDependencies>
-          <classpathScope>runtime</classpathScope>
+          <classpathScope>compile</classpathScope>
           <mainClass>com.example.bigtable.storm.CoinStormTopology</mainClass>
         </configuration>
       </plugin>
