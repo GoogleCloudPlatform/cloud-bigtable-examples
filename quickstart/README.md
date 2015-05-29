@@ -33,7 +33,9 @@ Following these steps should get you to the hbase shell in 5 minutes.
 
 1. Copy your JSON key to the local directory for this project and rename as **key.json**
 
-1. Edit hbase-site.xml and replace **PROJECT\_ID\_HERE**, **CLUSTER\_ID\_HERE**, and **ZONE\_NAME\_HERE** with the appropriate values.  Save.
+1. **`chmod +x create-hbase-site`**
+
+1. **`./create-hbase-site`** will write a valid hbase-site.xml for you.
 
 1. In your terminal window give the following command:
   **`docker build -t bigtable-hbase .`**  <== Note the final '.'
