@@ -35,7 +35,6 @@ import org.eclipse.jetty.websocket.client.WebSocketClient;
 import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,20 +52,32 @@ public class CoinbaseSpout extends BaseRichSpout {
     /**
      * Standard Storm collector used to emit our Coinbase data to a stream.
      */
-    SpoutOutputCollector _collector;
+    private SpoutOutputCollector mCollector;
 
     /**
      * We push the incoming market data onto this queue as it comes in from
      * the coinbase API, and serve it up to the Storm topology when
      * nextTuple() is called.
      */
-    LinkedBlockingQueue<CoinbaseData> queue = null;
+    private LinkedBlockingQueue<CoinbaseData> mQueue = null;
+
+    /**
+     * Capacity of our in memory queue.
+     */
+    private static final int QUEUE_CAPACITY = 1000;
+
+
+    /**
+     * Number of milliseconds to sleep if we poll an empty queue,
+     * this way we avoid excessive spinning if there's no incoming data.
+     */
+    private static final int QUEUE_BACKOFF_MS = 50;
 
     /**
      * Here we declare that we emit the entire CoinbaseData POJO to the stream.
      */
     @Override
-    public void declareOutputFields(OutputFieldsDeclarer declarer) {
+    public void declareOutputFields(final OutputFieldsDeclarer declarer) {
         declarer.declare(new Fields("coin"));
     }
 
@@ -79,12 +90,12 @@ public class CoinbaseSpout extends BaseRichSpout {
     @Override
     public void open(Map map, TopologyContext topologyContext,
                      SpoutOutputCollector collector) {
-        queue = new LinkedBlockingQueue<>(1000);
-        _collector = collector;
+        mQueue = new LinkedBlockingQueue<>(QUEUE_CAPACITY);
+        mCollector = collector;
 
         String destUri = "wss://ws-feed.exchange.coinbase.com";
         WebSocketClient client = new WebSocketClient(new SslContextFactory());
-        CoinbaseSocket socket = new CoinbaseSocket(queue);
+        CoinbaseSocket socket = new CoinbaseSocket(mQueue);
         try {
             client.start();
             URI echoUri = new URI(destUri);
@@ -100,15 +111,15 @@ public class CoinbaseSpout extends BaseRichSpout {
      */
     @Override
     public void nextTuple() {
-        CoinbaseData data = queue.poll();
+        CoinbaseData data = mQueue.poll();
         if (data == null) {
             try {
-                Time.sleep(50);
+                Time.sleep(QUEUE_BACKOFF_MS);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         } else {
-            _collector.emit(new Values(data));
+            mCollector.emit(new Values(data));
         }
     }
 }

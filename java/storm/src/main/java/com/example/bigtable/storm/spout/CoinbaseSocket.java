@@ -37,73 +37,93 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+/*@WebSocket(maxTextMessageSize = 64 * 1024)*/
 /**
  * This class provides a Websocket that connections to the Coinbase
- * WebSocket API and pushes received messages onto a queue passed into its
+ * WebSocket API and pushes received messages onto a mQueue passed into its
  * constructor.
  */
-@WebSocket(maxTextMessageSize = 64 * 1024)
+@WebSocket
 public class CoinbaseSocket {
 
     private static final Logger LOG = LoggerFactory.getLogger(CoinbaseSocket
             .class);
 
-    private final CountDownLatch closeLatch;
+    private final CountDownLatch mCloseLatch;
 
     @SuppressWarnings("unused")
-    private Session session;
+    private Session mSession;
 
     /**
-     * We send this object as soon as we connect to the Coinbase Market API
+     * Send this object as soon as we connect to the Coinbase Market API
      * to signify we want to subscribe to the BTC-USD feed.
      */
-    String send = "{\n" +
-            "    \"type\": \"subscribe\",\n" +
-            "    \"product_id\": \"BTC-USD\"\n" +
-            "}";
+    private static final String COINBASE_SUBSCRIBE_MESSAGE = "{\n"
+            + "    \"type\": \"subscribe\",\n"
+            + "    \"product_id\": \"BTC-USD\"\n"
+            + "}";
 
     /**
-     * This queue is provided to us by the Storm topology to push data as we
+     * This mQueue is provided to us by the Storm topology to push data as we
      * receive it from Coinbase so that it can be polled as nextTuple() is
      * called in a Storm Spout.
      */
-    private Queue queue;
+    private Queue mQueue;
 
     // Used to serialize Coinbasedata from JSON into our CoinbaesData POJO.
     private ObjectMapper objectMapper = new ObjectMapper();
 
+
+    /**
+     * Creates teh socket with the queue to add to that the spout will read
+     * from.
+     * @param queue This is the queue that incoming data gets added to
+     */
     public CoinbaseSocket(Queue<CoinbaseData> queue) {
-        this.closeLatch = new CountDownLatch(1);
-        this.queue = queue;
+        mCloseLatch = new CountDownLatch(1);
+        mQueue = queue;
     }
 
     /**
      * This method can be used by other functions if they want to await for
      * a proper shutdown of the web socket.
+     * @param duration How long to wait until shutdown.
+     * @param unit Unit of duration
+     * @throws InterruptedException InterruptedException
+     * @return True if the socket is closed before the timeout
      */
-    public boolean awaitClose(int duration, TimeUnit unit) throws InterruptedException {
-        return this.closeLatch.await(duration, unit);
-        }
+    public boolean awaitClose(int duration, TimeUnit unit)
+            throws InterruptedException {
+        return mCloseLatch.await(duration, unit);
+    }
 
+
+    /**
+     * Handler to cleanup on close.
+     * @param statusCode Status code of closing
+     * @param reason Reason the socket is being closed
+     */
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
         System.out.printf("Connection closed: %d - %s%n", statusCode, reason);
-        this.session = null;
-        this.closeLatch.countDown();
+        mSession = null;
+        mCloseLatch.countDown();
     }
 
     /**
      * Upon connection to the Coinbase Websocket market feed, we send our
      * subscription message to indicate the product we want to subscribe to.
-     * @param session
+     * @param session Websocket session
      */
     @OnWebSocketConnect
     public void onConnect(Session session) {
         System.out.printf("Got connect: %s%n", session);
-        this.session = session;
+        mSession = session;
         try {
             Future<Void> fut;
-            fut = session.getRemote().sendStringByFuture(send);
+            fut = session.getRemote()
+                    .sendStringByFuture(COINBASE_SUBSCRIBE_MESSAGE);
             fut.get(2, TimeUnit.SECONDS);
             } catch (Throwable t) {
               t.printStackTrace();
@@ -111,7 +131,7 @@ public class CoinbaseSocket {
     }
 
     /**
-     * Here we recive a Coinbase message and push it onto our queue.
+     * Here we recive a Coinbase message and push it onto our mQueue.
      * @param msg The coinbase market data feed
      * https://docs.exchange.coinbase.com/#websocket-feed
      */
@@ -120,7 +140,7 @@ public class CoinbaseSocket {
         try {
             CoinbaseData data = objectMapper.readValue(msg, CoinbaseData
                     .class);
-            queue.offer(data);
+            mQueue.offer(data);
         } catch (IOException e) {
             e.printStackTrace();
             LOG.info("bad data was: " + msg);

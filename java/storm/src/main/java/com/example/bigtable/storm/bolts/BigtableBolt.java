@@ -28,10 +28,10 @@ import backtype.storm.topology.base.BaseRichBolt;
 import backtype.storm.tuple.Tuple;
 import com.example.bigtable.storm.data.CoinbaseData;
 import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.BufferedMutator;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.Put;
-import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -62,29 +62,38 @@ public class BigtableBolt extends BaseRichBolt {
             .class);
 
     // Standard Storm Output collector
-    private OutputCollector _collector;
+    private OutputCollector mCollector;
 
     /**
-     * This is the connection to Cloud Bigtable.
+     * This is the mConnection to Cloud Bigtable.
      */
-    private Connection connection;
+    private Connection mConnection;
 
     /**
      * This is our Google Cloud Bigtable table name, which must be specified
      * in the constructor.
      */
-    private String tableName;
+    private String mTableName;
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
+    private BufferedMutator mBufferedMutator;
+
+    /**
+     * Create a Bigtable bolt that will feed incoming tuples into Cloud
+     * Bigtable.
+     * @param tableName The name of the Bigtable table. Must have a column
+     *                  family named 'bc'
+     */
     public BigtableBolt(String tableName) {
-        this.tableName = tableName;
+        this.mTableName = tableName;
     }
 
     /**
      * Helper function that converts Coinbase timestamps to milliseconds
      * since epoch.
-     * @return
+     * @param date in the Coinbase format to convert to milliseconds
+     * @return The time in milliseconds since the epoch specified by the date
      */
     private long convertDateToTime(String date) {
         // chop off Z at end
@@ -103,13 +112,18 @@ public class BigtableBolt extends BaseRichBolt {
     }
 
     /**
-     * Sets up our connection to Google Cloud Bigtable.
+     * Sets up our mConnection to Google Cloud Bigtable.
      */
     @Override
-    public void prepare(Map conf, TopologyContext context, OutputCollector collector) {
-        _collector = collector;
+    public void prepare(Map conf, TopologyContext context,
+                        OutputCollector collector) {
+        mCollector = collector;
         try {
-            this.connection = ConnectionFactory.createConnection();
+            synchronized (this) {
+                mConnection = ConnectionFactory.createConnection();
+                mBufferedMutator = mConnection.getBufferedMutator(TableName
+                        .valueOf(mTableName));
+            }
         } catch (IOException e) {
             LOG.error("Error creating Bigtable exception: ", e);
         }
@@ -132,29 +146,17 @@ public class BigtableBolt extends BaseRichBolt {
             if (data == null) {
                 return;
             }
-            String ts = Long.toString(convertDateToTime(data.getTime()));
 
+            String ts = Long.toString(convertDateToTime(data.getTime()));
             String rowKey = data.getType() + "_" + ts;
             String columnFamily = "bc";
-
             String column = "data";
-
-            Table table;
-            synchronized (connection) {
-                try {
-                    table = connection.getTable(TableName.valueOf
-                            (this.tableName));
-                } catch (IOException e) {
-                    LOG.error("Caught error getting Bigtable Table: ", e);
-                    return;
-                }
-            }
 
             Put put = new Put(Bytes.toBytes(rowKey));
             put.addColumn(Bytes.toBytes(columnFamily), Bytes.toBytes(column),
                     Bytes.toBytes(objectMapper.writeValueAsString(data)));
-            table.put(put);
-            _collector.ack(tuple);
+            mBufferedMutator.mutate(put);
+            mCollector.ack(tuple);
         } catch (IOException e) {
             LOG.error("Got exception executing Bigtable PUT ", e.getMessage());
         }
@@ -166,5 +168,16 @@ public class BigtableBolt extends BaseRichBolt {
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
 
+    }
+
+    @Override
+    public void cleanup() {
+        try {
+            mBufferedMutator.close();
+            mConnection.close();
+        } catch (IOException e) {
+            LOG.error("Got exception closing Bigtable mConnection",
+                    e.getMessage());
+        }
     }
 }
