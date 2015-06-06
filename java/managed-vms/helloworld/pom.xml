@@ -27,7 +27,6 @@
   <artifactId>helloworld</artifactId>
 
   <properties>
-    <appengine.target.version>1.9.19</appengine.target.version>
     <gcloud.plugin.version>0.9.58.v20150505</gcloud.plugin.version>
     <compileSource>1.7</compileSource>
 
@@ -76,25 +75,14 @@
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase</artifactId>
       <version>${bigtable.version}</version>
-<!-- 
       <exclusions>
-        <exclusion>
-          <groupId>com.google.cloud.bigtable</groupId>
-          <artifactId>bigtable-grpc-interface</artifactId>
-        </exclusion>
         <exclusion>
           <groupId>org.apache.hbase</groupId>
           <artifactId>hbase-server</artifactId>
         </exclusion>
       </exclusions>
- -->
-    </dependency>
+</dependency>
     <!-- Compile/runtime dependencies -->
-    <dependency>
-      <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>${appengine.target.version}</version>
-    </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
@@ -535,14 +523,6 @@
               <targetPath>WEB-INF</targetPath>
             </resource>
           </webResources>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>com.google.appengine</groupId>
-        <artifactId>gcloud-maven-plugin</artifactId>
-        <version>${gcloud.plugin.version}</version>
-        <configuration>
-          <set_default>true</set_default>
         </configuration>
       </plugin>
 

@@ -51,6 +51,15 @@
     <url-pattern>/json/*</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>ok</servlet-name>
+    <servlet-class>com.example.cloud.bigtable.helloworld.OkServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ok</servlet-name>
+    <url-pattern>/_ah/*</url-pattern> <!-- /start /stop /health -->
+  </servlet-mapping>
+
   <listener>
     <listener-class>com.example.cloud.bigtable.helloworld.BigtableHelper</listener-class>
   </listener>

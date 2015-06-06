@@ -85,6 +85,7 @@ public class JsonServlet extends HttpServlet {
       return;
     }
 
+// IMPORTANT - This try() is a java7 try w/ resources which will close() the table at the end.
     try(Table t = BigtableHelper.getConnection().getTable( TABLE )) {
 
       Get g = new Get(Bytes.toBytes(path.substring(1)));
@@ -191,6 +192,7 @@ public class JsonServlet extends HttpServlet {
       return;
     }
 
+// IMPORTANT - This try() is a java7 try w/ resources which will close() the table at the end.
     try(Table t = BigtableHelper.getConnection().getTable( TABLE )) {
       JSONObject json = new JSONObject(new JSONTokener(req.getReader()));
       String[] names = JSONObject.getNames(json);
@@ -253,6 +255,7 @@ public class JsonServlet extends HttpServlet {
       return;
     }
 
+// IMPORTANT - This try() is a java7 try w/ resources which will close() the table at the end.
     try(Table t = BigtableHelper.getConnection().getTable( TABLE )) {
       resp.setContentType("application/json");
       JSONObject json = new JSONObject();
