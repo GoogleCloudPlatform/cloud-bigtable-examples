@@ -5,19 +5,29 @@
 <!-- Configure and deploy the application in $(jetty.home)/webapps/root -->
 <!-- ================================================================== -->
 
-<Configure class="com.google.apphosting.vmruntime.jetty9.VmRuntimeWebAppContext" >
+<Configure class="org.eclipse.jetty.webapp.WebAppContext" >
+  <Set name="resourceBase">/app</Set>
+  <Set name="war">/app</Set>
+  <Set name="contextPath">/</Set>
+
+  <Set name="defaultsDescriptor">
+    <SystemProperty name="jetty.home" default="."/>/etc/webdefault.xml
+  </Set>
+
   <Call name="addSystemClass">
     <Arg type="String">org.eclipse.jetty.alpn.</Arg>
-  </Call>
-
-  <Call name="init">
-    <Arg><SystemProperty name="jetty.home" default="."/>/webapps/root</Arg>
-    <Arg><SystemProperty name="appengine_web_xml" default="WEB-INF/appengine-web.xml"/></Arg>
   </Call>
   <Set name="parentLoaderPriority">
     <SystemProperty name="jetty_parent_classloader" default="false"/>
   </Set>
-  <Set name="defaultsDescriptor">
-    <SystemProperty name="jetty.home" default="."/>/etc/webdefault.xml
-  </Set>
+<!-- 
+
+  <Call name="init">
+    <Arg><SystemProperty name="jetty.home" default="."/>/webapps/root</Arg>
+  </Call>
+ -->
+ <Call class="java.lang.System" name="setProperty">
+   <Arg>java.util.logging.config.file</Arg>
+   <Arg>/app/WEB-INF/logging.properties</Arg>
+</Call>
 </Configure>

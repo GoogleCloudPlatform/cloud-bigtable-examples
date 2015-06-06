@@ -1,15 +1,24 @@
-# Cloud Bigtable on Managed VM's (Hello World for Cloud Bigtable)
+# Cloud Bigtable on Managed VM's<br />(Hello World for Cloud Bigtable)
 
 A simple Hello World app that takes your an opaque user ID and uses it as a key to count how often you've
 visited.  The app also provides a simple JSON REST client that enables the GET, POST, and DELETE Verbs.
 
-`gcloud components update`
+## Table of Contents
+1. [Update to the latest gcloud](#Update-to-the-latest-gcloud)
+1. [Running Locally](#Running-Locally)
+1. [Deploying as a managed VM app](#Deploying-as-a-managed-VM-app)
+1. [Using-JSON](#Using-JSON)
 
-### IMPORTANT - The java samples require that the hbase-bigtable jar be installed in your local maven repository manually:
+## IMPORTANT<br />
+The java samples require that the hbase-bigtable jar be installed in your local maven repository manually:
 
 Download the [Jar](https://storage.googleapis.com/cloud-bigtable/jars/bigtable-hbase/bigtable-hbase-0.1.5.jar)
 
 ```mvn install:install-file -Dfile=bigtable-hbase-0.1.5.jar -DgroupId=com.google.cloud.bigtable -DartifactId=bigtable-hbase -Dversion=0.1.5 -Dpackaging=jar -DgeneratePom=true```
+
+## Update to the latest gcloud
+
+`gcloud components update`
 
 ## Project setup, installation, and configuration
 
@@ -27,7 +36,8 @@ Download the [Jar](https://storage.googleapis.com/cloud-bigtable/jars/bigtable-h
 
 1. Select **APIs & Auth > APIs**  
 
-1. Enable the **Cloud Bigtable API** and the **Cloud Bigtable Admin API**
+1. Enable the **Cloud Bigtable API** and the **Cloud Bigtable Admin API**<br />
+  (You may need to search for the API.)
 
 1. Select **APIs & Auth > Credentials**
 
@@ -39,7 +49,7 @@ Download the [Jar](https://storage.googleapis.com/cloud-bigtable/jars/bigtable-h
 
 1. Build the Docker Image for this project
 
- `cd docker; docker build -t gae-bt-v02 .;cd ..`
+ `cd docker; docker build -t mvm-jetty-v03 .;cd ..`
  
 1. Select **Storage > Cloud Bigtable > New Cluster**
 
@@ -55,9 +65,8 @@ Download the [Jar](https://storage.googleapis.com/cloud-bigtable/jars/bigtable-h
 
 1. Create the table (tableName, Column Family)
 
- `create table 'gae-hello', 'visits'`
- 
- `create table 'from-json', 'cf1', 'cf2', 'cf3', 'cf4'`
+ `create 'gae-hello', 'visits'`<br />
+ `create 'from-json', 'cf1', 'cf2', 'cf3', 'cf4'`
  
 1. Exit `hbase shell` using ctrl-c
 
@@ -65,8 +74,6 @@ Download the [Jar](https://storage.googleapis.com/cloud-bigtable/jars/bigtable-h
 ### Running Locally
 
 1. `cd ../helloworld`
-
-1. Set the `project_ID` in `pom.xml`
 
 1. Set `PROJECT_ID`, `CLUSTER_UNIQUE_ID`, and `Zone` (if necessary) in `src/main/java/com/example/bigtable/managedvms/BigtableHelper.java`
 
@@ -80,25 +87,26 @@ Download the [Jar](https://storage.googleapis.com/cloud-bigtable/jars/bigtable-h
 
 1. Build the java artifacts
  
- `mvn clean package`
+    `mvn clean package`<br />
+    `docker build -t bigtable-helloworld .`
 
 1. run the application
 
- `mvn clean gcloud:run`
+    `docker run -p 8080:8080 bigtable-helloworld`
  
-1. go to [localhost:8080](localhost:8080)
+1. go to [localhost:8080](localhost:8080)<br />
+   Note - you may need to substitute the IP address of your docker container.
 
 ### Deploying as a managed VM app
+(First build & Run Locally)
 
 1. If you haven't already done so, set your project in the gcloud tool.
 
   `gcloud config set project PROJECT_ID`
 
-1. Set `PROJECT_ID`, `CLUSTER_UNIQUE_ID`, and `Zone` (if necessary) in `src/main/java/com/example/bigtable/managedvms/BigtableHelper.java`
-
 1. Deploy the application
 
- `mvn clean gcloud:deploy`
+ `gcloud preview app deploy app.yaml`
  
 1. go to **ProjectID.appspot.com**
 
@@ -114,12 +122,3 @@ Download the [Jar](https://storage.googleapis.com/cloud-bigtable/jars/bigtable-h
 1. `curl -X GET http://localhost:8080/json/blueword`
 
 1. `curl -H "Content-Type: application/json" -X DELETE  http://localhost:8080/json/blueword`
-
-## Contributing changes
-
-* See [CONTRIBUTING.md](../../CONTRIBUTING.md)
-
-
-## Licensing
-
-* See [LICENSE](../../LICENSE)

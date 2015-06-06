@@ -52,7 +52,6 @@ public class BigtableHelper implements ServletContextListener {
  * Connect will establish the connection to Cloud Bigtable.
  **/
   public static void connect() throws IOException {
-    LOG.info("b4-HBaseConfiguration.create");
     Configuration c = HBaseConfiguration.create();
 
     c.setClass("hbase.client.connection.impl",
@@ -64,9 +63,7 @@ public class BigtableHelper implements ServletContextListener {
     c.set("google.bigtable.cluster.name", CLUSTER_ID);
     c.set("google.bigtable.zone.name", ZONE);
 
-    LOG.info("b4 - createConnection");
     connection = ConnectionFactory.createConnection(c);
-    LOG.info("after - createConnection");
   }
 
   public static Connection getConnection() {
