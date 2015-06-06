@@ -96,6 +96,7 @@ Download the [Jar](https://storage.googleapis.com/cloud-bigtable/jars/bigtable-h
  
 1. go to [localhost:8080](localhost:8080)<br />
    Note - you may need to substitute the IP address of your docker container.
+   If you do this in a Kitematic terminal window, it's easier than boot2docker.
 
 ### Deploying as a managed VM app
 (First build & Run Locally)
