@@ -75,7 +75,7 @@ Download the [Jar](https://storage.googleapis.com/cloud-bigtable/jars/bigtable-h
 
 1. `cd ../helloworld`
 
-1. Set `PROJECT_ID`, `CLUSTER_UNIQUE_ID`, and `Zone` (if necessary) in `src/main/java/com/example/bigtable/managedvms/BigtableHelper.java`
+1. Set `PROJECT_ID`, `CLUSTER_UNIQUE_ID`, and `Zone` (if necessary) in `src/main/java/com.example.cloud.bigtable.helloworld/BigtableHelper.java`
 
 1. Copy your keyfile *.json to `src/main/webapp/WEB-INF`
 
