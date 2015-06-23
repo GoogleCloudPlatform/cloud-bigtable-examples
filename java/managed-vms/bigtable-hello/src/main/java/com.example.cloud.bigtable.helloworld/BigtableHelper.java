@@ -25,8 +25,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import javax.servlet.ServletContextListener;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
 /**
  * BigtableHelper, a ServletContextListener, is setup in web.xml to run before a JSP is run.
@@ -47,7 +48,8 @@ public class BigtableHelper implements ServletContextListener {
 // your application, you may wish to keep this somewhere else.
   private static Connection connection = null;     // The authenticated connection
 
-  private static final Logger LOG = LoggerFactory.getLogger(BigtableHelper.class);
+//   private static final Logger LOG = LoggerFactory.getLogger(BigtableHelper.class);
+  private static ServletContext sc;
 /**
  * Connect will establish the connection to Cloud Bigtable.
  **/
@@ -55,9 +57,10 @@ public class BigtableHelper implements ServletContextListener {
     Configuration c = HBaseConfiguration.create();
 
     c.setClass("hbase.client.connection.impl",
-        org.apache.hadoop.hbase.client.BigtableConnection.class,
+        com.google.cloud.bigtable.hbase1_1.BigtableConnection.class,
         org.apache.hadoop.hbase.client.Connection.class);   // Required for Cloud Bigtable
     c.set("google.bigtable.endpoint.host", "bigtable.googleapis.com");
+    c.set("google.bigtable.admin.endpoint.host", "bigtabletableadmin.googleapis.com");
 
     c.set("google.bigtable.project.id", PROJECT_ID);
     c.set("google.bigtable.cluster.name", CLUSTER_ID);
@@ -71,28 +74,31 @@ public class BigtableHelper implements ServletContextListener {
       try {
         connect();
       } catch (IOException e) {
-        LOG.error("connect ", e);
+        sc.log("connect ", e);
       }
     }
+    if(connection == null) sc.log("BigtableHelper-No Connection");
     return connection;
   }
 
   public void contextInitialized(ServletContextEvent event) {
     // This will be invoked as part of a warmup request, or the first user
     // request if no warmup request was invoked.
+    sc = event.getServletContext();
     try {
       connect();
     } catch (IOException e) {
-      LOG.error("connect ", e);
+        sc.log("BigtableHelper - connect ", e);
     }
-  }
+     if(connection == null) sc.log("BigtableHelper-No Connection");
+ }
 
   public void contextDestroyed(ServletContextEvent event) {
     // App Engine does not currently invoke this method.
     try {
       connection.close();
     } catch(IOException io) {
-      LOG.error("contextDestroyed ", io);
+      sc.log("contextDestroyed ", io);
     }
     connection = null;
   }

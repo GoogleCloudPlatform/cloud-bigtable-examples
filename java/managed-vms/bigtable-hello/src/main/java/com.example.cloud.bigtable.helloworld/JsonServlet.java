@@ -41,11 +41,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class JsonServlet extends HttpServlet {
-  private static final Logger LOG = LoggerFactory.getLogger(JsonServlet.class);
   private static final TableName TABLE = TableName.valueOf("from-json");
   private static final String cf1 = "cf1";
   private static final byte[] CF1 = Bytes.toBytes(cf1);
@@ -81,7 +77,7 @@ public class JsonServlet extends HttpServlet {
     JSONObject json = new JSONObject();
     if (path.length() < 5) {
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-      LOG.error("doGet-bad length-"+path.length());
+      log("doGet-bad length-"+path.length());
       return;
     }
 
@@ -91,7 +87,7 @@ public class JsonServlet extends HttpServlet {
       Get g = new Get(Bytes.toBytes(path.substring(1)));
       g.setMaxVersions(1);
       Result r = t.get(g);
-      LOG.info(r.toString());
+      log(r.toString());
       NavigableMap<byte[],NavigableMap<byte[],byte[]>> map = r.getNoVersionMap();
 
       if(map == null) {
@@ -159,7 +155,7 @@ public class JsonServlet extends HttpServlet {
       resp.setContentType("application/json");
       json.write(resp.getWriter());
     } catch (Exception e) {
-      LOG.error("doGet", e);
+      log("doGet", e);
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
@@ -187,7 +183,7 @@ public class JsonServlet extends HttpServlet {
     String path = req.getPathInfo();
 
     if (path.length() < 5) {
-      LOG.error("doPost-bad length-"+path.length());
+      log("doPost-bad length-"+path.length());
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
@@ -248,10 +244,10 @@ public class JsonServlet extends HttpServlet {
   protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
   throws ServletException, IOException {
     String path = req.getPathInfo();
-    LOG.info("doDelete-"+path);
+    log("doDelete-"+path);
     if (path.length() < 5) {
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-      LOG.error("doDelete-bad length-"+path+"("+path.length()+")");
+      log("doDelete-bad length-"+path+"("+path.length()+")");
       return;
     }
 
@@ -262,7 +258,7 @@ public class JsonServlet extends HttpServlet {
       Delete d = new Delete( Bytes.toBytes(path.substring(1)) );  // Delete the ROW
       t.delete(d);
     } catch (Exception e) {
-      LOG.error("doDelete", e);
+      log("doDelete", e);
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
@@ -273,7 +269,7 @@ public class JsonServlet extends HttpServlet {
   @Override
   protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
   {
-      LOG.info("doOptions");
+      log("doOptions");
       // pre-flight request processing
       resp.setHeader("Access-Control-Allow-Origin", "*");
       resp.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");

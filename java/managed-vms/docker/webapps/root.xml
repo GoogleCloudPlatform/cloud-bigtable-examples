@@ -6,6 +6,11 @@
 <!-- ================================================================== -->
 
 <Configure class="org.eclipse.jetty.webapp.WebAppContext" >
+   <Call class="java.lang.System" name="setProperty">
+     <Arg>java.util.logging.config.file</Arg>
+     <Arg>/app/WEB-INF/logging.properties</Arg>
+  </Call>
+
   <Set name="resourceBase">/app</Set>
   <Set name="war">/app</Set>
   <Set name="contextPath">/</Set>
@@ -26,8 +31,4 @@
     <Arg><SystemProperty name="jetty.home" default="."/>/webapps/root</Arg>
   </Call>
  -->
- <Call class="java.lang.System" name="setProperty">
-   <Arg>java.util.logging.config.file</Arg>
-   <Arg>/app/WEB-INF/logging.properties</Arg>
-</Call>
 </Configure>

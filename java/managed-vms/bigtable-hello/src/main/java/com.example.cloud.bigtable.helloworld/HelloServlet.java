@@ -73,7 +73,7 @@ public class HelloServlet extends HttpServlet {
 //     if (currentUser != null) {
       resp.setContentType("text/html");
       resp.getWriter().println("Hello, Friend" );
-      resp.getWriter().println("You have visited " + getAndUpdateVisit("00001"));
+      resp.getWriter().println("You have visited " + getAndUpdateVisit("00001"));  // s.b. email addr
 //     } else {
 //       resp.sendRedirect(userService.createLoginURL(req.getRequestURI()));
 //     }

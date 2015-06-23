@@ -26,7 +26,3 @@ network:
   forwarded_ports:
   - 5005
   
-#beta-settings:
-#  service_account_scopes: >
-#    https://www.googleapis.com/auth/cloud-platform
-#    https://www.googleapis.com/auth/devstorage.full_control

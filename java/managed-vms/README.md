@@ -9,24 +9,18 @@ visited.  The app also provides a simple JSON REST client that enables the GET, 
 1. [Deploying as a managed VM app](#Deploying-as-a-managed-VM-app)
 1. [Using-JSON](#Using-JSON)
 
-## IMPORTANT<br />
-The java samples require that the hbase-bigtable jar be installed in your local maven repository manually:
+## Requirements
+1. gcloud
+1. Docker
+1. Java 1.7
 
-Download the [Jar](https://storage.googleapis.com/cloud-bigtable/jars/bigtable-hbase/bigtable-hbase-0.1.5.jar)
-
-```mvn install:install-file -Dfile=bigtable-hbase-0.1.5.jar -DgroupId=com.google.cloud.bigtable -DartifactId=bigtable-hbase -Dversion=0.1.5 -Dpackaging=jar -DgeneratePom=true```
-
-## Update to the latest gcloud
+## Update to the latest [gcloud](https://cloud.google.com/sdk/)
 
 `gcloud components update`
 
 ## Project setup, installation, and configuration
 
-1. Get a copy of the [AppEngine Runtime for Managed VM's](https://github.com/GoogleCloudPlatform/appengine-java-vm-runtime/)
-
-1. Build the Docker Image -- You will need to do this when the SDK is updated.
-
-  `cd docker; docker build -t appengine-mvn-opensource .` 
+1. If boot2docker isn't already running, start it:  **`boot2docker start`**
 
 1. Go to the [Cloud Console](https://cloud.google.com/console) and create or select your project.
 
@@ -55,7 +49,7 @@ Download the [Jar](https://storage.googleapis.com/cloud-bigtable/jars/bigtable-h
 
   You will need both the Zone and the Unique ID
   
-1. Using [gcloud](https://cloud.google.com/sdk/), login.
+1. Using gcloud, login.
 
  `gcloud auth login`
  
@@ -73,30 +67,30 @@ Download the [Jar](https://storage.googleapis.com/cloud-bigtable/jars/bigtable-h
 
 ### Running Locally
 
-1. `cd ../helloworld`
+1. `cd ../bigtable-hello`
 
-1. Set `PROJECT_ID`, `CLUSTER_UNIQUE_ID`, and `Zone` (if necessary) in `src/main/java/com.example.cloud.bigtable.helloworld/BigtableHelper.java`
+1. Set `PROJECT_ID`, `CLUSTER_UNIQUE_ID`, and `ZONE` (if necessary) in `src/main/java/com.example.cloud.bigtable.helloworld/BigtableHelper.java`
 
 1. Copy your keyfile *.json to `src/main/webapp/WEB-INF`
 
-1. In `src/main/webapp/Dockerfile`, add the line 
+1. In `./Dockerfile`, add the line 
 
- `env GOOGLE_APPLICATION_CREDENTIALS=/app/WEB-INF/KEYFILENAME.json`
+ `env GOOGLE_APPLICATION_CREDENTIALS=/app/WEB-INF/YOUR_KEY_FILE.json`
 
  Note - this step is only required for running locally in a container.
 
 1. Build the java artifacts
  
-    `mvn clean package`<br />
-    `docker build -t bigtable-helloworld .`
+    `mvn clean compile process-resources war:exploded`<br />
+    `docker build -t bigtable-hello .`
 
 1. run the application
 
-    `docker run -p 8080:8080 bigtable-helloworld`
+    `docker run -p 8080:8080 bigtable-hello`
  
 1. go to [localhost:8080](localhost:8080)<br />
-   Note - you may need to substitute the IP address of your docker container.
-   If you do this in a Kitematic terminal window, it's easier than boot2docker.
+   Note - you may need to substitute the IP address of your docker container.<br />
+   Use `boot2docker ip` to find the IP address
 
 ### Deploying as a managed VM app
 (First build & Run Locally)
