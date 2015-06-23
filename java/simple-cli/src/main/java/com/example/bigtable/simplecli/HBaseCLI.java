@@ -250,13 +250,15 @@ public class HBaseCLI {
         }
 
         public void run(Connection connection, List<String> args) throws InvalidArgsException, IOException {
-            if (args.size() != 1) {
+            if (args.size() < 1) {
                 throw new InvalidArgsException(args);
             }
             String tableName = args.get(0);
             ArrayList<String> columnFamilies = new ArrayList<String>();
-            for (String arg : args.subList(1, args.size() - 1)) {
-                columnFamilies.add(arg);
+            if (args.size() > 1) {
+                for (String arg : args.subList(1, args.size())) {
+                    columnFamilies.add(arg);
+                }
             }
 
             // Create the table based on the passed in arguments.
