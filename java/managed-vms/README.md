@@ -73,7 +73,7 @@ visited.  The app also provides a simple JSON REST client that enables the GET, 
 
 1. Copy your keyfile *.json to `src/main/webapp/WEB-INF`
 
-1. In `src/main/webapp/Dockerfile`, add the line 
+1. In `./Dockerfile`, add the line 
 
  `env GOOGLE_APPLICATION_CREDENTIALS=/app/WEB-INF/YOUR_KEY_FILE.json`
 
