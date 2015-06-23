@@ -3,7 +3,7 @@
 There are many examples / sample / demo programs here, each with its own README.
 
 ## Quickstart
-[Quickstart/HBase](quickstart) - Create a Cloud Bigtable Cluster and the hbase shell with in from your local machine
+[Quickstart/HBase](quickstart) - Create a Cloud Bigtable Cluster and the hbase shell from within a docker container on your local machine
 
 ## Java
 * [Simple-CLI](java/simple-cli) - A simple command line interface for Cloud Bigtable that shows you how to do basic operations with the native HBase API
@@ -15,8 +15,8 @@ There are many examples / sample / demo programs here, each with its own README.
 * [search.go](https://github.com/GoogleCloudPlatform/gcloud-golang/blob/master/bigtable/sample/search.go) - Create and search a Cloud Bigtable.
 
 ## Python
-* [Thrift](python/thrift) - Setup a HBase Thrift server(s) to use Cloud Bigtable and access that from Python to do basic operations.
-* [REST](python/rest) - Setup a HBase REST server(s) to use Cloud Bigtable and access it from Python and do basic operations.
+* [Thrift](python/thrift) - Setup an HBase Thrift server(s) to use Cloud Bigtable and access that from Python to do basic operations.
+* [REST](python/rest) - Setup an HBase REST server(s) to use Cloud Bigtable and access it from Python and do basic operations.
 
 ## Contributing changes
 * See [CONTRIBUTING.md](CONTRIBUTING.md)
