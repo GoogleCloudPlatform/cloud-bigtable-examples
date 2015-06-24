@@ -2,7 +2,6 @@
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <!--
 /**
- * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -23,24 +22,25 @@
 -->
 <configuration>
   <property>
-    <name>google.bigtable.project.id</name><value><!-- PROJECT ID --></value>
+    <name>google.bigtable.project.id</name><value>PROJECT ID</value>
   </property>
   <property>
-    <name>google.bigtable.cluster.name</name><value><!-- CLUSTER NAME --></value>
+    <name>google.bigtable.cluster.name</name><value>CLUSTER NAME</value>
   </property>
   <property>
-    <name>google.bigtable.zone.name</name><value>us-central1-b</value>
-  </property>
-  <property>
-    <name>google.bigtable.admin.endpoint.host</name>
-    <value>bigtabletableadmin.googleapis.com</value>
+    <name>google.bigtable.zone.name</name>
+    <value>us-central1-b</value>
   </property>
   <property>
     <name>hbase.client.connection.impl</name>
-    <value>org.apache.hadoop.hbase.client.BigtableConnection</value>
+    <value>com.google.cloud.bigtable.hbase1_1.BigtableConnection</value>
   </property>
   <property>
     <name>google.bigtable.endpoint.host</name>
     <value>bigtable.googleapis.com</value>
+  </property>
+  <property>
+    <name>google.bigtable.admin.endpoint.host</name>
+    <value>bigtabletableadmin.googleapis.com</value>
   </property>
 </configuration>

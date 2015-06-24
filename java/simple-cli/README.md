@@ -31,17 +31,17 @@ enter the project id and info for the service account in the locations shown.
 
     <configuration>
       <property>
-        <name>google.bigtable.project.id</name><value><!-- PROJECT ID --></value>
+        <name>google.bigtable.project.id</name><value>PROJECT ID</value>
       </property>
       <property>
-        <name>google.bigtable.cluster.name</name><value><!-- BIGTABLE CLUSTER ID --></value>
+        <name>google.bigtable.cluster.name</name><value>BIGTABLE CLUSTER ID</value>
       </property>
       <property>
-        <name>google.bigtable.zone.name</name><value><!-- ZONE WHERE CLUSTER IS PROVISIONED --></value>
+        <name>google.bigtable.zone.name</name><value>ZONE WHERE CLUSTER IS PROVISIONED</value>
       </property>
       <property>
         <name>hbase.client.connection.impl</name>
-        <value>org.apache.hadoop.hbase.client.BigtableConnection</value>
+        <value>com.google.cloud.bigtable.hbase1_1.BigtableConnection</value>
       </property>
       <property>
         <name>google.bigtable.endpoint.host</name>
@@ -56,14 +56,6 @@ enter the project id and info for the service account in the locations shown.
 ## Build
 
 You can install the dependencies and build the project using maven.
-
-### IMPORTANT - The java samples require that the hbase-bigtable jar be installed in your local maven repository manually:
-
-Download the [Jar](https://storage.googleapis.com/cloud-bigtable/jars/bigtable-hbase/bigtable-hbase-0.1.5.jar)
-
-```mvn install:install-file -Dfile=bigtable-hbase-0.1.5.jar -DgroupId=com.google.cloud.bigtable -DartifactId=bigtable-hbase -Dversion=0.1.5 -Dpackaging=jar -DgeneratePom=true```
-
-Then you can clone the repository and build the sample:
 
     $ mvn package
 
