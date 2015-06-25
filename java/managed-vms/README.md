@@ -1,7 +1,9 @@
 # Cloud Bigtable on Managed VM's<br />(Hello World for Cloud Bigtable)
 
-A simple Hello World app that takes your an opaque user ID and uses it as a key to count how often you've
-visited.  The app also provides a simple JSON REST client that enables the GET, POST, and DELETE Verbs.
+A simple Hello World app that takes your an opaque user ID and uses it as a key to count how often you've visited.  The app also provides a simple JSON REST client that enables the GET, POST, and DELETE Verbs.
+
+This app is a [Jetty](http://www.eclipse.org/jetty/) based [Servlet](http://www.oracle.com/technetwork/java/index-jsp-135475.html) that has been made into a [Custom Runtime](https://cloud.google.com/appengine/docs/managed-vms/custom-runtimes) for [Google Managed VMs](https://cloud.google.com/appengine/docs/managed-vms/) -- This means that you do not have access to the normal AppEngine API's (at least when running locally).
+
 
 ## Table of Contents
 1. [Update to the latest gcloud](#Update-to-the-latest-gcloud)
@@ -102,8 +104,8 @@ visited.  The app also provides a simple JSON REST client that enables the GET, 
 1. Deploy the application
 
  `gcloud preview app deploy app.yaml`
- 
-1. go to **ProjectID.appspot.com**
+
+1. go to the new default module which will be displayed in results from the deploy.  It will look like: `https://20150624t111224-dot-default-dot-PROJECTID.appspot.com`  -- This is not the default instance, and if you deploy you will need to manage your instances to both set default and delete unneeded instances.
 
 ## Using JSON
 
