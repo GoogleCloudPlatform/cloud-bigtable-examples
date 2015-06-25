@@ -1,6 +1,6 @@
 # Cloud Bigtable on Managed VM's<br />(Hello World for Cloud Bigtable)
 
-A simple Hello World app that takes your an opaque user ID and uses it as a key to count how often you've visited.  The app also provides a simple JSON REST client that enables the GET, POST, and DELETE Verbs.
+A simple Hello World app that takes your opaque user ID and uses it as a key to count how often you've visited.  The app also provides a simple JSON REST client that enables the GET, POST, and DELETE verbs.
 
 This app is a [Jetty](http://www.eclipse.org/jetty/) based [Servlet](http://www.oracle.com/technetwork/java/index-jsp-135475.html) that has been made into a [Custom Runtime](https://cloud.google.com/appengine/docs/managed-vms/custom-runtimes) for [Google Managed VMs](https://cloud.google.com/appengine/docs/managed-vms/) -- This means that you do not have access to the normal AppEngine API's (at least when running locally).
 
