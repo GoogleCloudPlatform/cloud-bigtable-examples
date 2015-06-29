@@ -12,7 +12,8 @@ There are many examples / sample / demo programs here, each with its own README.
 * [Storm](java/storm) - Stream live data from Coinbase to Cloud Bigtable using Apache Storm
 
 ## GoLang
-* [search.go](https://github.com/GoogleCloudPlatform/gcloud-golang/blob/master/bigtable/sample/search.go) - Create and search a Cloud Bigtable.
+* [search](https://github.com/GoogleCloudPlatform/gcloud-golang/tree/master/examples/bigtable/search) - Create and search a Cloud Bigtable.
+* [Bigtable-Hello](https://github.com/GoogleCloudPlatform/gcloud-golang/tree/master/examples/bigtable/bigtable-hello) - Accessing Cloud Bigtable from a Managed VM
 
 ## Python
 * [Thrift](python/thrift) - Setup an HBase Thrift server(s) to use Cloud Bigtable and access that from Python to do basic operations.
