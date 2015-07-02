@@ -36,23 +36,6 @@
           <artifactId>netty-all</artifactId>
         </exclusion>
 
-        <exclusion>  <!-- if you are doing a map reduce, you might need some of this -->
-          <groupId>org.apache.hbase</groupId>
-          <artifactId>hbase-server</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-yarn-common</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-yarn-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.hadoop</groupId>
-          <artifactId>hadoop-mapreduce-client-core</artifactId>
-        </exclusion>
-
         <exclusion>
           <groupId>com.github.stephenc.findbugs</groupId>
           <artifactId>findbugs-annotations</artifactId>
