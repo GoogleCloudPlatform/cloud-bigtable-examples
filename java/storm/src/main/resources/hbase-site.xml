@@ -30,14 +30,13 @@
   </property>
  -->
   <property>
-    <name>google.bigtable.project.id</name><value>rugged-memory-819</value>
+    <name>google.bigtable.project.id</name><value>PROJECTID</value>
   </property>
   <property>
-    <name>google.bigtable.cluster.name</name><value>cluster</value>
+    <name>google.bigtable.cluster.name</name><value>CLUSTERID/value>
   </property>
   <property>
-    <name>google.bigtable.zone.name</name>
-    <value>us-central1-b</value>
+    <name>google.bigtable.zone.name</name><value>us-central1-b</value>
   </property>
   <property>
     <name>hbase.client.connection.impl</name>
