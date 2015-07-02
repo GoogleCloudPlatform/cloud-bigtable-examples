@@ -33,7 +33,7 @@
     <hadoop.version>2.4.1</hadoop.version>
     <compat.module>hbase-hadoop2-compat</compat.module>
 
-    <appengine.version>1.9.22</appengine.version>
+    <appengine.version>1.9.23</appengine.version>
     <compileSource>1.7</compileSource>
 
     <slf4j.version>1.7.12</slf4j.version>
@@ -50,6 +50,12 @@
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-api-1.0-sdk</artifactId>
+      <version>${appengine.target.version}</version>
+    </dependency>
+
     <dependency>
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase-1.1</artifactId>

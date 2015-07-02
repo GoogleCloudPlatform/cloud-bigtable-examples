@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM appengine-mvn-opensource
+FROM gcr.io/google_appengine/java-compat
 
 WORKDIR /
 # IMPORTANT - This version of alpn-boot supports java 1.7.0u75 & u76
