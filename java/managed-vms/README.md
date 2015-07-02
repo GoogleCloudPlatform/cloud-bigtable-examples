@@ -22,6 +22,8 @@ This app is a [Jetty](http://www.eclipse.org/jetty/) based [Servlet](http://www.
 
 ## Project setup, installation, and configuration
 
+1. TBD https://developers.google.com/identity/sign-in/web/devconsole-project
+
 1. If boot2docker isn't already running, start it:  **`boot2docker start`**
 
 1. Go to the [Cloud Console](https://cloud.google.com/console) and create or select your project.
@@ -36,6 +38,10 @@ This app is a [Jetty](http://www.eclipse.org/jetty/) based [Servlet](http://www.
   (You may need to search for the API.)
 
 1. Select **APIs & Auth > Credentials**
+
+1. Generate a clientID
+
+The ClientID will go into src/main/java/webapp/index.html to support Google sign-in.
 
 1. Select **Generate new JSON key**
 

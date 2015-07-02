@@ -16,7 +16,6 @@
 
 package com.example.cloud.bigtable.helloworld;
 
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
@@ -39,8 +38,6 @@ import javax.servlet.http.HttpServletResponse;
 public class HelloServlet extends HttpServlet {
   private static final TableName TABLE = TableName.valueOf("gae-hello");
 
-//  final static Logger logger = LoggerFactory.getLogger(HelloServlet.class);
-
 /**
  * getAndUpdateVisit will just increment and get the visits:visits column, using
  * incrementColumnValue does the equivalent of locking the row, getting the value, incrementing
@@ -55,9 +52,10 @@ public class HelloServlet extends HttpServlet {
 
 // IMPORTANT - this try() is a java7 try w/ resources, which will call close() when done.
     try (Table t = BigtableHelper.getConnection().getTable( TABLE )) {
+
       // incrementColumnValue(row, family, column qualifier, amount)
       result = t.incrementColumnValue(Bytes.toBytes(id), Bytes.toBytes("visits"),
-                                              Bytes.toBytes("visits"), 1);
+              Bytes.toBytes("visits"), 1);
     } catch (IOException e) {
       log("getAndUpdateVisit", e);
       return "0 error "+e.toString();
@@ -66,16 +64,16 @@ public class HelloServlet extends HttpServlet {
   }
 
   @Override
-  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    if(req.getRequestURI().equals("/favicon.ico")) return;
+  public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    String userID = "00001";
+    String tok = req.getParameter("idtoken");
 
-// For now, we are just using a single identifier since we no longer have GAE's UserID API's  TODO()
-//     if (currentUser != null) {
-      resp.setContentType("text/html");
-      resp.getWriter().println("Hello, Friend" );
-      resp.getWriter().println("You have visited " + getAndUpdateVisit("00001"));  // s.b. email addr
-//     } else {
-//       resp.sendRedirect(userService.createLoginURL(req.getRequestURI()));
-//     }
+    if (tok != null) {
+      userID = tok;
+    } else {
+      log("Invalid ID token.");
+    }
+
+    resp.getWriter().print(getAndUpdateVisit(userID));
   }
 }

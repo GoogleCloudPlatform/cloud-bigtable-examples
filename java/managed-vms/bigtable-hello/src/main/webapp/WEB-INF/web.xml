@@ -39,7 +39,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>hello</servlet-name>
-    <url-pattern>/</url-pattern>
+    <url-pattern>/count</url-pattern>
   </servlet-mapping>
 
   <servlet>
@@ -64,9 +64,8 @@
     <listener-class>com.example.cloud.bigtable.helloworld.BigtableHelper</listener-class>
   </listener>
 
-<!-- 
   <welcome-file-list>
-    <welcome-file>/</welcome-file>
+    <welcome-file>/index.html</welcome-file>
   </welcome-file-list>
- -->
+
 </web-app>
