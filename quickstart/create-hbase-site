@@ -8,6 +8,8 @@
 #
 # It will also test for the existence of key.json or GOOGLE_APPLICATION_CREDENTIALS
 
+# NOTE - This only works w/ HBase 1.0.1 for now.
+
 # Prequsites: gcloud
 
 _BIGTABLE="alpha"
@@ -61,7 +63,7 @@ echo "    <value>bigtable.googleapis.com</value>" >>hbase-site.xml
 echo "  </property>" >>hbase-site.xml
 echo "  <property>" >>hbase-site.xml
 echo "     <name>hbase.client.connection.impl</name>" >>hbase-site.xml
-echo "     <value>org.apache.hadoop.hbase.client.BigtableConnection</value>" >>hbase-site.xml
+echo "     <value>com.google.cloud.bigtable.hbase1_0.BigtableConnection</value>" >>hbase-site.xml
 echo "  </property>" >>hbase-site.xml
 echo "</configuration>" >>hbase-site.xml
 
