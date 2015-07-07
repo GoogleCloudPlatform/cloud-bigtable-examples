@@ -1,9 +1,11 @@
 # Cloud Bigtable on Managed VM's<br />(Hello World for Cloud Bigtable)
 
-A simple Hello World app that takes your opaque user ID and uses it as a key to count how often you've visited.  The app also provides a simple JSON REST client that enables the GET, POST, and DELETE verbs.
+This app provides:
 
-This app is a [Jetty](http://www.eclipse.org/jetty/) based [Servlet](http://www.oracle.com/technetwork/java/index-jsp-135475.html) that has been made into a [Custom Runtime](https://cloud.google.com/appengine/docs/managed-vms/custom-runtimes) for [Google Managed VMs](https://cloud.google.com/appengine/docs/managed-vms/) -- This means that you do not have access to the normal AppEngine API's (at least when running locally).
+1. A web interface that uses Cloud Bigtable to track the number of visits from an opaque version of your Google account.
+1. A simple REST interface that can read and write arbitrary data to a Cloud Bigtable table using GET, POST, and DELETE verbs.
 
+SECURITY WARNING - This app provides NO SECURITY protections for the two tables you create (**`gae-hello`** and **`from-json`** -- they are open to any user on the internet through this app.  It is suggested that instances should only be available testing and that only test data be used.
 
 ## Table of Contents
 1. [Requirements](#Requirements)
@@ -24,10 +26,10 @@ This app is a [Jetty](http://www.eclipse.org/jetty/) based [Servlet](http://www.
 
 ## Choice of Runtime
 
-There are two Managed VM runtimes available, **Jetty** and **AppEngine**.  The main differences between the two are that with the Jetty runtime you can debug in the Docker container on your local machine.  With the AppEngine runtime you have full access to the [AppEngine Services and API's](https://cloud.google.com/appengine/docs/managed-vms/#standard_runtimes).
+There are two Managed VM runtimes available, **Jetty** and **AppEngine**.  The main differences between the two are that with the Jetty runtime one can debug in the Docker container on a local machine. AppEngine runtime has full access to the [AppEngine Services and API's](https://cloud.google.com/appengine/docs/managed-vms/#standard_runtimes), but can only be run in the Cloud.
 
 ## Docker on a Mac
-All machines on the internet have a preset dns entry known at **localhost** which maps to an IP address of `127.0.0.1`.  Accessing local services, such as local AppEngine, can usually be done by going in your browser to `localhost:8080`.  Docker runs inside a VM on your Mac, that VM has it's own IP Address which can be found using `boot2docker ip`. (Typically this is `192.168.59.103`).  The sample uses Google Sign-in to create a unique id for each user.  Google Sign-in requires that all hosts be accessed by name.  So, on a Mac, it is necessary to modify your `/etc/hosts` file to add in an entry for **docker**.  It should look like:
+All machines on the internet have a preset dns entry known at **localhost** which maps to an IP address of `127.0.0.1`. Accessing local services, can usually be done by going in your browser to `localhost:8080`.  Docker runs inside a VM on your Mac, that VM has it's own IP Address which can be found using `boot2docker ip`. (Typically this is `192.168.59.103`). The sample uses Google Sign-in to create a unique id for each user.  Google Sign-in requires that all hosts be accessed by name.  So, on a Mac, it is necessary to modify your `/etc/hosts` file to add in an entry for **docker**.  It should look like:
 
     127.0.0.1	    localhost
     255.255.255.255	broadcasthost
@@ -80,6 +82,7 @@ All machines on the internet have a preset dns entry known at **localhost** whic
  `exit`
  
 ## Using Jetty Runtime Locally
+This describes a [Jetty](http://www.eclipse.org/jetty/) based [Servlet](http://www.oracle.com/technetwork/java/index-jsp-135475.html) that has been made into a [Custom Runtime](https://cloud.google.com/appengine/docs/managed-vms/custom-runtimes) for [Google Managed VMs](https://cloud.google.com/appengine/docs/managed-vms/) -- This means that you do not have access to the normal AppEngine API's.
 
 1. Build the Docker Image for this project
 
@@ -150,14 +153,14 @@ The first thing to do, if you'd like to debug is use the `servlet.log()` methods
 
 1. [Find the Container](https://cloud.google.com/appengine/docs/managed-vms/access#accessing_the_docker_container_in_production)
 
-1. Either show the container log  `docker logs <containerID>` or enter the container `docker exec -it <containerID> /bin/bash
+1. Either show the container log  `docker logs <containerID>` or enter the container `docker exec -it <containerID> /bin/bash`
 
 
 ## Using Bigtable-Hello
 
 1. With your browser, go to [docker:8080](docker:8080) (Mac) or [localhost:8080](localhost:8080) (Linux) in your browser. (Local)  Or to https://<projectID>.appspot.com
 
-1. Sign-in with Google  It should could your visit. 
+1. Sign-in with Google  It should count your visit. 
 
 ## Using JSON
 
@@ -172,3 +175,5 @@ The first thing to do, if you'd like to debug is use the `servlet.log()` methods
 1. `curl -X GET http://localhost:8080/json/blueword`
 
 1. `curl -H "Content-Type: application/json" -X DELETE  http://localhost:8080/json/blueword`
+
+You will note that none of these examples use [Column Family]() specifiers.  It defaults to using **`cf1`**, if you wish to use the other column families specify `<columnFamily>:<column>` where columnFamily is one of cf1, cf2, cf3, or cf4 that you created earlier.
