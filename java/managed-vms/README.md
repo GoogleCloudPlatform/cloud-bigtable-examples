@@ -20,16 +20,16 @@ SECURITY WARNING - This app provides NO SECURITY protections for the two tables 
 1. [Using-JSON](#Using-JSON)
 
 ## Requirements
-1. Latest [gcloud](https://cloud.google.com/sdk/) use `gcloud components update` to get the latest.
+1. Latest version of [gcloud](https://cloud.google.com/sdk/) Update with `gcloud components update`
 1. [Docker](https://cloud.google.com/appengine/docs/managed-vms/getting-started#install_docker)
 1. Java 1.7
 
 ## Choice of Runtime
 
-There are two Managed VM runtimes available, **Jetty** and **AppEngine**.  The main differences between the two are that with the Jetty runtime one can debug in the Docker container on a local machine. AppEngine runtime has full access to the [AppEngine Services and API's](https://cloud.google.com/appengine/docs/managed-vms/#standard_runtimes), but can only be run in the Cloud.
+There are two Managed VM runtimes available, **Jetty** and **AppEngine**.  The Jetty runtime one can debug in the Docker container on a local machine. AppEngine runtime has full access to [AppEngine Services and API's](https://cloud.google.com/appengine/docs/managed-vms/#standard_runtimes), but can only be run in the Cloud.
 
 ## Docker on a Mac
-All machines on the internet have a preset dns entry known at **localhost** which maps to an IP address of `127.0.0.1`. Accessing local services, can usually be done by going in your browser to `localhost:8080`.  Docker runs inside a VM on your Mac, that VM has it's own IP Address which can be found using `boot2docker ip`. (Typically this is `192.168.59.103`). The sample uses Google Sign-in to create a unique id for each user.  Google Sign-in requires that all hosts be accessed by name.  So, on a Mac, it is necessary to modify your `/etc/hosts` file to add in an entry for **docker**.  It should look like:
+All machines on the internet have a preset DNS entry known at **localhost** which maps to an IP address of `127.0.0.1`. Accessing local services, can usually be done by going in your browser to `localhost:8080`.  Docker runs inside a VM on your Mac, that VM has it's own IP Address which can be found using `boot2docker ip`. (Typically this is `192.168.59.103`). The sample uses Google Sign-in to create a unique id for each user.  Google Sign-in requires that all hosts be accessed by name.  So, on a Mac, it is necessary to modify your `/etc/hosts` file to add in an entry for **docker**.  It should look like:
 
     127.0.0.1	    localhost
     255.255.255.255	broadcasthost
@@ -40,14 +40,13 @@ All machines on the internet have a preset dns entry known at **localhost** whic
 
 1. If you ever change IP addresses, you'll need to **`boot2docker restart`**
 
-
 ## Project Setup
 
 1. Follow the instructions for  [Creating a Google Developers Console project and client ID](https://developers.google.com/identity/sign-in/web/devconsole-project)
 
   Please be sure to add **`http://docker:8080`** (if you are on a Mac) and **`https://projectID.appspot.com`** as **Authorized Javascript Origins**
 
-1. Continuing to use the [Cloud Console](https://cloud.google.com/console) Enable Billing.
+1. Use the [Cloud Console](https://cloud.google.com/console) enable billing.
 
 1. Select **APIs & Auth > APIs**  
 
@@ -131,7 +130,7 @@ This describes a [Jetty](http://www.eclipse.org/jetty/) based [Servlet](http://w
 
 1. Edit `src/main/webapp/index.html` to set `google-signin-client_id` 
 
-1. Edit `Dockerfile` and change the **`FROM`** to be the just built `gae-4bt` image.
+1. Edit `Dockerfile` and set **`FROM`** to be the recently built `gae-4bt` image.
 
 1. Build the java artifacts and docker image
  
@@ -160,7 +159,7 @@ The first thing to do, if you'd like to debug is use the `servlet.log()` methods
 
 1. With your browser, go to [docker:8080](docker:8080) (Mac) or [localhost:8080](localhost:8080) (Linux) in your browser. (Local)  Or to https://<projectID>.appspot.com
 
-1. Sign-in with Google  It should count your visit. 
+1. Sign-in with Google. Afterwards, your visit should increment the counter.
 
 ## Using JSON
 
