@@ -53,7 +53,7 @@
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>${appengine.target.version}</version>
+      <version>${appengine.version}</version>
     </dependency>
 
     <dependency>

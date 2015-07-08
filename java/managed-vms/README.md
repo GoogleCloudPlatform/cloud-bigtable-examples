@@ -5,7 +5,7 @@ This app provides:
 1. A web interface that uses Cloud Bigtable to track the number of visits from an opaque version of your Google account.
 1. A simple REST interface that can read and write arbitrary data to a Cloud Bigtable table using GET, POST, and DELETE verbs.
 
-SECURITY WARNING - This app provides NO SECURITY protections for the two tables you create (**`gae-hello`** and **`from-json`** -- they are open to any user on the internet through this app.  It is suggested that instances should only be available testing and that only test data be used.
+SECURITY WARNING - This app provides NO SECURITY protections for the two tables you create (**`gae-hello`** and **`from-json`**) are open to any user on the internet through this app.  We suggest that instances should only be available while testing and that test data be used.
 
 ## Table of Contents
 1. [Requirements](#Requirements)
@@ -29,24 +29,23 @@ SECURITY WARNING - This app provides NO SECURITY protections for the two tables 
 There are two Managed VM runtimes available, **Jetty** and **AppEngine**.  The Jetty runtime one can debug in the Docker container on a local machine. AppEngine runtime has full access to [AppEngine Services and API's](https://cloud.google.com/appengine/docs/managed-vms/#standard_runtimes), but can only be run in the Cloud.
 
 ## Docker on a Mac
-All machines on the internet have a preset DNS entry known at **localhost** which maps to an IP address of `127.0.0.1`. Accessing local services, can usually be done by going in your browser to `localhost:8080`.  Docker runs inside a VM on your Mac, that VM has it's own IP Address which can be found using `boot2docker ip`. (Typically this is `192.168.59.103`). The sample uses Google Sign-in to create a unique id for each user.  Google Sign-in requires that all hosts be accessed by name.  So, on a Mac, it is necessary to modify your `/etc/hosts` file to add in an entry for **docker**.  It should look like:
+All machines on the internet have a preset DNS entry known at **localhost** which maps to an IP address of `127.0.0.1`. Accessing local services, can usually be done by going in your browser to `localhost:8080`.  Docker runs inside a VM on your Mac, that VM has it's own IP Address which can be found using `boot2docker ip`. (Typically this is `192.168.59.103`). The sample uses Google Sign-in to create a unique id for each user.  Google Sign-in requires that all hosts be accessed by name.  So, on a Mac, it is necessary to modify your `/etc/hosts` (often done by `sudo vi /etc/hosts` - if you know how to use vi) file to add in an entry for **docker**.  It should look like:
 
     127.0.0.1	    localhost
     255.255.255.255	broadcasthost
     ::1             localhost
     192.168.59.103  docker
 
-1. If boot2docker isn't already running, start it:  **`boot2docker start`**
-
-1. If you ever change IP addresses, you'll need to **`boot2docker restart`**
+* If boot2docker isn't already running, start it:  **`boot2docker start`**
+* If you ever change IP addresses, you'll need to **`boot2docker restart`**
 
 ## Project Setup
 
 1. Follow the instructions for  [Creating a Google Developers Console project and client ID](https://developers.google.com/identity/sign-in/web/devconsole-project)
 
-  Please be sure to add **`http://docker:8080`** (if you are on a Mac) and **`https://projectID.appspot.com`** as **Authorized Javascript Origins**
+  Please be sure to add **`http://docker:8080`** (if you are on a Mac), **`http://localhost:8080`**, and **`https://projectID.appspot.com`** as **Authorized Javascript Origins**
 
-1. Use the [Cloud Console](https://cloud.google.com/console) enable billing.
+1. Use [Cloud Console](https://cloud.google.com/console) to enable billing.
 
 1. Select **APIs & Auth > APIs**  
 
@@ -91,6 +90,8 @@ This describes a [Jetty](http://www.eclipse.org/jetty/) based [Servlet](http://w
 
 1. Edit `src/main/webapp/index.html` to set `google-signin-client_id` 
 
+1. Edit `Dockerfile` and set **`FROM`** to be the recently built `mvm-jetty-v03` image.
+
 1. Copy your keyfile *.json to `src/main/webapp/WEB-INF`
 
 1. Edit `Dockerfile`, uncomment and modify the line (if you will be running locally)
@@ -118,7 +119,9 @@ This describes a [Jetty](http://www.eclipse.org/jetty/) based [Servlet](http://w
 
  `gcloud preview app deploy app.yaml`
 
-1. go to the new default module which will be displayed in results from the deploy.  It will look like: `https://20150624t111224-dot-default-dot-PROJECTID.appspot.com`  -- This is not the default instance, and if you deploy you will need to manage your instances to both set default and delete unneeded instances.
+1. go to the new default module which will be displayed in results from the deploy.  It will look like: `https://20150624t111224-dot-default-dot-PROJECTID.appspot.com` 
+
+NOTE - This is not the **default** version - which Google Auth requires (well, you could specify a version in the list of Authorized referrers, but that would be long winded), so, you need to visit the [cloud console](https://cloud.google.com/console) Compute > App Engine > Versions and make your version the **default**.  Then test using `https://projectID.appspot.com`. If your test works, then you'll want to delete old versions eventually.
 
 ## Deploying the AppEngine Runtime
 
@@ -139,6 +142,10 @@ This describes a [Jetty](http://www.eclipse.org/jetty/) based [Servlet](http://w
 1. Deploy the application
 
  `gcloud preview app deploy app.yaml`
+
+1. go to the new default module which will be displayed in results from the deploy.  It will look like: `https://20150624t111224-dot-default-dot-PROJECTID.appspot.com` 
+
+NOTE - This is not the **default** version - which Google Auth requires (well, you could specify a version in the list of Authorized referrers, but that would be long winded), so, you need to visit the [cloud console](https://cloud.google.com/console) Compute > App Engine > Versions and make your version the **default**.  Then test using `https://projectID.appspot.com`. If your test works, then you'll want to delete old versions eventually.
 
 ## AppEngine Debugging Hints
 The first thing to do, if you'd like to debug is use the `servlet.log()` methods, they seem to work when other loggers don't.  Then take control of your GAE instance:
