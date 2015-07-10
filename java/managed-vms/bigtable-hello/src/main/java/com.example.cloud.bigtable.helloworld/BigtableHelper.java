@@ -59,8 +59,6 @@ public class BigtableHelper implements ServletContextListener {
     c.setClass("hbase.client.connection.impl",
         com.google.cloud.bigtable.hbase1_1.BigtableConnection.class,
         org.apache.hadoop.hbase.client.Connection.class);   // Required for Cloud Bigtable
-    c.set("google.bigtable.endpoint.host", "bigtable.googleapis.com");
-    c.set("google.bigtable.admin.endpoint.host", "bigtabletableadmin.googleapis.com");
 
     c.set("google.bigtable.project.id", PROJECT_ID);
     c.set("google.bigtable.cluster.name", CLUSTER_ID);
