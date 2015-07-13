@@ -41,7 +41,7 @@
     <junit.version>4.11</junit.version>
     <mockito.version>1.9.5</mockito.version>
 
-    <gcloud.plugin.version>0.9.65.v20150618</gcloud.plugin.version>
+    <gcloud.plugin.version>0.9.68.v20150707</gcloud.plugin.version>
 
     <requiredMavenVersion>3.2.1</requiredMavenVersion>
 
@@ -175,6 +175,15 @@
               <targetPath>WEB-INF</targetPath>
             </resource>
           </webResources>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>com.google.appengine</groupId>
+        <artifactId>gcloud-maven-plugin</artifactId>
+        <version>${gcloud.plugin.version}</version>
+        <configuration>
+          <gcloud_project>${projectid}</gcloud_project>
         </configuration>
       </plugin>
 

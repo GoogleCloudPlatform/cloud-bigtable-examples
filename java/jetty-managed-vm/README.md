@@ -1,5 +1,7 @@
 # Cloud Bigtable on Managed VM's<br />(Hello World for Cloud Bigtable)
 
+With the Jetty runtime one can debug in the Docker container on a local machine.  
+ 
 This app provides:
 
 1. A web interface that uses Cloud Bigtable to track the number of visits from an opaque version of your Google account.
@@ -9,13 +11,10 @@ SECURITY WARNING - This app provides NO SECURITY protections for the two tables 
 
 ## Table of Contents
 1. [Requirements](#Requirements)
-1. [Choice of Runtime](#Choice-of-Runtime)
 1. [Docker on a Mac](#Docker-on-a-Mac)
 1. [Project Setup](#Project-Setup)
 1. [Using Jetty Runtime Locally](#Using-Jetty-Runtime-Locally)
 1. [Deploying the Jetty Runtime](#Deploying-the-Jetty-Runtime)
-1. [Deploying the AppEngine Runtime](#Deploying-the-AppEngine-Runtime)
-1. [AppEngine Debugging Hints](#AppEngine-Debugging-Hints)
 1. [Using Bigtable-Hello](#Using-Bigtable-Hello)
 1. [Using-JSON](#Using-JSON)
 
@@ -23,10 +22,6 @@ SECURITY WARNING - This app provides NO SECURITY protections for the two tables 
 1. Latest version of [gcloud](https://cloud.google.com/sdk/) Update with `gcloud components update`
 1. [Docker](https://cloud.google.com/appengine/docs/managed-vms/getting-started#install_docker)
 1. Java 1.7
-
-## Choice of Runtime
-
-There are two Managed VM runtimes available, **Jetty** and **AppEngine**.  The Jetty runtime one can debug in the Docker container on a local machine. AppEngine runtime has full access to [AppEngine Services and API's](https://cloud.google.com/appengine/docs/managed-vms/#standard_runtimes), but can only be run in the Cloud.
 
 ## Docker on a Mac
 All machines on the internet have a preset DNS entry known at **localhost** which maps to an IP address of `127.0.0.1`. Accessing local services, can usually be done by going in your browser to `localhost:8080`.  Docker runs inside a VM on your Mac, that VM has it's own IP Address which can be found using `boot2docker ip`. (Typically this is `192.168.59.103`). The sample uses Google Sign-in to create a unique id for each user.  Google Sign-in requires that all hosts be accessed by name.  So, on a Mac, it is necessary to modify your `/etc/hosts` (often done by `sudo vi /etc/hosts` - if you know how to use vi) file to add in an entry for **docker**.  It should look like:
@@ -122,45 +117,6 @@ This describes a [Jetty](http://www.eclipse.org/jetty/) based [Servlet](http://w
 1. go to the new default module which will be displayed in results from the deploy.  It will look like: `https://20150624t111224-dot-default-dot-PROJECTID.appspot.com` 
 
 NOTE - This is not the **default** version - which Google Auth requires (well, you could specify a version in the list of Authorized referrers, but that would be long winded), so, you need to visit the [cloud console](https://cloud.google.com/console) Compute > App Engine > Versions and make your version the **default**.  Then test using `https://projectID.appspot.com`. If your test works, then you'll want to delete old versions eventually.
-
-## Deploying the AppEngine Runtime
-
-1. Build the Docker Image for this project
-
- `cd gae-docker; docker build -t gae-4bt .;cd ../bigtable-hello`
-
-1. Edit `src/main/java/com.example.cloud.bigtable.helloworld/BigtableHelper.java` to set `PROJECT_ID`, `CLUSTER_UNIQUE_ID`, and `ZONE` (if necessary) 
-
-1. Edit `src/main/webapp/index.html` to set `google-signin-client_id` 
-
-1. Edit `Dockerfile` and set **`FROM`** to be the recently built `gae-4bt` image.
-
-1. Build the java artifacts and docker image
- 
-    `mvn clean compile process-resources war:exploded && docker build -t bigtable-hello .`<br />
-
-1. Deploy the application
-
- `gcloud preview app deploy app.yaml`
-
-1. go to the new default module which will be displayed in results from the deploy.  It will look like: `https://20150624t111224-dot-default-dot-PROJECTID.appspot.com` 
-
-NOTE - This is not the **default** version - which Google Auth requires (well, you could specify a version in the list of Authorized referrers, but that would be long winded), so, you need to visit the [cloud console](https://cloud.google.com/console) Compute > App Engine > Versions and make your version the **default**.  Then test using `https://projectID.appspot.com`. If your test works, then you'll want to delete old versions eventually.
-
-## AppEngine Debugging Hints
-The first thing to do, if you'd like to debug is use the `servlet.log()` methods, they seem to work when other loggers don't.  Then take control of your GAE instance:
-
-1. Find your instance
-  `gcloud preview app modules list`
-
-1. [Change the management of the instances](https://cloud.google.com/appengine/docs/managed-vms/access#changing_management)
-
-1. [SSH to the instance](https://cloud.google.com/sdk/gcloud/reference/compute/ssh)
-
-1. [Find the Container](https://cloud.google.com/appengine/docs/managed-vms/access#accessing_the_docker_container_in_production)
-
-1. Either show the container log  `docker logs <containerID>` or enter the container `docker exec -it <containerID> /bin/bash`
-
 
 ## Using Bigtable-Hello
 
