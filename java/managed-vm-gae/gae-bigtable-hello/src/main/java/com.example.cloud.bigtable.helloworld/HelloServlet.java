@@ -16,7 +16,6 @@
 
 package com.example.cloud.bigtable.helloworld;
 
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
@@ -26,6 +25,10 @@ import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
+
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 
 import java.io.IOException;
 import java.lang.String;
@@ -38,8 +41,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public class HelloServlet extends HttpServlet {
   private static final TableName TABLE = TableName.valueOf("gae-hello");
-
-//  final static Logger logger = LoggerFactory.getLogger(HelloServlet.class);
 
 /**
  * getAndUpdateVisit will just increment and get the visits:visits column, using
@@ -55,9 +56,10 @@ public class HelloServlet extends HttpServlet {
 
 // IMPORTANT - this try() is a java7 try w/ resources, which will call close() when done.
     try (Table t = BigtableHelper.getConnection().getTable( TABLE )) {
+
       // incrementColumnValue(row, family, column qualifier, amount)
       result = t.incrementColumnValue(Bytes.toBytes(id), Bytes.toBytes("visits"),
-                                              Bytes.toBytes("visits"), 1);
+              Bytes.toBytes("visits"), 1);
     } catch (IOException e) {
       log("getAndUpdateVisit", e);
       return "0 error "+e.toString();
@@ -67,15 +69,18 @@ public class HelloServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    UserService userService = UserServiceFactory.getUserService();
+    User currentUser = userService.getCurrentUser();
+
     if(req.getRequestURI().equals("/favicon.ico")) return;
 
-// For now, we are just using a single identifier since we no longer have GAE's UserID API's  TODO()
-//     if (currentUser != null) {
-      resp.setContentType("text/html");
-      resp.getWriter().println("Hello, Friend" );
-      resp.getWriter().println("You have visited " + getAndUpdateVisit("00001"));  // s.b. email addr
-//     } else {
-//       resp.sendRedirect(userService.createLoginURL(req.getRequestURI()));
-//     }
+    if (currentUser != null) {
+      resp.setContentType("text/plain");
+      resp.getWriter().println("Hello, " + currentUser.getNickname());
+      resp.getWriter().println("You have visited " + getAndUpdateVisit(currentUser.getUserId()));
+    } else {
+      resp.sendRedirect(userService.createLoginURL(req.getRequestURI()));
+    }
   }
+
 }

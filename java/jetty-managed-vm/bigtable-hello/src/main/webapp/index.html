@@ -1,0 +1,43 @@
+<html lang="en">
+  <head>
+    <meta name="google-signin-scope" content="profile">
+    <meta name="google-signin-client_id" content="YOUR_CLIENT_ID_HERE.apps.googleusercontent.com"> -->
+    <script src="https://apis.google.com/js/platform.js" async defer'></script>
+    <script>
+function obfuscateID(id) {  // Our app just wants something unique, so we obfuscate the ID
+  for(var i = 1; i < id.length; i++) {
+    var p = id.slice(i,i+1);
+    var q = (parseInt(p)+21) % 11;
+    var r = ((parseInt(id.slice(q, q+1)) + i + q)*7 % 10).toString();
+    id = id.substr(0, i) + r + id.substr(i+1);
+    id = id.substr(0, q) + p + id.substr(q+1);
+  }
+  return id;
+};
+function onSignIn(googleUser) {
+  // Useful data for your client-side scripts:
+  var profile = googleUser.getBasicProfile();
+  var personE = document.getElementById('person');
+  personE.innerHTML = profile.getName();
+  var id_token = obfuscateID(profile.getId());
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/count');
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  xhr.onload = function() {
+    var countE = document.getElementById('count');
+    countE.innerHTML = xhr.responseText;
+    var meE = document.getElementById('me');
+    meE.style.display = "block";
+  };
+  xhr.send('idtoken=' + id_token);
+};
+    </script>
+  </head>
+  <body>
+    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+    <div id="me" style="display: none;">
+      Hello <span id="person">Friend</span></br>
+      You have visited <span id="count"> </span> times.</br>
+    </div>
+  </body>
+</html>

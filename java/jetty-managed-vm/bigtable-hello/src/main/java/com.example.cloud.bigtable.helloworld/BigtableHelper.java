@@ -20,9 +20,6 @@ import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 
 import javax.servlet.ServletContext;
@@ -48,8 +45,8 @@ public class BigtableHelper implements ServletContextListener {
 // your application, you may wish to keep this somewhere else.
   private static Connection connection = null;     // The authenticated connection
 
-//   private static final Logger LOG = LoggerFactory.getLogger(BigtableHelper.class);
   private static ServletContext sc;
+
 /**
  * Connect will establish the connection to Cloud Bigtable.
  **/

@@ -5,7 +5,6 @@ topology with a Spout that reads from the [Coinbase Exchange API WebSocket feed]
 feed and inserts the data into [Google Cloud Bigtable](https://cloud.google.com/bigtable).
 
 
-
 ## Provision a Bigtable Cluster
 
 In order to provision a Cloud Bigtable cluster you will first need to create a
@@ -45,8 +44,17 @@ enter the project id and info for the service account in the locations shown.
 
     <configuration>
       <property>
+        <name>google.bigtable.project.id</name><value>PROJECT ID</value>
+      </property>
+      <property>
+        <name>google.bigtable.cluster.name</name><value>BIGTABLE CLUSTER ID</value>
+      </property>
+      <property>
+        <name>google.bigtable.zone.name</name><value>ZONE WHERE CLUSTER IS PROVISIONED</value>
+      </property>
+      <property>
         <name>hbase.client.connection.impl</name>
-        <value>org.apache.hadoop.hbase.client.BigtableConnection</value>
+        <value>com.google.cloud.bigtable.hbase1_1.BigtableConnection</value>
       </property>
       <property>
         <name>google.bigtable.endpoint.host</name>
@@ -56,18 +64,6 @@ enter the project id and info for the service account in the locations shown.
         <name>google.bigtable.admin.endpoint.host</name>
         <value>table-admin-bigtable.googleapis.com</value>
       </property>
-      <property>
-        <name>google.bigtable.project.id</name>
-        <value><!-- PROJECT ID --></value>
-      </property>
-      <property>
-        <name>google.bigtable.cluster.name</name>
-        <value><!-- BIGTABLE CLUSTER ID --></value>
-      </property>
-      <property>
-        <name>google.bigtable.zone.name</name>
-        <value><!-- ZONE WHERE CLUSTER IS PROVISIONED --></value>
-      </property>
     </configuration>
 
 ## Build
@@ -76,13 +72,6 @@ You can install the dependencies and build the project using maven.
 
 First download the Cloud Bigtable client library and install it in your maven
 repository:
-
-    $ gsutil -m cp -R gs://cloud-bigtable-eap .
-    $ cd cloud-bigtable-eap/jars/current/
-    $ mvn install:install-file -Dfile=bigtable-hbase-0.1.4.jar \
-        -DgroupId=bigtable-client \
-        -DartifactId=bigtable-hbase \
-        -Dversion=0.1.4 -Dpackaging=jar -DgeneratePom=true
 
 Then you can clone the repository and build the sample:
 
