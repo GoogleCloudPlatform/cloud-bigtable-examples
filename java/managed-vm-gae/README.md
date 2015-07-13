@@ -63,13 +63,9 @@ SECURITY WARNING - This app will read / write the two tables you create (**`gae-
 
 1. Build the Docker Image for this project
 
- `cd gae-docker; docker build -t gae-4bt .;cd ../bigtable-hello`
+ `cd docker; docker build -t gae-4bt .;cd ../gae-bigtable-hello`
 
 1. Edit `src/main/java/com.example.cloud.bigtable.helloworld/BigtableHelper.java` to set `PROJECT_ID`, `CLUSTER_UNIQUE_ID`, and `ZONE` (if necessary) 
-
-1. Edit `src/main/webapp/index.html` to set `google-signin-client_id` 
-
-1. Edit `Dockerfile` and set **`FROM`** to be the recently built `gae-4bt` image.
 
 1. Build the java artifacts and docker image
  

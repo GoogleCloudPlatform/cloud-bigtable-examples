@@ -72,6 +72,8 @@ public class HelloServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     User currentUser = userService.getCurrentUser();
 
+    if(req.getRequestURI().equals("/favicon.ico")) return;
+
     if (currentUser != null) {
       resp.setContentType("text/plain");
       resp.getWriter().println("Hello, " + currentUser.getNickname());
