@@ -1,12 +1,7 @@
-# Python REST Examples
+# Cloud Bigtable Python REST Examples
 
-This example demonstrates how to use the HBase client to serve as a 
-REST Gateway to Cloud Bigtable. They involve two steps: first installing
-and configuring an HBase client to serve as the REST gateway, and second
-installing and configuring a REST client. In this example we use a 
+This example shows how to use the [HBase REST server](http://hbase.apache.org/book.html#_rest) with Cloud Bigtable. This involves two steps: first installing and configuring an HBase client to serve as the REST gateway, and second installing and configuring a REST client. In this example we use a 
 Python REST client using the [requests](http://docs.python-requests.org/en/latest/) library.
-
-## Cloud Bigtable Python REST Examples
 
 This project demonstrates how to use Python and the requests library to make
 calls to interact with an HBase REST gateway to Google Cloud Bigtable. It is
@@ -15,56 +10,18 @@ operations.
 
 ## HBase REST Gateway setup and configuration
 
-You can download our temporary HBase client fork here:
+* Setup the HBase Server by installing the [Cloud Bigtable HBase client](https://cloud.google.com/bigtable/docs/installing-hbase-client) please use at HBase 1.1.1 or later.
+  
+* Start the REST gateway, from the HBase release directory
 
-[Google TEMPORARY HBase Release](https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/releases/tag/v0.1.5)
+    `bin/hbase rest start`
 
-****************************************************************************************************
-IMPORTANT -- The HBase temporary fork  is a SNAPSHOT of hbase-1.0.1 that allows users to use 
-HBase with Bigtable on Google Cloud Platform.  These changes [1]
-(https://issues.apache.org/jira/browse/HBASE-12993) 
-[2](https://issues.apache.org/jira/browse/HBASE-13664) have been submitted and accepted by the Apache
-HBase project and once they are released we will no longer offer this TEMPORARY fork of HBase.
-***************************************************************************************************
-
-
-************************************************************************************************
-If you prefer, you can download the HBase src releases, and apply our patches.
-
-
-`curl -f -O http://mirror.reverse.net/pub/apache/hbase/hbase-1.0.1/hbase-1.0.1-src.tar.gz`
-
-`tar -xzf hbase-1.0.1-src.tar.gz`
-
-`cd hbase-1.0.1`
-
-`patch -p1 < fix-bigtable-rest-thrift.patch`
-
-`MAVEN_OPTS="-Xmx2g -XX:MaxPermSize=2g"  mvn install -DskipTests 
-assembly:single`
-
-The release is built in hbase-assembly/target/hbase-1.0.1-bin.tar.gz
-************************************************************************************************
-
-
-Once you have the HBase client, instructions for installing an HBase client for 
-Cloud Bigtable can be found here:
-
-https://cloud.google.com/bigtable/docs/installing-hbase-client
-
-Instead of the official HBase release in the section. "Downloading required 
-files", you use the forked HBase binaries instead.
-
-Then, to start the REST gateway, from the HBase release directory
-
-`./bin/hbase rest start`
-
-If you would like to connect to your REST gateway using your external IP on a
+* If you would like to connect to your REST gateway using your external IP on a
  GCE instance, you will have to open up a firewall port.
 
-`gcloud compute firewall-rules create <instance_name> --allow=tcp:8080`
+    `gcloud compute firewall-rules create <instance_name> --allow=tcp:8080`
 
-Note the security risk of an open firewall port, and also note that you can 
+    **Note** – There is a security risk of an open firewall port, and also note that you can 
 connect to the HBase gateway from a different GCE instance without opening up
  a firewall port using the private internal IP instead of the external IP.
  
@@ -75,39 +32,33 @@ on your instance.
 
 ## REST client setup and configuration
 
-On a client machine of your choice, change `baseurl` to match the external IP of
+* In `put_get.py` and `put_get_with_client.py` change `baseurl` to match the IP of
 the rest server.
 
-Finally, install the dependencies in requirements.txt, which is only requests.
-It is recommended you install [virtualenv](https://virtualenv.pypa.io/en/latest/).
- activate it, and install the depenencies in there.
+* Install the dependencies in `requirements.txt`, which is only requests.
+It is recommended you *install* [virtualenv](https://virtualenv.pypa.io/en/latest/).
+ *Activate* it, and *install the depenencies* in there.
  
  `pip install -r requirements.txt`
  
- Note that the above command will require sudo if not run in a virtualenv.
+ Note that the above command will require `sudo` if not run in a `virtualenv`.
 
 ## Instructions
 
-put_get.py demonstrates some simple operations directly using requests.
+* `put_get.py` demonstrates some simple operations directly using requests.
 
-put_get_with_client.py uses rest_client.py to wrap some of the details
+* `put_get_with_client.py` uses `rest_client.py` to wrap some of the details
 in methods, as well as creating a table if it doesn't exist.
 
-Running 
+* Running 
 
-`python put_get.py`
+  **`python put_get.py`** or **`python put_get_with_client.py`**
 
-or 
-
-`python put_get_with_client.py`
-
-should both print "Done!" if all the operations succeed.
+  They both should both print "Done!" if all the operations succeed.
 
 ### Troubleshooting Notes
 
 ### OS X
-If you run into a problem relating a java.net.UnknownHostException when 
-using localhost as the server on OS X, try explicitly setting an entry in the 
-the /etc/hosts file as described here:
-
-https://groups.google.com/forum/#!topic/h2-database/DuIlTLN5KOo
+If you run into a problem relating a `java.net.UnknownHostException` when 
+using `localhost` as the server on OS X, try explicitly setting an entry in the 
+the `/etc/hosts` file as [described](https://groups.google.com/forum/#!topic/h2-database/DuIlTLN5KOo).
