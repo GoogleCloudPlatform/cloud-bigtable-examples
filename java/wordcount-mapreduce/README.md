@@ -49,7 +49,7 @@ files to the VMs.  There are two ways to make a GCS Bucket,
    yours long and unique) 
 1. Use the gsutil tool's Make Bucket command:
 
-       $ gsutil mb -p <project ID> gs://<bucketName>
+    `$ gsutil mb -p <project ID> gs://<bucketName>`
 
 ### Build the Jar File
 
