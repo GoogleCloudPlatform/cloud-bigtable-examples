@@ -60,10 +60,13 @@ SECURITY WARNING - This app will read / write the two tables you create (**`gae-
  `exit`
  
 ## Deploying the AppEngine Runtime
+1. get a copy of the [appengine-java-vm-runtime](https://github.com/googlecloudplatform/appengine-java-vm-runtime]
 
-1. Build the Docker Image for this project
+1. Follow the instructions to build the docker container, except instead of **myimage**, call your runtime **gae-mvm-01**
 
- `cd docker; docker build -t gae-4bt .;cd ../gae-bigtable-hello`
+1. Build our base docker image in the **docker* folder of this project 
+
+ `docker build -t gae-4bt . && cd ../gae-bigtable-hello`
 
 1. Edit `src/main/java/com.example.cloud.bigtable.helloworld/BigtableHelper.java` to set `PROJECT_ID`, `CLUSTER_UNIQUE_ID`, and `ZONE` (if necessary) 
 

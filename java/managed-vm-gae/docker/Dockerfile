@@ -12,24 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# FROM appengine-mvn-opensource
-FROM gcr.io/google_appengine/java-compat
+#FROM gcr.io/google_appengine/java-compat
+FROM gae-mvm-01
 
-# ENV RUNTIME_DIR /var/lib/jetty
-# ADD . /var/lib/jetty/
-ENV RUNTIME_DIR /home/vmagent/appengine-java-vmruntime
-ADD . /home/vmagent/appengine-java-vmruntime/
-WORKDIR /app
-
-# IMPORTANT - This version of alpn-boot supports java 1.7.0u75 & u76
-# see http://www.eclipse.org/jetty/documentation/current/alpn-chapter.html#alpn-versions
-# RUN mkdir ${RUNTIME_DIR}/lib/alpn \
-#     && curl -0 http://central.maven.org/maven2/org/mortbay/jetty/alpn/alpn-boot/7.1.3.v20150130/alpn-boot-7.1.3.v20150130.jar -o ${RUNTIME_DIR}/lib/alpn/alpn-boot-7.1.3.v20150130.jar \
-#     && chmod +x /var/lib/jetty/prerun.sh
+ADD . /var/lib/jetty
 
 RUN mkdir ${RUNTIME_DIR}/lib/alpn \
  && wget -O ${RUNTIME_DIR}/lib/alpn/alpn-boot-7.1.3.v20150130.jar http://central.maven.org/maven2/org/mortbay/jetty/alpn/alpn-boot/7.1.3.v20150130/alpn-boot-7.1.3.v20150130.jar \
  && wget -O ${RUNTIME_DIR}/lib/alpn/alpn-boot-8.1.3.v20150130.jar http://central.maven.org/maven2/org/mortbay/jetty/alpn/alpn-boot/8.1.3.v20150130/alpn-boot-8.1.3.v20150130.jar \
  && chmod +x ${RUNTIME_DIR}/prerun.sh
 
-ENTRYPOINT ["${RUNTIME_DIR}/prerun.sh"]
+ENTRYPOINT ["/var/lib/jetty/prerun.sh"]
