@@ -62,10 +62,10 @@ object WordCount {
       conn.close()
     }
 
-    val wordCounts = sc.textFile(file)
-      .flatMap(_.split(" "))
-      .filter(_!="").map((_,1))
-      .reduceByKey((a,b) => a+b)
+    val wordCounts = sc.textFile(file).
+      flatMap(_.split(" ")).
+      filter(_!="").map((_,1)).
+      reduceByKey((a,b) => a+b)
     wordCounts.foreachPartition {
       partition => {
         val config = confBroadcast.value.value
@@ -76,8 +76,8 @@ object WordCount {
 	  partition.foreach{ wordCount => {
 	    val (word, count) = wordCount
   	    try {
-	      mutator.mutate(new Put(Bytes.toBytes(word))
-                .addColumn(COLUMN_FAMILY_BYTES,
+	      mutator.mutate(new Put(Bytes.toBytes(word)).
+                addColumn(COLUMN_FAMILY_BYTES,
                   COLUMN_NAME_BYTES, 
                   Bytes.toBytes(count)))
 	    } catch {
