@@ -14,6 +14,10 @@
 
 FROM mvm-jetty-v03
 
+ENV BIGTABLE_PROJECT "PROJECT_ID"
+ENV BIGTABLE_CLUSTER "CLUSTERID"
+ENV BIGTABLE_ZONE    "us-central1-b"
+
 # The below line is only needed if you want to run on your local computer
 # ENV GOOGLE_APPLICATION_CREDENTIALS=/app/WEB-INF/YOUR_KEY_FILE.json
 

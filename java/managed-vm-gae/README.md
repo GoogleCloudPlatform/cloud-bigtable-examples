@@ -68,7 +68,7 @@ SECURITY WARNING - This app will read / write the two tables you create (**`gae-
 
  `docker build -t gae-4bt . && cd ../gae-bigtable-hello`
 
-1. Edit `src/main/java/com.example.cloud.bigtable.helloworld/BigtableHelper.java` to set `PROJECT_ID`, `CLUSTER_UNIQUE_ID`, and `ZONE` (if necessary) 
+1. Edit `Dockerfile` to set `BIGTABLE_PROJECT`, `BIGTABLE_CLUSTER`, and `BIGTABLE_ZONE` (if necessary) 
 
 1. Build the java artifacts and docker image
  

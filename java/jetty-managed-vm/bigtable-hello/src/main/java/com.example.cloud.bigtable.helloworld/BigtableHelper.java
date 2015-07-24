@@ -31,14 +31,10 @@ import javax.servlet.ServletContextListener;
  *
  **/
 public class BigtableHelper implements ServletContextListener {
-/**
- * You need to set your PROJECT_ID, CLUSTER_UNIQUE_ID (typically 'cluster') here, and if different,
- * your Zone.
- **/
-  private static final String PROJECT_ID = "PROJECT_ID_HERE";
-  private static final String CLUSTER_ID = "CLUSTER_UNIQUE_ID";
 
-  private static final String ZONE = "us-central1-b";
+  private static String PROJECT_ID = System.getenv("BIGTABLE_PROJECT");
+  private static String CLUSTER_ID = System.getenv("BIGTABLE_CLUSTER");
+  private static String ZONE = System.getenv("BIGTABLE_ZONE");
 
 // The initial connection to Cloud Bigtable is an expensive operation -- We cache this Connection
 // to speed things up.  For this sample, keeping them here is a good idea, for
@@ -58,6 +54,12 @@ public class BigtableHelper implements ServletContextListener {
         org.apache.hadoop.hbase.client.Connection.class);   // Required for Cloud Bigtable
     c.set("google.bigtable.endpoint.host", "bigtable.googleapis.com");
     c.set("google.bigtable.admin.endpoint.host", "bigtabletableadmin.googleapis.com");
+
+    if (ZONE == null) ZONE = "us-central1-b"; // default
+    if (PROJECT_ID == null || CLUSTER_ID == null ) {
+      sc.log("environment variables BIGTABLE_PROJECT, BIGTABLE_CLUSTER, and BIGTABLE_ZONE need to be defined.");
+      return;
+    }
 
     c.set("google.bigtable.project.id", PROJECT_ID);
     c.set("google.bigtable.cluster.name", CLUSTER_ID);
