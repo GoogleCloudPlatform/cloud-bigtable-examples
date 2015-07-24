@@ -81,11 +81,10 @@ This describes a [Jetty](http://www.eclipse.org/jetty/) based [Servlet](http://w
 
  `cd jetty-docker; docker build -t mvm-jetty-v03 .;cd ../bigtable-hello`
 
-1. Edit `src/main/java/com.example.cloud.bigtable.helloworld/BigtableHelper.java` to set `PROJECT_ID`, `CLUSTER_UNIQUE_ID`, and `ZONE` (if necessary) 
+1. Edit `Dockerfile` to set `BIGTABLE_PROJECT`, `BIGTABLE_CLUSTER`, and `BIGTABLE_ZONE` (if necessary) 
 
 1. Edit `src/main/webapp/index.html` to set `google-signin-client_id` 
 
-1. Edit `Dockerfile` and set **`FROM`** to be the recently built `mvm-jetty-v03` image.
 
 1. Copy your keyfile *.json to `src/main/webapp/WEB-INF`
 
