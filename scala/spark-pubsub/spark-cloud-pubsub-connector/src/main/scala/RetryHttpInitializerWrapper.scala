@@ -1,18 +1,16 @@
 package connector;
-
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.http.HttpBackOffIOExceptionHandler;
-import com.google.api.client.http.HttpBackOffUnsuccessfulResponseHandler;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.http.HttpResponse;
-import com.google.api.client.http.HttpUnsuccessfulResponseHandler;
-import com.google.api.client.util.ExponentialBackOff;
-import com.google.api.client.util.Sleeper;
-import com.google.common.base.Preconditions;
-
-import java.io.IOException;
-import java.util.logging.Logger;
+import com.google.api.client.auth.oauth2.Credential
+import com.google.api.client.http.HttpBackOffIOExceptionHandler
+import com.google.api.client.http.HttpBackOffUnsuccessfulResponseHandler
+import com.google.api.client.http.HttpRequest
+import com.google.api.client.http.HttpRequestInitializer
+import com.google.api.client.http.HttpResponse
+import com.google.api.client.http.HttpUnsuccessfulResponseHandler
+import com.google.api.client.util.ExponentialBackOff
+import com.google.api.client.util.Sleeper
+import com.google.common.base.Preconditions
+import java.io.IOException
+import java.util.logging.Logger
 
 /**
   *  THIS WAS TAKEN FROM THE CMDLINE-PULL EXAMPLE OF GOOGLE CLOUD PLATFORM and translated into scala: 
@@ -28,12 +26,12 @@ class RetryHttpInitializerWrapper(wrappedCredential: Credential) extends HttpReq
       *  A private logger.
       */
     private val LOG =
-      Logger.getLogger("RetryHttpInitializerWrapper".getClass.getName);
+      Logger.getLogger("RetryHttpInitializerWrapper".getClass.getName)
 
     /**
       *  One minutes in miliseconds.
       */
-    private val ONEMINITUES = 60000;
+    private val ONEMINITUES = 60000
 
     /**
       *  Intercepts the request for filling in the "Authorization"
@@ -46,7 +44,7 @@ class RetryHttpInitializerWrapper(wrappedCredential: Credential) extends HttpReq
     /**
       *  A sleeper; you can replace it with a mock in your test.
       */
-    private var sleeper: Sleeper = Sleeper.DEFAULT;
+    private var sleeper: Sleeper = Sleeper.DEFAULT
 
     /**
       *  A constructor.
@@ -67,8 +65,8 @@ class RetryHttpInitializerWrapper(wrappedCredential: Credential) extends HttpReq
       *  @param sleeper Sleeper for easy testing.
       */
     def this(wrappedCredential1: Credential, sleeper1: Sleeper) {
-        this(Preconditions.checkNotNull(wrappedCredential1));
-        sleeper = sleeper1;
+        this(Preconditions.checkNotNull(wrappedCredential1))
+        sleeper = sleeper1
     } 
 
   override def initialize(request: HttpRequest) {
@@ -76,8 +74,8 @@ class RetryHttpInitializerWrapper(wrappedCredential: Credential) extends HttpReq
     val backoffHandler =
               new HttpBackOffUnsuccessfulResponseHandler(
                        new ExponentialBackOff())
-                .setSleeper(sleeper);
-        request.setInterceptor(wrappedCredential);
+                .setSleeper(sleeper)
+        request.setInterceptor(wrappedCredential)
         request.setUnsuccessfulResponseHandler(
                  new HttpUnsuccessfulResponseHandler() {
                     override def handleResponse(
@@ -90,16 +88,15 @@ class RetryHttpInitializerWrapper(wrappedCredential: Credential) extends HttpReq
                             // the return code or message indicated
                             // something specific to authentication,
                             // and no backoff is desired.
-                            return true;
+                            true
                         } else if (backoffHandler.handleResponse(
                            request, response, supportsRetry)) {
                             // Otherwise, we defer to the judgement of
                             // our internal backoff handler.
-                            LOG.info("Retrying "
-                                   + request.getUrl().toString());
-                            return true;
+                            LOG.info("Retrying "+ request.getUrl().toString())
+                            true
                         } else {
-                            return false;
+                            false
                         }
                     }
                  });
