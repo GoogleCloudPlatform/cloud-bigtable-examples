@@ -161,7 +161,7 @@ command:
 
 (Still in Shell B) Run the message processor with the following command:
 
-    $ SPARK_DIST_CLASSPATH=$(hbase classpath) spark-submit --jars $((hbase classpath) | tr ":" ","),/home/hadoop/google-api-services-pubsub-v1-rev2-1.20.0.jar,/home/hadoop/spark-cloud-pubsub-connector_2.10-0.0.jar cloud-pubsub-receiver_2.10-0.0.jar pubsub_test [TOPIC_NAME] [PROJECT_ID] subscription1 5 
+    $ bigtable-spark-submit --extraJars /home/hadoop/google-api-services-pubsub-v1-rev2-1.20.0.jar,/home/hadoop/spark-cloud-pubsub-connector_2.10-0.0.jar cloud-pubsub-receiver_2.10-0.0.jar pubsub_test [TOPIC_NAME] [PROJECT_ID] subscription1 5
 
 In Shell A, Download a text file to the cloud-bigtable-examples/scala/spark-pubsub/cloud-pubsub-producer/ directory:
 
