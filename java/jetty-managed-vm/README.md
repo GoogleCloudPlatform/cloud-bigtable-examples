@@ -79,7 +79,7 @@ This describes a [Jetty](http://www.eclipse.org/jetty/) based [Servlet](http://w
 
 1. Build the Docker Image for this project
 
- `cd jetty-docker; docker build -t mvm-jetty-v03 .;cd ../bigtable-hello`
+ `cd docker; docker build -t mvm-jetty-v03 .;cd ../bigtable-hello`
 
 1. Edit `Dockerfile` to set `BIGTABLE_PROJECT`, `BIGTABLE_CLUSTER`, and `BIGTABLE_ZONE` (if necessary) 
 
