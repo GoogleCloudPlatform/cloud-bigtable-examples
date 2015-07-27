@@ -1,11 +1,12 @@
 # Example: Integrating Spark Streaming with Cloud Pubsub
 
-This example uses [Spark Streaming][spark-streaming] to pull for new files
-every 30 seconds and perform a simple Spark job that counts the number of
-times a word appears in each new file. The Spark job uses
-[Cloud Bigtable][landing-page] to store the results.
+This example integrates [Spark Streaming][spark-streaming] with [Cloud Pubsub][cloud-pubsub].
+The spark-cloud-pubsub-connector enables users to pull Cloud Pubsub messages with Spark Streaming.
+The cloud-pubsub-producer publishes messages to a Cloud Pubsub topic, and cloud-pubsub-receiver
+processes those messages through Spark streaming and uses [Cloud Bigtable][landing-page] to store the results.
 
 [spark-streaming]: https://spark.apache.org/
+[cloud-pubsub]: https://cloud.google.com/pubsub/docs
 [landing-page]: https://cloud.google.com/bigtable/docs/
 
 Please note that we encourage users to develop programs on their local 
