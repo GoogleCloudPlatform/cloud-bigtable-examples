@@ -73,17 +73,17 @@ All machines on the internet have a preset DNS entry known at **localhost** whic
  `create 'gae-hello', 'visits'`<br />
  `create 'from-json', 'cf1', 'cf2', 'cf3', 'cf4'`
  `exit`
- 
+
 ## Using Jetty Runtime Locally
 This describes a [Jetty](http://www.eclipse.org/jetty/) based [Servlet](http://www.oracle.com/technetwork/java/index-jsp-135475.html) that has been made into a [Custom Runtime](https://cloud.google.com/appengine/docs/managed-vms/custom-runtimes) for [Google Managed VMs](https://cloud.google.com/appengine/docs/managed-vms/) -- This means that you do not have access to the normal AppEngine API's.
 
 1. Build the Docker Image for this project
 
- `cd jetty-docker; docker build -t mvm-jetty-v03 .;cd ../bigtable-hello`
+ `cd docker; docker build -t mvm-jetty-v03 .;cd ../bigtable-hello`
 
-1. Edit `Dockerfile` to set `BIGTABLE_PROJECT`, `BIGTABLE_CLUSTER`, and `BIGTABLE_ZONE` (if necessary) 
+1. Edit `Dockerfile` to set `BIGTABLE_PROJECT`, `BIGTABLE_CLUSTER`, and `BIGTABLE_ZONE` (if necessary)
 
-1. Edit `src/main/webapp/index.html` to set `google-signin-client_id` 
+1. Edit `src/main/webapp/index.html` to set `google-signin-client_id`
 
 
 1. Copy your keyfile *.json to `src/main/webapp/WEB-INF`
