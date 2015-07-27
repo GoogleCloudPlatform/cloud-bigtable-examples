@@ -21,11 +21,11 @@ VMs can be [configured with bdutil to run Spark applications][create-vms].
 + [Building the code sample][building-the-code-sample]
 + [Running the code sample with spark-submit][running-the-code-sample]
 
-[before-you-start]: https://github.com/taragu/cloud-bigtable-examples/blob/spark/scala/spark-pubsub/README.md#before-you-start
-[create-vms]: https://github.com/taragu/cloud-bigtable-examples/blob/spark/scala/spark-pubsub/README.md#creating-compute-engine-vm-instances-for-cloud-bigtable-cloud-pubsub-and-spark-using-bdutil
-[overview]: https://github.com/taragu/cloud-bigtable-examples/blob/spark/scala/spark-pubsub/README.md#overview-of-the-code-sample
-[building-the-code-sample]: https://github.com/taragu/cloud-bigtable-examples/blob/spark/scala/spark-pubsub/README.md#building-the-code-sample
-[running-the-code-sample]: https://github.com/taragu/cloud-bigtable-examples/blob/spark/scala/spark-pubsub/README.md#running-the-code-sample-with-spark-submit
+[before-you-start]: #before-you-start
+[create-vms]: #creating-compute-engine-vm-instances-for-cloud-bigtable-cloud-pubsub-and-spark-using-bdutil
+[overview]: #overview-of-the-code-sample
+[building-the-code-sample]: #building-the-code-sample
+[running-the-code-sample]: #running-the-code-sample-with-bigtable-spark-submit
 
 
 ## Before you start
@@ -33,7 +33,7 @@ VMs can be [configured with bdutil to run Spark applications][create-vms].
 Before you run this code sample, you'll need to complete the following tasks:
 
 1. [Create a Cloud Bigtable cluster][create-cluster]. Be sure to note the
-project ID.
+cluster ID.
 2. [Create a service account and a JSON key file][json-key].
 
 [create-cluster]: https://cloud.google.com/bigtable/docs/creating-cluster
@@ -136,7 +136,7 @@ You should see the connector jar in target/scala-2.10/. We don't need to copy it
 
 
 
-## Running the code sample with spark-submit
+## Running the code sample with bigtable-spark-submit
 
 We need to run both the message producer and the message processor at the same time: the message producer publishes messages, and the message processor transforms the data and writes them to Cloud Bigtable. We suggest running the producer on your local desktop (if you don't want to install sbt on your GCE VMs), and running the processor on your VMs. Run the following commands to run your application with spark-submit.
 
