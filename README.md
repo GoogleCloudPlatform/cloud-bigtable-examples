@@ -20,6 +20,11 @@ There are many examples / sample / demo programs here, each with its own README.
 * [Thrift](python/thrift) - Setup an HBase Thrift server(s) to use Cloud Bigtable and access that from Python to do basic operations.
 * [REST](python/rest) - Setup an HBase REST server(s) to use Cloud Bigtable and access it from Python and do basic operations.
 
+## Scala / Spark
+* [PubSub](https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/tree/master/scala/spark-pubsub) – Integrating Spark Streaming with Cloud Pubsub
+* [Standalone-Wordcount](https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/tree/master/scala/spark-standalone-wordcount) – Simple Spark job that counts the number of times a word appears in a text file
+* [Streaming-Wordcount](https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/tree/master/scala/spark-streaming-wordcount) – Pulls new files from a GCS directory every 30 seconds and perform a simple Spark job that counts the number of times a word appears in each new file
+
 ## Contributing changes
 * See [CONTRIBUTING.md](CONTRIBUTING.md)
 
