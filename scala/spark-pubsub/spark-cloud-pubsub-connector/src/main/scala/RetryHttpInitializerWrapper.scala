@@ -19,8 +19,13 @@ import java.util.logging.Logger
   *  RetryHttpInitializerWrapper will automatically retry upon RPC
   *  failures, preserving the auto-refresh behavior of the Google
   *  Credentials.
+  * 
+  * @param wrappedCredential Intercepts the request for filling in the "Authorization"
+  *    header field, as well as recovering from certain unsuccessful
+  *    error codes wherein the Credential must refresh its token for a
+  *    retry
   */
-class RetryHttpInitializerWrapper(_wrappedCredential: Credential) extends HttpRequestInitializer {
+class RetryHttpInitializerWrapper(wrappedCredential: Credential) extends HttpRequestInitializer {
 
   /**
     *  A private logger.
@@ -34,17 +39,9 @@ class RetryHttpInitializerWrapper(_wrappedCredential: Credential) extends HttpRe
   private val ONEMINITUES = 60000
 
   /**
-    *  Intercepts the request for filling in the "Authorization"
-    *  header field, as well as recovering from certain unsuccessful
-    *  error codes wherein the Credential must refresh its token for a
-    *  retry.
-    */
-  private var wrappedCredential: Credential = _wrappedCredential
-
-  /**
     *  A sleeper; you can replace it with a mock in your test.
     */
-  private var sleeper: Sleeper = Sleeper.DEFAULT
+  private val sleeper: Sleeper = Sleeper.DEFAULT
 
   override def initialize(request: HttpRequest) {
     request.setReadTimeout(2 * ONEMINITUES); // 2 minutes read timeout
