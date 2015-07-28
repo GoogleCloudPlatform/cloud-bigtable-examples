@@ -16,7 +16,7 @@ object CloudPubsubProducer {
       throw new Exception("Please enter project name, topic name,"
         + " and input file name as arguments. The project and "
         + "topic must exist. Example: sbt \"project cloud-pubsub-"
-        + "producer\" \"run sduskis-hello-shakespear cmd_line_1 "
+        + "producer\" \"run [PROJECT_ID] [TOPIC_NAME] "
         + "romeo_juliet.txt\" ")
     }
     val projectID = args(0)
@@ -25,10 +25,10 @@ object CloudPubsubProducer {
     val client = CloudPubsubUtils.getClient()
     val topic = "projects/"+ projectID + "/topics/" + topicName
 
-    scala.tools.nsc.io.File(fileName)
-      .lines()
-      .filter(_!="")
-      .foreach{ line => {
+    scala.tools.nsc.io.File(fileName).
+      lines().
+      filter(_!="").
+      foreach{ line => {
         val message = line
         println(line)
         val pubsubMessage = new PubsubMessage()

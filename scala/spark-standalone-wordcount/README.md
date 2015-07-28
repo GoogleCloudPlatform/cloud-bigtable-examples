@@ -5,9 +5,8 @@ This example uses Spark to perform a simple Spark job that counts the number of 
 
 Spark: https://spark.apache.org/
 
-Please note that we encourage users to develop programs on their local machine, not on the VMs. User 
-will develop a Spark application on his/her computer, use sbt to build, then transfer the application 
-jar to a GCE VM. The GCE VMs can be configured with bdutil to run Spark applications. 
+User will develop a Spark application on his/her computer, use sbt to build, then transfer the application
+jar to a GCE VM. The GCE VMs can be configured with bdutil to run Spark applications.
 
 Note that the bdutil release 1.3.1 does not have the latest configuration to connect Cloud Bigtable
 with Spark. Please use bdutil's git repository master branch to create and configure GCE VMs. 

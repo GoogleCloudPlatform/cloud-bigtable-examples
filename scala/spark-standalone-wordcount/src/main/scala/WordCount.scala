@@ -1,9 +1,9 @@
 import org.apache.spark.rdd.NewHadoopRDD
 import org.apache.hadoop.hbase.{
-  HBaseConfiguration, HTableDescriptor, 
+  HBaseConfiguration, HTableDescriptor,
   HColumnDescriptor, TableName}
 import org.apache.hadoop.hbase.client.{
-  Connection, ConnectionFactory, Put, 
+  Connection, ConnectionFactory, Put,
   Table, RetriesExhaustedWithDetailsException}
 import org.apache.hadoop.hbase.mapreduce.TableInputFormat
 import org.apache.hadoop.hbase.util.Bytes
@@ -13,13 +13,13 @@ import org.apache.spark._
 // Implicit conversion between Java list and Scala list
 import scala.collection.JavaConversions._
 
-/** Word count in Spark 
+/** Word count in Spark
   */
 object WordCount {
   val COLUMN_FAMILY = "cf"
   val COLUMN_FAMILY_BYTES = Bytes.toBytes(COLUMN_FAMILY)
   val COLUMN_NAME_BYTES = Bytes.toBytes("Count")
-       
+  
   def main(args: Array[String]) {
     if (args.length < 3) {
       throw new Exception("Please enter input file path, "
@@ -32,17 +32,17 @@ object WordCount {
 
     var hbaseConfig = HBaseConfiguration.create()
     hbaseConfig.set(TableInputFormat.INPUT_TABLE, name)
-    // broadcast a serialized config object allows us to use the 
+    // broadcast a serialized config object allows us to use the
     // same conf object among the driver and executors
     val confBroadcast = sc.broadcast(
       new SerializableWritable(hbaseConfig))
-    // set config object to null to prevent it to be serialized 
+    // set config object to null to prevent it to be serialized
     // when using spark-shell
     hbaseConfig = null
     val conn = ConnectionFactory.createConnection(
       confBroadcast.value.value)
 
-    // create new table if it's not already existed
+    // create new table if doesn't already exist
     val tableName = TableName.valueOf(name)
     try {
       val admin = conn.getAdmin()
@@ -50,7 +50,7 @@ object WordCount {
 	val tableDescriptor = new HTableDescriptor(tableName)
 	tableDescriptor.addFamily(
           new HColumnDescriptor(COLUMN_FAMILY))
-	admin.createTable(tableDescriptor)
+	  admin.createTable(tableDescriptor)
       }
       admin.close()
     } catch {
@@ -78,7 +78,7 @@ object WordCount {
   	    try {
 	      mutator.mutate(new Put(Bytes.toBytes(word)).
                 addColumn(COLUMN_FAMILY_BYTES,
-                  COLUMN_NAME_BYTES, 
+                  COLUMN_NAME_BYTES,
                   Bytes.toBytes(count)))
 	    } catch {
 	      // This is a possible exception with BufferedMutator.mutate
@@ -101,9 +101,9 @@ object WordCount {
     }
     //validate table count
     val hBaseRDD = sc.newAPIHadoopRDD(
-      confBroadcast.value.value, 
-      classOf[TableInputFormat], 
-      classOf[org.apache.hadoop.hbase.io.ImmutableBytesWritable], 
+      confBroadcast.value.value,
+      classOf[TableInputFormat],
+      classOf[org.apache.hadoop.hbase.io.ImmutableBytesWritable],
       classOf[org.apache.hadoop.hbase.client.Result])
     val count = hBaseRDD.count.toInt
 

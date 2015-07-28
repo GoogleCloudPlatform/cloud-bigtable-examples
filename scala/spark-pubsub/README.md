@@ -9,10 +9,8 @@ processes those messages through Spark streaming and uses [Cloud Bigtable][landi
 [cloud-pubsub]: https://cloud.google.com/pubsub/docs
 [landing-page]: https://cloud.google.com/bigtable/docs/
 
-Please note that we encourage users to develop programs on their local 
-machine, not on the VMs. User will develop a Spark application on his/her 
-computer, use sbt to build (explained in the “Building the code sample” 
-section below), then transfer the application jar to a GCE VM. The GCE 
+User will develop a Spark application on his/her computer, use sbt to build (explained in the
+“Building the code sample” section below), then transfer the application jar to a GCE VM. The GCE 
 VMs can be [configured with bdutil to run Spark applications][create-vms].
 
 ## Table of Content
@@ -74,9 +72,9 @@ CloudPubsubUtils.scala contains utility methods that can be used either in the S
 
 RetryHttpInitializerWrapper.scala retries failed RPC calls, and is used in the getClient method in CloudPubsubUtils.scala
 
-You can use the Spark-Cloud Pubsub connector in two ways. If you would like to use it without any modification, you can download a pre-built jar from a GCS storage bucket with the following command:
+You can use the Spark-Cloud Pubsub connector in two ways. If you would like to use it without any modification, you can download a pre-built jar with the following command:
 
-    $ gsutil cp gs://cloud-bigtable-examples/spark-cloud-pubsub-connector_2.10-0.0.jar PATH/TO/SAVE/THE/FILE
+    $ curl -O https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/releases/tag/v0.2.0/spark-cloud-pubsub-connector_2.10-0.0.jar
 
 If you would like modify it, you can build your modified connector with "sbt package" which uses the .sbt build file in cloud-bigtable-examples/scala/spark-pubsub/spark-cloud-pubsub-connector/sparkcloudpubsubconnector.sbt.
 
@@ -111,9 +109,9 @@ We need to build three applications: the Spark-Cloud Pubsub connector, the messa
 
 You should see the connector jar in target/scala-2.10/. Copy it
 into a GCS bucket, log in to the master VM, then download the it from the GCS
-bucket. You can also download the pre-built connector instead of building it on your machine with the following command:
+bucket. You can also download the pre-built connector with the following command:
 
-    $ gsutil cp gs://cloud-bigtable-examples/spark-cloud-pubsub-connector_2.10-0.0.jar PATH/TO/SAVE/THE/FILE
+    $ curl -O https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/releases/tag/v0.2.0/spark-cloud-pubsub-connector_2.10-0.0.jar
 
 Next, build the message producer with the following commands:
 
@@ -158,7 +156,7 @@ command:
 (Still in Shell B) We also need to Cloud Pubsub API jar as well as the Spark-Cloud Pubsub connector on Spark's classpath in order to call their API in runtime. Download the Cloud Pubsub API jar and the connector jar with the following commands:
 
     $ wget http://central.maven.org/maven2/com/google/apis/google-api-services-pubsub/v1-rev2-1.20.0/google-api-services-pubsub-v1-rev2-1.20.0.jar
-    $ gsutil cp gs://cloud-bigtable-examples/spark-cloud-pubsub-connector_2.10-0.0.jar .
+	$ curl -O https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/releases/tag/v0.2.0/spark-cloud-pubsub-connector_2.10-0.0.jar
 
 (Still in Shell B) Run the message processor with the following command:
 

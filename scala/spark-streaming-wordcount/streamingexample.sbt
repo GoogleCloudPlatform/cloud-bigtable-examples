@@ -10,6 +10,4 @@ libraryDependencies ++= Seq("org.apache.spark" % "spark-core_2.10" % "1.4.0",
 		    "org.apache.hbase" % "hbase-client" % "1.0.1", 
 		    "org.apache.hbase" % "hbase-server" % "1.0.1", 
 		    "org.apache.hbase" % "hbase-common" % "1.0.1",
-		    "org.apache.hbase" % "hbase-annotations" % "1.0.1",
-		    "org.mortbay.jetty.alpn" % "alpn-boot" % "7.0.0.v20140317")
-
+		    "org.apache.hbase" % "hbase-annotations" % "1.0.1")

@@ -1,7 +1,7 @@
 import org.apache.spark.rdd.NewHadoopRDD
 import org.apache.hadoop.hbase.{HBaseConfiguration, HTableDescriptor,
   HColumnDescriptor, TableName}
-import org.apache.hadoop.hbase.client.{ConnectionFactory, Connection, 
+import org.apache.hadoop.hbase.client.{ConnectionFactory, Connection,
   Table, Increment, RetriesExhaustedWithDetailsException}
 import org.apache.hadoop.hbase.util.Bytes
 import java.lang.Exception
@@ -14,7 +14,7 @@ import scala.collection.JavaConversions._
 
 /** Streaming word count in Spark
   */
-object SreamingExample {  
+object SreamingExample {
   val COLUMN_FAMILY = "WordCount"
   val COLUMN_FAMILY_BYTES = Bytes.toBytes(COLUMN_FAMILY)
   val COLUMN_NAME_BYTES = Bytes.toBytes("Count")
@@ -33,7 +33,7 @@ object SreamingExample {
     val ssc = new StreamingContext(conf, Seconds(30))
 
     var hbaseConfig = HBaseConfiguration.create()
-    // broadcast a serialized config object allows us to use 
+    // broadcast a serialized config object allows us to use
     // the same conf object among the driver and executors
     val confBroadcast = ssc.sparkContext.broadcast(
       new SerializableWritable(hbaseConfig))
@@ -78,7 +78,7 @@ object SreamingExample {
 	        mutator.mutate(
                   new Increment(
                     Bytes.toBytes(word))
-                    .addColumn(COLUMN_FAMILY_BYTES, 
+                    .addColumn(COLUMN_FAMILY_BYTES,
                       COLUMN_NAME_BYTES,
                       count))
 	      } catch {
