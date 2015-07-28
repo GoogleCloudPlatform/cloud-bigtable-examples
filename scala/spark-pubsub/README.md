@@ -159,7 +159,7 @@ command:
 (Still in Shell B) The Cloud Pubsub API jar and the Spark-Cloud Pubsub connector jar need to be on Spark's classpath in order to call their API in runtime. Download the Cloud Pubsub API jar and the connector jar with the following commands:
 
     $ curl -O http://central.maven.org/maven2/com/google/apis/google-api-services-pubsub/v1-rev2-1.20.0/google-api-services-pubsub-v1-rev2-1.20.0.jar
-	$ curl -O https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/archive/spark-cloud-pubsub-connector_2.10-0.0.jar
+    $ curl -O https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/archive/spark-cloud-pubsub-connector_2.10-0.0.jar
 
 (Still in Shell B) Run the message processor with the following command:
 
@@ -172,5 +172,5 @@ In Shell A, download a text file which will be read by the message producer:
 (Still in Shell A) run the message producer in the cloud-bigtable-examples/scala/spark-pubsub/cloud-pubsub-producer directory with the following command:
 
     $ # cd into the cloud-pubsub-producer directory if you haven't done so already
-	$ cd PATH/TO/cloud-bigtable-examples/scala/spark-pubsub/cloud-pubsub-producer
+    $ cd PATH/TO/cloud-bigtable-examples/scala/spark-pubsub/cloud-pubsub-producer
     $ sbt "project cloud-pubsub-producer" "run [PROJECT_ID] [TOPIC_NAME] PATH/TO/romeo_juliet.txt"

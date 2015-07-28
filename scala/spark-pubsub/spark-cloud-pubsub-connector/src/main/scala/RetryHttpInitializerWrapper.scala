@@ -47,8 +47,8 @@ class RetryHttpInitializerWrapper(wrappedCredential: Credential) extends HttpReq
     request.setReadTimeout(2 * ONEMINITUES); // 2 minutes read timeout
     val backoffHandler =
       new HttpBackOffUnsuccessfulResponseHandler(
-        new ExponentialBackOff())
-        .setSleeper(sleeper)
+        new ExponentialBackOff()).
+        setSleeper(sleeper)
     request.setInterceptor(wrappedCredential)
     request.setUnsuccessfulResponseHandler(
       new HttpUnsuccessfulResponseHandler() {
@@ -75,7 +75,7 @@ class RetryHttpInitializerWrapper(wrappedCredential: Credential) extends HttpReq
         }
       });
     request.setIOExceptionHandler(
-      new HttpBackOffIOExceptionHandler(new ExponentialBackOff())
-        .setSleeper(sleeper));
+      new HttpBackOffIOExceptionHandler(new ExponentialBackOff()).
+        setSleeper(sleeper));
   }
 }

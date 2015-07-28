@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableList
 // Implicit conversion between Java list and Scala list
 import scala.collection.JavaConversions._
 
-/** Read an input file line by line, and publush each line 
+/** Read an input file line by line, and publush each line
   * as a message to a Cloud Pubsub topic
   */
 object CloudPubsubProducer {
@@ -31,17 +31,17 @@ object CloudPubsubProducer {
       foreach{ line => {
         val message = line
         println(line)
-        val pubsubMessage = new PubsubMessage()
-          .encodeData(message.getBytes("UTF-8"))
+        val pubsubMessage = new PubsubMessage().
+          encodeData(message.getBytes("UTF-8"))
         val messages = ImmutableList.of(pubsubMessage)
         val publishRequest = new PublishRequest()
         publishRequest.setMessages(messages)
-        val publishResponse = client.projects()
-          .topics()
-          .publish(topic, publishRequest)
-          .execute()
+        val publishResponse = client.projects().
+          topics().
+          publish(topic, publishRequest).
+          execute()
         val messageIds = publishResponse.getMessageIds()
-        messageIds.foreach(messageId => 
+        messageIds.foreach(messageId =>
           println("Published with a message id: " + messageId))
         Thread.sleep(1000)
       }  }

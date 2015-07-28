@@ -1,8 +1,8 @@
 import connector.CloudPubsubInputDStream
 import connector.CloudPubsubUtils
-import org.apache.hadoop.hbase.{HBaseConfiguration, HTableDescriptor, 
+import org.apache.hadoop.hbase.{HBaseConfiguration, HTableDescriptor,
   HColumnDescriptor, TableName}
-import org.apache.hadoop.hbase.client.{Connection, ConnectionFactory, 
+import org.apache.hadoop.hbase.client.{Connection, ConnectionFactory,
   Put, RetriesExhaustedWithDetailsException}
 import org.apache.hadoop.hbase.util.Bytes
 import java.lang.Exception
@@ -30,26 +30,26 @@ object CloudPubsubReceiver {
     val projectName = args(2)
     val subscriptionName = args(3)
     val samplingFreq = args(4)
-    val sparkConf = new SparkConf()
-      .setAppName("CloudPubsubWordCount")
+    val sparkConf = new SparkConf().
+      setAppName("CloudPubsubWordCount")
     val ssc = new StreamingContext(
-      sparkConf, 
+      sparkConf,
       Seconds(samplingFreq.toInt))
     // create a config object; the config specified that the
-    // connection's implementation is BigtableConnection in 
+    // connection's implementation is BigtableConnection in
     // hbase-site.xml
     var hbaseConfig = HBaseConfiguration.create()
-    // broadcast a serialized config object allows us to use 
+    // broadcast a serialized config object allows us to use
     // the same conf object among the driver and executors
     val confBroadcast = ssc.sparkContext.broadcast(
       new SerializableWritable(hbaseConfig))
-    // set config object to null so that we don't get the 
-    // TaskNotSerializableException when we deserialize 
-    // confBroadcast in each partition; Spark thinks we still 
+    // set config object to null so that we don't get the
+    // TaskNotSerializableException when we deserialize
+    // confBroadcast in each partition; Spark thinks we still
     // use hbaseConfig even though we're using its serialized version
     hbaseConfig = null
     // create a connection with the deserialized confBroadcast,
-    // which should be the same as hbaseConfig before we set 
+    // which should be the same as hbaseConfig before we set
     // hbaseConfig to null
     val conn = ConnectionFactory.createConnection(
       confBroadcast.value.value)
@@ -73,10 +73,10 @@ object CloudPubsubReceiver {
     }
 
     // obtain DStream of Cloud Pubsub messages
-    val ackIDMessagesDStream = CloudPubsubUtils
-      .createDirectStream(ssc,
+    val ackIDMessagesDStream = CloudPubsubUtils.
+      createDirectStream(ssc,
         projectName,
-        topicName, 
+        topicName,
         subscriptionName)
     ackIDMessagesDStream.foreach{ rdd => {
       rdd.collect().toList.foreach{ tuple => {
@@ -85,12 +85,12 @@ object CloudPubsubReceiver {
         // convert a list of words into an RDD so that we can perform map
         // and reduceByKey in a distrubuted manner
         val wordsRDD = ssc.sparkContext.parallelize(splitWords)
-        val wordCounts = wordsRDD
-          .filter(_!="")
-          .map((_,1))
-          .reduceByKey((a,b)=>a+b)
+        val wordCounts = wordsRDD.
+          filter(_!="").
+          map((_,1)).
+          reduceByKey((a,b)=>a+b)
         wordCounts.foreachPartition{ partition => {
-          // minimize the number of connections we need to create: 
+          // minimize the number of connections we need to create:
           // create a connection object for each partition
           val config = confBroadcast.value.value
           val conn1 = ConnectionFactory.createConnection(config)
@@ -100,26 +100,26 @@ object CloudPubsubReceiver {
             partition.foreach{ wordCount => {
               val (word, count) = wordCount
               try {
-                // we use Put here instead of Increment because Put is 
+                // we use Put here instead of Increment because Put is
                 // idempotent, whereas Increment is not. Therefore when
-                // a mutate action fails halfway, we can redo the Put 
+                // a mutate action fails halfway, we can redo the Put
                 // action without sacrificing the correctness of the value;
-                // we append a message ID to each word as the row, so 
+                // we append a message ID to each word as the row, so
                 // that a count for that message is 'complete'. Streaming
                 // is ongoing and we're always getting new messages, and
                 // therefore we cannot wait till we get all the messages,
                 // count the occurance of a word, and perform the put.
                 // (TODO) ideally, we want to run a separate program that
-                // periodically consolidates the table by summing all 
-                // results of a row with the same prefix before '|', and 
+                // periodically consolidates the table by summing all
+                // results of a row with the same prefix before '|', and
                 // write them to a new table
                 mutator.mutate(new Put(
-                  Bytes.toBytes(word + "|" + messageID))
-                  .addColumn(COLUMN_FAMILY_BYTES, 
-                    COLUMN_NAME_BYTES, 
+                  Bytes.toBytes(word + "|" + messageID)).
+                  addColumn(COLUMN_FAMILY_BYTES,
+                    COLUMN_NAME_BYTES,
                     Bytes.toBytes(count)))
               } catch {
-                // This is a possible exception we could get with 
+                // This is a possible exception we could get with
                 // BufferedMutator.mutate
                 case retries_e: RetriesExhaustedWithDetailsException => {
                   retries_e.getCauses().foreach(_.printStackTrace)
@@ -138,11 +138,11 @@ object CloudPubsubReceiver {
           }
         }  }
         val client = CloudPubsubUtils.getClient()
-        // send the ACK messages for the group of messages we receive 
+        // send the ACK messages for the group of messages we receive
         // in this RDD
         CloudPubsubUtils.sendAcks(
-          client, 
-          Array(ackID).toList, 
+          client,
+          Array(ackID).toList,
           "projects/"+projectName+"/subscriptions/"+subscriptionName)
       }  }
     }   }

@@ -10,19 +10,19 @@ import com.google.api.services.pubsub.PubsubScopes;
 import com.google.api.services.pubsub.model.AcknowledgeRequest;
 import com.google.api.services.pubsub.model.PubsubMessage;
 import com.google.api.services.pubsub.model.Subscription;
-// Allow implicit conversions supporting interoperability between 
+// Allow implicit conversions supporting interoperability between
 // Scala and Java collections
 import scala.collection.JavaConversions._
 // Allow converting between Scala and Java collections using asScala
 // and asJava methods
 import scala.collection.JavaConverters._
 
-/** Utility methods that can be used by both CloudPubsubInputDStream 
+/** Utility methods that can be used by both CloudPubsubInputDStream
   * class and client (cloud-pubsub-receiver) 
   */
 object CloudPubsubUtils {
 
-  /** Creates a new CloudPubsubInputDStream which pull messages from 
+  /** Creates a new CloudPubsubInputDStream which pull messages from
     *   a pubsub topic
     * 
     * @param ssc StreamingContext object
@@ -34,14 +34,14 @@ object CloudPubsubUtils {
     */
   def createDirectStream (
     @transient ssc: StreamingContext,
-    projectName: String, 
-    topicName: String, 
+    projectName: String,
+    topicName: String,
     subscriptionName: String):
       CloudPubsubInputDStream = {
     new CloudPubsubInputDStream(
-      ssc, 
-      projectName, 
-      topicName, 
+      ssc,
+      projectName,
+      topicName,
       subscriptionName)
   }
 
@@ -52,7 +52,7 @@ object CloudPubsubUtils {
     * @return a new Pubsub client object
     */
   def getClient(): Pubsub = {
-    getClient(Utils.getDefaultTransport(), 
+    getClient(Utils.getDefaultTransport(),
       Utils.getDefaultJsonFactory())
   }
 
@@ -68,17 +68,17 @@ object CloudPubsubUtils {
     jsonFactory: JsonFactory): Pubsub = {
     Preconditions.checkNotNull(httpTransport)
     Preconditions.checkNotNull(jsonFactory)
-    var credential = GoogleCredential
-      .getApplicationDefault(httpTransport, jsonFactory)
+    var credential = GoogleCredential.
+      getApplicationDefault(httpTransport, jsonFactory)
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(PubsubScopes.all())
     }
     // Please use custom HttpRequestInitializer for automatic
     // retry upon failures.
     val initializer = new RetryHttpInitializerWrapper(credential)
-    new Pubsub.Builder(httpTransport, jsonFactory, initializer)
-      .setApplicationName("Spark Cloud Pubsub Connector")
-      .build()
+    new Pubsub.Builder(httpTransport, jsonFactory, initializer).
+      setApplicationName("Spark Cloud Pubsub Connector").
+      build()
   }
 
   /**
@@ -89,8 +89,8 @@ object CloudPubsubUtils {
     * @param subscriptionName name of your Cloud Pubsub subscription
     */
   def sendAcks(
-    client: Pubsub, 
-    ackIds: scala.collection.immutable.List[String], 
+    client: Pubsub,
+    ackIds: scala.collection.immutable.List[String],
     subscriptionName: String) {
     assert(client!=null)
     assert(ackIds != null)
@@ -98,10 +98,10 @@ object CloudPubsubUtils {
     val ackRequest = new AcknowledgeRequest()
     val ackIdList = ackIds.asJava
     ackRequest.setAckIds(ackIdList)
-    client.projects()
-      .subscriptions()
-      .acknowledge(subscriptionName, ackRequest)
-      .execute()
+    client.projects().
+      subscriptions().
+      acknowledge(subscriptionName, ackRequest).
+      execute()
   }
 
 
@@ -113,13 +113,13 @@ object CloudPubsubUtils {
     * @param project the name of your GCP project
     * @return a list of your Cloud Pubsub subscriptions
     */
-  def listSubscriptions(client: Pubsub, project: String): 
+  def listSubscriptions(client: Pubsub, project: String):
       List[Subscription] = {
     var ret = List[Subscription]()
     var nextPageToken: String = null
-    val listMethod = client.projects()
-      .subscriptions()
-      .list("projects/" + project)
+    val listMethod = client.projects().
+      subscriptions().
+      list("projects/" + project)
     do {
       if (nextPageToken != null) {
         listMethod.setPageToken(nextPageToken)
@@ -132,6 +132,6 @@ object CloudPubsubUtils {
       }
       nextPageToken = response.getNextPageToken()
     } while (nextPageToken != null)
-    ret
+      ret
   }
 }

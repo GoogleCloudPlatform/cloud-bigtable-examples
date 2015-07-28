@@ -47,10 +47,10 @@ object WordCount {
     try {
       val admin = conn.getAdmin()
       if (!admin.tableExists(tableName)) {
-	val tableDescriptor = new HTableDescriptor(tableName)
-	tableDescriptor.addFamily(
+        val tableDescriptor = new HTableDescriptor(tableName)
+        tableDescriptor.addFamily(
           new HColumnDescriptor(COLUMN_FAMILY))
-	  admin.createTable(tableDescriptor)
+        admin.createTable(tableDescriptor)
       }
       admin.close()
     } catch {
@@ -69,34 +69,34 @@ object WordCount {
     wordCounts.foreachPartition {
       partition => {
         val config = confBroadcast.value.value
-	val conn1 = ConnectionFactory.createConnection(config)
+        val conn1 = ConnectionFactory.createConnection(config)
         val tableName1 = TableName.valueOf(name)
         val mutator = conn1.getBufferedMutator(tableName1)
-	try {
-	  partition.foreach{ wordCount => {
-	    val (word, count) = wordCount
-  	    try {
-	      mutator.mutate(new Put(Bytes.toBytes(word)).
+        try {
+          partition.foreach{ wordCount => {
+            val (word, count) = wordCount
+            try {
+              mutator.mutate(new Put(Bytes.toBytes(word)).
                 addColumn(COLUMN_FAMILY_BYTES,
                   COLUMN_NAME_BYTES,
                   Bytes.toBytes(count)))
-	    } catch {
-	      // This is a possible exception with BufferedMutator.mutate
-	      case retries_e: RetriesExhaustedWithDetailsException => {
-		retries_e.getCauses().foreach(_.printStackTrace)
-		println("Retries: "+retries_e.getClass)
-		throw retries_e.getCauses().get(0)
-	      }
-	      case e: Exception => {
+            } catch {
+              // This is a possible exception with BufferedMutator.mutate
+              case retries_e: RetriesExhaustedWithDetailsException => {
+                retries_e.getCauses().foreach(_.printStackTrace)
+                println("Retries: "+retries_e.getClass)
+                throw retries_e.getCauses().get(0)
+              }
+              case e: Exception => {
                 println("General exception: "+ e.getClass)
                 throw e
               }
-	    }
-	  }   }
-	} finally {
-	  mutator.close()
-	  conn1.close()
-	}
+            }
+          }   }
+        } finally {
+          mutator.close()
+          conn1.close()
+        }
       }
     }
     //validate table count

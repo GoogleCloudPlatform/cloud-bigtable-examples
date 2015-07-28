@@ -27,9 +27,9 @@ object SreamingExample {
     val inputDirectory = args(0)
     val name = args(1)
 
-    val conf = new SparkConf()
-      .setMaster("local[*]")
-      .setAppName("FileWordCount")
+    val conf = new SparkConf().
+      setMaster("local[*]").
+      setAppName("FileWordCount")
     val ssc = new StreamingContext(conf, Seconds(30))
 
     var hbaseConfig = HBaseConfiguration.create()
@@ -44,9 +44,9 @@ object SreamingExample {
     try {
       val admin = conn.getAdmin()
       if (!admin.tableExists(tableName)) {
-	val tableDescriptor = new HTableDescriptor(tableName)
-	tableDescriptor.addFamily(new HColumnDescriptor(COLUMN_FAMILY))
-	admin.createTable(tableDescriptor)
+        val tableDescriptor = new HTableDescriptor(tableName)
+        tableDescriptor.addFamily(new HColumnDescriptor(COLUMN_FAMILY))
+        admin.createTable(tableDescriptor)
       }
       admin.close()
     } catch {
@@ -60,46 +60,46 @@ object SreamingExample {
 
     val dStream = ssc.textFileStream(inputDirectory)
     dStream.foreachRDD { rdd =>
-      val wordCounts = rdd
-        .flatMap(_.split(" "))
-        .filter(_!="")
-        .map((_,1))
-        .reduceByKey((a,b) => a+b)
+      val wordCounts = rdd.
+        flatMap(_.split(" ")).
+        filter(_!="").
+        map((_,1)).
+        reduceByKey((a,b) => a+b)
       wordCounts.foreachPartition {
- 	partition => {
+        partition => {
           val config = confBroadcast.value.value
-	  val conn1 = ConnectionFactory.createConnection(config)
+          val conn1 = ConnectionFactory.createConnection(config)
           val tableName1 = TableName.valueOf(name)
           val mutator = conn1.getBufferedMutator(tableName1)
-	  try {
-	    partition.foreach{ wordCount => {
-	      val (word, count) = wordCount
-  	      try {
-	        mutator.mutate(
+          try {
+            partition.foreach{ wordCount => {
+              val (word, count) = wordCount
+              try {
+                mutator.mutate(
                   new Increment(
-                    Bytes.toBytes(word))
-                    .addColumn(COLUMN_FAMILY_BYTES,
+                    Bytes.toBytes(word)).
+                    addColumn(COLUMN_FAMILY_BYTES,
                       COLUMN_NAME_BYTES,
                       count))
-	      } catch {
-	        // This is a possible exception we could get with
+              } catch {
+                // This is a possible exception we could get with
                 // BufferedMutator.mutate
-	        case retries_e: RetriesExhaustedWithDetailsException => {
-		  retries_e.getCauses().foreach(_.printStackTrace)
-		  println("Retries: "+retries_e.getClass)
-		  throw retries_e.getCauses().get(0)
-		}
-	        case e: Exception => {
+                case retries_e: RetriesExhaustedWithDetailsException => {
+                  retries_e.getCauses().foreach(_.printStackTrace)
+                  println("Retries: "+retries_e.getClass)
+                  throw retries_e.getCauses().get(0)
+                }
+                case e: Exception => {
                   println("General exception: "+ e.getClass)
                   throw e
                 }
-	      }
-	    }   }
-	  } finally {
-	    mutator.close()
-	    conn1.close()
-	  }
-	}
+              }
+            }   }
+          } finally {
+            mutator.close()
+            conn1.close()
+          }
+        }
       }
     }
     ssc.start()

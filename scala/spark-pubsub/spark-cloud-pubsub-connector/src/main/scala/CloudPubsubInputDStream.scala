@@ -24,9 +24,9 @@ import org.apache.spark.streaming._
   */
 class CloudPubsubInputDStream (
   @transient ssc_ : StreamingContext,
-  projectName : String, 
+  projectName : String,
   topicName : String,
-  subscriptionName : String) 
+  subscriptionName : String)
     extends InputDStream[(String, String, String)](ssc_)
     with Logging{
   private val BATCH_SIZE = 1000
@@ -36,7 +36,7 @@ class CloudPubsubInputDStream (
   private var client = CloudPubsubUtils.getClient()
   private var subscriptionObject: Subscription = null
 
-  /** Helper method that returns a subscription object by name; 
+  /** Helper method that returns a subscription object by name;
     * if subscription does not exist, method will return null
     *
     * @param subscriptionName name of Cloud Pubsub subscription
@@ -48,7 +48,7 @@ class CloudPubsubInputDStream (
     var ret: Subscription = null
     existingSubscriptions.foreach{ thisSubscription => {
       if (thisSubscription.getName() == subscriptionFullName) {
-	ret = thisSubscription
+        ret = thisSubscription
       }
     }  }
     ret
@@ -59,9 +59,9 @@ class CloudPubsubInputDStream (
     * @return array of subscription objects
     */
   def getExistingSubscriptions(): Array[Subscription] = {
-    CloudPubsubUtils
-      .listSubscriptions(client, projectName)
-      .toArray
+    CloudPubsubUtils.
+      listSubscriptions(client, projectName).
+      toArray
   }
 
   /** Overriding the start method in InputDStream;
@@ -70,7 +70,7 @@ class CloudPubsubInputDStream (
     *  a Cloud Pubsub topic
     * 
     */
-  override def start() { 
+  override def start() {
     log.info("Starting CloudPubsubInfoDStream")
     val existingSubscription = returnSubscriptionObject(
       subscriptionFullName)
@@ -82,10 +82,10 @@ class CloudPubsubInputDStream (
       log.info("Creating a new subscription")
       subscriptionObject = new Subscription().setTopic(topicFullName)
       try {
-        subscriptionObject = client.projects()
-          .subscriptions()
-          .create(subscriptionFullName, subscriptionObject)
-          .execute()
+        subscriptionObject = client.projects().
+          subscriptions().
+          create(subscriptionFullName, subscriptionObject).
+          execute()
       } catch {
         case json_response_e: GoogleJsonResponseException =>  {
           val error = json_response_e.getDetails()
@@ -103,11 +103,11 @@ class CloudPubsubInputDStream (
     * this method is/should be called when streaming stops;
     * however, the actions in this method do not run when streaming stops (TODO)
     */
-  override def stop() { 
-    client.projects()
-      .subscriptions()
-      .delete(subscriptionFullName)
-      .execute()
+  override def stop() {
+    client.projects().
+      subscriptions().
+      delete(subscriptionFullName).
+      execute()
     log.info("Deleted subscription: " + subscriptionFullName)
   }
 
@@ -123,36 +123,36 @@ class CloudPubsubInputDStream (
     */
   override def compute(validTime: Time): Option[RDD[(String, String, String)]] = {
     val clientCompute = CloudPubsubUtils.getClient()
-    val pullRequest = new PullRequest()
-      .setReturnImmediately(false)
-      .setMaxMessages(BATCH_SIZE)
+    val pullRequest = new PullRequest().
+      setReturnImmediately(false).
+      setMaxMessages(BATCH_SIZE)
     var messageRDD: RDD[(String, String, String)] = null
     var hasNewMessages = false
-    val pullResponse = clientCompute
-      .projects()
-      .subscriptions()
-      .pull(subscriptionFullName, pullRequest)
-      .execute()
+    val pullResponse = clientCompute.
+      projects().
+      subscriptions().
+      pull(subscriptionFullName, pullRequest).
+      execute()
     val receivedMessagesAsJava = pullResponse.getReceivedMessages()
     if (receivedMessagesAsJava != null) {
       val receivedMessages = JavaConversions.asScalaBuffer(receivedMessagesAsJava)
       if (receivedMessages.length != 0) {
-        val idMessageSeq = receivedMessages
-          .filter(_.getMessage()!=null)
-          .filter(_.getMessage().decodeData()!=null)
-          .map{ receivedMessage => {
+        val idMessageSeq = receivedMessages.
+          filter(_.getMessage()!=null).
+          filter(_.getMessage().decodeData()!=null).
+          map{ receivedMessage => {
             log.info("New message: " + new String(
-              receivedMessage.getMessage().decodeData(), 
+              receivedMessage.getMessage().decodeData(),
               "UTF-8"))
             (receivedMessage.getAckId(),
-              receivedMessage.getMessage().getMessageId(), 
+              receivedMessage.getMessage().getMessageId(),
               new String(receivedMessage.getMessage().decodeData(), "UTF-8"))
           } }
         // create an RDD of idMessageSeq
         messageRDD = ssc_.sparkContext.parallelize(idMessageSeq)
-	hasNewMessages = true
-        log.info("New message(s) at time " 
-          + validTime + ":\n" 
+        hasNewMessages = true
+        log.info("New message(s) at time "
+          + validTime + ":\n"
           + "there are "+ messageRDD.count
           + " new message(s)")
       }
