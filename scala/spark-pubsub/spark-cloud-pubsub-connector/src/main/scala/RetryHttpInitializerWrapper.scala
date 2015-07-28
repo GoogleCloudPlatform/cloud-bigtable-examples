@@ -20,88 +20,65 @@ import java.util.logging.Logger
   *  failures, preserving the auto-refresh behavior of the Google
   *  Credentials.
   */
-class RetryHttpInitializerWrapper(wrappedCredential: Credential) extends HttpRequestInitializer {
+class RetryHttpInitializerWrapper(_wrappedCredential: Credential) extends HttpRequestInitializer {
 
-    /**
-      *  A private logger.
-      */
-    private val LOG =
-      Logger.getLogger("RetryHttpInitializerWrapper".getClass.getName)
+  /**
+    *  A private logger.
+    */
+  private val LOG =
+    Logger.getLogger("RetryHttpInitializerWrapper".getClass.getName)
 
-    /**
-      *  One minutes in miliseconds.
-      */
-    private val ONEMINITUES = 60000
+  /**
+    *  One minutes in miliseconds.
+    */
+  private val ONEMINITUES = 60000
 
-    /**
-      *  Intercepts the request for filling in the "Authorization"
-      *  header field, as well as recovering from certain unsuccessful
-      *  error codes wherein the Credential must refresh its token for a
-      *  retry.
-      */
-//    private var wrappedCredential: Credential = null;
+  /**
+    *  Intercepts the request for filling in the "Authorization"
+    *  header field, as well as recovering from certain unsuccessful
+    *  error codes wherein the Credential must refresh its token for a
+    *  retry.
+    */
+  private var wrappedCredential: Credential = _wrappedCredential
 
-    /**
-      *  A sleeper; you can replace it with a mock in your test.
-      */
-    private var sleeper: Sleeper = Sleeper.DEFAULT
-
-    /**
-      *  A constructor.
-      * 
-      *  @param wrappedCredential Credential which will be wrapped and
-      *  used for providing auth header.
-
-    def this(wrappedCredential: Credential) {
-        this(wrappedCredential, Sleeper.DEFAULT);
-    }
-      */
-
-    /**
-      *  A protected constructor only for testing.
-      * 
-      *  @param wrappedCredential Credential which will be wrapped and
-      *  used for providing auth header.
-      *  @param sleeper Sleeper for easy testing.
-      */
-    def this(wrappedCredential1: Credential, sleeper1: Sleeper) {
-        this(Preconditions.checkNotNull(wrappedCredential1))
-        sleeper = sleeper1
-    } 
+  /**
+    *  A sleeper; you can replace it with a mock in your test.
+    */
+  private var sleeper: Sleeper = Sleeper.DEFAULT
 
   override def initialize(request: HttpRequest) {
     request.setReadTimeout(2 * ONEMINITUES); // 2 minutes read timeout
     val backoffHandler =
-              new HttpBackOffUnsuccessfulResponseHandler(
-                       new ExponentialBackOff())
-                .setSleeper(sleeper)
-        request.setInterceptor(wrappedCredential)
-        request.setUnsuccessfulResponseHandler(
-                 new HttpUnsuccessfulResponseHandler() {
-                    override def handleResponse(
-                        request: HttpRequest,
-                        response: HttpResponse,
-                        supportsRetry: Boolean) : Boolean = {
-                        if (wrappedCredential.handleResponse(
-                               request, response, supportsRetry)) {
-                            // If credential decides it can handle it,
-                            // the return code or message indicated
-                            // something specific to authentication,
-                            // and no backoff is desired.
-                            true
-                        } else if (backoffHandler.handleResponse(
-                           request, response, supportsRetry)) {
-                            // Otherwise, we defer to the judgement of
-                            // our internal backoff handler.
-                            LOG.info("Retrying "+ request.getUrl().toString())
-                            true
-                        } else {
-                            false
-                        }
-                    }
-                 });
-        request.setIOExceptionHandler(
-                new HttpBackOffIOExceptionHandler(new ExponentialBackOff())
-                .setSleeper(sleeper));
-    }
+      new HttpBackOffUnsuccessfulResponseHandler(
+        new ExponentialBackOff())
+        .setSleeper(sleeper)
+    request.setInterceptor(wrappedCredential)
+    request.setUnsuccessfulResponseHandler(
+      new HttpUnsuccessfulResponseHandler() {
+        override def handleResponse(
+          request: HttpRequest,
+          response: HttpResponse,
+          supportsRetry: Boolean) : Boolean = {
+          if (wrappedCredential.handleResponse(
+            request, response, supportsRetry)) {
+            // If credential decides it can handle it,
+            // the return code or message indicated
+            // something specific to authentication,
+            // and no backoff is desired.
+            true
+          } else if (backoffHandler.handleResponse(
+            request, response, supportsRetry)) {
+            // Otherwise, we defer to the judgement of
+            // our internal backoff handler.
+            LOG.info("Retrying "+ request.getUrl().toString())
+            true
+          } else {
+            false
+          }
+        }
+      });
+    request.setIOExceptionHandler(
+      new HttpBackOffIOExceptionHandler(new ExponentialBackOff())
+        .setSleeper(sleeper));
+  }
 }

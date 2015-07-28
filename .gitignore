@@ -4,5 +4,6 @@
 *.class
 *.pyc
 *.iml
+*.jar
 .idea
 .DS_Store
