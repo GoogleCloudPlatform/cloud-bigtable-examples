@@ -1,5 +1,7 @@
 # Cloud Bigtable on Managed VM's<br />(Hello World for Cloud Bigtable)
 
+**WARNING** – gcloud 0.9.71 (released 7/30/15) has trouble uploading our docker images – please don't upgrade. You can revert by using `gcloud components restore`
+
 With the Jetty runtime one can debug in the Docker container on a local machine.  
  
 This app provides:
