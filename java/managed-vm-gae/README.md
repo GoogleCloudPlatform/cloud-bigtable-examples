@@ -2,6 +2,8 @@
 
 AppEngine runtime has full access to [AppEngine Services and API's](https://cloud.google.com/appengine/docs/managed-vms/#standard_runtimes), but can only be run in the Cloud.
 
+**WARNING** – gcloud 0.9.71 (released 7/30/15) has trouble uploading our docker images, please don't upgrade, or revert by using `gcloud components restore`
+
 This app provides:
 
 1. A web interface that uses Cloud Bigtable to track the number of visits from an opaque version of your Google account.
