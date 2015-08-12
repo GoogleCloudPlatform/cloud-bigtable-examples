@@ -56,14 +56,6 @@ enter the project id and info for the service account in the locations shown.
         <name>hbase.client.connection.impl</name>
         <value>com.google.cloud.bigtable.hbase1_1.BigtableConnection</value>
       </property>
-      <property>
-        <name>google.bigtable.endpoint.host</name>
-        <value>bigtable.googleapis.com</value>
-      </property>
-      <property>
-        <name>google.bigtable.admin.endpoint.host</name>
-        <value>table-admin-bigtable.googleapis.com</value>
-      </property>
     </configuration>
 
 ## Build
