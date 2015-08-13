@@ -78,9 +78,30 @@ You can then get all the values for the row using the `get` command:
 
     $ ./hbasecli.sh get mytable rowid
 
-You can also `scan` the table to get all rows:
+You can also `scan` the table to get all rows, or a filtered set of rows:
 
-    $ ./hbasecli.sh get mytable scan
+    $ ./hbasecli.sh scan mytable filterexp
+
+### Filter expressions
+
+The `scan` command allows you to specify a filter expression, which uses the
+following format:
+
+    [column_family]:[column_qualifier][operator][value]
+
+The following operators are supported:
+
+* `=`: Equal to
+* `<`: Less than
+* `<=`: Less than or equal to
+* `>`: Greater than
+* `>=`: Greater than or equal to
+
+For example, the filter expression `cf1:mycolumn>po` would match rows in which
+`cf1:mycolumn` contains a byte string whose value comes after the byte string
+`po`. This expression would match the values `pony` and `sunrise`, because these
+values come after the value `po`. The expression would not match the values
+`apple` or `pi`, which come before `po`.
 
 ## Understanding the code
 
