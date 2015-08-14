@@ -1,4 +1,4 @@
-# Copyright 2014 Google Inc.
+# Copyright 2015 Google Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@ FROM jetty:9.2.11-jre7
 
 ###################
 
-ADD . /usr/local/jetty/
+copy jetty/* /usr/local/jetty/
 
 RUN ln -s /usr/local/jetty/webapps/root /app  \
     && chmod +x /usr/local/jetty/jetty_run.sh
@@ -44,3 +44,14 @@ WORKDIR /app
 CMD []
 VOLUME ["/var/log/app_engine"] 
 ENTRYPOINT ["/usr/local/jetty/jetty_run.sh"]
+
+ENV BIGTABLE_PROJECT PROJECT_ID
+ENV BIGTABLE_CLUSTER CLUSTERID
+
+ENV BIGTABLE_ZONE    us-central1-b
+
+# The below line is only needed if you want to run on your local computer
+ENV GOOGLE_APPLICATION_CREDENTIALS=/app/WEB-INF/YOUR_KEY_FILE.json
+
+ADD target/bigtable-hello-SNAPSHOT/ /app
+

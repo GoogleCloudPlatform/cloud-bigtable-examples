@@ -1,7 +1,5 @@
 # Cloud Bigtable on Managed VM's<br />(Hello World for Cloud Bigtable)
 
-**WARNING** – gcloud 0.9.71 (released 7/30/15) has trouble uploading our docker images – please don't upgrade. You can revert by using `gcloud components restore`
-
 With the Jetty runtime one can debug in the Docker container on a local machine.  
  
 This app provides:
@@ -79,10 +77,6 @@ All machines on the internet have a preset DNS entry known at **localhost** whic
 ## Using Jetty Runtime Locally
 This describes a [Jetty](http://www.eclipse.org/jetty/) based [Servlet](http://www.oracle.com/technetwork/java/index-jsp-135475.html) that has been made into a [Custom Runtime](https://cloud.google.com/appengine/docs/managed-vms/custom-runtimes) for [Google Managed VMs](https://cloud.google.com/appengine/docs/managed-vms/) -- This means that you do not have access to the normal AppEngine API's.
 
-1. Build the Docker Image for this project
-
- `cd docker; docker build -t mvm-jetty-v03 .;cd ../bigtable-hello`
-
 1. Edit `Dockerfile` to set `BIGTABLE_PROJECT`, `BIGTABLE_CLUSTER`, and `BIGTABLE_ZONE` (if necessary) 
 
 1. Edit `src/main/webapp/index.html` to set `google-signin-client_id` 
@@ -113,7 +107,7 @@ This describes a [Jetty](http://www.eclipse.org/jetty/) based [Servlet](http://w
 
 1. Deploy the application
 
- `gcloud preview app deploy app.yaml`
+ `gcloud preview app deploy app.yaml --docker-build=remote`
 
 1. go to the new default module which will be displayed in results from the deploy.  It will look like: `https://20150624t111224-dot-default-dot-PROJECTID.appspot.com` 
 
