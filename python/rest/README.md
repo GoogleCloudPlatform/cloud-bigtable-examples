@@ -1,64 +1,89 @@
 # Cloud Bigtable Python REST Examples
 
-This example shows how to use the [HBase REST server](http://hbase.apache.org/book.html#_rest) with Cloud Bigtable. This involves two steps: first installing and configuring an HBase client to serve as the REST gateway, and second installing and configuring a REST client. In this example we use a 
-Python REST client using the [requests](http://docs.python-requests.org/en/latest/) library.
+This example shows how to use the [HBase REST
+server](http://hbase.apache.org/book.html#_rest) with Cloud Bigtable. This
+involves two steps:
 
-This project demonstrates how to use Python and the requests library to make
-calls to interact with an HBase REST gateway to Google Cloud Bigtable. It is
-not an extensive library, but rather a simple demonstration of some common
-operations. 
+1. Installing and configuring an HBase client to serve as the REST gateway.
+1. Installing and configuring a REST client.
 
-## HBase REST Gateway setup and configuration
+In this example, we use a Python REST client built with the
+[requests](http://docs.python-requests.org/en/latest/) library. This client is
+not an extensive, all-purpose application, but rather a simple demonstration of
+some common operations.
 
-* Setup the HBase Server by installing the [Cloud Bigtable HBase client](https://cloud.google.com/bigtable/docs/installing-hbase-client) please use at HBase 1.1.1 or later.
-  
-* Start the REST gateway, from the HBase release directory
+## HBase REST gateway setup and configuration
 
-    `bin/hbase rest start`
+1. Install the [Cloud Bigtable HBase
+shell](https://cloud.google.com/bigtable/docs/installing-hbase-shell) on a
+Compute Engine VM. Be sure to install HBase 1.1.1 or later. Earlier versions are
+not compatible with this example.
 
-* If you would like to connect to your REST gateway using your external IP on a
- GCE instance, you will have to open up a firewall port.
+1. Start the REST gateway. Run the following command to start HBase's REST API
+server in the background, suppressing all log output:
 
-    `gcloud compute firewall-rules create <instance_name> --allow=tcp:8080`
+        bin/hbase rest start > /dev/null 2>&1 &
 
-    **Note** – There is a security risk of an open firewall port, and also note that you can 
-connect to the HBase gateway from a different GCE instance without opening up
- a firewall port using the private internal IP instead of the external IP.
- 
-The internal IP can be found in the [Google Cloud Console](console.developer
-.google.com) by going to Compute Engine > VM Instances and then clicking
-on your instance.
+    If you prefer, you can redirect HBase's log output to a file:
 
+        bin/hbase rest start > hbase-log.txt 2>&1 &
+
+1. If you would like to connect to your REST gateway using your external IP,
+open a firewall port:
+
+        gcloud compute firewall-rules create <instance_name> --allow=tcp:8080
+
+    **Warning**: Opening a firewall port creates a security risk. To connect
+    from a different VM instance without opening a firewall port, use the VM
+    instance's private internal IP instead of the external IP. You can find the
+    internal IP in the [Developers
+    Console](https://console.developer.google.com) by going to Compute Engine >
+    VM Instances and clicking on your instance.
 
 ## REST client setup and configuration
 
-* In `put_get.py` and `put_get_with_client.py` change `baseurl` to match the IP of
-the rest server.
+1. In `put_get.py` and `put_get_with_client.py`, change `baseurl` to match the IP
+address of the REST server.
 
-* Install the dependencies in `requirements.txt`, which is only requests.
-It is recommended you *install* [virtualenv](https://virtualenv.pypa.io/en/latest/).
- *Activate* it, and *install the depenencies* in there.
- 
- `pip install -r requirements.txt`
- 
- Note that the above command will require `sudo` if not run in a `virtualenv`.
+1. Use pip to install the [`virtualenv` module](https://virtualenv.pypa.io/)
+which creates a virtual Python environment:
+
+        sudo pip install virtualenv
+
+1. Create an environment called `rest_env`, and activate the environment:
+
+        virtualenv rest_env
+        source rest_env/bin/activate
+
+1. Install the REST API client's dependencies in the virtual environment:
+
+        pip install -r requirements.txt
 
 ## Instructions
 
 * `put_get.py` demonstrates some simple operations directly using requests.
 
 * `put_get_with_client.py` uses `rest_client.py` to wrap some of the details
-in methods, as well as creating a table if it doesn't exist.
+in methods, as well as creating the table `new-table5001` if it doesn't exist.
+The test script does not delete the table after it finishes running. You can
+use the HBase shell to delete the table.
 
-* Running 
+* Running the test scripts
 
-  **`python put_get.py`** or **`python put_get_with_client.py`**
+    **`python put_get.py`** or **`python put_get_with_client.py`**
 
-  They both should both print "Done!" if all the operations succeed.
+    Both commands should print "Done!" if all the operations succeed.
+
+* Stopping the REST server
+
+    Once you're done using the test scripts, run the following command to stop
+    HBase's REST API server:
+
+        kill $(pgrep hbase)
 
 ### Troubleshooting Notes
 
 ### OS X
-If you run into a problem relating a `java.net.UnknownHostException` when 
-using `localhost` as the server on OS X, try explicitly setting an entry in the 
+If you run into a problem relating a `java.net.UnknownHostException` when
+using `localhost` as the server on OS X, try explicitly setting an entry in the
 the `/etc/hosts` file as [described](https://groups.google.com/forum/#!topic/h2-database/DuIlTLN5KOo).
