@@ -2,8 +2,6 @@
 
 AppEngine runtime has full access to [AppEngine Services and API's](https://cloud.google.com/appengine/docs/managed-vms/#standard_runtimes), but can only be run in the Cloud.
 
-**WARNING** – gcloud 0.9.71 (released 7/30/15) has trouble uploading our docker images – please don't upgrade. You can revert by using `gcloud components restore`
-
 This app provides:
 
 1. A web interface that uses Cloud Bigtable to track the number of visits from an opaque version of your Google account.
@@ -64,21 +62,25 @@ SECURITY WARNING - This app will read / write the two tables you create (**`gae-
 ## Deploying the AppEngine Runtime
 1. get a copy of the [appengine-java-vm-runtime](https://github.com/googlecloudplatform/appengine-java-vm-runtime]
 
-1. Follow the instructions to build the docker container, except instead of **myimage**, call your runtime **gae-mvm-01**
+1. Follow the instructions to build the docker container
 
-1. Build our base docker image in the **docker* folder of this project 
+1. Substitute your ProjectID for PROJECT_ID_HERE and execute:
 
- `docker build -t gae-4bt . && cd ../gae-bigtable-hello`
+  * `docker tag myimage gcr.io/PROJECT_ID_HERE/gae-mvm-01`
+  * `gcloud docker push gcr.io/PROJECT_ID_HERE/gae-mvm-01`
+  * `gcloud docker pull gcr.io/PROJECT_ID_HERE/gae-mvm-01`
+<!-- The gcloud docker pull may not be required, but it made life easier -->
 
-1. Edit `Dockerfile` to set `BIGTABLE_PROJECT`, `BIGTABLE_CLUSTER`, and `BIGTABLE_ZONE` (if necessary) 
+1. Edit `Dockerfile` to set `PROJECT_ID_HERE` in the **FROM** directive, `BIGTABLE_PROJECT`, `BIGTABLE_CLUSTER`, and `BIGTABLE_ZONE` (if necessary) 
 
 1. Build the java artifacts and docker image
  
     `mvn clean compile process-resources war:exploded`<br />
-
+    **Note** - you can use `mvn pacakge` but you'll get an ignorable error on the next step.
+    
 1. Deploy the application
 
- `gcloud preview app deploy app.yaml`
+ `gcloud preview app deploy app.yaml --docker-build=remote`
 
 1. go to the new default module which will be displayed in results from the deploy.  It will look like: `https://20150624t111224-dot-default-dot-PROJECTID.appspot.com` you can go to that url to test.
 
