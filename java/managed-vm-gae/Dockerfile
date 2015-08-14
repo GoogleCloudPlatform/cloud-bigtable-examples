@@ -15,7 +15,7 @@
 
 # IMPRORTANT - you need to substitute your '-' with '_' for the PROJECT_ID in the FROM line only
 
-# FROM gcr.io/PROJECT_ID_HERE/gae-mvm-01
+FROM gcr.io/PROJECT_ID_HERE/gae-mvm-01
 
 COPY prerun.sh webapps /var/lib/jetty/
 
