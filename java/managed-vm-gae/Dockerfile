@@ -12,10 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#FROM gcr.io/google_appengine/java-compat
-FROM gae-mvm-01
 
-ADD . /var/lib/jetty
+# IMPRORTANT - you need to substitute your '-' with '_' for the PROJECT_ID in the FROM line only
+
+FROM gcr.io/PROJECT_ID_HERE/gae-mvm-01
+
+COPY prerun.sh webapps /var/lib/jetty/
 
 RUN mkdir ${RUNTIME_DIR}/lib/alpn \
  && wget -O ${RUNTIME_DIR}/lib/alpn/alpn-boot-7.1.3.v20150130.jar http://central.maven.org/maven2/org/mortbay/jetty/alpn/alpn-boot/7.1.3.v20150130/alpn-boot-7.1.3.v20150130.jar \
@@ -23,3 +25,13 @@ RUN mkdir ${RUNTIME_DIR}/lib/alpn \
  && chmod +x ${RUNTIME_DIR}/prerun.sh
 
 ENTRYPOINT ["/var/lib/jetty/prerun.sh"]
+
+# EDIT THESE VALUES -- Don't use quotes
+
+ENV BIGTABLE_PROJECT PROJECT_ID_HERE
+ENV BIGTABLE_CLUSTER CLUSTER_ID_HERE
+ENV BIGTABLE_ZONE    us-central1-b
+# ENV GOOGLE_APPLICATION_CREDENTIALS /app/WEB-INF/YOUR_KEY_FILE.json
+
+ADD target/bigtable-hello-SNAPSHOT/ /app
+
