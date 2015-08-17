@@ -21,16 +21,13 @@
  */
 -->
 <configuration>
-  <property>
-    <name>google.bigtable.project.id</name><value>PROJECT ID</value>
-  </property>
-  <property>
-    <name>google.bigtable.cluster.name</name><value>CLUSTER NAME</value>
-  </property>
-  <property>
-    <name>google.bigtable.zone.name</name>
-    <value>us-central1-b</value>
-  </property>
+<!-- 
+  <property><name>google.bigtable.project.id</name><value>PROJECT ID</value></property>
+  <property><name>google.bigtable.cluster.name</name><value>CLUSTER NAME</value></property>
+ -->
+  <property><name>google.bigtable.project.id</name><value>PROJECT_ID</value></property>
+  <property><name>google.bigtable.cluster.name</name><value>CLUSTER_ID</value></property>
+  <property><name>google.bigtable.zone.name</name><value>us-central1-b</value></property>
   <property>
     <name>hbase.client.connection.impl</name>
     <value>com.google.cloud.bigtable.hbase1_1.BigtableConnection</value>
