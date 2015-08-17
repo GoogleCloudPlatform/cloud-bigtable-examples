@@ -3,7 +3,7 @@
 LOCAL_REPOSITORY=`mvn help:evaluate -Dexpression=settings.localRepository | grep -v '[INFO]'`
 ALPN_VERSION=`mvn help:evaluate -Dexpression=alpn.version | grep -v '[INFO]'`
 
-mvn dependency:build-classpath -Dmdep.outputFile=cp.txt > /dev/null
+mvn dependency:build-classpath -DincludeScope=runtime -Dmdep.outputFile=cp.txt > /dev/null
 CPATH=`cat cp.txt`
 rm cp.txt
 
