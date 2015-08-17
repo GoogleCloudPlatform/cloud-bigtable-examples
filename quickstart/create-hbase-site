@@ -59,7 +59,10 @@ echo "  <property><name>google.bigtable.zone.name</name><value>${_zone}</value><
 echo "" >>hbase-site.xml
 echo "  <property>" >>hbase-site.xml
 echo "     <name>hbase.client.connection.impl</name>" >>hbase-site.xml
-echo "     <value>com.google.cloud.bigtable.hbase1_0.BigtableConnection</value>" >>hbase-site.xml
+echo "     <value>com.google.cloud.bigtable.hbase1_1.BigtableConnection</value>" >>hbase-site.xml
 echo "  </property>" >>hbase-site.xml
 echo "</configuration>" >>hbase-site.xml
 
+echo "Project ID= ${_projectID}"
+echo "Cluster ID= ${_clusterID}"
+echo "Zone=       ${_zone}"
