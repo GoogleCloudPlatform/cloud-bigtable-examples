@@ -14,7 +14,7 @@ sudo apt-get install -y build-essential libboost-dev libboost-test-dev libboost-
 # https://thrift.apache.org/docs/install/debian
 cd /tmp
 wget http://ftp.debian.org/debian/pool/main/a/automake-1.14/automake_1.14.1-4_all.deb
-sudo dpkg -i automake_1.14.1-3_all.deb
+sudo dpkg -i automake_1.14.1-4_all.deb
 
 # Download Thrift, building it from source is the recommended way, and we need
 # to copy the language bindings anyway
