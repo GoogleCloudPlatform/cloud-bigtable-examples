@@ -20,7 +20,7 @@ pipeline that writes the words "Hello" and "World" into Cloud Bigtable.
 
 ### Provision a Bigtable Cluster
 
-* Create a [Cloud Bigtable cluster](https://cloud.google.com/bigtable/docs/creating-cluster) using the [Developer Console](https://cloud.google.com/console) by clicking on the **Storage** > **Cloud Bigtable** > **New Cluster** button.  After that, enter the **Cluster name**, **ID**, **zone**, and **number of nodes**. Once you have entered those values, click the **Create**.
+* Create a [Cloud Bigtable cluster](https://cloud.google.com/bigtable/docs/creating-cluster) using the [Developer Console](https://cloud.google.com/console) by clicking on the **Storage** > **Cloud Bigtable** > **New Cluster** button.  After that, enter the **Cluster name**, **ID**, **zone**, and **number of nodes**. Once you have entered those values, click the **Create** button.
 
 ### Create a Bigtable Table
 
