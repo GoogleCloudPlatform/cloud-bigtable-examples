@@ -32,7 +32,7 @@ pipeline that writes the words "Hello" and "World" into Cloud Bigtable.
 
 `$ mvn compile exec:java -Dexec.mainClass="com.example.bigtable.dataflow.pardo.HelloWorldBigtablePardo" -Dexec.args="--runner=BlockingDataflowPipelineRunner --project=<PROJECTID> --bigtableProjectId=<PROJECTID> --bigtableClusterId=<CLUSTERID> --bigtableZoneId=<ZONE> --bigtableTableId=Dataflow_test --stagingLocation=gs://<STORAGE_BUCKET>/staging"`
 
-Note - Occasionally, you see something like -- it is a benign issue and should be fixed shortly:
+Note: Occasionally, you may see log messages similar to the following. It is safe to ignore these warnings, which will be fixed in a future release:
 
     INFO: Job finished with status DONE
     [WARNING] thread Thread[pool-1-thread-1,5,com.example.bigtable.dataflow.pardo.HelloWorldBigtablePardo] was interrupted but is still alive after waiting at least 15000msecs
