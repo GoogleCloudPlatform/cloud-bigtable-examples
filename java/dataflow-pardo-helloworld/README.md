@@ -32,6 +32,14 @@ pipeline that writes the words "Hello" and "World" into Cloud Bigtable.
 
 `$ mvn compile exec:java -Dexec.mainClass="com.example.bigtable.dataflow.pardo.HelloWorldBigtablePardo" -Dexec.args="--runner=BlockingDataflowPipelineRunner --project=<PROJECTID> --bigtableProjectId=<PROJECTID> --bigtableClusterId=<CLUSTERID> --bigtableZoneId=<ZONE> --bigtableTableId=Dataflow_test --stagingLocation=gs://<STORAGE_BUCKET>/staging"`
 
+Note - Occasionally, you see something like -- it is a benign issue and should be fixed shortly:
+
+    INFO: Job finished with status DONE
+    [WARNING] thread Thread[pool-1-thread-1,5,com.example.bigtable.dataflow.pardo.HelloWorldBigtablePardo] was interrupted but is still alive after waiting at least 15000msecs
+    [WARNING] thread Thread[pool-1-thread-1,5,com.example.bigtable.dataflow.pardo.HelloWorldBigtablePardo] will linger despite being asked to die via interruption
+    [WARNING] NOTE: 1 thread(s) did not finish despite being asked to  via interruption. This is not a problem with exec:java, it is a problem with the running code. Although not serious, it should be remedied.
+    [WARNING] Couldn't destroy threadgroup org.codehaus.mojo.exec.ExecJavaMojo$IsolatedThreadGroup[name=com.example.bigtable.dataflow.pardo.HelloWorldBigtablePardo,maxpri=10]
+    java.lang.IllegalThreadStateException
 
 ### Verify
 
