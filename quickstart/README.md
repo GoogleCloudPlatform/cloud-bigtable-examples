@@ -1,28 +1,20 @@
 ## Apache HBase using Google Cloud Bigtable - QuickStart
 
-Following these steps should get you to the hbase shell in 5 minutes.
+Following these steps should get you to the hbase shell in 3 minutes.
 
 ## Prerequsites
-  - Install Docker:
-    * Mac OS/X: 
-      - Download, install, and run [Kitematic](https://kitematic.com/)
-      - Press Command-Shift-T when you need to open a docker shell window.
-    * Linux, Windows, and others
-          - Follow the [instructions for your operating system](https://docs.docker.com/installation/)
-
+  - [Java 7](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+  - [Apache Maven](http://maven.apache.org/download.cgi)
+  - Bash or [cygwin](http://www.cygwin.com/)
   - A copy of this [project]() installed on your computer
 
 ## Project Setup, installation, and configuration
 1. Go to the [Cloud Console](https://cloud.google.com/console) and create or select your project.
 
- You will need the ProjectID later.
+1. Enable Billing (if not all ready).
 
-1. Enable Billing.
-
-1. Select **Storage > Cloud Bigtable > New Cluster**
-
-  You will need both the Zone (which should be near you) and the Unique ID.
-  
+1. Create a new [Cluster](https://cloud.google.com/bigtable/docs/creating-cluster)
+    
 1. Select **APIs & Auth > APIs**
 
   Verify that both the **Cloud Bigtable API** and the **Cloud Bigtable Admin API** are enabled.
@@ -31,66 +23,61 @@ Following these steps should get you to the hbase shell in 5 minutes.
 
    Generate and download a new **JSON key**
 
-1. Copy your JSON key to the local directory for this project and rename as **key.json**
+1. Export the downloaded json.key file and set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable
 
-1. **`chmod +x create-hbase-site`**
+    `EXPORT GOOGLE_APPLICATION_CREDENTIALS=`**< Path to File >**
 
-1. **`./create-hbase-site`** will write a valid hbase-site.xml for you.
+1. **`chmod +x quickstart.sh`**
 
-1. In your terminal window give the following command:
-  **`docker build -t bigtable-hbase .`**  <== Note the final '.'
+1. **`./quickstart.sh`** will write a valid hbase-site.xml for you.
 
-## Run Locally
+Alternatively you can just use maven directly.
 
-* Give the following command: **`docker run -it bigtable-hbase`**
-
+    mvn clean package exec:exec -Dbigtable.projectid=<PROJECT_ID> -Dbigtable.clusterid=<CLUSTER_ID> -Dbigtable.zone=<ZONE>
 
 ## HBase shell
-1. At the prompt enter: **`hbase shell`**
+
+    HBase Shell; enter 'help<RETURN>' for list of supported commands.
+    Type "exit<RETURN>" to leave the HBase Shell
+    Version 1.1.1, rd0a115a7267f54e01c72c603ec53e91ec418292f, Tue Jun 23 14:56:34 PDT 2015
+
+    hbase(main):001:0>
 
 1. Create a table (tableName, Column Family)
  
- \> **`create table 'test', 'cf'`**
+    \> `create table 'test', 'cf'`
  
 1. List Tables
 
-  \> **`list`**
+    \> `list`
 
 1. Add some data
 
-  \> **`put 'test', 'row1', 'cf:a', 'value1'`**
+    \> `put 'test', 'row1', 'cf:a', 'value1'`
 
-  \> **`put 'test', 'row2', 'cf:b', 'value2'`**
+    \> `put 'test', 'row2', 'cf:b', 'value2'`
 
-  \> **`put 'test', 'row3', 'cf:c', 'value3'`**
+    \> `put 'test', 'row3', 'cf:c', 'value3'`
 
 1. Scan the table for data
 
-  \> **`scan 'test'`**
+    \> `scan 'test'`
   
 1. Get a single row of data
 
-  \> **`get 'test', 'row1'`**
+    \> `get 'test', 'row1'`
   
 1. Disable a table
 
-  \> **`disable 'test'`**
+    \> `disable 'test'`
 
 1. Drop the table
 
-  \> **`drop 'test'`**
+    \> `drop 'test'`
 
 1. Finished
 
-  \> **`exit`**
-
-1. Done with container
-
-  $ **`exit`**
-
-## Contributing changes
-
-* See [CONTRIBUTING.md](../../CONTRIBUTING.md)
+    \> `exit`
 
 ## Licensing
 
