@@ -27,7 +27,7 @@
   <version>SNAPSHOT</version>
 
   <properties>
-    <bigtable.version>0.2.0</bigtable.version>
+    <bigtable.version>0.2.1</bigtable.version>
     <hbase.version>1.1.1</hbase.version>
 
     <hadoop.version>2.4.1</hadoop.version>
