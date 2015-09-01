@@ -49,17 +49,17 @@ import com.google.cloud.dataflow.sdk.values.KV;
 /**
  * <p>
  * This is an example of reading from Cloud Pubsub and writing to Cloud Bigtable. The main method
- *  starts two jobs: one publishes messages to Cloud Pubsub, and the other one pulls messages, 
+ *  starts two jobs: one publishes messages to Cloud Pubsub, and the other one pulls messages,
  *  performs a word count for each message, and writes word count result to CBT.
  * </p>
  * This pipeline needs to be configured with four command line options for bigtable as well as
  *  pubsub:
  * </p>
  * <ul>
- * <li>--bigtableProject=[bigtable project]
+ * <li>--bigtableProjectId=[bigtable project]
  * <li>--bigtableClusterId=[bigtable cluster id]
- * <li>--bigtableZone=[bigtable zone]
- * <li>--bigtableTable=[bigtable tableName]
+ * <li>--bigtableZoneId=[bigtable zone]
+ * <li>--bigtableTableId=[bigtable tableName]
  * <li>--inputFile=[file path on GCS]
  * <li>--pubsubTopic=projects/[project name]/topics/[topic name]
  * <p>
@@ -76,7 +76,7 @@ public class PubsubWordCount {
   private static final byte[] FAMILY = Bytes.toBytes("cf");
   private static final byte[] QUALIFIER = Bytes.toBytes("qualifier");
   static final int WINDOW_SIZE = 1; // Default window duration in minutes
-  private static final int INJECTORNUMWORKERS = 1; //number of workers used for injecting 
+  private static final int INJECTORNUMWORKERS = 1; //number of workers used for injecting
                                                     //pubsub messages
 
   static final DoFn<KV<String, Long>, Mutation> MUTATION_TRANSFORM =
@@ -142,15 +142,15 @@ public class PubsubWordCount {
    *
    * @param args Arguments to use to configure the Dataflow Pipeline.  The first three are required
    *   when running via managed resource in Google Cloud Platform.  Those options should be omitted
-   *   for LOCAL runs.  The next four arguments are to configure the Bigtable connection. The last 
+   *   for LOCAL runs.  The next four arguments are to configure the Bigtable connection. The last
    *   two items are for Cloud Pubsub.
    *        --runner=BlockingDataflowPipelineRunner
    *        --project=[dataflow project] \\
    *        --stagingLocation=gs://[your google storage bucket] \\
-   *        --bigtableProject=[bigtable project] \\
+   *        --bigtableProjectId=[bigtable project] \\
    *        --bigtableClusterId=[bigtable cluster id] \\
-   *        --bigtableZone=[bigtable zone]
-   *        --bigtableTable=[bigtable tableName] 
+   *        --bigtableZoneId=[bigtable zone]
+   *        --bigtableTableId=[bigtable tableName]
    *        --inputFile=[file path on GCS]
    *        --pubsubTopic=projects/[project name]/topics/[topic name]
    */
@@ -168,7 +168,7 @@ public class PubsubWordCount {
     // DataflowPipelineRunner is forced to be used.
     // Also enables the 2 jobs to run at the same time.
     options.setRunner(DataflowPipelineRunner.class);
-    
+
     options.as(DataflowPipelineOptions.class).setStreaming(true);
     Pipeline p = Pipeline.create(options);
 
