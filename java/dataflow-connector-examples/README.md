@@ -1,73 +1,98 @@
-# CBT / CDF examples
+# Cloud Bigtable / Cloud Dataflow Connector examples
 
-A starter set of examples for writing Google Cloud Dataflow (CDF) programs using Cloud Bigtable (CBT).
+A starter set of examples for writing [Google Cloud Dataflow](https://cloud.google.com/dataflow/) programs using [Cloud Bigtable](https://cloud.google.com/bigtable/).
 
-## HelloWorld - Writing Data
+## Project setup
 
-The HelloWorld examples take two strings, converts them to their upper-case representation and writes
-them to Bigtable.
+### Provision your project for Cloud Dataflow
+
+* Follow the Cloud Dataflow [getting started](https://cloud.google.com/dataflow/getting-started) instructions. (if required) Including:
+  * Create a project
+  * Enable Billing
+  * Enable APIs
+  * Create a Google Cloud Storage Bucket
+  * Development Environment Setup
+      * Install Google Cloud SDK
+      * Install Java
+      * Install Maven
+  * You may wish to also Run an Example Pipeline
+
+### Provision a Bigtable Cluster
+
+* Create a [Cloud Bigtable cluster](https://cloud.google.com/bigtable/docs/creating-cluster) using the [Developer Console](https://cloud.google.com/console) by clicking on the **Storage** > **Cloud Bigtable** > **New Cluster** button.  After that, enter the **Cluster name**, **ID**, **zone**, and **number of nodes**. Once you have entered those values, click the **Create** button.
+
+### Create a Google Cloud Storage Bucket
+
+* Using the [Developer Console](https://cloud.google.com/console) click on **Storage** > **Cloud Storage** > **Browser** then click on the **Create Bucket** button.  You will need a globally unique name for your bucket, such as your projectID.
+
+### Create a Pub/Sub topic
+
+This step is required for the Pub / Sub sample.
+
+* Using the [Developer Console](https://cloud.google.com/console) click on **Bigdata** > **Pub/Sub**, then click on the **New topic** button.  'shakes' is a good topic name.
+
+### Create a Bigtable Table
+
+* Using the [HBase shell](https://cloud.google.com/bigtable/docs/hbase-shell-quickstart) 
+ 
+    `create 'Dataflow_test',  'cf'`
+
+Note - you may wish to keep the HBase shell open in a tab throughout.
+
+## Required Options for Cloud Bigtable
 
 This pipeline needs to be configured with four command line options for Cloud Bigtable:
 
- * --bigtableProject=[bigtable project]
- * --bigtableClusterId=[bigtable cluster id]
- * --bigtableZone=[bigtable zone]
- * --bigtableTable=[bigtable tableName]
+ * `-Dbigtable.project=<projectID>` - this will also be used for your Dataflow projectID
+ * `-Dbigtable.cluster=<clusterID>`
+ * `-Dgs=gs://my_bucket` - A Google Cloud Storage bucket.
+
+Optional Arguments
+
+ * `-Dbigtable.zone=<your zone>` - defaults to us-central1-b
+ * `-Dbigtable.table=<Table to Read / Write>` defaults to 'Dataflow_test'
+    
+# HelloWorld - Writing Data
+
+The HelloWorld examples take two strings, converts them to their upper-case representation and writes them to Bigtable.
 
 HelloWorldWrite does a few Puts to show the basics of writing to Cloud Bigtable through Cloud Dataflow.
 
-## SourceRowCount - Reading from CBT
+    mvn exec:exec -DHelloWorldWrite -Dbigtable.project=<projectID> -Dbigtable.cluster=<clusterID> -Dgs=<Your bucket>
 
-SourceRowCount shows the use of a Bigtable Source - a construct that knows how to scan a Bigtable Table.  SourceRowCount performs a simple row count using the Cloud Bigtable Source and writes the count to a file in Google Storage.
+You can verify that the data was written by using HBase shell and typing `scan 'Dataflow_test'`. You can also remove the data, if you wish, using `deleteall 'Dataflow_test', 'Hello'` and `deleteall 'Dataflow_test', 'World'`.
 
-## PubsubWordCount - Reading from Cloud Pubsub and writing to CBT
+# PubsubWordCount - Reading from Cloud Pubsub and writing to Cloud Bigtable
 
 The PubsubWordCount example reads from Cloud Pubsub and writes to CBT. It starts two jobs: one publishes messages to Cloud Pubsub, and the other one pulls messages, performs a word count for each message, and writes word count result to CBT. 
 
-## Running the examples
-
-To run the Hello world examples using managed resource in Google Cloud Platform, you should specify
-the following command-line options for dataflow:
-
-1. --project=<YOUR_PROJECT_ID>
-2. --stagingLocation=<STAGING_LOCATION_IN_CLOUD_STORAGE> 
-3. --runner=BlockingDataflowPipelineRunner
-
-Also, you need the following command line options for Bigtable:
-
-1. --bigtableProject=some_project 
-2. --bigtableClusterId=cluster_name 
-3. --bigtableZone=us-central1-b
-4. --bigtableTable=someTableName
-
-You can run this via maven, for example:
-
-`mvn exec:java -Dexec.mainClass="com.google.cloud.dataflow.sdk.io.bigtable.example.HelloWorldParDo" -Dexec.args="--runner=BlockingDataflowPipelineRunner --project=some_project --stagingLocation=gs://some_bucket --bigtableProject=some_project --bigtableClusterId=cluster_name--bigtableZone=us-central1-b --bigtableTable=someTableName"`
-
-### Sink
-
-`mvn exec:java -Dexec.mainClass="com.google.cloud.dataflow.sdk.io.bigtable.example.HelloWorldSink" -Dexec.args="--runner=BlockingDataflowPipelineRunner --project=some_project --stagingLocation=gs://some_bucket --bigtableProject=some_project --bigtableClusterId=cluster_name --bigtableZone=us-central1-b --bigtableTable=someTableName"`
-
-The SourceRowCount needs one additional parameter to run the job:
-
-5. --resultLocation=<A text-file name in Google storage>
-
-`mvn exec:java -Dexec.mainClass="com.google.cloud.dataflow.sdk.io.bigtable.example.HelloWorldSink" -Dexec.args="--runner=BlockingDataflowPipelineRunner --project=some_project --stagingLocation=gs://some_bucket --bigtableProject=some_project --bigtableClusterId=cluster_name --bigtableZone=us-central1-b --bigtableTable=someTableName --resultLocation=gs://my_bucket/table_count.txt"`
-
-### PubsubWordCount
-
-Before running the PubsubWordCount example, please create a Cloud Bigtable table with a name of your choice and a column family named "cf". Please also create a Cloud Pubsub topic.
-
 Download the file which Cloud Pubsub messages are created from:
 
-`$ curl -f http://www.gutenberg.org/cache/epub/1112/pg1112.txt > romeo_juliet.txt`
-`$ gsutil cp romeo_juliet.txt gs://my_bucket/`
+    $ curl -f http://www.gutenberg.org/cache/epub/1112/pg1112.txt > romeo_juliet.txt
+    $ gsutil cp romeo_juliet.txt gs://my_bucket/
 
-You need the following command line options in addition to the Bigtable options:
+Type the following to run:
 
-1. --inputFile=gs://my_bucket/romeo_juliet.txt
-2. --pubsubTopic=projects/some_project/topics/topic_name
+    mvn exec:exec -DPubsubWordCount -Dbigtable.project=<projectID> -Dbigtable.cluster=<clusterID> -Dgs=gs://my_bucket -DpubsubTopic=projects/ProjectID/topics/shakes
 
-The PubsubWordCount example needs both options for CBT and options for Cloud Pubsub. Note that the Cloud Bigtable table and the Cloud Pubsub topic must exist. 
+You can verify that it ran by using HBase Shell and typing `scan 'Dataflow_test'`.
 
-`mvn exec:java -Dexec.mainClass="com.google.cloud.dataflow.sdk.io.bigtable.example.PubsubWordCount" -Dexec.args="--runner=BlockingDataflowPipelineRunner --project=some_project --stagingLocation=gs://some_bucket --bigtableProject=some_project --bigtableClusterId=cluster_name --bigtableZone=us-central1-b --bigtableTable=someTableName --inputFile=gs://my_bucket/romeo_juliet.txt --pubsubTopic=projects/some_project/topics/topic_name"`
+# SourceRowCount - Reading from Cloud Bigtable
+
+SourceRowCount shows the use of a Bigtable Source - a construct that knows how to scan a Bigtable Table.  SourceRowCount performs a simple row count using the Cloud Bigtable Source and writes the count to a file in Google Storage.
+
+    mvn exec:exec -DSourceRowCount -Dbigtable.project=<projectID> -Dbigtable.cluster=<clusterID> -Dgs=<Your bucket>
+
+You can verify the results by frist typing: `gsutil ls gs://my_bucket/**` there should be a file that looks like count-XXXXXX-of-YYYYYY.  Execute the following `gsutil cp gs://my_bucket/count-XXXXXX-of-YYYYYY .` then typing `cat count-XXXXXX-of-YYYYYY`
+
+    
+## Ocasional issues
+
+Occasionally, you may see log messages similar to the following. It is safe to ignore these warnings, which will be fixed in a future release:
+
+    INFO: Job finished with status DONE
+    [WARNING] thread Thread[pool-1-thread-1,5,com.example.bigtable.dataflow.pardo.HelloWorldBigtablePardo] was interrupted but is still alive after waiting at least 15000msecs
+    [WARNING] thread Thread[pool-1-thread-1,5,com.example.bigtable.dataflow.pardo.HelloWorldBigtablePardo] will linger despite being asked to die via interruption
+    [WARNING] NOTE: 1 thread(s) did not finish despite being asked to  via interruption. This is not a problem with exec:java, it is a problem with the running code. Although not serious, it should be remedied.
+    [WARNING] Couldn't destroy threadgroup org.codehaus.mojo.exec.ExecJavaMojo$IsolatedThreadGroup[name=com.example.bigtable.dataflow.pardo.HelloWorldBigtablePardo,maxpri=10]
+    java.lang.IllegalThreadStateException
