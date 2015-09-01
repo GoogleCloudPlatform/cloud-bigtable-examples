@@ -19,7 +19,7 @@
 
   <properties>
     <dataflow.version>1.0.0</dataflow.version>
-    <bigtable.hbase.version>0.2.0</bigtable.hbase.version>
+    <bigtable.hbase.version>0.2.1</bigtable.hbase.version>
     <compileSource>1.7</compileSource>
   </properties>
 

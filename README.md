@@ -12,6 +12,10 @@ There are many examples / sample / demo programs here, each with its own README.
 * [Managed VM Bigtable-Hello using Jetty](java/jetty-managed-vm) - Accessing Cloud Bigtable from a Managed VM / JSON Upload / Download
 * [Storm](java/storm) - Stream live data from Coinbase to Cloud Bigtable using Apache Storm
 
+## Dataflow
+* [Connector-Examples](java/dataflow-connector-examples) - Using the cloud dataflow connector for Bigtable, do write Hello World to two rows, Use Cloud Pub / Sub to count Shakespeare, and count the number of rows in a Table.
+* [Pardo-HelloWorld](java/dataflow-pardo-helloworld) - example of using Cloud Dataflow without the connector.
+
 ## GoLang
 * [search](https://github.com/GoogleCloudPlatform/gcloud-golang/tree/master/examples/bigtable/search) - Create and search a Cloud Bigtable.
 * [Bigtable-Hello](https://github.com/GoogleCloudPlatform/gcloud-golang/tree/master/examples/bigtable/bigtable-hello) - Accessing Cloud Bigtable from a Managed VM
