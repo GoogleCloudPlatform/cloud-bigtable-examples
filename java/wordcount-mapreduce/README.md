@@ -2,19 +2,21 @@
 
 The Map/Reduce code for Cloud Bigtable should look identical to HBase
 Map/Reduce jobs. The main issue of running against specific HBase and Hadoop
-versions. Take note of the dependencies in pom.xml. The HBase codebase has gone
-through quite a bit of churn related to its API. Due to the API churn, jobs
-that require the Google BigTable Cloud HBase compatibility layer require very
-specific versions of HBase in order to execute correctly. Compiling Map/Reduce
-code against different HBase versions may have problems executing relating to
-class incompatibility issues.
+versions.  Cloud Bigtable supports the new HBase API's after 1.0.
 
 ## Project setup
 
 ### Install the Google Cloud Platform SDK
 
-In order to run this mapreduce sample you will need to install the Google Cloud
-SDK. Please follow the instructions on the [Google Cloud SDK homepage](https://cloud.google.com/sdk/).
+In order to run this mapreduce sample please follow the Cloud Bigtable [Getting Started](https://cloud.google.com/bigtable/docs/hbase-shell-quickstart#before_you_start)
+
+  * Create a project
+  * Enable Billing
+  * Create a [Cloud Bigtable Cluster](https://cloud.google.com/bigtable/docs/creating-cluster)
+  * Development Environment Setup
+      * Install [Google Cloud SDK](https://cloud.google.com/sdk/)
+      * Install [Java 1.7](http://www.oracle.com/technetwork/java/javase/downloads/index.html) or higher.
+      * Install [Apache Maven](https://maven.apache.org/)
 
 ### Install bdutil
 
