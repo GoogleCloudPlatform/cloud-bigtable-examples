@@ -75,7 +75,11 @@ Type the following to run:
 
     mvn exec:exec -DPubsubWordCount -Dbigtable.project=<projectID> -Dbigtable.cluster=<clusterID> -Dgs=gs://my_bucket -DpubsubTopic=projects/ProjectID/topics/shakes
 
-You can verify that it ran by using HBase Shell and typing `scan 'Dataflow_test'`.
+This is a streaming sample, which means it doesn't end.  When data has been processed, typically, a few minutes after Maven has completed, you can view the results by using HBase Shell and typing `scan 'Dataflow_test'`.
+
+You can verify that the job is still running by `gcloud alpha dataflow jobs list`
+
+And once you have seen the data, you can cancel the job by `gcloud alpha dataflow jobs cancel <ID>`. ID is from the dataflow jobs list command earlier.  **Not canceling this job could lead to  substantial costs.**
 
 # SourceRowCount - Reading from Cloud Bigtable
 
