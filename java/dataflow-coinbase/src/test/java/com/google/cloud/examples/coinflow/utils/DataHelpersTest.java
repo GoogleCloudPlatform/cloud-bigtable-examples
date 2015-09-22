@@ -1,7 +1,5 @@
-<?xml version="1.0"?>
-<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
-<!--
 /**
+ * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,17 +17,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
--->
-<configuration>
-<!-- 
-  <property><name>google.bigtable.project.id</name><value>PROJECT ID</value></property>
-  <property><name>google.bigtable.cluster.name</name><value>CLUSTER NAME</value></property>
- -->
-  <property><name>google.bigtable.project.id</name><value>bill-data-1050</value></property>
-  <property><name>google.bigtable.cluster.name</name><value>coinbase</value></property>
-  <property><name>google.bigtable.zone.name</name><value>us-central1-b</value></property>
-  <property>
-    <name>hbase.client.connection.impl</name>
-    <value>com.google.cloud.bigtable.hbase1_1.BigtableConnection</value>
-  </property>
-</configuration>
+
+package com.google.cloud.examples.coinflow.utils;
+
+
+import org.testng.annotations.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class DataHelpersTest {
+
+
+    @Test
+    public void dateConversionTest() {
+        String testTimestamp = "2015-09-17T18:02:13.998217Z";
+        assertThat(DateHelpers.convertDateToTime(testTimestamp))
+                .isBetween(1442512933000L, 1442512934000L);
+
+    }
+
+}
