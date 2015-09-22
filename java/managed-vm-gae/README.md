@@ -20,6 +20,7 @@ SECURITY WARNING - This app will read / write the two tables you create (**`gae-
 ## Requirements
 1. Latest version of [gcloud](https://cloud.google.com/sdk/) Update with `gcloud components update`
 1. Java 1.7
+1. [Maven](https://maven.apache.org/)
 
 ## Project Setup
 
@@ -79,10 +80,20 @@ SECURITY WARNING - This app will read / write the two tables you create (**`gae-
     **Note** - you can use `mvn pacakge` but you'll get an ignorable error on the next step.
     
 1. Deploy the application
-
- `gcloud preview app deploy app.yaml --docker-build=remote`
+ 
+    `mvn gcloud:deploy`
 
 1. go to the new default module which will be displayed in results from the deploy.  It will look like: `https://20150624t111224-dot-default-dot-PROJECTID.appspot.com` you can go to that url to test.
+
+1. Or run locally. First, copy your Service Acccount JSON file into src/main/webapp/WEB-INFO, and uncomment the GOOGLE_APPLICATION_CREDENTIALS file in src/main/webapp/Dockerfile, then rerun: 
+
+    `mvn clean compile process-resources war:exploded`
+    
+    then   
+
+    `mvn gcloud:run`
+
+1. After you run locally, you can access the app at `http://localhost:8080`
 
 ## AppEngine Debugging Hints
 The first thing to do, if you'd like to debug is use the `servlet.log()` methods, they seem to work when other loggers don't.  Then take control of your GAE instance:
