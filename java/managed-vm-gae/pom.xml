@@ -33,7 +33,7 @@
     <hadoop.version>2.4.1</hadoop.version>
     <compat.module>hbase-hadoop2-compat</compat.module>
 
-    <appengine.version>1.9.24</appengine.version>
+    <appengine.version>1.9.26</appengine.version>
     <compileSource>1.7</compileSource>
 
     <slf4j.version>1.7.12</slf4j.version>
@@ -41,7 +41,7 @@
     <junit.version>4.11</junit.version>
     <mockito.version>1.9.5</mockito.version>
 
-    <gcloud.plugin.version>2.0.9.72.v20150804</gcloud.plugin.version>
+    <gcloud.plugin.version>2.0.9.76.v20150902</gcloud.plugin.version>
 
     <requiredMavenVersion>3.2.1</requiredMavenVersion>
 
@@ -155,6 +155,8 @@
         <version>${gcloud.plugin.version}</version>
         <configuration>
           <gcloud_project>${projectid}</gcloud_project>
+          <non_docker_mode>false</non_docker_mode>
+          <docker_build>remote</docker_build>
         </configuration>
       </plugin>
 
