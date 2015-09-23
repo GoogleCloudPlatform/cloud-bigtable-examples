@@ -43,7 +43,7 @@
   </servlet-mapping>
 
   <listener>
-    <listener-class>com.google.cloud.examples.coinflow.frontend.BigtableHelper</listener-class>
+    <listener-class>frontend.BigtableHelper</listener-class>
   </listener>
 
 <!--
