@@ -58,6 +58,28 @@ files to the VMs.  There are two ways to make a GCS Bucket,
     `create 'coinbase', 'cb'`
 1. If you used a different table name or column family, be sure to change it Schema.java.
 
+## Deploying the AppEngine Runtime
+1. get a copy of the [appengine-java-vm-runtime](https://github.com/GoogleCloudPlatform/appengine-java-vm-runtime/tree/jetty-9.2]
+
+1. Make sure branch jetty-9.2 is checked out
+
+1. Follow the instructions to build the docker container
+
+1. Substitute your ProjectID for PROJECT_ID_HERE and execute:
+
+  * `docker tag myimage gcr.io/PROJECT_ID_HERE/gae-mvm-01`
+  * `gcloud docker push gcr.io/PROJECT_ID_HERE/gae-mvm-01`
+  * `gcloud docker pull gcr.io/PROJECT_ID_HERE/gae-mvm-01`
+<!-- The gcloud docker pull may not be required, but it made life easier -->
+
+1. Edit `Dockerfile` to set `PROJECT_ID_HERE` in the **FROM** directive, `BIGTABLE_PROJECT`, `BIGTABLE_CLUSTER`, and `BIGTABLE_ZONE` (if necessary)
+
+1. Build the java artifacts and docker image
+
+    `mvn clean compile process-resources war:exploded`<br />
+    **Note** - you can use `mvn pacakge` but you'll get an ignorable error on the next step.
+
+
 ### Build the Jar File
 
     `mvn clean package`
@@ -66,7 +88,7 @@ files to the VMs.  There are two ways to make a GCS Bucket,
 
 1. Run:
 
-    `./run.sh` <your-project-id> <your-bigtable-cluster-id> <your-bigtable-table>
+    `./run.sh` <your-project-id> <your-bigtable-cluster-id> <your-gcs-bucket> <your-bigtable-table>
 
 
 Copyright Google 2015
