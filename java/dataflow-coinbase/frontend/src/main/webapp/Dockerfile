@@ -15,21 +15,22 @@
 
 # IMPRORTANT - you need to substitute your '-' with '_' for the PROJECT_ID in the FROM line only
 
-FROM gcr.io/PROJECT_ID_HERE/gae-mvm-01
+FROM gcr.io/bill-data-1050/gae-mvm-01
+#FROM appengine-mvn-opensource:latest
 
 COPY prerun.sh webapps /var/lib/jetty/
 
-RUN mkdir ${RUNTIME_DIR}/lib/alpn && chmod +x ${RUNTIME_DIR}/prerun.sh
+RUN mkdir ${RUNTIME_DIR}/lib/alpn && chmod +x ${RUNTIME_DIR}/prerun.sh \
+&& wget -O ${RUNTIME_DIR}/lib/alpn/alpn-boot-7.1.3.v20150130.jar https://storage.googleapis.com/cloud-bigtable/alpn-dist/alpn-boot-7.1.3.v20150130.jar \
+&& wget -O ${RUNTIME_DIR}/lib/alpn/alpn-boot-8.1.3.v20150130.jar https://storage.googleapis.com/cloud-bigtable/alpn-dist/alpn-boot-8.1.3.v20150130.jar
 
-COPY alpn-boot-7.1.3.v20150130.jar ${RUNTIME_DIR}/lib/alpn/alpn-boot-7.1.3.v20150130.jar 
-COPY alpn-boot-8.1.3.v20150130.jar ${RUNTIME_DIR}/lib/alpn/alpn-boot-8.1.3.v20150130.jar 
- 
+
 ENTRYPOINT ["/var/lib/jetty/prerun.sh"]
 
 # EDIT THESE VALUES -- Don't use quotes
 
-ENV BIGTABLE_PROJECT PROJECT_ID_HERE
-ENV BIGTABLE_CLUSTER CLUSTER_ID_HERE
+ENV BIGTABLE_PROJECT bill-data-1050
+ENV BIGTABLE_CLUSTER coinbase
 ENV BIGTABLE_ZONE    us-central1-b
 ENV GOOGLE_APPLICATION_CREDENTIALS /app/WEB-INF/client-secret.json
 
