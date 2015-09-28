@@ -14,8 +14,6 @@ this pipeline locally.
 
 ### Install the Google Cloud Platform SDK
 
-In order to run this mapreduce sample please follow the Cloud Bigtable [Getting Started](https://cloud.google.com/bigtable/docs/hbase-shell-quickstart#before_you_start)
-
   * Create a project
   * Enable Billing
   * Create a [Cloud Bigtable Cluster](https://cloud.google.com/bigtable/docs/creating-cluster)
@@ -23,6 +21,12 @@ In order to run this mapreduce sample please follow the Cloud Bigtable [Getting 
       * Install [Google Cloud SDK](https://cloud.google.com/sdk/)
       * Install [Java 1.7](http://www.oracle.com/technetwork/java/javase/downloads/index.html) or higher.
       * Install [Apache Maven](https://maven.apache.org/)
+  * Install [Docker](https://www.docker.com/) to build images and run the environment locally. On
+   OS X, you will need to use boot2docker or Docker Machine to bootup a Linux VM.
+
+  * `gcloud components update`
+  * `gcloud config set project <your-project-id>`
+  * `gcloud config set project <your-zone-id>`
 
 ### Provision a Bigtable Cluster
 
@@ -35,6 +39,15 @@ clicking on the "Storage" -> "Cloud Bigtable" menu item and clicking on the
 "New Cluster" button.  After that, enter the cluster name, ID, zone, and number
 of nodes. Once you have entered those values, click the "Create" button to
 provision the cluster.
+
+Next, go to "APIs" and search for the Cloud Bigtable API and make sure the following APIs are
+enabled:
+
+* Cloud Bigtable API
+* Cloud Bigtable Table Admin API
+* Cloud Bigtable Cluster Admin API
+* Cloud Dataflow API
+* Google Compute Engine API
 
 ### Make a GCS Bucket
 
@@ -52,32 +65,16 @@ files to the VMs.  There are two ways to make a GCS Bucket,
 ### Create The Bigtable Table
 
 1. Follow the instructions to run the [HBase Shell](https://cloud.google.com/bigtable/docs/hbase-shell-quickstart)
+   A summary of the instructions is:
+   * Download a Service Account JSON Credential
+   * Point the GOOGLE_APPLICATION_CREDENTIALS environment variable to that file
+   * Run cloud-bigtable-examples/quickstart/quickstart.sh
+   * NB: Currently quickstart.sh works with Java 7 but not Java 8
 1. Launch hbase shell
-1. Create the table (here, table name is coinbase, and column family is cb)
+1. Create the table (here, table name is coinbase, and column family is bc)
 
-    `create 'coinbase', 'cb'`
+    `create 'coinbase', 'bc'`
 1. If you used a different table name or column family, be sure to change it Schema.java.
-
-## Deploying the AppEngine Runtime
-1. get a copy of the [appengine-java-vm-runtime](https://github.com/GoogleCloudPlatform/appengine-java-vm-runtime/tree/jetty-9.2]
-
-1. Make sure branch jetty-9.2 is checked out
-
-1. Follow the instructions to build the docker container
-
-1. Substitute your ProjectID for PROJECT_ID_HERE and execute:
-
-  * `docker tag myimage gcr.io/PROJECT_ID_HERE/gae-mvm-01`
-  * `gcloud docker push gcr.io/PROJECT_ID_HERE/gae-mvm-01`
-  * `gcloud docker pull gcr.io/PROJECT_ID_HERE/gae-mvm-01`
-<!-- The gcloud docker pull may not be required, but it made life easier -->
-
-1. Edit `Dockerfile` to set `PROJECT_ID_HERE` in the **FROM** directive, `BIGTABLE_PROJECT`, `BIGTABLE_CLUSTER`, and `BIGTABLE_ZONE` (if necessary)
-
-1. Build the java artifacts and docker image
-
-    `mvn clean compile process-resources war:exploded`<br />
-    **Note** - you can use `mvn pacakge` but you'll get an ignorable error on the next step.
 
 
 ### Build the Jar File
@@ -90,5 +87,17 @@ files to the VMs.  There are two ways to make a GCS Bucket,
 
     `./run.sh <your-project-id> <your-bigtable-cluster-id> <your-gcs-bucket> <your-bigtable-table>`
 
+Example:
+    ` ./run.sh coinflow-demo coinbase gs://coinflow-demo-staging coinbase`
+
+Ignore any java.lang.IllegalThreadStateException errors.
+
+1. View the status of your Dataflow job in the Cloud Dataflow console
+
+1. After a few minutes, from the hbase shell,
+
+    `scan `coinbase`
+
+Should return many rows of Coinbase data that the frontend prjoect will read for it's dashboard.
 
 Copyright Google 2015

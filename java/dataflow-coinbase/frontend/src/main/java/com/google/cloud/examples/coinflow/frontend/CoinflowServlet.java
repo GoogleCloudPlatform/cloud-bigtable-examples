@@ -42,7 +42,7 @@ import java.util.List;
 
 
 public class CoinflowServlet extends HttpServlet {
-    private static final TableName TABLE = TableName.valueOf("Dataflow_test10");
+    private static final TableName TABLE = TableName.valueOf("coinbase");
 
     private static final Logger LOG = LoggerFactory.getLogger(CoinflowServlet
             .class);
@@ -63,41 +63,35 @@ public class CoinflowServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         LOG.info("In CoinflowServlet doGet");
-        UserService userService = UserServiceFactory.getUserService();
-        User currentUser = userService.getCurrentUser();
 
-        if(req.getRequestURI().equals("/favicon.ico")) return;
+        if (req.getRequestURI().equals("/favicon.ico")) return;
 
-        if (currentUser != null) {
+        try (Table t = BigtableHelper.getConnection().getTable(TABLE)) {
+
+            DateTime dateTime = new DateTime().minusHours(4);
+            long before_ts = dateTime.getMillis();
+            long now_ts = new DateTime().getMillis();
+
+            String beforeRowKey = "match_" + before_ts;
+            String afterRowKey = "match_" + now_ts;
+
+            Scan scan = new Scan(beforeRowKey.getBytes(), afterRowKey.getBytes());
+            ResultScanner rs = t.getScanner(scan);
+            resp.addHeader("Access-Control-Allow-Origin", "*");
             resp.setContentType("text/plain");
-            try(Table t = BigtableHelper.getConnection().getTable( TABLE )) {
 
-                DateTime dateTime = new DateTime().minusHours(4);
-                long before_ts = dateTime.getMillis();
-                long now_ts = new DateTime().getMillis();
-
-                String beforeRowKey = "match_" + before_ts;
-                String afterRowKey = "match_" + now_ts;
-
-                Scan scan = new Scan(beforeRowKey.getBytes(), afterRowKey.getBytes());
-                ResultScanner rs = t.getScanner(scan);
-                resp.addHeader("Access-Control-Allow-Origin", "*");
-                resp.setContentType("text/plain");
-
-                List<PriceTimestamp> prices = new ArrayList<>();
-                for (Result r : rs) {
-                    String data = new String(r.getValue(Schema.CF.getBytes(), Schema.QUALIFIER
-                            .getBytes()));
-                    CoinbaseData coinData = objectMapper.readValue(data, CoinbaseData.class);
-                    PriceTimestamp priceTimestamp = new PriceTimestamp(Float.parseFloat(coinData
-                            .getPrice()), DateHelpers.convertDateToTime(coinData.getTime()));
-                    prices.add(priceTimestamp);
-                }
-                String pricesStr = objectMapper.writeValueAsString(prices);
-                resp.getWriter().println(pricesStr);
+            List<PriceTimestamp> prices = new ArrayList<>();
+            for (Result r : rs) {
+                String data = new String(r.getValue(Schema.CF.getBytes(), Schema.QUALIFIER
+                        .getBytes()));
+                CoinbaseData coinData = objectMapper.readValue(data, CoinbaseData.class);
+                PriceTimestamp priceTimestamp = new PriceTimestamp(Float.parseFloat(coinData
+                        .getPrice()), DateHelpers.convertDateToTime(coinData.getTime()));
+                prices.add(priceTimestamp);
             }
-        } else {
-            resp.sendRedirect(userService.createLoginURL(req.getRequestURI()));
+            String pricesStr = objectMapper.writeValueAsString(prices);
+            resp.getWriter().println(pricesStr);
         }
+
     }
 }
