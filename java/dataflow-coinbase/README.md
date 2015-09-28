@@ -10,10 +10,8 @@ Please submit an issue to the issue tracker if the graph does not load.
 ## An End-to-End Google Cloud Dataflow/Cloud Bigtable/Managed VMs/Angular Example
 
 Coinflow is an extension/improvement to the Apache Storm example that reads from the
-Coinbase WebSocket API and saves the feed in Cloud Bigtable.
-
-Coinflow uses Dataflow to also calculate derived analytic data like moving average calculations
-of prices using Dataflow Sliding Windows.
+Coinbase WebSocket API and saves the feed in Cloud Bigtable. Instead of using
+Storm it uses Cloud Dataflow.
 
 This is all served up as a frontend using a Managed VMs Jetty app and Angular JS.
 

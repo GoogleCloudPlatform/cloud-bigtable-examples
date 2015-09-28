@@ -96,7 +96,7 @@ Ignore any java.lang.IllegalThreadStateException errors.
 
 1. After a few minutes, from the hbase shell,
 
-    `scan `coinbase`
+    `scan 'coinbase'`
 
 Should return many rows of Coinbase data that the frontend prjoect will read for it's dashboard.
 
