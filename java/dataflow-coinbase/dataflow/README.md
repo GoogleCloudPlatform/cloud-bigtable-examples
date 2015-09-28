@@ -88,7 +88,7 @@ files to the VMs.  There are two ways to make a GCS Bucket,
 
 1. Run:
 
-    `./run.sh` <your-project-id> <your-bigtable-cluster-id> <your-gcs-bucket> <your-bigtable-table>
+    `./run.sh <your-project-id> <your-bigtable-cluster-id> <your-gcs-bucket> <your-bigtable-table>`
 
 
 Copyright Google 2015
