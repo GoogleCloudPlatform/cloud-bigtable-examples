@@ -25,8 +25,8 @@
   <property><name>google.bigtable.project.id</name><value>PROJECT ID</value></property>
   <property><name>google.bigtable.cluster.name</name><value>CLUSTER NAME</value></property>
  -->
-  <property><name>google.bigtable.project.id</name><value>bill-data-1050</value></property>
-  <property><name>google.bigtable.cluster.name</name><value>coinbase</value></property>
+  <property><name>google.bigtable.project.id</name><value>PROJECT_ID</value></property>
+  <property><name>google.bigtable.cluster.name</name><value>CLUSTER_ID</value></property>
   <property><name>google.bigtable.zone.name</name><value>us-central1-b</value></property>
   <property>
     <name>hbase.client.connection.impl</name>

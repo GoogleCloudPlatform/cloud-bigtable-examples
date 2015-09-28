@@ -156,7 +156,7 @@
         <configuration>
           <gcloud_project>${projectid}</gcloud_project>
           <non_docker_mode>false</non_docker_mode>
-          <docker_build>local</docker_build>
+          <docker_build>remote</docker_build>
         </configuration>
       </plugin>
 
