@@ -15,10 +15,14 @@ This is all served up as a frontend using a Managed VMs Jetty app and Angular JS
 * dataflow/ is the backend Cloud Dataflow code.
 * frontend/ is the Managed VMs app that reads data from Bigtable and serves it up in an
 Angular frontend.
-* util/ contains some scripts that help with administration of the cluster and frontend.
 
-## To be done
+To deploy, follow the README.md instructions for those two projects, the Dataflow backend first
+and then the frontend.
 
-Firebase integration
+## Ideas To Add
+
+* [Firebase](https://www.firebase.com/) integration for real-time animation of the graph
+* Use Cloud Dataflow [Windowing](https://cloud.google.com/dataflow/model/windowing) to show
+moving price average
 
 Copyright Google 2015
