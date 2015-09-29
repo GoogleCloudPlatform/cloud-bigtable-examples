@@ -22,11 +22,8 @@ package com.google.cloud.examples.coinflow.sources;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.google.cloud.bigtable.hbase1_1.BigtableConnection;
-import com.google.cloud.examples.coinflow.data.CoinbaseData;
-import com.google.cloud.examples.coinflow.data.Schema;
-import com.google.cloud.examples.coinflow.utils.DateHelpers;
-import com.google.cloud.bigtable.hbase.BigtableOptionsFactory;
+import com.google.cloud.bigtable.dataflow.CloudBigtableIO;
+import com.google.cloud.bigtable.dataflow.CloudBigtableScanConfiguration;
 import com.google.cloud.dataflow.sdk.Pipeline;
 import com.google.cloud.dataflow.sdk.coders.Coder;
 import com.google.cloud.dataflow.sdk.coders.StringUtf8Coder;
@@ -39,12 +36,10 @@ import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
 import com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner;
 import com.google.cloud.dataflow.sdk.transforms.DoFn;
 import com.google.cloud.dataflow.sdk.transforms.ParDo;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.BufferedMutator;
-import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.Put;
-import org.apache.hadoop.hbase.client.RetriesExhaustedWithDetailsException;
+import com.google.cloud.examples.coinflow.data.CoinbaseData;
+import com.google.cloud.examples.coinflow.data.Schema;
+import com.google.cloud.examples.coinflow.utils.DateHelpers;
+import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -98,17 +93,25 @@ public class CoinbaseSource extends UnboundedSource<String, UnboundedSource
         CloudBigtableOptions options = PipelineOptionsFactory.fromArgs
                 (args).withValidation().as(CloudBigtableOptions.class);
 
+        CloudBigtableScanConfiguration config =  new CloudBigtableScanConfiguration.Builder()
+                .withProjectId(options.getBigtableProjectId())
+                .withClusterId(options.getBigtableClusterId())
+                .withZoneId(options.getBigtableZoneId())
+                .withTableId(options.getBigtableTableId())
+                .build();
+
         options.setStreaming(true);
-        //options.setRunner(DirectPipelineRunner.class);
         options.setRunner(DataflowPipelineRunner.class);
 
         Pipeline p = Pipeline.create(options);
-
+        CloudBigtableIO.initializeForWrite(p);
 
         p.apply(Read.from(new CoinbaseSource()))
                 .apply(ParDo.named("DeserializeCoinbase").of(new
                         DeserializeCoinbase()))
-                .apply(ParDo.of(new HBaseBigtableWriter()));
+                .apply(ParDo.of(new HBaseBigtableWriter()))
+                .apply(CloudBigtableIO.writeToTable(config));
+
         p.run();
     }
 
@@ -146,32 +149,16 @@ public class CoinbaseSource extends UnboundedSource<String, UnboundedSource
      * Writes the element in the context to Bigtable.
      *
      */
-    public static class HBaseBigtableWriter extends DoFn<CoinbaseData, Void> {
-
-        private Connection conn;
-        private BufferedMutator mutator;
-
-        public HBaseBigtableWriter() {
-        }
+    public static class HBaseBigtableWriter extends DoFn<CoinbaseData, Mutation> {
 
         @Override
-        public void startBundle(DoFn<CoinbaseData, Void>.Context c) throws
-                Exception {
+        public void startBundle(DoFn<CoinbaseData, Mutation>.Context c) throws
+        Exception {
             super.startBundle(c);
-            CloudBigtableOptions options = c.getPipelineOptions().as(CloudBigtableOptions.class);
-            Configuration config = new Configuration();
-            config.set(BigtableOptionsFactory.PROJECT_ID_KEY, options.getBigtableProjectId());
-            config.set(BigtableOptionsFactory.ZONE_KEY, options.getBigtableZoneId());
-            config.set(BigtableOptionsFactory.CLUSTER_KEY, options.getBigtableClusterId());
-
-            conn = new BigtableConnection(config);
-            LOG.info("Creating buffered mutator for table ", options
-                    .getBigtableTableId());
-            mutator = conn.getBufferedMutator(TableName.valueOf(options.getBigtableTableId()));
         }
 
         @Override
-        public void processElement(DoFn<CoinbaseData, Void>.ProcessContext c)
+        public void processElement(DoFn<CoinbaseData, Mutation>.ProcessContext c)
                 {
             CoinbaseData data = c.element();
             String ts = Long.toString(DateHelpers.convertDateToTime(data.getTime
@@ -184,36 +171,19 @@ public class CoinbaseSource extends UnboundedSource<String, UnboundedSource
                  LOG.error("Error serializing Coinbase data into string", e);
                  return;
              } catch (IOException e) {
-                 LOG.error("IO exception serializing Coinbase data into " +
-                         "string", e)
-                 ;
+                 LOG.error("IO exception serializing Coinbase data into string", e);
                  return;
              }
 
             Put put = new Put(Bytes.toBytes(rowKey));
             put.addColumn(Bytes.toBytes(Schema.CF), Bytes.toBytes(Schema.QUALIFIER),
                     Bytes.toBytes(dataStr));
-            try {
-                mutator.mutate(put);
-            } catch (IOException e) {
-                LOG.error("IO Exception while mutating row.", e);
-            }
+            c.output(put);
         }
 
         @Override
-        public void finishBundle(DoFn<CoinbaseData, Void>.Context c) throws
+        public void finishBundle(DoFn<CoinbaseData, Mutation>.Context c) throws
                 Exception {
-            try {
-                mutator.close();
-            } catch (RetriesExhaustedWithDetailsException e) {
-                List<Throwable> causes = e.getCauses();
-                if (causes.size() == 1) {
-                    throw (Exception) causes.get(0);
-                } else {
-                    throw e;
-                }
-            }
-            conn.close();
             super.finishBundle(c);
         }
     }
