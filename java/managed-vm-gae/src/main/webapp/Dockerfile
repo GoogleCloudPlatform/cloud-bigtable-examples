@@ -20,8 +20,8 @@ FROM gcr.io/PROJECT_ID_HERE/gae-mvm-01
 COPY prerun.sh webapps /var/lib/jetty/
 
 RUN mkdir ${RUNTIME_DIR}/lib/alpn \
- && wget -O ${RUNTIME_DIR}/lib/alpn/alpn-boot-7.1.3.v20150130.jar http://central.maven.org/maven2/org/mortbay/jetty/alpn/alpn-boot/7.1.3.v20150130/alpn-boot-7.1.3.v20150130.jar \
- && wget -O ${RUNTIME_DIR}/lib/alpn/alpn-boot-8.1.3.v20150130.jar http://central.maven.org/maven2/org/mortbay/jetty/alpn/alpn-boot/8.1.3.v20150130/alpn-boot-8.1.3.v20150130.jar \
+ && wget -O ${RUNTIME_DIR}/lib/alpn/alpn-boot-7.1.3.v20150130.jar https://storage.googleapis.com/cloud-bigtable/alpn-dist/alpn-boot-7.1.3.v20150130.jar \
+ && wget -O ${RUNTIME_DIR}/lib/alpn/alpn-boot-8.1.3.v20150130.jar https://storage.googleapis.com/cloud-bigtable/alpn-dist/alpn-boot-8.1.3.v20150130.jar \
  && chmod +x ${RUNTIME_DIR}/prerun.sh
 
 ENTRYPOINT ["/var/lib/jetty/prerun.sh"]
