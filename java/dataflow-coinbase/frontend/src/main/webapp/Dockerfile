@@ -15,7 +15,9 @@
 
 # IMPRORTANT - you need to substitute your '-' with '_' for the PROJECT_ID in the FROM line only
 
-FROM gcr.io/YOUR-PROJECT-ID/gae-mvm-01
+#FROM gcr.io/coinflow-demo/gae-mvm-0
+FROM appengine-mvn-opensource:latest
+#FROM appengine-mvn-o
 
 COPY prerun.sh webapps /var/lib/jetty/
 
@@ -28,8 +30,8 @@ ENTRYPOINT ["/var/lib/jetty/prerun.sh"]
 
 # EDIT THESE VALUES -- Don't use quotes
 
-ENV BIGTABLE_PROJECT YOUR-PROJECT-ID
-ENV BIGTABLE_CLUSTER YOUR-CLUSTER-ID
+ENV BIGTABLE_PROJECT coinflow-demo
+ENV BIGTABLE_CLUSTER coinbase
 ENV BIGTABLE_ZONE    us-central1-b
 ENV GOOGLE_APPLICATION_CREDENTIALS /app/WEB-INF/client-secret.json
 

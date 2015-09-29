@@ -67,7 +67,7 @@ angular.module('coinflow', ['nvd3'])
             method: 'GET',
             url: '/coinflow'
         }).then(function success(response) {
-            document.getElementById("spinner").style.visibility = "hidden";
+            document.getElementById("spinner").style.display = "none";
             $scope.data = [{values: response.data, color: "#ff7f0e", key: "Trades"}];
         }, function error(response) {
            console.log("Failed!");
