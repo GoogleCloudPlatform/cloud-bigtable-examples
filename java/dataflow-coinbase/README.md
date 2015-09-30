@@ -1,12 +1,5 @@
 # Coinflow
 
-## Live Demo
-
-https://coinflow-demo.appspot.com/
-
-
-Please submit an issue to the issue tracker if the graph does not load.
-
 ## An End-to-End Google Cloud Dataflow/Cloud Bigtable/Managed VMs/Angular Example
 
 Coinflow is an extension/improvement to the Apache Storm example that reads from the
@@ -28,6 +21,6 @@ and then the frontend.
 
 * [Firebase](https://www.firebase.com/) integration for real-time animation of the graph
 * Use Cloud Dataflow [Windowing](https://cloud.google.com/dataflow/model/windowing) to show
-moving price average
+moving price average.
 
 Copyright Google 2015

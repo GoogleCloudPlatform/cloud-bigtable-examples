@@ -93,7 +93,12 @@ public class CoinbaseSocket extends UnboundedSource.UnboundedReader<String> {
      */
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
-        LOG.info("Connection closed: %d - %s%n", statusCode, reason);
+        LOG.info("Connection closed: {} - %s{}", statusCode, reason);
+        try {
+            this.start();
+        } catch (IOException e) {
+            LOG.error("Failure to restart web socket {}", e.getMessage());
+        }
     }
 
     /**
