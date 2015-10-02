@@ -1,0 +1,24 @@
+{
+  "name": "coinflow",
+  "version": "0.2.0",
+  "homepage": "https://github.com/GoogleCloudPlatform/cloud-bigtable-examples",
+  "authors": [
+    "Bill Prin <waprin@google.com>"
+  ],
+  "description": "Frontend to Dataflow/Bigtable Coinbase Visualization",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src/main/webapp/js/",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.6",
+    "angular-nvd3": "~1.0.2",
+    "d3": "~3.5.6",
+    "nvd3": "~1.8.1"
+  }
+}

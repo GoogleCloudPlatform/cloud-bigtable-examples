@@ -1,0 +1,14 @@
+
+<appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
+    <threadsafe>true</threadsafe>
+    <vm>true</vm>
+
+    <static-files>
+        <include path="/**.js" />
+        <include path="/**.css" />
+    </static-files>
+
+   <system-properties>
+        <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
+    </system-properties>
+</appengine-web-app>

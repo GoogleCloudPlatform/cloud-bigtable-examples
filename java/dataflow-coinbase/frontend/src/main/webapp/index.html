@@ -1,0 +1,27 @@
+<html ng-app="coinflow">
+<head>
+    <title>Coinflow</title>
+    <meta charset="utf-8">  <!-- it's important for d3.js -->
+
+    <script src="js/lib/angular/angular.js"></script>
+    <script src="js/lib/d3/d3.js"></script>
+    <script src="js/lib/nvd3/build/nv.d3.js"></script> <!-- or use another assembly -->
+    <script src="js/lib/angular-nvd3/dist/angular-nvd3.js"></script>
+    <link rel="stylesheet" href="js/lib/nvd3/build/nv.d3.css">
+    <link rel="stylesheet" href="css/coinflow.css">
+    <script src="js/app.js"></script>
+</head>
+<body>
+    <h2 style="text-align: center">Coinflow - Coinbase US BTC Price Last 4 Hours</h2>
+
+    <div ng-app="coinflow">
+        <div ng-controller="myCtrl">
+            <div id="spinner">
+                <div class="cube1"></div>
+                <div class="cube2"></div>
+            </div>
+            <nvd3 options="options" data="data"></nvd3>
+        </div>
+    </div>
+</body>
+</html>

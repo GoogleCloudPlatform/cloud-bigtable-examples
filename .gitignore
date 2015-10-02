@@ -6,3 +6,5 @@
 *.jar
 .idea
 .DS_Store
+client-secret.json
+*bower-components*
