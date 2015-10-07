@@ -20,7 +20,9 @@
   <properties>
     <bigtable.version>0.2.1</bigtable.version>
     <hbase.version>1.1.1</hbase.version>
-    <alpn.version>7.1.3.v20150130</alpn.version>
+
+    <alpn.jdk7.version>7.1.3.v20150130</alpn.jdk7.version>
+    <alpn.jdk8.version>8.1.3.v20150130</alpn.jdk8.version>
 
     <compileSource>1.7</compileSource>
 
@@ -31,10 +33,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     
     <bigtable.zone>us-central1-b</bigtable.zone>
-<!-- 
-    <bigtable.projectid></bigtable.projectid>
-    <bigtable.clusterid></bigtable.clusterid>
- -->
   </properties>
 
   <dependencies>
@@ -58,6 +56,27 @@
     </dependency>
   </dependencies>
 
+  <profiles>
+    <profile>
+      <id>jdk7</id>
+        <activation>
+            <jdk>1.7</jdk>
+        </activation>
+        <properties>
+            <alpn.version>${alpn.jdk7.version}</alpn.version>
+        </properties>
+    </profile>
+    <profile>
+        <id>jdk8</id>
+        <activation>
+            <jdk>1.8</jdk>
+        </activation>
+        <properties>
+            <alpn.version>${alpn.jdk8.version}</alpn.version>
+        </properties>
+    </profile>
+  </profiles>
+
   <build>
      <resources>
       <resource>
@@ -77,8 +96,6 @@
             <argument>-Xmx2048m</argument>
             <argument>-Xbootclasspath/p:${settings.localRepository}/org/mortbay/jetty/alpn/alpn-boot/${alpn.version}/alpn-boot-${alpn.version}.jar</argument>
             <argument>-XX:+UseConcMarkSweepGC</argument>
-            <argument>-XX:PermSize=128m</argument>
-            <argument>-XX:MaxPermSize=128m</argument>
             <argument>-Dhbase.ruby.sources=thirdparty/ruby</argument>
             <argument>-classpath</argument>
             <classpath/>
