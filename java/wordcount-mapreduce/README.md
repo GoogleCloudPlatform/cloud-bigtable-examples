@@ -1,51 +1,39 @@
 # Cloud Bigtable MapReduce Example
 
 The Map/Reduce code for Cloud Bigtable should look identical to HBase
-Map/Reduce jobs. The main issue of running against specific HBase and Hadoop
-versions.  Cloud Bigtable supports the new HBase API's after 1.0.
+Map/Reduce jobs. Create a cluster and run our MapReduce job on Google Cloud Dataproc.
+Cloud Bigtable supports the HBase 1.0 API's and later.
 
 ## Project setup
-
 ### Install the Google Cloud Platform SDK
 
 In order to run this mapreduce sample please follow the Cloud Bigtable [Getting Started](https://cloud.google.com/bigtable/docs/hbase-shell-quickstart#before_you_start)
 
   * Create a project
   * Enable Billing
+  * Enable APIs in the Developers Console (APIs & auth > APIs)
+    * Cloud Bigtable API
+    * Cloud Bigtable Table Admin API
+    * Google Cloud Dataproc API
+  * Create a Service Account (APIs & auth > Credentials)
+    **(This step is temporary)**
+    * Click on  Add credentials > Service Account > JSON > Create
+    * Copy the JSON file to the examples main directory and rename as **`key.json`**
   * Create a [Cloud Bigtable Cluster](https://cloud.google.com/bigtable/docs/creating-cluster)
   * Development Environment Setup
-      * Install [Google Cloud SDK](https://cloud.google.com/sdk/)
-      * Install [Java 1.7](http://www.oracle.com/technetwork/java/javase/downloads/index.html) or higher.
-      * Install [Apache Maven](https://maven.apache.org/)
-
-### Install bdutil
-
-We will be using the bdutil tool to provision resources for our Hadoop cluster.
-
-1. Download bdutil the tar.gz from the [downloads page](https://cloud.google.com/hadoop/downloads)
-1. Unpack bdutil to your home directory:
-
-   $ mkdir -p ~/bdutil
-   $ tar xzf bdutil-latest.tar.gz -C ~/bdutil
-
-### Provision a Bigtable Cluster
-
-In order to provision a Cloud Bigtable cluster you will first need to create a
-Google Cloud Platform project. You can create a project using the
-[Developer Console](https://cloud.google.com/console).
-
-After you have created a project you can create a new [Cloud Bigtable cluster](https://cloud.google.com/bigtable/docs/creating-cluster) by
-clicking on the "Storage" -> "Cloud Bigtable" menu item and clicking on the
-"New Cluster" button.  After that, enter the cluster name, ID, zone, and number
-of nodes. Once you have entered those values, click the "Create" button to
-provision the cluster.
+    * Install [Google Cloud SDK](https://cloud.google.com/sdk/)
+    * Install [Java 1.8](http://www.oracle.com/technetwork/java/javase/downloads/index.html) or higher.
+    * Install [Apache Maven](https://maven.apache.org/)
+  * Initialize the Cloud SDK
+  
+    `$ gcloud init`
 
 ### Make a GCS Bucket
 
-Make a GCS bucket that will be used by bdutil to store its output and to copy
+Make a GCS bucket that will be used by Cloud Dataproc to store its output and to copy
 files to the VMs.  There are two ways to make a GCS Bucket, 
 
-1. In the Cloud Console, select "Storage" > "Cloud Storage" > "Storage
+1. In the Developers Console, select "Storage" > "Cloud Storage" > "Storage
    browser" and click on the "Add bucket" button. Type the name for your
    bucket and click "Create".  (Note - Names are a global resource, so make
    yours long and unique) 
@@ -53,158 +41,95 @@ files to the VMs.  There are two ways to make a GCS Bucket,
 
     `$ gsutil mb -p <project ID> gs://<bucketName>`
 
+### Modify the **`pom.xml`**
+
+Edit your `pom.xml` and change the following properties:
+
+    <bucket>YOUR_BUCKET_HERE</bucket>
+    <dataproc.cluster>dp</dataproc.cluster>
+    <bigtable.projectID>YOUR_PROJECT_ID_HERE</bigtable.projectID>
+    <bigtable.clusterID>YOUR_CLUSTER_ID_HERE</bigtable.clusterID>
+    <bigtable.zone>us-central1-b</bigtable.zone>
+
 ### Build the Jar File
 
 You can build the jar file for the MapReduce job using maven.
 
-    $ cd java/wordcount-mapreduce
-    $ mvn package
+    $ mvn clean package
 
-After running Maven the jar file should be located in the `target` directory.
-
-We will upload it to our bucket so that we can use it later.
-
-    $ gsutil cp target/wordcount-mapreduce-0.1.2-SNAPSHOT.jar gs://<bucketName>/
+The output files will be copied to your bucket during the `package` maven phase.
 
 ## Deploying
 
-### Create Compute Engine VMs
+### Create a Cloud Dataproc Cluster
 
-You can use the bdutil tool to start a few VMs with Cloud Bigtable enabled and Hadoop and the HBase client installed in them.
+Use the provided helper script to create a cluster.  (Must be run after `mvn package`)
 
-You will need to create a `cluster_config.sh` file with the following variables:
+    $ chmod +x cluster.sh
+    $ ./cluster.sh create <nameOfcluster> <bucket> [<zone>]
 
-    CONFIGBUCKET='<bucketName>'
-    PROJECT='<project ID>'
-    PREFIX='<prefix for vm instances>'
-    NUM_WORKERS=<num hadoop worker instances, 2 is perfectly reasonable value>
-    GCE_IMAGE='debian-7-backports'
-    GCE_ZONE='us-central1-b'
+* `<nameOfcluster>` can be anything, but we suggest using "**dp**" as is in the `pom.xml` file.
+* `<bucket>` should be the same name as the bucket you created earlier and set into the `pom.xml`.
+* `<zone>` should be the same as in your `pom.xml` and ideally will be in the same zone as your Cloud Bigtable cluster.
 
-You can change the parameters to suit your needs. Then you can run the bdutil passing your environment, the Hadoop environment, and the Cloud Bigtable environment:
+The command by default spins up 4 n1-standard-4 worker nodes and a single n1-standard-2 node.
 
-    $ ~/bdutil/bdutil -e cluster_config.sh -e ~/bdutil/hadoop2_env.sh -e ~/bdutil/extensions/bigtable/bigtable_env.sh deploy
+The actual gcloud command:
 
-This will start the VMs and install Hadoop and HBase in them.
+    gcloud beta dataproc clusters create dp --bucket MYBUCKET --initialization-actions \
+    gs://MYBUCKET/dp-mr-hb-init.sh --num-workers 4 --zone us-central1-b \
+    --master-machine-type n1-standard-2 --worker-machine-type n1-standard-4
 
-The last two lines of output from will look like:
+Note the **Initialization Actions** script tells Cloud Dataproc how to use Cloud Bigtable and connects it to the Cloud Bigtable cluster you configured in the `pom.xml` file.
 
-    Thu Jan 15 16:30:17 PST 2015: Cleanup complete.
-    Thu Jan 15 16:30:17 PST 2015: To log in to the master: gcloud --project=<project ID> compute ssh --zone=us-central1-b <PREFIX>-m
+### Starting your job
 
-Your instances should now be created. You can verify the VMs have been created
-in the "Compute" -> "Compute Engine" section of the [Developer Console](https://cloud.google.com/console).
+The helper script can also start a job for you.
 
-### Connect to Master
+    ./cluster.sh start <nameOfcluster> <bucket>
+    
+This is an alisa for the `glcoud` command:
 
-You can now connect to the master via ssh. Use the Google Cloud SDK to connect to the master node.
+    gcloud beta dataproc jobs submit hadoop --cluster dp --async \
+    --jar target/wordcount-mapreduce-0-SNAPSHOT.jar wordcount-hbase \
+    gs://MYBUCKET/book gs://MYBUCKET/b10 gs://MYBUCKET/b100 gs://MYBUCKET/b1232 gs://MYBUCKET/b6130 \
+    WordCount-332353443
+    
+* wordcount-hbase is the command we are executing (the first parmeter of to our MapReduce job)
+* The list of files are the input files created by `dp-mr-hb-init.sh` (large opensource books)
+* The final parameter is our output table name on our Cloud Bigtable cluster.
 
-    $ gcloud --project=<project ID> compute ssh --zone=us-central1-b <PREFIX>-m
+### Watch your results
 
-### Use the HBase Shell to Verify the Deploy
+You can view your results using the Developers Console (**Bigdata > Dataproc > Jobs**)
+ 
+ Once your job is complete (Green circle), you can connect to your master node and look at your results using `hbase shell`
 
-Hbase shell will work on a properly configured VM.
-
-Become the hadoop user.
-
-    $ sudo su -l hadoop
-
-Start up the HBase shell.
-
+    $ gcloud compute ssh dp-m
     $ hbase shell
 
     hbase Shell; enter 'help<RETURN>' for list of supported commands.
     type "exit<RETURN>" to leave the HBase Shell
     version 0.99.2, r6a0c4f3bae1e92109393423472bd84097f096e75, Tue Dec  2 20:47:47 PST 2014
 
-    hbase(main):001:0>
+    hbase(main):001:0> list
 
-You can now verify that you can connect to Cloud Bigtable properly by running
-some sample commands.
+The output should include a file named WordCount-xxxxxxxx where xxxxxxxx is some unique number.  
 
-    hbase(main):001:0> create 'test', 'cf'
-    hbase(main):001:0> list 'test'
-    hbase(main):001:0> put 'test', 'row1', 'cf:a', 'value1'
-    hbase(main):001:0> put 'test', 'row2', 'cf:b', 'value2'
-    hbase(main):001:0> put 'test', 'row3', 'cf:c', 'value3'
-    hbase(main):001:0> put 'test', 'row4', 'cf:d', 'value4'
-    hbase(main):001:0> scan 'test'
-    hbase(main):001:0> get 'test', 'row1'
-
-You should see output similar to below for each command.
-
-    hbase(main):008:0> create 'test','cf'
-    0 row(s) in 0.6810 seconds
-
-    => Hbase::Table - test
-    hbase(main):009:0> list 'test'
-    TABLE
-    test
-    1 row(s) in 0.1890 seconds
-
-    => ["test"]
-    hbase(main):010:0> put 'test', 'row1', 'cf:a', 'value1'
-    0 row(s) in 0.7450 seconds
-
-    hbase(main):011:0> put 'test', 'row2', 'cf:b', 'value2'
-    0 row(s) in 0.1800 seconds
-
-    hbase(main):012:0> put 'test', 'row3', 'cf:c', 'value3'
-    0 row(s) in 0.1830 seconds
-
-    hbase(main):013:0> put 'test', 'row4', 'cf:d', 'value4'
-    0 row(s) in 0.1790 seconds
-
-    hbase(main):014:0> scan 'test'
-    ROW                                           COLUMN+CELL
-     row1                                         column=cf:a, timestamp=1429010379631, value=value1
-     row2                                         column=cf:b, timestamp=1429010386078, value=value2
-     row3                                         column=cf:c, timestamp=1429010392175, value=value3
-     row4                                         column=cf:d, timestamp=1429010398124, value=value4
-    4 row(s) in 0.2080 seconds
-
-    hbase(main):015:0> get 'test', 'row1'
-    COLUMN                                        CELL
-     cf:a                                         timestamp=1429010379631, value=value1
-    1 row(s) in 0.1910 seconds
-
-Finish by exiting the shell.
-
-    hbase(main):001:0> exit
-
-### Launch a Hadoop Cloud Bigtable Job
-
-Fetch the jar file that we built for the MapReduce job.
-
-    $ gsutil cp gs://<bucketName>/wordcount-mapreduce-0.1.2-SNAPSHOT.jar /tmp/
-
-Make sure you are the hadoop user and run the following commands to create some sample input.
-
-    $ hadoop fs -mkdir input
-    $ curl http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/ClusterSetup.html > setup.html
-    $ hadoop fs -copyFromLocal setup.html input
-
-Run the MapReduce job on the sample input using the following command. This
-will segment the input file into words and count each unique word writing the
-output to `output-table`.
-
-    $ HADOOP_CLASSPATH=$(hbase classpath) hadoop jar \
-        /tmp/wordcount-mapreduce-0.1.2-SNAPSHOT.jar \
-        wordcount-hbase \
-        -libjars hbase-install/lib/bigtable/bigtable-hbase-0.1.5.jar \
-        input output-table
-
-Verify the output using the HBase shell.
-
-    $ hbase shell
-    hbase(main):001:0> list 'output-table'
-    output-table                                                                                        
-    1 row(s) in 1.7820 seconds
-
-    => ["output-table"]
-
-    hbase(main):002:0> scan 'output-table'
+    hbase(main):002:0> scan 'WordCount-332353443'
     <Lots of output here!>
+
+Enter `exit` to leave the `hbase shell` and `exit` again to leave the master node.
+
+## Cleaning up
+
+The help script helps us here as well.
+
+    $ ./cluster.sh delete dp
+    
+Which maps to the fairly easy to remember:
+
+    gcloud beta dataproc clusters delete dp
 
 ## Contributing changes
 

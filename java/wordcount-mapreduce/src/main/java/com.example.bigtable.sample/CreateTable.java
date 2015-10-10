@@ -37,7 +37,6 @@ import java.util.List;
 
 /**
  * Writes the results of WordCount to a new table
- * @author sduskis
  */
 public class CreateTable {
 
