@@ -42,8 +42,6 @@ import org.apache.hadoop.util.GenericOptionsParser;
 
 /**
  * Writes the same results of WordCount to a new table
- *
- * @author sduskis
  */
 public class WordCountHBase {
 
