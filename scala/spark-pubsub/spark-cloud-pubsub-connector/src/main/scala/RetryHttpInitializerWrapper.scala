@@ -32,7 +32,7 @@ class RetryHttpInitializerWrapper(wrappedCredential: Credential) extends HttpReq
     Logger.getLogger("RetryHttpInitializerWrapper".getClass.getName)
 
   /**
-    *  One minutes in miliseconds.
+    *  One minutes in milliseconds.
     */
   private val ONEMINITUES = 60000
 
