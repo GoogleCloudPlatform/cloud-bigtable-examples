@@ -1,9 +1,7 @@
 package connector;
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming.dstream.InputDStream
-import com.google.api.services.pubsub.Pubsub
 import com.google.api.services.pubsub.model.PullRequest
-import com.google.api.services.pubsub.model.PullResponse
 import com.google.api.services.pubsub.model.Subscription
 import com.google.api.client.googleapis.json.GoogleJsonResponseException
 import scala.collection.JavaConversions
