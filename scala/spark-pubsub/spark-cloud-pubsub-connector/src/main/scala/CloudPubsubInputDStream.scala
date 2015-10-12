@@ -1,9 +1,7 @@
 package connector;
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming.dstream.InputDStream
-import com.google.api.services.pubsub.Pubsub
 import com.google.api.services.pubsub.model.PullRequest
-import com.google.api.services.pubsub.model.PullResponse
 import com.google.api.services.pubsub.model.Subscription
 import com.google.api.client.googleapis.json.GoogleJsonResponseException
 import scala.collection.JavaConversions
@@ -30,10 +28,10 @@ class CloudPubsubInputDStream (
     extends InputDStream[(String, String, String)](ssc_)
     with Logging{
   private val BATCH_SIZE = 1000
-  private var projectFullName = "projects/" + projectName
-  private var topicFullName = projectFullName + "/topics/"+ topicName
-  private var subscriptionFullName = projectFullName + "/subscriptions/"+ subscriptionName
-  private var client = CloudPubsubUtils.getClient()
+  private val projectFullName = "projects/" + projectName
+  private val topicFullName = projectFullName + "/topics/"+ topicName
+  private val subscriptionFullName = projectFullName + "/subscriptions/"+ subscriptionName
+  private val client = CloudPubsubUtils.getClient()
   private var subscriptionObject: Subscription = null
 
   /** Helper method that returns a subscription object by name;

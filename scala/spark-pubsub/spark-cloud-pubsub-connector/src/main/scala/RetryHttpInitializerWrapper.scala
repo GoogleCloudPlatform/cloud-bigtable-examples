@@ -8,8 +8,6 @@ import com.google.api.client.http.HttpResponse
 import com.google.api.client.http.HttpUnsuccessfulResponseHandler
 import com.google.api.client.util.ExponentialBackOff
 import com.google.api.client.util.Sleeper
-import com.google.common.base.Preconditions
-import java.io.IOException
 import java.util.logging.Logger
 
 /**
@@ -34,7 +32,7 @@ class RetryHttpInitializerWrapper(wrappedCredential: Credential) extends HttpReq
     Logger.getLogger("RetryHttpInitializerWrapper".getClass.getName)
 
   /**
-    *  One minutes in miliseconds.
+    *  One minutes in milliseconds.
     */
   private val ONEMINITUES = 60000
 
