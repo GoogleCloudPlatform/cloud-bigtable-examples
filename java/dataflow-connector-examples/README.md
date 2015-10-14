@@ -58,7 +58,7 @@ The HelloWorld examples take two strings, converts them to their upper-case repr
 
 HelloWorldWrite does a few Puts to show the basics of writing to Cloud Bigtable through Cloud Dataflow.
 
-    mvn exec:exec -DHelloWorldWrite -Dbigtable.project=<projectID> -Dbigtable.cluster=<clusterID> -Dgs=<Your bucket>
+    mvn package exec:exec -DHelloWorldWrite -Dbigtable.project=<projectID> -Dbigtable.cluster=<clusterID> -Dgs=<Your bucket>
 
 You can verify that the data was written by using HBase shell and typing `scan 'Dataflow_test'`. You can also remove the data, if you wish, using `deleteall 'Dataflow_test', 'Hello'` and `deleteall 'Dataflow_test', 'World'`.
 
@@ -73,7 +73,7 @@ Download the file which Cloud Pubsub messages are created from:
 
 Type the following to run:
 
-    mvn exec:exec -DPubsubWordCount -Dbigtable.project=<projectID> -Dbigtable.cluster=<clusterID> -Dgs=gs://my_bucket -DpubsubTopic=projects/ProjectID/topics/shakes
+    mvn package exec:exec -DPubsubWordCount -Dbigtable.project=<projectID> -Dbigtable.cluster=<clusterID> -Dgs=gs://my_bucket -DpubsubTopic=projects/ProjectID/topics/shakes
 
 This is a streaming sample, which means it doesn't end.  When data has been processed, typically, a few minutes after Maven has completed, you can view the results by using HBase Shell and typing `scan 'Dataflow_test'`.
 
@@ -85,7 +85,7 @@ And once you have seen the data, you can cancel the job by `gcloud alpha dataflo
 
 SourceRowCount shows the use of a Bigtable Source - a construct that knows how to scan a Bigtable Table.  SourceRowCount performs a simple row count using the Cloud Bigtable Source and writes the count to a file in Google Storage.
 
-    mvn exec:exec -DSourceRowCount -Dbigtable.project=<projectID> -Dbigtable.cluster=<clusterID> -Dgs=<Your bucket>
+    mvn package exec:exec -DSourceRowCount -Dbigtable.project=<projectID> -Dbigtable.cluster=<clusterID> -Dgs=<Your bucket>
 
 You can verify the results by frist typing: `gsutil ls gs://my_bucket/**` there should be a file that looks like count-XXXXXX-of-YYYYYY.  Execute the following `gsutil cp gs://my_bucket/count-XXXXXX-of-YYYYYY .` then typing `cat count-XXXXXX-of-YYYYYY`
 
