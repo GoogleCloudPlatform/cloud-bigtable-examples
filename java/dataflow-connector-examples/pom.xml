@@ -17,11 +17,11 @@ limitations under the License.
 <!--
   To run the samples:
   
-    mvn exec:exec -DHelloWorldWrite -Dbigtable.project=<projectID> -Dbigtable.cluster=<clusterID> -Dgs=<Your bucket>
+    mvn package exec:exec -DHelloWorldWrite -Dbigtable.project=<projectID> -Dbigtable.cluster=<clusterID> -Dgs=<Your bucket>
 
-    mvn exec:exec -DSourceRowCount -Dbigtable.project=<projectID> -Dbigtable.cluster=<clusterID> -Dgs=<Your bucket>
+    mvn package exec:exec -DSourceRowCount -Dbigtable.project=<projectID> -Dbigtable.cluster=<clusterID> -Dgs=<Your bucket>
     
-    mvn exec:exec -DPubsubWordCount -Dbigtable.project=<projectID> -Dbigtable.cluster=<clusterID> -Dgs=<Your bucket> -DpubsubTopic=projects/ProjectID/topics/TopicID
+    mvn package exec:exec -DPubsubWordCount -Dbigtable.project=<projectID> -Dbigtable.cluster=<clusterID> -Dgs=<Your bucket> -DpubsubTopic=projects/ProjectID/topics/TopicID
     
     Optional Arguments
       -Dbigtable.zone=<your zone>
@@ -39,7 +39,9 @@ limitations under the License.
   <properties>
     <dataflow.version>1.0.0</dataflow.version>
     <bigtable.hbase.version>0.2.1</bigtable.hbase.version>
-    <alpn.version>7.1.3.v20150130</alpn.version>
+    <!-- For Netty HTTP2/TLS negotiation -->
+    <alpn.jdk7.version>7.1.3.v20150130</alpn.jdk7.version>
+    <alpn.jdk8.version>8.1.3.v20150130</alpn.jdk8.version>
     
     <bigtable.zone>us-central1-b</bigtable.zone>
     <bigtable.table>Dataflow_test</bigtable.table>
@@ -66,6 +68,24 @@ limitations under the License.
  </dependencies>
 
   <profiles>
+      <profile>
+        <id>jdk7</id>
+	<activation>
+	  <jdk>1.7</jdk>
+	</activation>
+	<properties>
+	  <alpn.version>${alpn.jdk7.version}</alpn.version>
+	</properties>
+      </profile>
+      <profile>
+        <id>jdk8</id>
+	<activation>
+	  <jdk>1.8</jdk>
+	</activation>
+	<properties>
+	  <alpn.version>${alpn.jdk8.version}</alpn.version>
+	</properties>
+      </profile>
       <profile>
         <id>HelloWorldWrite</id>
           <activation>
