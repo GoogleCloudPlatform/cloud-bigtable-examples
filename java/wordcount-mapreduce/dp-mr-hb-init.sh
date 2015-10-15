@@ -15,7 +15,7 @@
 
 # Values you must set
 
-ROLE=$(/usr/share/google/get_metadata_value attributes/role)
+ROLE=$(/usr/share/google/get_metadata_value attributes/dataproc-role)
 PROJECT=$(/usr/share/google/get_metadata_value project-id)
 BUCKET=$(/usr/share/google/get_metadata_value attributes/dataproc-bucket)
 
@@ -35,8 +35,6 @@ gsutil -q -m cp gs://${BUCKET}/bigtable-hbase-*.jar /usr/lib/hbase/
 # move hbase jars to Hadoop
 
 echo "Adding classpath's"
-# cp $(/usr/bin/hbase mapredcp | tr ':' ' ') /usr/lib/hadoop/
-# cp $(/usr/bin/hbase mapredcp | tr ':' ' ') /usr/lib/hadoop-mapreduce/
 echo "export HADOOP_CLASSPATH=\"$(/usr/bin/hbase mapredcp):\$HADOOP_CLASSPATH\"" >> /etc/hadoop/conf/hadoop-env.sh
 echo "export HADOOP_CLASSPATH=\"$(/usr/bin/hbase mapredcp):\$HADOOP_CLASSPATH\"" >> /etc/hadoop/conf/mapred-env.sh
 
