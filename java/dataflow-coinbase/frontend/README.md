@@ -38,23 +38,7 @@ If your table is not name 'coinbase', make sure you update the TABLE name in Coi
 
 # To Run Locally
 
-1. Add your Service Account JSON credentials to src/main/webapp/WEB-INF
-1. Uncomment the line in src/main/webapp/Dockerfile that points the GOOGLE_APPLICATION_CREDENTIALS
-to that file.
-1. Then run:
-
-    `mvn gcloud:run`
-
-Note: if you have Docker or boot2docker installed locally, changing the gcloud maven configuration
-in the pom file from 'remote' to 'local' may speed up your container build.
-
-## Local Debugging Tips
-
-* When you run `mvn gcloud:run`, make sure port 8000 and port 8080 are available
-* Use `docker ps` to look for previous containers running the same app, and `docker stop` to stop
- them.
-* You can also use `docker logs` to inspect the state of the container and see any error logs in
-the Jetty app.
+Temporarily not supported.
 
 # To Deploy
 
