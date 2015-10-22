@@ -27,10 +27,14 @@ the appengine-java-vm-runtime repo:
 
 1. Edit `Dockerfile` to set `PROJECT_ID_HERE` in the **FROM** directive, `BIGTABLE_PROJECT`, `BIGTABLE_CLUSTER`, and `BIGTABLE_ZONE` (if necessary)
 
-1. Build the java artifacts and docker image
+1. Build the entire repo from the outer directory before building this POM. So from cloud-bigtable-examples/java/dataflow-coinase
 
-    `mvn clean compile process-resources war:exploded`<br />
-    **Note** - you can use `mvn package` but you'll get an ignorable error on the next step.
+   ```mvn clean install```
+
+Building it from the outer repo ensures that the parent POM is properly installed for the children POMs to reference.
+Subsequent builds of only this project can be run from this directory:
+
+    ```mvn clean package```
 
 # Updating the Table Name
 
