@@ -79,7 +79,15 @@ files to the VMs.  There are two ways to make a GCS Bucket,
 
 ### Build the Jar File
 
-    `mvn clean package`
+
+1. Build the entire repo from the outer directory before building this POM. So from cloud-bigtable-examples/java/dataflow-coinase
+   ```mvn clean install```
+
+Building it from the outer repo ensures that the parent POM is properly installed for the children POMs to reference.
+
+Subsequent builds of only this project can be run from this directory:
+
+    ```mvn clean package```
 
 ## Deploying
 

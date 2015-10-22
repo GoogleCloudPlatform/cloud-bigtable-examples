@@ -27,10 +27,14 @@ the appengine-java-vm-runtime repo:
 
 1. Edit `Dockerfile` to set `PROJECT_ID_HERE` in the **FROM** directive, `BIGTABLE_PROJECT`, `BIGTABLE_CLUSTER`, and `BIGTABLE_ZONE` (if necessary)
 
-1. Build the java artifacts and docker image
+1. Build the entire repo from the outer directory before building this POM. So from cloud-bigtable-examples/java/dataflow-coinase
 
-    `mvn clean compile process-resources war:exploded`<br />
-    **Note** - you can use `mvn package` but you'll get an ignorable error on the next step.
+   ```mvn clean install```
+
+Building it from the outer repo ensures that the parent POM is properly installed for the children POMs to reference.
+Subsequent builds of only this project can be run from this directory:
+
+    ```mvn clean package```
 
 # Updating the Table Name
 
@@ -38,23 +42,7 @@ If your table is not name 'coinbase', make sure you update the TABLE name in Coi
 
 # To Run Locally
 
-1. Add your Service Account JSON credentials to src/main/webapp/WEB-INF
-1. Uncomment the line in src/main/webapp/Dockerfile that points the GOOGLE_APPLICATION_CREDENTIALS
-to that file.
-1. Then run:
-
-    `mvn gcloud:run`
-
-Note: if you have Docker or boot2docker installed locally, changing the gcloud maven configuration
-in the pom file from 'remote' to 'local' may speed up your container build.
-
-## Local Debugging Tips
-
-* When you run `mvn gcloud:run`, make sure port 8000 and port 8080 are available
-* Use `docker ps` to look for previous containers running the same app, and `docker stop` to stop
- them.
-* You can also use `docker logs` to inspect the state of the container and see any error logs in
-the Jetty app.
+Temporarily not supported.
 
 # To Deploy
 
