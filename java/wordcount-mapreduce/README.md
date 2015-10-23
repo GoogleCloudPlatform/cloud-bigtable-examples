@@ -15,10 +15,6 @@ In order to run this mapreduce sample please follow the Cloud Bigtable [Getting 
     * Cloud Bigtable API
     * Cloud Bigtable Table Admin API
     * Google Cloud Dataproc API
-  * Create a Service Account (APIs & auth > Credentials)
-    **(This step is temporary)**
-    * Click on  Add credentials > Service Account > JSON > Create
-    * Copy the JSON file to the examples main directory and rename as **`key.json`**
   * Create a [Cloud Bigtable Cluster](https://cloud.google.com/bigtable/docs/creating-cluster)
   * Development Environment Setup
     * Install [Google Cloud SDK](https://cloud.google.com/sdk/)

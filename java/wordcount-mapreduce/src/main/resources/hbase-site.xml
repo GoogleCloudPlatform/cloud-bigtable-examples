@@ -24,7 +24,6 @@
   <property><name>google.bigtable.project.id</name><value>${bigtable.projectID}</value></property>
   <property><name>google.bigtable.cluster.name</name><value>${bigtable.clusterID}</value></property>
   <property><name>google.bigtable.zone.name</name><value>${bigtable.zone}</value></property>
-  <property><name>google.bigtable.auth.json.keyfile</name><value>/key.json</value></property>
   <property>
     <name>hbase.client.connection.impl</name>
     <value>com.google.cloud.bigtable.hbase1_0.BigtableConnection</value>

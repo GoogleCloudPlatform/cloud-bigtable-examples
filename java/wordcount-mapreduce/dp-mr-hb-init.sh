@@ -24,7 +24,6 @@ BUCKET=$(/usr/share/google/get_metadata_value attributes/dataproc-bucket)
 # gcloud -q components update alpha beta
 
 echo "Copying files from Bucket"
-gsutil -q cp gs://${BUCKET}/key.json /key.json
 gsutil -q cp gs://${BUCKET}/hbase-site.xml /etc/hadoop/conf/
 gsutil -q cp gs://${BUCKET}/hbase-site.xml /etc/hbase/conf/
 
