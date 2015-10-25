@@ -28,22 +28,20 @@
 
   <properties>
     <bigtable.version>0.2.1</bigtable.version>
-    <hbase.version>1.1.1</hbase.version>
+    <hbase.version>1.1.2</hbase.version>
 
     <hadoop.version>2.4.1</hadoop.version>
     <compat.module>hbase-hadoop2-compat</compat.module>
 
-    <appengine.version>1.9.26</appengine.version>
+    <appengine.version>1.9.27</appengine.version>
     <compileSource>1.7</compileSource>
 
     <slf4j.version>1.7.12</slf4j.version>
     <log4j.version>1.2.17</log4j.version>
-    <junit.version>4.11</junit.version>
-    <mockito.version>1.9.5</mockito.version>
 
-    <gcloud.plugin.version>2.0.9.76.v20150902</gcloud.plugin.version>
+    <gcloud.plugin.version>2.0.9.83.v20151021</gcloud.plugin.version>
 
-    <requiredMavenVersion>3.2.1</requiredMavenVersion>
+    <requiredMavenVersion>3.3.3</requiredMavenVersion>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.outputEncoding>UTF-8</project.build.outputEncoding>

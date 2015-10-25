@@ -67,9 +67,6 @@ else
   { echo "Project ${_projectID} does not have any Cloud Bigtable clusters created."; exit 1; }
 fi
 
-ALPN=7.1.3.v20150130
-JAVA_VER=$(java -version 2>&1 | grep "java version" )
-
 echo "Project ID= ${_projectID}"
 echo "Cluster ID= ${_clusterID}"
 echo "Zone=       ${_zone}"

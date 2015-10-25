@@ -19,7 +19,7 @@ SECURITY WARNING - This app will read / write the two tables you create (**`gae-
 
 ## Requirements
 1. Latest version of [gcloud](https://cloud.google.com/sdk/) Update with `gcloud components update`
-1. Java 1.7
+1. **Java 1.8**
 1. [Maven](https://maven.apache.org/)
 
 ## Project Setup
@@ -41,6 +41,9 @@ SECURITY WARNING - This app will read / write the two tables you create (**`gae-
 
    Many users find it helpful to add to either their `.bash_rc` or `.profile` the line:<br />
    `export GOOGLE_APPLICATION_CREDENTIALS=~/path_to_key.json`
+   
+   Also copy the `client-secret.json` to `src/main/webapp/WEB-INF/client-secret.json`
+   Note - this step isn't technically required, but it will help when we get local debugging working.
 
 1. Select **Storage > Cloud Bigtable > New Cluster**
 
@@ -50,9 +53,7 @@ SECURITY WARNING - This app will read / write the two tables you create (**`gae-
 
  `gcloud auth login`
  
-1. Follow the [instructions to enable `hbase shell`](https://cloud.google.com/bigtable/docs/hbase-shell-quickstart)
-
-1. Launch `hbase shell`
+1. Follow the [instructions to launch `hbase shell`](https://cloud.google.com/bigtable/docs/hbase-shell-quickstart)
 
 1. Create the table (tableName, Column Family)
 
@@ -61,18 +62,8 @@ SECURITY WARNING - This app will read / write the two tables you create (**`gae-
  `exit`
  
 ## Deploying the AppEngine Runtime
-1. get a copy of the [appengine-java-vm-runtime](https://github.com/googlecloudplatform/appengine-java-vm-runtime]
 
-1. Follow the instructions to build the docker container
-
-1. Substitute your ProjectID for PROJECT_ID_HERE and execute:
-
-  * `docker tag myimage gcr.io/PROJECT_ID_HERE/gae-mvm-01`
-  * `gcloud docker push gcr.io/PROJECT_ID_HERE/gae-mvm-01`
-  * `gcloud docker pull gcr.io/PROJECT_ID_HERE/gae-mvm-01`
-<!-- The gcloud docker pull may not be required, but it made life easier -->
-
-1. Edit `Dockerfile` to set `PROJECT_ID_HERE` in the **FROM** directive, `BIGTABLE_PROJECT`, `BIGTABLE_CLUSTER`, and `BIGTABLE_ZONE` (if necessary) 
+1. Edit `Dockerfile` to set `BIGTABLE_PROJECT`, `BIGTABLE_CLUSTER`, and `BIGTABLE_ZONE` (if necessary) 
 
 1. Build the java artifacts and docker image
  
@@ -82,6 +73,8 @@ SECURITY WARNING - This app will read / write the two tables you create (**`gae-
 1. Deploy the application
  
     `mvn gcloud:deploy`
+
+    Note - there may be a spurious error message about missing "latest" tag for "b.gcr.io/jenkins_images/jetty9-compat" - your deploy actually worked.
 
 1. go to the new default module which will be displayed in results from the deploy.  It will look like: `https://20150624t111224-dot-default-dot-PROJECTID.appspot.com` you can go to that url to test.
 

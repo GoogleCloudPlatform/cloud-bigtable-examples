@@ -13,25 +13,14 @@
 # limitations under the License.
 
 
-# IMPRORTANT - you need to substitute your '-' with '_' for the PROJECT_ID in the FROM line only
-
-FROM gcr.io/PROJECT_ID_HERE/gae-mvm-01
-
-COPY prerun.sh webapps /var/lib/jetty/
-
-RUN mkdir ${RUNTIME_DIR}/lib/alpn \
- && wget -O ${RUNTIME_DIR}/lib/alpn/alpn-boot-7.1.3.v20150130.jar https://storage.googleapis.com/cloud-bigtable/alpn-dist/alpn-boot-7.1.3.v20150130.jar \
- && wget -O ${RUNTIME_DIR}/lib/alpn/alpn-boot-8.1.3.v20150130.jar https://storage.googleapis.com/cloud-bigtable/alpn-dist/alpn-boot-8.1.3.v20150130.jar \
- && chmod +x ${RUNTIME_DIR}/prerun.sh
-
-ENTRYPOINT ["/var/lib/jetty/prerun.sh"]
+FROM b.gcr.io/jenkins_images/jetty9-compat
 
 # EDIT THESE VALUES -- Don't use quotes
 
 ENV BIGTABLE_PROJECT PROJECT_ID_HERE
 ENV BIGTABLE_CLUSTER CLUSTER_ID_HERE
 ENV BIGTABLE_ZONE    us-central1-b
-ENV GOOGLE_APPLICATION_CREDENTIALS /app/WEB-INF/client-secret.json
+# ENV GOOGLE_APPLICATION_CREDENTIALS /app/WEB-INF/client-secret.json
 
 ADD . /app
 
