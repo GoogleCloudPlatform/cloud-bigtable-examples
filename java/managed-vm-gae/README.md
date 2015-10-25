@@ -63,7 +63,7 @@ SECURITY WARNING - This app will read / write the two tables you create (**`gae-
  
 ## Deploying the AppEngine Runtime
 
-1. Edit `Dockerfile` to set `PROJECT_ID_HERE` in the **FROM** directive, `BIGTABLE_PROJECT`, `BIGTABLE_CLUSTER`, and `BIGTABLE_ZONE` (if necessary) 
+1. Edit `Dockerfile` to set `BIGTABLE_PROJECT`, `BIGTABLE_CLUSTER`, and `BIGTABLE_ZONE` (if necessary) 
 
 1. Build the java artifacts and docker image
  
