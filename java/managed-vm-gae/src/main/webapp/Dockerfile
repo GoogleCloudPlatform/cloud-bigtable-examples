@@ -15,14 +15,5 @@
 
 FROM gcr.io/google-appengine/jetty9-compat
 
-# EDIT THESE VALUES -- Don't use quotes
-
-ENV BIGTABLE_PROJECT PROJECT_ID_HERE
-ENV BIGTABLE_CLUSTER CLUSTER_ID_HERE
-ENV BIGTABLE_ZONE    us-central1-b
-ENV GOOGLE_APPLICATION_CREDENTIALS /app/WEB-INF/client-secret.json
-
-ENV ALPN_ENABLE true
-
 ADD . /app
 
