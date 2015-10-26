@@ -74,8 +74,6 @@ SECURITY WARNING - This app will read / write the two tables you create (**`gae-
  
     `mvn gcloud:deploy`
 
-    Note - there may be a spurious error message about missing "latest" tag for "b.gcr.io/jenkins_images/jetty9-compat" - your deploy actually worked.
-
 1. go to the new default module which will be displayed in results from the deploy.  It will look like: `https://20150624t111224-dot-default-dot-PROJECTID.appspot.com` you can go to that url to test.
 
 1. Or run locally. First, copy your Service Acccount JSON file into src/main/webapp/WEB-INFO, and uncomment the GOOGLE_APPLICATION_CREDENTIALS file in src/main/webapp/Dockerfile, then rerun: 
