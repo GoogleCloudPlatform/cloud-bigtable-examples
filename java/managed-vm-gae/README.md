@@ -63,7 +63,7 @@ SECURITY WARNING - This app will read / write the two tables you create (**`gae-
  
 ## Deploying the AppEngine Runtime
 
-1. Edit `Dockerfile` to set `BIGTABLE_PROJECT`, `BIGTABLE_CLUSTER`, and `BIGTABLE_ZONE` (if necessary) 
+1. Edit `src/main/webapp/WEB-INF/appengine-web.xml` to set `BIGTABLE_PROJECT`, `BIGTABLE_CLUSTER`, and `BIGTABLE_ZONE` (if necessary) 
 
 1. Build the java artifacts and docker image
  
@@ -76,7 +76,7 @@ SECURITY WARNING - This app will read / write the two tables you create (**`gae-
 
 1. go to the new default module which will be displayed in results from the deploy.  It will look like: `https://20150624t111224-dot-default-dot-PROJECTID.appspot.com` you can go to that url to test.
 
-1. Or run locally. First, copy your Service Acccount JSON file into src/main/webapp/WEB-INFO, and uncomment the GOOGLE_APPLICATION_CREDENTIALS file in src/main/webapp/Dockerfile, then rerun: 
+1. Or run locally. First, copy your Service Acccount JSON file into src/main/webapp/WEB-INFO, and uncomment the GOOGLE_APPLICATION_CREDENTIALS file in src/main/webapp/appengine-web.xml, then rerun: 
 
     `mvn clean compile process-resources war:exploded`
     
