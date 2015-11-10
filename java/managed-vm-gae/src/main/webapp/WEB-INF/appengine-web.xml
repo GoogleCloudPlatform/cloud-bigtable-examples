@@ -4,13 +4,18 @@
     <vm>true</vm>
 
     <env-variables>
-      <env-var name="BIGTABLE_PROJECT" value="YOUR_PROJECT_ID" />
-      <env-var name="BIGTABLE_CLUSTER" value="YOUR_CLUSTER_ID" />
-      <env-var name="BIGTABLE_ZONE" value="us-central1-b" />
-
-      <!-- env-var name="GOOGLE_APPLICATION_CREDENTIALS" value="/app/WEB-INF/client-secret.json" -->
+      <env-var name="BIGTABLE_PROJECT" value="${PROJECT_ID}" />
+      <env-var name="BIGTABLE_CLUSTER" value="${CLUSTER_ID}" />
+      <env-var name="BIGTABLE_ZONE" value="${ZONE}" />
 
       <env-var name="ALPN_ENABLE" value="true" />
+      
     </env-variables>
+    <system-properties>
+<!-- 
+      <property name="java.util.logging.config.file" value="/app/WEB_INF/logging.properties"/>
+      <property name="log4j.debug" value="true" />
+ -->
+    </system-properties>
 
 </appengine-web-app>

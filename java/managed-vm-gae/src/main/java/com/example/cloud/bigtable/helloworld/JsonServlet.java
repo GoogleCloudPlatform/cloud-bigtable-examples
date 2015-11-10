@@ -36,10 +36,22 @@ import java.util.Properties;
 import java.util.Map;
 import java.util.NavigableMap;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.annotation.ServletSecurity;
+import javax.servlet.annotation.HttpMethodConstraint;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+@WebServlet(name="json", urlPatterns={"/json/*"} )
+@ServletSecurity(
+  httpMethodConstraints={
+    @HttpMethodConstraint("GET"),
+    @HttpMethodConstraint("DELETE"),
+    @HttpMethodConstraint("POST"),
+    @HttpMethodConstraint("OPTIONS") } )
 
 public class JsonServlet extends HttpServlet {
   private static final TableName TABLE = TableName.valueOf("from-json");
