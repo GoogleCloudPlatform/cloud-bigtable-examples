@@ -22,6 +22,7 @@ import org.apache.hadoop.hbase.client.ConnectionFactory;
 
 import java.io.IOException;
 
+import javax.servlet.annotation.WebListener;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -30,6 +31,7 @@ import javax.servlet.ServletContextListener;
  * BigtableHelper, a ServletContextListener, is setup in web.xml to run before a JSP is run.
  *
  **/
+@WebListener
 public class BigtableHelper implements ServletContextListener {
 
   private static String PROJECT_ID = System.getenv("BIGTABLE_PROJECT");

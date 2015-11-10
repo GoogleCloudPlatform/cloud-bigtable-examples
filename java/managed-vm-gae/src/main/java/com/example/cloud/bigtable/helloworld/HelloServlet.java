@@ -35,10 +35,12 @@ import java.lang.String;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@WebServlet(name = "hello", urlPatterns = {"/"} )
 public class HelloServlet extends HttpServlet {
   private static final TableName TABLE = TableName.valueOf("gae-hello");
 

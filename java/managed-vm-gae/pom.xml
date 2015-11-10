@@ -24,39 +24,31 @@
   <groupId>com.example.bigtable</groupId>
   <artifactId>bigtable-hello</artifactId>
   <packaging>war</packaging>
-  <version>SNAPSHOT</version>
+  <version>1.0-SNAPSHOT</version>
 
   <properties>
     <bigtable.version>0.2.1</bigtable.version>
     <hbase.version>1.1.2</hbase.version>
+    <PROJECT_ID>YOUR_PROJECT_ID</PROJECT_ID>
+    <CLUSTER_ID>YOUR_CLUSTER_ID</CLUSTER_ID>
+    <ZONE>us-central1-b</ZONE>
 
     <hadoop.version>2.4.1</hadoop.version>
     <compat.module>hbase-hadoop2-compat</compat.module>
 
-    <appengine.version>1.9.27</appengine.version>
+    <appengine.version>1.9.28</appengine.version>
     <compileSource>1.7</compileSource>
 
     <slf4j.version>1.7.12</slf4j.version>
     <log4j.version>1.2.17</log4j.version>
 
-    <gcloud.plugin.version>2.0.9.83.v20151021</gcloud.plugin.version>
+    <gcloud.plugin.version>2.0.9.84.v20151030</gcloud.plugin.version>
 
     <requiredMavenVersion>3.3.3</requiredMavenVersion>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
   </properties>
-
-<!-- 
-	<repositories>
-		<repository>
-			<id>snapshots-repo</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-			<releases><enabled>false</enabled></releases>
-			<snapshots><enabled>true</enabled></snapshots>
-		</repository>
-	</repositories>
- -->
 
   <dependencies>
     <dependency>
@@ -91,6 +83,20 @@
     </dependency>
   </dependencies>
 
+  <profiles>
+    <profile>
+      <id>staged</id> 
+      <repositories>
+        <repository>
+          <id>snapshots-repo</id>
+          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+          <releases><enabled>false</enabled></releases>
+          <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+
   <build>
     <outputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/classes</outputDirectory> 
     <resources>
@@ -118,6 +124,7 @@
         <version>2.6</version>
         <configuration>
           <archiveClasses>true</archiveClasses>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
           <webResources>
             <!-- in order to interpolate version from pom into appengine-web.xml -->
             <resource>
