@@ -7,7 +7,7 @@ This app provides:
 1. A web interface that uses Cloud Bigtable to track the number of visits from an opaque version of your Google account.
 1. A simple REST interface that can read and write arbitrary data to a Cloud Bigtable table using GET, POST, and DELETE verbs.
 
-SECURITY WARNING - This app will read / write the two tables you create (**`gae-hello`** and **`from-json`**) The app provides NO ADDITIONAL SECURITY PROTECTIONS. We suggest that instances should only be available while testing and that test data be used.
+**SECURITY WARNING** – This app will read / write the two tables you create (**`gae-hello`** and **`from-json`**) The app provides NO ADDITIONAL SECURITY PROTECTIONS. We suggest that instances should only be available while testing and that test data be used.
 
 ## Table of Contents
 1. [Requirements](#Requirements)
@@ -63,16 +63,11 @@ SECURITY WARNING - This app will read / write the two tables you create (**`gae-
  
 ## Deploying the AppEngine Runtime
 
-1. Edit `src/main/webapp/WEB-INF/appengine-web.xml` to set `BIGTABLE_PROJECT`, `BIGTABLE_CLUSTER`, and `BIGTABLE_ZONE` (if necessary) 
-
-1. Build the java artifacts and docker image
- 
-    `mvn clean compile process-resources war:exploded`<br />
-    **Note** - you can use `mvn pacakge` but you'll get an ignorable error on the next step.
+1. Edit `pom.xml` to set `PROJECT_ID`, `CLUSTER_ID`, and `ZONE` (if necessary) or you can add the following to your `mvn` command:  `-DPROJECT_ID=myProject -DCLUSTER_ID=myCluster -DZONE=myZone`
     
 1. Deploy the application
  
-    `mvn gcloud:deploy`
+    `mvn clean gcloud:deploy`
 
 1. go to the new default module which will be displayed in results from the deploy.  It will look like: `https://20150624t111224-dot-default-dot-PROJECTID.appspot.com` you can go to that url to test.
 

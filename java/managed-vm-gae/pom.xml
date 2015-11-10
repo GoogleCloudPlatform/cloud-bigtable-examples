@@ -27,7 +27,7 @@
   <version>1.0-SNAPSHOT</version>
 
   <properties>
-    <bigtable.version>0.2.1</bigtable.version>
+    <bigtable.version>0.2.3</bigtable.version>
     <hbase.version>1.1.2</hbase.version>
     <PROJECT_ID>YOUR_PROJECT_ID</PROJECT_ID>
     <CLUSTER_ID>YOUR_CLUSTER_ID</CLUSTER_ID>
@@ -37,7 +37,7 @@
     <compat.module>hbase-hadoop2-compat</compat.module>
 
     <appengine.version>1.9.28</appengine.version>
-    <compileSource>1.7</compileSource>
+    <compileSource>1.8</compileSource>
 
     <slf4j.version>1.7.12</slf4j.version>
     <log4j.version>1.2.17</log4j.version>
@@ -63,11 +63,13 @@
       <version>${bigtable.version}</version>
     </dependency>
 
-    <dependency>
+<!-- 
+    <dependency>  <!~~ remove for 0.2.3 ~~>
         <groupId>org.apache.hbase</groupId>
         <artifactId>hbase-client</artifactId>
         <version>${hbase.version}</version>
     </dependency>
+ -->
 
     <dependency>
       <groupId>javax.servlet</groupId>
