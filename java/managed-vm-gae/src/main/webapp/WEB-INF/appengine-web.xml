@@ -4,9 +4,9 @@
     <vm>true</vm>
 
     <env-variables>
-      <env-var name="BIGTABLE_PROJECT" value="${PROJECT_ID}" />
-      <env-var name="BIGTABLE_CLUSTER" value="${CLUSTER_ID}" />
-      <env-var name="BIGTABLE_ZONE" value="${ZONE}" />
+      <env-var name="BIGTABLE_PROJECT" value="${bigtable.projectID}" />
+      <env-var name="BIGTABLE_CLUSTER" value="${bigtable.clusterID}" />
+      <env-var name="BIGTABLE_ZONE" value="${bigtable.zone}" />
 
       <env-var name="ALPN_ENABLE" value="true" />
       

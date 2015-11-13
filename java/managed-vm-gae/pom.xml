@@ -29,9 +29,9 @@
   <properties>
     <bigtable.version>0.2.2</bigtable.version>
     <hbase.version>1.1.2</hbase.version>
-    <PROJECT_ID>YOUR_PROJECT_ID</PROJECT_ID>
-    <CLUSTER_ID>YOUR_CLUSTER_ID</CLUSTER_ID>
-    <ZONE>us-central1-b</ZONE>
+    <bigtable.projectID>YOUR_PROJECT_ID</bigtable.projectID>
+    <bigtable.clusterID>YOUR_CLUSTER_ID</bigtable.clusterID>
+    <bigtable.zone>us-central1-b</bigtable.zone>
 
     <hadoop.version>2.4.1</hadoop.version>
     <compat.module>hbase-hadoop2-compat</compat.module>
@@ -52,19 +52,20 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>${appengine.version}</version>
-    </dependency>
-
-    <dependency>
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase-1.1</artifactId>
       <version>${bigtable.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-api-1.0-sdk</artifactId>
+      <version>${appengine.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
 <!-- 
-    <dependency>  <!~~ remove for 0.2.3 ~~>
+    <dependency>  <!~~ remove for 0.2.2 ~~>
         <groupId>org.apache.hbase</groupId>
         <artifactId>hbase-client</artifactId>
         <version>${hbase.version}</version>

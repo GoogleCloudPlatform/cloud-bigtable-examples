@@ -62,24 +62,20 @@ This app provides:
  `exit`
  
 ## Deploying the AppEngine Runtime
-
-1. Edit `pom.xml` to set `PROJECT_ID`, `CLUSTER_ID`, and `ZONE` (if necessary) or you can add the following to your `mvn` command:  `-DPROJECT_ID=myProject -DCLUSTER_ID=myCluster -DZONE=myZone`
     
 1. Deploy the application
  
-    `mvn clean gcloud:deploy`
+    `mvn clean gcloud:deploy -Dbigtable.projectID=myProject -Dbigtable.clusterID=myCluster -Dbigtable.zone=myZone`
 
 1. go to the new default module which will be displayed in results from the deploy.  It will look like: `https://20150624t111224-dot-default-dot-PROJECTID.appspot.com` you can go to that url to test.
 
+<!-- 
 1. Or run locally. First, copy your Service Acccount JSON file into src/main/webapp/WEB-INFO, and uncomment the GOOGLE_APPLICATION_CREDENTIALS file in src/main/webapp/appengine-web.xml, then rerun: 
 
-    `mvn clean compile process-resources war:exploded`
-    
-    then   
-
-    `mvn gcloud:run`
+    `mvn clean gcloud:run`
 
 1. After you run locally, you can access the app at `http://localhost:8080`
+ -->
 
 ## AppEngine Debugging Hints
 The first thing to do, if you'd like to debug is use the `servlet.log()` methods, they seem to work when other loggers don't.  Then take control of your GAE instance:

@@ -62,19 +62,19 @@ The output files will be copied to your bucket during the `package` maven phase.
 Use the provided helper script to create a cluster.  (Must be run after `mvn package`)
 
     $ chmod +x cluster.sh
-    $ ./cluster.sh create <nameOfcluster> <bucket> [<zone>]
+    $ ./cluster.sh create <bucket> [<clusterName> [<zone>]]
 
-* `<nameOfcluster>` can be anything, but we suggest using "**dp**" as is in the `pom.xml` file.
+* `<nameOfcluster>` can be anything the default is "**dp**" as is in the `pom.xml` file.
 * `<bucket>` should be the same name as the bucket you created earlier and set into the `pom.xml`.
 * `<zone>` should be the same as in your `pom.xml` and ideally will be in the same zone as your Cloud Bigtable cluster.
 
-The command by default spins up 4 n1-standard-4 worker nodes and a single n1-standard-2 node.
+The command by default spins up 4 n1-standard-4 worker nodes and a single n1-standard-4 node.
 
 The actual gcloud command:
 
     gcloud beta dataproc clusters create dp --bucket MYBUCKET --initialization-actions \
-    gs://MYBUCKET/dp-mr-hb-init.sh --num-workers 4 --zone us-central1-b \
-    --master-machine-type n1-standard-2 --worker-machine-type n1-standard-4
+    gs://MYBUCKET/bigtable-dataproc-init.sh --num-workers 4 --zone us-central1-b \
+    --master-machine-type n1-standard-4 --worker-machine-type n1-standard-4
 
 Note the **Initialization Actions** script tells Cloud Dataproc how to use Cloud Bigtable and connects it to the Cloud Bigtable cluster you configured in the `pom.xml` file.
 
@@ -82,18 +82,15 @@ Note the **Initialization Actions** script tells Cloud Dataproc how to use Cloud
 
 The helper script can also start a job for you.
 
-    ./cluster.sh start <nameOfcluster> <bucket>
+    ./cluster.sh start [<clusterName>]
     
 This is an alisa for the `glcoud` command:
 
     gcloud beta dataproc jobs submit hadoop --cluster dp --async \
-    --jar target/wordcount-mapreduce-0-SNAPSHOT.jar wordcount-hbase \
-    gs://MYBUCKET/book gs://MYBUCKET/b10 gs://MYBUCKET/b100 gs://MYBUCKET/b1232 gs://MYBUCKET/b6130 \
-    WordCount-332353443
+    --jar target/wordcount-mapreduce-0-SNAPSHOT.jar \
+    wordcount-hbase <sourceFiles> <outputTable>
     
 * wordcount-hbase is the command we are executing (the first parmeter of to our MapReduce job)
-* The list of files are the input files created by `dp-mr-hb-init.sh` (large opensource books)
-* The final parameter is our output table name on our Cloud Bigtable cluster.
 
 ### Watch your results
 
@@ -101,7 +98,7 @@ You can view your results using the Developers Console (**Bigdata > Dataproc > J
  
  Once your job is complete (Green circle), you can connect to your master node and look at your results using `hbase shell`
 
-    $ gcloud compute ssh dp-m
+    $ ./cluster.sh ssh
     $ hbase shell
 
     hbase Shell; enter 'help<RETURN>' for list of supported commands.
@@ -121,7 +118,7 @@ Enter `exit` to leave the `hbase shell` and `exit` again to leave the master nod
 
 The help script helps us here as well.
 
-    $ ./cluster.sh delete dp
+    $ ./cluster.sh delete [<clusterName>]
     
 Which maps to the fairly easy to remember:
 

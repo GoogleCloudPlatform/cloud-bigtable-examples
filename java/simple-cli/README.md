@@ -15,41 +15,11 @@ clicking on the "Storage" -> "Cloud Bigtable" menu item and clicking on the
 of nodes. Once you have entered those values, click the "Create" button to
 provision the cluster.
 
-## Set up your hbase-site.xml configuration
-
-A sample hbase-site.xml is located in src/main/resources/hbase-site.xml.
-Copy it and enter the values for your project.
-
-    $ git clone git@github.com:GoogleCloudPlatform/cloud-bigtable-examples.git
-    $ cd cloud-bigtable-examples/java/simple-cli
-    $ vim src/main/resources/hbase-site.xml
-
-If one is not already created, you will need to 
-[create a service account](https://developers.google.com/accounts/docs/OAuth2ServiceAccount#creatinganaccount)
-and download the JSON key file.  After you have created the service account
-enter the project id and info for the service account in the locations shown.
-
-    <configuration>
-      <property>
-        <name>google.bigtable.project.id</name><value>PROJECT ID</value>
-      </property>
-      <property>
-        <name>google.bigtable.cluster.name</name><value>BIGTABLE CLUSTER ID</value>
-      </property>
-      <property>
-        <name>google.bigtable.zone.name</name><value>ZONE WHERE CLUSTER IS PROVISIONED</value>
-      </property>
-      <property>
-        <name>hbase.client.connection.impl</name>
-        <value>com.google.cloud.bigtable.hbase1_1.BigtableConnection</value>
-      </property>
-    </configuration>
-
 ## Build
 
 You can install the dependencies and build the project using maven.
 
-    $ mvn package
+    $ mvn package -Dbigtable.projectID=myProject -Dbigtable.clusterID=myCluster -Dbigtable.zone=myZone
 
 ## Run the code
 
