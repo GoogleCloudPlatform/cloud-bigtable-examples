@@ -17,11 +17,11 @@ limitations under the License.
 <!--
   To run the samples:
   
-    mvn package exec:exec -DHelloWorldWrite -Dbigtable.project=<projectID> -Dbigtable.cluster=<clusterID> -Dgs=<Your bucket>
+    mvn package exec:exec -DHelloWorldWrite -Dbigtable.projectID=<projectID> -Dbigtable.clusterID=<clusterID> -Dgs=<Your bucket>
 
-    mvn package exec:exec -DSourceRowCount -Dbigtable.project=<projectID> -Dbigtable.cluster=<clusterID> -Dgs=<Your bucket>
+    mvn package exec:exec -DSourceRowCount -Dbigtable.projectID=<projectID> -Dbigtable.clusterID=<clusterID> -Dgs=<Your bucket>
     
-    mvn package exec:exec -DPubsubWordCount -Dbigtable.project=<projectID> -Dbigtable.cluster=<clusterID> -Dgs=<Your bucket> -DpubsubTopic=projects/ProjectID/topics/TopicID
+    mvn package exec:exec -DPubsubWordCount -Dbigtable.projectID=<projectID> -Dbigtable.clusterID=<clusterID> -Dgs=<Your bucket> -DpubsubTopic=projects/ProjectID/topics/TopicID
     
     Optional Arguments
       -Dbigtable.zone=<your zone>
@@ -38,14 +38,15 @@ limitations under the License.
 
   <properties>
     <dataflow.version>1.0.0</dataflow.version>
-    <bigtable.hbase.version>0.2.1</bigtable.hbase.version>
+    <bigtable.version>0.2.2</bigtable.version>
     <!-- For Netty HTTP2/TLS negotiation -->
     <alpn.jdk7.version>7.1.3.v20150130</alpn.jdk7.version>
     <alpn.jdk8.version>8.1.3.v20150130</alpn.jdk8.version>
     
     <bigtable.zone>us-central1-b</bigtable.zone>
     <bigtable.table>Dataflow_test</bigtable.table>
-    <compileSource>1.7</compileSource>
+    <bigtable.hbase.version>${bigtable.version}</bigtable.hbase.version>
+    <compileSource>1.8</compileSource>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -58,136 +59,149 @@ limitations under the License.
     <dependency>
         <groupId>com.google.cloud.bigtable</groupId>
         <artifactId>bigtable-hbase-1.0</artifactId>
-        <version>${bigtable.hbase.version}</version>
+        <version>${bigtable.version}</version>
     </dependency>
     <dependency>
         <groupId>com.google.cloud.bigtable</groupId>
         <artifactId>bigtable-hbase-dataflow</artifactId>
-        <version>${bigtable.hbase.version}</version>
+        <version>${bigtable.version}</version>
     </dependency>
  </dependencies>
 
   <profiles>
-      <profile>
-        <id>jdk7</id>
-	<activation>
-	  <jdk>1.7</jdk>
-	</activation>
-	<properties>
-	  <alpn.version>${alpn.jdk7.version}</alpn.version>
-	</properties>
-      </profile>
-      <profile>
+    <profile>
+      <id>jdk7</id>
+        <activation>
+            <jdk>1.7</jdk>
+        </activation>
+        <properties>
+            <alpn.version>${alpn.jdk7.version}</alpn.version>
+        </properties>
+    </profile>
+    <profile>
         <id>jdk8</id>
-	<activation>
-	  <jdk>1.8</jdk>
-	</activation>
-	<properties>
-	  <alpn.version>${alpn.jdk8.version}</alpn.version>
-	</properties>
-      </profile>
-      <profile>
-        <id>HelloWorldWrite</id>
-          <activation>
-              <property>
-                  <name>HelloWorldWrite</name>
-              </property>
-          </activation>
-          <build>
-            <plugins>
-            <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>exec-maven-plugin</artifactId>
-              <version>1.4.0</version>
-              <configuration>
-                <executable>java</executable>
-                <arguments>
-                  <argument>-Xbootclasspath/p:${settings.localRepository}/org/mortbay/jetty/alpn/alpn-boot/${alpn.version}/alpn-boot-${alpn.version}.jar</argument>
-                  <argument>-classpath</argument>
-                  <classpath/>
-                  <argument>com.google.cloud.bigtable.dataflow.example.HelloWorldWrite</argument>
-                  <argument>--runner=BlockingDataflowPipelineRunner</argument>
-                  <argument>--project=${bigtable.project}</argument>
-                  <argument>--bigtableProjectId=${bigtable.project}</argument>
-                  <argument>--bigtableClusterId=${bigtable.cluster}</argument>
-                  <argument>--bigtableZoneId=${bigtable.zone}</argument>
-                  <argument>--bigtableTableId=${bigtable.table}</argument>
-                  <argument>--stagingLocation=${gs}/staging</argument>
-                </arguments>
-              </configuration>
-            </plugin>
-            </plugins>
-          </build>
-      </profile>
-      <profile>
-        <id>SourceRowCount</id>
-          <activation>
-              <property>
-                  <name>SourceRowCount</name>
-              </property>
-          </activation>
-          <build>
-            <plugins>
-            <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>exec-maven-plugin</artifactId>
-              <version>1.4.0</version>
-              <configuration>
-                <executable>java</executable>
-                <arguments>
-                  <argument>-Xbootclasspath/p:${settings.localRepository}/org/mortbay/jetty/alpn/alpn-boot/${alpn.version}/alpn-boot-${alpn.version}.jar</argument>
-                  <argument>-classpath</argument>
-                  <classpath/>
-                  <argument>com.google.cloud.bigtable.dataflow.example.SourceRowCount</argument>
-                  <argument>--runner=BlockingDataflowPipelineRunner</argument>
-                  <argument>--project=${bigtable.project}</argument>
-                  <argument>--bigtableProjectId=${bigtable.project}</argument>
-                  <argument>--bigtableClusterId=${bigtable.cluster}</argument>
-                  <argument>--bigtableZoneId=${bigtable.zone}</argument>
-                  <argument>--bigtableTableId=${bigtable.table}</argument>
-                  <argument>--stagingLocation=${gs}/staging</argument>
-                  <argument>--resultLocation=${gs}/count</argument>
-                </arguments>
-              </configuration>
-            </plugin>
-            </plugins>
-          </build>
-      </profile>
-      <profile>
-        <id>PubsubWordCount</id>
-          <activation>
-              <property>
-                  <name>PubsubWordCount</name>
-              </property>
-          </activation>
-          <build>
-            <plugins>
-            <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>exec-maven-plugin</artifactId>
-              <version>1.4.0</version>
-              <configuration>
-                <executable>java</executable>
-                <arguments>
-                  <argument>-Xbootclasspath/p:${settings.localRepository}/org/mortbay/jetty/alpn/alpn-boot/${alpn.version}/alpn-boot-${alpn.version}.jar</argument>
-                  <argument>-classpath</argument>
-                  <classpath/>
-                  <argument>com.google.cloud.bigtable.dataflow.example.PubsubWordCount</argument>
-                  <argument>--runner=BlockingDataflowPipelineRunner</argument>
-                  <argument>--project=${bigtable.project}</argument>
-                  <argument>--bigtableProjectId=${bigtable.project}</argument>
-                  <argument>--bigtableClusterId=${bigtable.cluster}</argument>
-                  <argument>--bigtableZoneId=${bigtable.zone}</argument>
-                  <argument>--bigtableTableId=${bigtable.table}</argument>
-                  <argument>--stagingLocation=${gs}/staging</argument>
-                  <argument>--inputFile=${gs}/romeo_juliet.txt</argument>
-                  <argument>--pubsubTopic=${pubsubTopic}</argument>
-               </arguments>
-              </configuration>
-            </plugin>
-            </plugins>
-          </build>
-      </profile>
+        <activation>
+            <jdk>1.8</jdk>
+        </activation>
+        <properties>
+            <alpn.version>${alpn.jdk8.version}</alpn.version>
+        </properties>
+    </profile>
+
+    <profile>
+      <id>staged</id> 
+      <repositories>
+        <repository>
+          <id>snapshots-repo</id>
+          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+          <releases><enabled>false</enabled></releases>
+          <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+      </repositories>
+    </profile>
+
+    <profile>
+      <id>HelloWorldWrite</id>
+        <activation>
+            <property>
+                <name>HelloWorldWrite</name>
+            </property>
+        </activation>
+        <build>
+          <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.4.0</version>
+            <configuration>
+              <executable>java</executable>
+              <arguments>
+                <argument>-Xbootclasspath/p:${settings.localRepository}/org/mortbay/jetty/alpn/alpn-boot/${alpn.version}/alpn-boot-${alpn.version}.jar</argument>
+                <argument>-classpath</argument>
+                <classpath/>
+                <argument>com.google.cloud.bigtable.dataflow.example.HelloWorldWrite</argument>
+                <argument>--runner=BlockingDataflowPipelineRunner</argument>
+                <argument>--project=${bigtable.projectID}</argument>
+                <argument>--bigtableProjectId=${bigtable.projectID}</argument>
+                <argument>--bigtableClusterId=${bigtable.clusterID}</argument>
+                <argument>--bigtableZoneId=${bigtable.zone}</argument>
+                <argument>--bigtableTableId=${bigtable.table}</argument>
+                <argument>--stagingLocation=${gs}/staging</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+          </plugins>
+        </build>
+    </profile>
+    <profile>
+      <id>SourceRowCount</id>
+        <activation>
+            <property>
+                <name>SourceRowCount</name>
+            </property>
+        </activation>
+        <build>
+          <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.4.0</version>
+            <configuration>
+              <executable>java</executable>
+              <arguments>
+                <argument>-Xbootclasspath/p:${settings.localRepository}/org/mortbay/jetty/alpn/alpn-boot/${alpn.version}/alpn-boot-${alpn.version}.jar</argument>
+                <argument>-classpath</argument>
+                <classpath/>
+                <argument>com.google.cloud.bigtable.dataflow.example.SourceRowCount</argument>
+                <argument>--runner=BlockingDataflowPipelineRunner</argument>
+                <argument>--project=${bigtable.projectID}</argument>
+                <argument>--bigtableProjectId=${bigtable.projectID}</argument>
+                <argument>--bigtableClusterId=${bigtable.clusterID}</argument>
+                <argument>--bigtableZoneId=${bigtable.zone}</argument>
+                <argument>--bigtableTableId=${bigtable.table}</argument>
+                <argument>--stagingLocation=${gs}/staging</argument>
+                <argument>--resultLocation=${gs}/count</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+          </plugins>
+        </build>
+    </profile>
+    <profile>
+      <id>PubsubWordCount</id>
+        <activation>
+            <property>
+                <name>PubsubWordCount</name>
+            </property>
+        </activation>
+        <build>
+          <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.4.0</version>
+            <configuration>
+              <executable>java</executable>
+              <arguments>
+                <argument>-Xbootclasspath/p:${settings.localRepository}/org/mortbay/jetty/alpn/alpn-boot/${alpn.version}/alpn-boot-${alpn.version}.jar</argument>
+                <argument>-classpath</argument>
+                <classpath/>
+                <argument>com.google.cloud.bigtable.dataflow.example.PubsubWordCount</argument>
+                <argument>--runner=BlockingDataflowPipelineRunner</argument>
+                <argument>--project=${bigtable.projectID}</argument>
+                <argument>--bigtableProjectId=${bigtable.projectID}</argument>
+                <argument>--bigtableClusterId=${bigtable.clusterID}</argument>
+                <argument>--bigtableZoneId=${bigtable.zone}</argument>
+                <argument>--bigtableTableId=${bigtable.table}</argument>
+                <argument>--stagingLocation=${gs}/staging</argument>
+                <argument>--inputFile=${gs}/romeo_juliet.txt</argument>
+                <argument>--pubsubTopic=${pubsubTopic}</argument>
+             </arguments>
+            </configuration>
+          </plugin>
+          </plugins>
+        </build>
+    </profile>
   </profiles>
   <build>
     <plugins>

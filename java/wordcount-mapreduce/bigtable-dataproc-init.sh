@@ -39,16 +39,3 @@ echo "export HADOOP_CLASSPATH=\"$(/usr/bin/hbase mapredcp):\$HADOOP_CLASSPATH\""
 
 # make it so we can use hbase if we need to.  (ie. hbase shell)
 echo "HBASE_OPTS=\"\${HBASE_OPTS} -Xbootclasspath/p:\${ALPN_JAR}\"" >> /etc/hbase/conf/hbase-env.sh
-
-echo "Downloading files to MapReduce"
-
-if [[ "${ROLE}" == 'Master' ]]; then
-  curl -s http://hbase.apache.org/book.html                              -o /tmp/book
-  curl -s ftp://sailor.gutenberg.lib.md.us/gutenberg/1/10/10.txt         -o /tmp/b10
-  curl -s ftp://sailor.gutenberg.lib.md.us/gutenberg/1/0/100/100.txt     -o /tmp/b100
-  curl -s ftp://sailor.gutenberg.lib.md.us/gutenberg/1/2/3/1232/1232.txt -o /tmp/b1232
-  curl -s ftp://sailor.gutenberg.lib.md.us/gutenberg/6/1/3/6130/6130.txt -o /tmp/b6130
-  
-  gsutil -q -m cp /tmp/book /tmp/b10 /tmp/b100 /tmp/b1232 /tmp/b6130 gs://${BUCKET}
-fi
-

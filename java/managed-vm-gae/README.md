@@ -7,7 +7,7 @@ This app provides:
 1. A web interface that uses Cloud Bigtable to track the number of visits from an opaque version of your Google account.
 1. A simple REST interface that can read and write arbitrary data to a Cloud Bigtable table using GET, POST, and DELETE verbs.
 
-SECURITY WARNING - This app will read / write the two tables you create (**`gae-hello`** and **`from-json`**) The app provides NO ADDITIONAL SECURITY PROTECTIONS. We suggest that instances should only be available while testing and that test data be used.
+**SECURITY WARNING** – This app will read / write the two tables you create (**`gae-hello`** and **`from-json`**) The app provides NO ADDITIONAL SECURITY PROTECTIONS. We suggest that instances should only be available while testing and that test data be used.
 
 ## Table of Contents
 1. [Requirements](#Requirements)
@@ -62,29 +62,20 @@ SECURITY WARNING - This app will read / write the two tables you create (**`gae-
  `exit`
  
 ## Deploying the AppEngine Runtime
-
-1. Edit `src/main/webapp/WEB-INF/appengine-web.xml` to set `BIGTABLE_PROJECT`, `BIGTABLE_CLUSTER`, and `BIGTABLE_ZONE` (if necessary) 
-
-1. Build the java artifacts and docker image
- 
-    `mvn clean compile process-resources war:exploded`<br />
-    **Note** - you can use `mvn pacakge` but you'll get an ignorable error on the next step.
     
 1. Deploy the application
  
-    `mvn gcloud:deploy`
+    `mvn clean gcloud:deploy -Dbigtable.projectID=myProject -Dbigtable.clusterID=myCluster -Dbigtable.zone=myZone`
 
 1. go to the new default module which will be displayed in results from the deploy.  It will look like: `https://20150624t111224-dot-default-dot-PROJECTID.appspot.com` you can go to that url to test.
 
+<!-- 
 1. Or run locally. First, copy your Service Acccount JSON file into src/main/webapp/WEB-INFO, and uncomment the GOOGLE_APPLICATION_CREDENTIALS file in src/main/webapp/appengine-web.xml, then rerun: 
 
-    `mvn clean compile process-resources war:exploded`
-    
-    then   
-
-    `mvn gcloud:run`
+    `mvn clean gcloud:run`
 
 1. After you run locally, you can access the app at `http://localhost:8080`
+ -->
 
 ## AppEngine Debugging Hints
 The first thing to do, if you'd like to debug is use the `servlet.log()` methods, they seem to work when other loggers don't.  Then take control of your GAE instance:

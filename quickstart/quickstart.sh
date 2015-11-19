@@ -71,4 +71,4 @@ echo "Project ID= ${_projectID}"
 echo "Cluster ID= ${_clusterID}"
 echo "Zone=       ${_zone}"
 
-mvn clean package exec:exec -Dbigtable.projectid=${_projectID} -Dbigtable.clusterid=${_clusterID} -Dbigtable.zone=${_zone}
+mvn clean package exec:exec -Dbigtable.projectID=${_projectID} -Dbigtable.clusterID=${_clusterID} -Dbigtable.zone=${_zone} "$@"

@@ -31,8 +31,8 @@
     <bigtable.clusterID>YOUR_CLUSTER_ID_HERE</bigtable.clusterID>
     <bigtable.zone>us-central1-b</bigtable.zone>
 
-    <bigtable.version>0.2.1</bigtable.version>
-    <hbase.version>1.0.1.1</hbase.version>
+    <bigtable.version>0.2.2</bigtable.version>
+    <hbase.version>1.0.1.1</hbase.version><!-- needs to match Dataproc HBase version -->
     <hbase.if>1.0</hbase.if> <!-- hbase interface - it changed between 1.0 and 1.1.x -->
 
     <hadoop.version>2.4.1</hadoop.version>
@@ -62,6 +62,20 @@
     </dependency>
 
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>staged</id> 
+      <repositories>
+        <repository>
+          <id>snapshots-repo</id>
+          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+          <releases><enabled>false</enabled></releases>
+          <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
 
   <build>
     <outputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/classes</outputDirectory> 
@@ -93,7 +107,7 @@
               <argument>-q</argument>
               <argument>cp</argument>
               <argument>-r</argument>
-              <argument>dp-mr-hb-init.sh</argument>
+              <argument>bigtable-dataproc-init.sh</argument>
               <argument>${settings.localRepository}/com/google/cloud/bigtable/bigtable-hbase-${hbase.if}/${bigtable.version}/bigtable-hbase-${hbase.if}-${bigtable.version}.jar</argument>
               <argument>${settings.localRepository}/com/google/cloud/bigtable/bigtable-hbase-mapreduce/${bigtable.version}/bigtable-hbase-mapreduce-${bigtable.version}.jar</argument>
               <argument>target/${project.artifactId}-${project.version}/WEB-INF/classes/hbase-site.xml</argument>
@@ -136,12 +150,4 @@
     </plugins>
   </build>
 
-<!-- 
-  <repositories>
-    <repository>
-      <id>Apache Snapshots Repository</id>
-      <url>https://repository.apache.org/content/repositories/snapshots/</url>
-    </repository>
-  </repositories>
- -->
 </project>
