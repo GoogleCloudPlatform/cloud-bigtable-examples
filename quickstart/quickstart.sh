@@ -30,15 +30,11 @@
 _BIGTABLE="alpha"
 _PROJECTS="alpha"
 
-if [[ ! -e $GOOGLE_APPLICATION_CREDENTIALS ]]; then
-  { echo "Missing key.json file - please copy the appropriate credentials file and export GOOGLE_APPLICATION_CREDENTIALS=<path>"; exit 1; }
-fi
-
 # Test for gcloud
 hash gcloud 2>/dev/null  || { echo >&2 'gcloud needs to be installed from https://cloud.google.com/sdk/'; exit 1; }
 NOTLOGGEDIN=$(gcloud auth list --format text | grep active_account | grep None)
 if [[ -n "$NOTLOGGEDIN" ]]; then
-  echo >&2 'Please login using: gcloud auth login'; exit 1;
+  echo >&2 'Please login using: gcloud init'; exit 1;
 fi
 
 if [ "$1" == "--project" ]; then

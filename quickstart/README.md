@@ -21,13 +21,7 @@ Following these steps should get you to the hbase shell in 3 minutes.
 
   Verify that both the **Cloud Bigtable API** and the **Cloud Bigtable Admin API** are enabled.
 
-1. Select **APIs & Auth > Credentials**
-
-   Generate and download a new **JSON key**
-
-1. Export the downloaded json.key file and set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable
-
-    `EXPORT GOOGLE_APPLICATION_CREDENTIALS=`**< Path to File >**
+1. [Initialize gcloud](https://cloud.google.com/sdk/gcloud/#gcloud.init) via  **`gcloud init`**. This will initialize your credentials, your default cloud zone and project id.
 
 1. **`chmod +x quickstart.sh`**
 
