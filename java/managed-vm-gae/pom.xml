@@ -42,7 +42,7 @@
     <slf4j.version>1.7.12</slf4j.version>
     <log4j.version>1.2.17</log4j.version>
 
-    <gcloud.plugin.version>2.0.9.84.v20151030</gcloud.plugin.version>
+    <gcloud.plugin.version>2.0.9.89.v20151202</gcloud.plugin.version>
 
     <requiredMavenVersion>3.3.3</requiredMavenVersion>
 

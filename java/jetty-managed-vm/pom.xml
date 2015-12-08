@@ -41,7 +41,7 @@
     <junit.version>4.11</junit.version>
     <mockito.version>1.9.5</mockito.version>
 
-    <gcloud.plugin.version>2.0.9.72.v20150804</gcloud.plugin.version>
+    <gcloud.plugin.version>2.0.9.89.v20151202</gcloud.plugin.version>
 
     <requiredMavenVersion>3.2.1</requiredMavenVersion>
 

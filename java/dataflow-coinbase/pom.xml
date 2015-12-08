@@ -42,7 +42,7 @@
         <mockito.version>1.9.5</mockito.version>
         <dataflow.version>1.0.0</dataflow.version>
 
-        <gcloud.plugin.version>2.0.9.76.v20150902</gcloud.plugin.version>
+        <gcloud.plugin.version>2.0.9.89.v20151202</gcloud.plugin.version>
 
         <requiredMavenVersion>3.2.1</requiredMavenVersion>
 
