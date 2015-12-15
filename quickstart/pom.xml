@@ -107,7 +107,7 @@
         <configuration>
           <executable>java</executable>
           <arguments>
-            <argument>-Xms1024m</argument>
+            <argument>-Xms256m</argument>
             <argument>-Xmx2048m</argument>
             <argument>-Xbootclasspath/p:${settings.localRepository}/org/mortbay/jetty/alpn/alpn-boot/${alpn.version}/alpn-boot-${alpn.version}.jar</argument>
             <argument>-XX:+UseConcMarkSweepGC</argument>
