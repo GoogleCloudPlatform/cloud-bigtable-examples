@@ -1,4 +1,5 @@
 # Cloud BigTable Examples
+[![ghit.me](https://ghit.me/badge.svg?repo=googlecloudplatform/cloud-bigtable-examples)](https://ghit.me/repo/googlecloudplatform/cloud-bigtable-examples)
 
 There are many examples / sample / demo programs here, each with its own README.
 
