@@ -1,0 +1,138 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.google.cloud.bigtable.dataflow</groupId>
+  <artifactId>dataflow-import-examples</artifactId>
+  <packaging>jar</packaging>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>dataflow-import-examples</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <bigtable.hbase.version>0.2.4-SNAPSHOT</bigtable.hbase.version>
+    <!-- For Netty HTTP2/TLS negotiation -->
+    <alpn.jdk7.version>7.1.3.v20150130</alpn.jdk7.version>
+    <alpn.jdk8.version>8.1.3.v20150130</alpn.jdk8.version>
+
+    <bigtable.project>bigtable_project_id</bigtable.project>
+    <bigtable.cluster>bigtable_cluster_id</bigtable.cluster>
+    <bigtable.zone>bigtable_zone</bigtable.zone>
+    <bigtable.table>bigtable_table_name</bigtable.table>
+    <dataflow.project>${bigtable.project}</dataflow.project>
+    <dataflow.staging.location>gs://staging_folder_name</dataflow.staging.location>
+    <file.pattern>name_or_prefix_of_data_file</file.pattern>
+    <dataflow.runner>BlockingDataflowPipelineRunner</dataflow.runner>
+    <sequencefile.format.094>false</sequencefile.format.094>
+    <compileSource>1.7</compileSource>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.google.cloud.bigtable</groupId>
+      <artifactId>bigtable-dataflow-import</artifactId>
+      <version>${bigtable.hbase.version}</version>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <id>jdk7</id>
+      <activation>
+        <jdk>1.7</jdk>
+      </activation>
+      <properties>
+        <alpn.version>${alpn.jdk7.version}</alpn.version>
+      </properties>
+    </profile>
+    <profile>
+      <id>jdk8</id>
+      <activation>
+        <jdk>1.8</jdk>
+      </activation>
+      <properties>
+        <alpn.version>${alpn.jdk8.version}</alpn.version>
+      </properties>
+    </profile>
+    <profile>
+      <id>ImportByDataflow</id>
+      <activation>
+        <property>
+          <name>ImportByDataflow</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.4.0</version>
+            <configuration>
+              <executable>java</executable>
+              <arguments>
+                <argument>-Xbootclasspath/p:${settings.localRepository}/org/mortbay/jetty/alpn/alpn-boot/${alpn.version}/alpn-boot-${alpn.version}.jar</argument>
+                <argument>-classpath</argument>
+                <classpath/>
+                <argument>com.google.cloud.bigtable.dataflow.example.ImportByDataflow</argument>
+                <argument>--runner=${dataflow.runner}</argument>
+                <argument>--project=${dataflow.project}</argument>
+                <argument>--bigtableProjectId=${bigtable.project}</argument>
+                <argument>--bigtableClusterId=${bigtable.cluster}</argument>
+                <argument>--bigtableZoneId=${bigtable.zone}</argument>
+                <argument>--bigtableTableId=${bigtable.table}</argument>
+                <argument>--stagingLocation=${dataflow.staging.location}</argument>
+                <argument>--filePattern=${file.pattern}</argument>
+                <!-- Optional argument to set desired number of workers. Default is 3. -->
+                <argument>--numWorkers=3</argument>
+                <!-- Optional arguement indicating input file is in HBase 0.94 format. Default is false -->
+                <argument>--HBase094DataFormat=${sequencefile.format.094}</argument>
+                <!-- Optional argument to specify GCE vm type. default is n1-standard-1 -->
+                <argument>--workerMachineType=n1-standard-1</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.4</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.6</version>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.3</version>
+        <configuration>
+          <source>${compileSource}</source>
+          <target>${compileSource}</target>
+          <showWarnings>true</showWarnings>
+          <showDeprecation>false</showDeprecation>
+          <compilerArgument>-Xlint:-options</compilerArgument>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.17</version>
+      </plugin>
+    </plugins>
+  </build>
+</project>
