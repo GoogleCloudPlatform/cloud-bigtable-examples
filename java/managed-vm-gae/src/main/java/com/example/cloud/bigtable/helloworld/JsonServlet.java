@@ -45,7 +45,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(name="json", urlPatterns={"/json/*"} )
+@WebServlet(name="json", urlPatterns={"/json/*"} ) // asyncSupported=true
 @ServletSecurity(
   httpMethodConstraints={
     @HttpMethodConstraint("GET"),
