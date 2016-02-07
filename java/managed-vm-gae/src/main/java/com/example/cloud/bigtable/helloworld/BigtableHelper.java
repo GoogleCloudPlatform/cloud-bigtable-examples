@@ -93,6 +93,7 @@ public class BigtableHelper implements ServletContextListener {
 
   public void contextDestroyed(ServletContextEvent event) {
     // App Engine does not currently invoke this method.
+    if (connection == null) return;
     try {
       connection.close();
     } catch(IOException io) {
