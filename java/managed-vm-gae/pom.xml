@@ -27,7 +27,7 @@
   <version>1.0-SNAPSHOT</version>
 
   <properties>
-    <bigtable.version>0.2.3</bigtable.version>
+    <bigtable.version>0.2.2</bigtable.version>
     <hbase.version>1.1.2</hbase.version>
     <bigtable.projectID>YOUR_PROJECT_ID</bigtable.projectID>
     <bigtable.clusterID>YOUR_CLUSTER_ID</bigtable.clusterID>
@@ -68,12 +68,14 @@
       <scope>provided</scope>
     </dependency>
 
+<!-- 
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-tcnative</artifactId>
       <version>1.1.33.Fork9</version>
       <classifier>${tcnative.classifier}</classifier>
     </dependency>
+ -->
 
     <dependency>
       <groupId>javax.servlet</groupId>

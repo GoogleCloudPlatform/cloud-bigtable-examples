@@ -18,7 +18,10 @@ This app provides:
 1. [Using-JSON](#Using-JSON)
 
 ## Requirements
-1. Latest version of [gcloud](https://cloud.google.com/sdk/) Update with `gcloud components update`
+1. Latest version of [gcloud](https://cloud.google.com/sdk/) 
+1. Update with `gcloud components update`
+1. `gcloud init` (if you haven't already)
+1. `gcloud components install alpha beta app-engine-java`
 1. **Java 1.8**
 1. [Maven](https://maven.apache.org/)
 
@@ -35,23 +38,9 @@ This app provides:
 
 1. Select **APIs & Auth > Credentials**
 
-1. Select **Generate new JSON key**
-
-  1. Set the environment variable `GOOGLE_APPLICATION_CREDENTIALS` to point to your json key
-
-   Many users find it helpful to add to either their `.bash_rc` or `.profile` the line:<br />
-   `export GOOGLE_APPLICATION_CREDENTIALS=~/path_to_key.json`
-   
-   Also copy the `client-secret.json` to `src/main/webapp/WEB-INF/client-secret.json`
-   Note - this step isn't technically required, but it will help when we get local debugging working.
-
 1. Select **Storage > Cloud Bigtable > New Cluster**
 
   Create a new Cluster -- You will need both the Zone and the Unique ID
-  
-1. Using gcloud, login.
-
- `gcloud auth login`
  
 1. Follow the [instructions to launch `hbase shell`](https://cloud.google.com/bigtable/docs/hbase-shell-quickstart)
 
