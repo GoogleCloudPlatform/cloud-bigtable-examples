@@ -22,11 +22,8 @@
   <packaging>jar</packaging>
 
   <properties>
-    <bigtable.version>0.2.2</bigtable.version>
+    <bigtable.version>0.2.3</bigtable.version>
     <hbase.version>1.1.2</hbase.version>
-
-    <alpn.jdk7.version>7.1.3.v20150130</alpn.jdk7.version>
-    <alpn.jdk8.version>8.1.3.v20150130</alpn.jdk8.version>
 
     <compileSource>1.8</compileSource>
 
@@ -53,10 +50,10 @@
     </dependency>
 
     <dependency>
-      <groupId>org.mortbay.jetty.alpn</groupId>
-      <artifactId>alpn-boot</artifactId>
-      <version>${alpn.version}</version>
-      <scope>test</scope>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-tcnative-boringssl-static</artifactId>
+      <version>1.1.33.Fork13</version>
+      <classifier>${os.detected.classifier}</classifier>
     </dependency>
   </dependencies>
 
@@ -99,7 +96,41 @@
         <filtering>true</filtering> 
       </resource>
     </resources>
+
+    <extensions>
+      <!-- Use os-maven-plugin to initialize the "os.detected" properties -->
+      <extension>
+        <groupId>kr.motd.maven</groupId>
+        <artifactId>os-maven-plugin</artifactId>
+        <version>1.4.0.Final</version>
+      </extension>
+    </extensions>
+
    <plugins>
+      <!-- Use Ant to configure the appropriate "tcnative.classifier" property -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>initialize</phase>
+            <configuration>
+              <exportAntProperties>true</exportAntProperties>
+              <target>
+                <condition property="tcnative.classifier"
+                           value="${os.detected.classifier}-fedora"
+                           else="${os.detected.classifier}">
+                  <isset property="os.detected.release.fedora"/>
+                </condition>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -109,7 +140,6 @@
           <arguments>
             <argument>-Xms256m</argument>
             <argument>-Xmx2048m</argument>
-            <argument>-Xbootclasspath/p:${settings.localRepository}/org/mortbay/jetty/alpn/alpn-boot/${alpn.version}/alpn-boot-${alpn.version}.jar</argument>
             <argument>-XX:+UseConcMarkSweepGC</argument>
             <argument>-Dhbase.ruby.sources=thirdparty/ruby</argument>
             <argument>-classpath</argument>

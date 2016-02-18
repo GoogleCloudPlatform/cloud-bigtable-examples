@@ -3,10 +3,11 @@
 Following these steps should get you to the hbase shell in 3 minutes.
 
 ## Prerequsites
-  - [Java 7](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+  - [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
   - [Apache Maven](http://maven.apache.org/download.cgi)
   - [Cloud SDK](https://cloud.google.com/sdk/)
-  - `gcloud components update alpha beta`
+  - `gcloud components update`
+  - `gcloud components install alpha beta`
   - Bash or [cygwin](http://www.cygwin.com/)
   - A copy of this [project]() installed on your computer
 

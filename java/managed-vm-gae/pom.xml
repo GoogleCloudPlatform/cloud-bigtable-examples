@@ -27,7 +27,7 @@
   <version>1.0-SNAPSHOT</version>
 
   <properties>
-    <bigtable.version>0.2.2</bigtable.version>
+    <bigtable.version>0.2.3</bigtable.version>
     <hbase.version>1.1.2</hbase.version>
     <bigtable.projectID>YOUR_PROJECT_ID</bigtable.projectID>
     <bigtable.clusterID>YOUR_CLUSTER_ID</bigtable.clusterID>
@@ -47,9 +47,6 @@
 
     <requiredMavenVersion>3.3.3</requiredMavenVersion>
 
-    <alpn.jdk7.version>7.1.3.v20150130</alpn.jdk7.version>
-    <alpn.jdk8.version>8.1.3.v20150130</alpn.jdk8.version>
-
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
   </properties>
@@ -68,26 +65,17 @@
       <scope>provided</scope>
     </dependency>
 
-<!-- 
     <dependency>
       <groupId>io.netty</groupId>
-      <artifactId>netty-tcnative</artifactId>
-      <version>1.1.33.Fork9</version>
+      <artifactId>netty-tcnative-boringssl-static</artifactId>
+      <version>1.1.33.Fork13</version>
       <classifier>${tcnative.classifier}</classifier>
     </dependency>
- -->
 
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
       <version>3.1.0</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.mortbay.jetty.alpn</groupId>
-      <artifactId>alpn-boot</artifactId>
-      <version>${alpn.version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -121,24 +109,6 @@
       <properties>
         <tcnative.classifier>windows-x86_64</tcnative.classifier>
       </properties>      
-    </profile>
-    <profile>
-      <id>jdk7</id>
-        <activation>
-            <jdk>1.7</jdk>
-        </activation>
-        <properties>
-            <alpn.version>${alpn.jdk7.version}</alpn.version>
-        </properties>
-    </profile>
-    <profile>
-        <id>jdk8</id>
-        <activation>
-            <jdk>1.8</jdk>
-        </activation>
-        <properties>
-            <alpn.version>${alpn.jdk8.version}</alpn.version>
-        </properties>
     </profile>
   </profiles>
 

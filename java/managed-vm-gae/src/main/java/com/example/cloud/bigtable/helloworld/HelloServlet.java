@@ -31,6 +31,7 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.String;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -40,7 +41,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "default", urlPatterns = {"/"} )
+@WebServlet(name = "hello", urlPatterns = {"/hello"} )
 public class HelloServlet extends HttpServlet {
   private static final TableName TABLE = TableName.valueOf("gae-hello");
 
@@ -78,8 +79,10 @@ public class HelloServlet extends HttpServlet {
 
     if (currentUser != null) {
       resp.setContentType("text/plain");
-      resp.getWriter().println("Hello, " + currentUser.getNickname());
-      resp.getWriter().println("You have visited " + getAndUpdateVisit(currentUser.getUserId()));
+      PrintWriter pw = resp.getWriter();
+      pw.println("Hello, " + currentUser.getNickname());
+      pw.println("You have visited " + getAndUpdateVisit(currentUser.getUserId()));
+      pw.close();
     } else {
       resp.sendRedirect(userService.createLoginURL(req.getRequestURI()));
     }
