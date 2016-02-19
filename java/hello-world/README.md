@@ -7,5 +7,5 @@ to connect to and interact with Cloud Bigtable.
 
 # Run the application
 
-$ mvn package
-$ mvn exec:java -Dexec.args="<projectId> <zone> <clusterId>"
+    $ mvn package
+    $ mvn exec:java -Dexec.args="<projectId> <zone> <clusterId>"
