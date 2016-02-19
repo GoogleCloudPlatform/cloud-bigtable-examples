@@ -27,7 +27,7 @@
   <version>1.0-SNAPSHOT</version>
 
   <properties>
-    <bigtable.version>0.2.2</bigtable.version>
+    <bigtable.version>0.2.3</bigtable.version>
     <hbase.version>1.1.2</hbase.version>
     <bigtable.projectID>YOUR_PROJECT_ID</bigtable.projectID>
     <bigtable.clusterID>YOUR_CLUSTER_ID</bigtable.clusterID>
@@ -36,13 +36,14 @@
     <hadoop.version>2.4.1</hadoop.version>
     <compat.module>hbase-hadoop2-compat</compat.module>
 
-    <appengine.version>1.9.28</appengine.version>
-    <compileSource>1.8</compileSource>
+    <appengine.version>1.9.32</appengine.version>
+    <gcloud.plugin.version>2.0.9.95.v20160203</gcloud.plugin.version>
+    
+    <tcnative.classifier>linux-x86_64</tcnative.classifier> <!-- default for MVMs -->
 
     <slf4j.version>1.7.12</slf4j.version>
     <log4j.version>1.2.17</log4j.version>
 
-    <gcloud.plugin.version>2.0.9.89.v20151202</gcloud.plugin.version>
 
     <requiredMavenVersion>3.3.3</requiredMavenVersion>
 
@@ -64,13 +65,12 @@
       <scope>provided</scope>
     </dependency>
 
-<!-- 
-    <dependency>  <!~~ remove for 0.2.2 ~~>
-        <groupId>org.apache.hbase</groupId>
-        <artifactId>hbase-client</artifactId>
-        <version>${hbase.version}</version>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-tcnative-boringssl-static</artifactId>
+      <version>1.1.33.Fork13</version>
+      <classifier>${tcnative.classifier}</classifier>
     </dependency>
- -->
 
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -98,6 +98,18 @@
         </repository>
       </repositories>
     </profile>
+    <profile>
+      <id>mac</id>
+      <properties>
+        <tcnative.classifier>osx-x86_64</tcnative.classifier>
+      </properties>      
+    </profile>
+    <profile>
+      <id>windows</id>
+      <properties>
+        <tcnative.classifier>windows-x86_64</tcnative.classifier>
+      </properties>      
+    </profile>
   </profiles>
 
   <build>
@@ -114,8 +126,8 @@
         <version>3.3</version>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>${compileSource}</source>
-          <target>${compileSource}</target>
+          <source>1.8</source>
+          <target>1.8</target>
           <showDeprecation>true</showDeprecation>
           <showWarnings>true</showWarnings>
         </configuration>
@@ -143,10 +155,6 @@
         <groupId>com.google.appengine</groupId>
         <artifactId>gcloud-maven-plugin</artifactId>
         <version>${gcloud.plugin.version}</version>
-        <configuration>
-          <non_docker_mode>false</non_docker_mode>
-          <docker_build>remote</docker_build>
-        </configuration>
       </plugin>
 
     </plugins>

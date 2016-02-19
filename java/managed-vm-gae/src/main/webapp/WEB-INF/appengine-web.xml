@@ -2,20 +2,21 @@
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
     <threadsafe>true</threadsafe>    
     <vm>true</vm>
+    <sessions-enabled>false</sessions-enabled>
 
     <env-variables>
       <env-var name="BIGTABLE_PROJECT" value="${bigtable.projectID}" />
       <env-var name="BIGTABLE_CLUSTER" value="${bigtable.clusterID}" />
       <env-var name="BIGTABLE_ZONE" value="${bigtable.zone}" />
-
-      <env-var name="ALPN_ENABLE" value="true" />
-      
     </env-variables>
+
     <system-properties>
-<!-- 
-      <property name="java.util.logging.config.file" value="/app/WEB_INF/logging.properties"/>
+      <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
       <property name="log4j.debug" value="true" />
- -->
     </system-properties>
+
+    <beta-settings>
+      <setting name="java_quickstart" value="true" />
+    </beta-settings>
 
 </appengine-web-app>
