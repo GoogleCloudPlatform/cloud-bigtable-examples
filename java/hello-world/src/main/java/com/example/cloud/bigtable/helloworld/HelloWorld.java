@@ -116,7 +116,7 @@ public class HelloWorld {
   }
 
   private static void print(String msg) {
-    System.out.println("*** HelloWorld: " + msg);
+    System.out.println("HelloWorld: " + msg);
   }
 
   public static void main(String[] args) {
