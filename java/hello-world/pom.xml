@@ -29,6 +29,9 @@
     <bigtable.version>0.2.3</bigtable.version>
     <hbase.version>1.1.1</hbase.version>
     <compileSource>1.8</compileSource>
+
+    <!-- Default to linux - profiles can override -->
+    <tcnative.classifier>linux-x86_64</tcnative.classifier>
   </properties>
 
   <dependencies>
@@ -48,20 +51,37 @@
       <groupId>io.netty</groupId>
       <artifactId>netty-tcnative-boringssl-static</artifactId>
       <version>1.1.33.Fork13</version>
-      <classifier>${os.detected.classifier}</classifier>
+      <classifier>${tcnative.classifier}</classifier>
     </dependency>
   </dependencies>
 
-  <build>
-    <extensions>
-      <!-- Use os-maven-plugin to initialize the "os.detected" properties -->
-      <extension>
-        <groupId>kr.motd.maven</groupId>
-        <artifactId>os-maven-plugin</artifactId>
-        <version>1.4.0.Final</version>
-      </extension>
-    </extensions>
+  <profiles>
+    <profile>
+      <id>staged</id>
+      <repositories>
+        <repository>
+          <id>snapshots-repo</id>
+          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+          <releases><enabled>false</enabled></releases>
+          <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+      </repositories>
+    </profile>
+    <profile>
+      <id>mac</id>
+      <properties>
+        <tcnative.classifier>osx-x86_64</tcnative.classifier>
+      </properties>
+    </profile>
+    <profile>
+      <id>windows</id>
+      <properties>
+        <tcnative.classifier>windows-x86_64</tcnative.classifier>
+      </properties>
+    </profile>
+  </profiles>
 
+  <build>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
