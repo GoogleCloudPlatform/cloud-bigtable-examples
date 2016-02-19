@@ -21,7 +21,7 @@ from the underlying libraries:
 
     HelloWorld: Create table Hello-Bigtable
     HelloWorld: Write some greetings to the table
-    HelloWorld: Write some greetings to the table
+    HelloWorld: Scan for all greetings:
         Hello World!
 	    Hello Cloud Bigtable!
 	    Hello HBase!
