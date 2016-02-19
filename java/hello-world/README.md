@@ -11,7 +11,9 @@ You'll need to reference your project id, zone and cluster id to run the applica
 
 ## Run the application
 
-[Install Maven](http://maven.apache.org/guides/getting-started/maven-in-five-minutes.html) if necessary.
+First, set your [Google Application Default Credentials](https://developers.google.com/identity/protocols/application-default-credentials)
+and [install Maven](http://maven.apache.org/guides/getting-started/maven-in-five-minutes.html) if necessary.
+
 
     $ mvn package
     $ mvn exec:java -Dexec.args="<projectId> <zone> <clusterId>"
