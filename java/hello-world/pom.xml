@@ -69,12 +69,22 @@
     </profile>
     <profile>
       <id>mac</id>
+      <activation>
+	<os> 
+          <family>mac</family> 
+        </os> 
+      </activation>
       <properties>
         <tcnative.classifier>osx-x86_64</tcnative.classifier>
       </properties>
     </profile>
     <profile>
       <id>windows</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
       <properties>
         <tcnative.classifier>windows-x86_64</tcnative.classifier>
       </properties>
