@@ -28,10 +28,7 @@
   <properties>
     <bigtable.version>0.2.3</bigtable.version>
     <hbase.version>1.1.1</hbase.version>
-    <compileSource>1.8</compileSource>
-
-    <!-- Default to linux - profiles can override -->
-    <tcnative.classifier>linux-x86_64</tcnative.classifier>
+    <compileSource>1.7</compileSource>
   </properties>
 
   <dependencies>
@@ -51,47 +48,21 @@
       <groupId>io.netty</groupId>
       <artifactId>netty-tcnative-boringssl-static</artifactId>
       <version>1.1.33.Fork13</version>
-      <classifier>${tcnative.classifier}</classifier>
+      <classifier>${os.detected.classifier}</classifier>
     </dependency>
   </dependencies>
 
-  <profiles>
-    <profile>
-      <id>staged</id>
-      <repositories>
-        <repository>
-          <id>snapshots-repo</id>
-          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-          <releases><enabled>false</enabled></releases>
-          <snapshots><enabled>true</enabled></snapshots>
-        </repository>
-      </repositories>
-    </profile>
-    <profile>
-      <id>mac</id>
-      <activation>
-	<os> 
-          <family>mac</family> 
-        </os> 
-      </activation>
-      <properties>
-        <tcnative.classifier>osx-x86_64</tcnative.classifier>
-      </properties>
-    </profile>
-    <profile>
-      <id>windows</id>
-      <activation>
-        <os>
-          <family>windows</family>
-        </os>
-      </activation>
-      <properties>
-        <tcnative.classifier>windows-x86_64</tcnative.classifier>
-      </properties>
-    </profile>
-  </profiles>
 
   <build>
+    <extensions>
+      <!-- Use os-maven-plugin to initialize the "os.detected" properties -->
+      <extension>
+        <groupId>kr.motd.maven</groupId>
+        <artifactId>os-maven-plugin</artifactId>
+        <version>1.4.0.Final</version>
+      </extension>
+    </extensions>
+
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -110,29 +81,6 @@
         <artifactId>exec-maven-plugin</artifactId>
         <configuration>
           <mainClass>com.example.cloud.bigtable.helloworld.HelloWorld</mainClass>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <descriptorRefs>
-            <!-- This tells Maven to include all dependencies -->
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
-          <archive>
-            <manifest>
-              <mainClass>com.example.cloud.bigtable.helloworld.HelloWorld</mainClass>
-            </manifest>
-          </archive>
         </configuration>
       </plugin>
     </plugins>
