@@ -16,7 +16,7 @@ and [install Maven](http://maven.apache.org/guides/getting-started/maven-in-five
 
 
     $ mvn package
-    $ mvn exec:java -Dexec.args="<projectId> <zone> <clusterId>"
+    $ mvn exec:java -Dbigtable.projectID=<myProject> -Dbigtable.clusterID=<myCluster> -Dbigtable.zone=<myZone>
 
 You will see output resembling the following, interspersed with informational logging
 from the underlying libraries:
