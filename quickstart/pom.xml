@@ -25,12 +25,6 @@
     <bigtable.version>0.2.3</bigtable.version>
     <hbase.version>1.1.2</hbase.version>
 
-    <compileSource>1.8</compileSource>
-
-    <requiredMavenVersion>3.2.1</requiredMavenVersion>
-
-    <project.build.sourceFileEncoding>UTF-8</project.build.sourceFileEncoding>
-    <project.build.outputFileEncoding>UTF-8</project.build.outputFileEncoding>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     
     <bigtable.zone>us-central1-b</bigtable.zone>
@@ -58,24 +52,6 @@
   </dependencies>
 
   <profiles>
-    <profile>
-      <id>jdk7</id>
-        <activation>
-            <jdk>1.7</jdk>
-        </activation>
-        <properties>
-            <alpn.version>${alpn.jdk7.version}</alpn.version>
-        </properties>
-    </profile>
-    <profile>
-        <id>jdk8</id>
-        <activation>
-            <jdk>1.8</jdk>
-        </activation>
-        <properties>
-            <alpn.version>${alpn.jdk8.version}</alpn.version>
-        </properties>
-    </profile>
     <profile>
       <id>staged</id> 
       <repositories>
