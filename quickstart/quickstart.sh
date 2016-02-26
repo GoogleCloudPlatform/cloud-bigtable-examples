@@ -92,18 +92,14 @@ function prompt() {
 
 
 # Test for java
-hash java 2>/dev/null  || { echo >&2 'Java 8 needs to be installed'; exit 1; }
-J18=$(java -version 2>&1 >/dev/null | grep 1.8)
-if [[ -z "$J18" ]]; then
-  echo >&2 'Java 8 needs to be installed'; exit 1;
-fi
+hash java 2>/dev/null  || { echo >&2 'Java needs to be installed'; exit 1; }
 
 if [[ -z "$JAVA_HOME" ]]; then
   echo >&2 'JAVA_HOME is not set.'; exit 1;
 fi
 
 # Test for Maven
-hash mvn 2>/dev/null  || { echo >&2 'Maven needs to be installed from https://maven.apache.org/'; exit 1; }
+hash mvn 2>/dev/null  || { echo >&2 'Apache Maven needs to be installed.'; exit 1; }
 
 # Test for gcloud
 hash gcloud 2>/dev/null  || { echo >&2 'gcloud needs to be installed from https://cloud.google.com/sdk/'; exit 1; }
