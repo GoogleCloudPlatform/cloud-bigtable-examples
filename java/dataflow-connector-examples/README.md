@@ -64,7 +64,7 @@ You can verify that the data was written by using HBase shell and typing `scan '
 
 # PubsubWordCount - Reading from Cloud Pubsub and writing to Cloud Bigtable
 
-The PubsubWordCount example reads from Cloud Pubsub and writes to CBT. It starts two jobs: one publishes messages to Cloud Pubsub, and the other one pulls messages, performs a word count for each message, and writes word count result to CBT. 
+The PubsubWordCount example reads from Cloud Pubsub and writes to Cloud Bigtable. It starts two jobs: one publishes messages to Cloud Pubsub, and the other one pulls messages, performs a word count for each message, and writes word count result to Cloud Bigtable. 
 
 Download the file which Cloud Pubsub messages are created from:
 
