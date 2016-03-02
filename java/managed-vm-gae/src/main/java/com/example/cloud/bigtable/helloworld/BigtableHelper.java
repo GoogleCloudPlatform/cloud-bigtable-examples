@@ -55,8 +55,7 @@ public class BigtableHelper implements ServletContextListener {
         com.google.cloud.bigtable.hbase1_1.BigtableConnection.class,
         org.apache.hadoop.hbase.client.Connection.class);   // Required for Cloud Bigtable
 
-    if (ZONE == null) ZONE = "us-central1-b"; // default
-    if (PROJECT_ID == null || CLUSTER_ID == null ) {
+    if (PROJECT_ID == null || CLUSTER_ID == null || ZONE == null) {
       sc.log("environment variables BIGTABLE_PROJECT, BIGTABLE_CLUSTER, and BIGTABLE_ZONE need to be defined.");
       return;
     }
