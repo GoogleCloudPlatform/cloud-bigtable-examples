@@ -1,0 +1,14 @@
+<html>
+  <head>
+    <title>Bigtable table: delete</title>
+  </head>
+  <body>
+    Your Bigtable table <code>{{ table }}</code> was {{ status }}.<br>
+
+{% if 'deleted' in status %}
+    Refresh this page to see what happens if you try to delete it again.<br>
+{% endif %}
+
+    Now you can <a href="/">list</a> your tables or <a href="/create">create</a> a new table.<br>
+  </body>
+</html>

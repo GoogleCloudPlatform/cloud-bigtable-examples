@@ -1,0 +1,3 @@
+hbase-*.tar.gz
+hbase-*/
+stunnel.pem
