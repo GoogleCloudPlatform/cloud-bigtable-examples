@@ -26,6 +26,7 @@ There are many examples / sample / demo programs here, each with its own README.
 
 ## Python
 * [Thrift](python/thrift) - Setup an HBase Thrift server(s) to use Cloud Bigtable and access that from Python to do basic operations.
+  * [AppEngine SSL Gateway](python/thrift/appengine-ssl-gateway) - Shows how to setup and secure an HBase Thrift gateway and then access it from App Engine.
 * [REST](python/rest) - Setup an HBase REST server(s) to use Cloud Bigtable and access it from Python and do basic operations.
 
 ## Scala / Spark
