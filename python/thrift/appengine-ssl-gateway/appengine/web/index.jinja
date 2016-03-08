@@ -1,0 +1,20 @@
+<html>
+  <head>
+    <title>Bigtable table: index</title>
+  </head>
+  <body>
+{% if not tables %}
+    You have no tables created; please visit the <a href="/create">create</a>
+    page to do so.
+{% else %}
+    Congrats! You have created the following tables: <code>{{ tables }}</code>.<br>
+    You can now
+  {% if 'mytable' in tables %}
+    <a href="/delete">delete</a>
+  {% else %>
+    <a href="/create">create</a>
+  {% endif %}
+    the <code>mytable</code> table.
+{% endif %}
+  </body>
+</html>

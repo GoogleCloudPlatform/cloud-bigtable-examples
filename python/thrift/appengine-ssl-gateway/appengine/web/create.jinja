@@ -1,0 +1,18 @@
+<html>
+  <head>
+    <title>Bigtable table: create</title>
+  </head>
+  <body>
+{% if 'created' in status %}
+    Congrats!
+{% endif %}
+
+    Your Bigtable table <code>{{ table }}</code> {{ status }}.<br>
+
+{% if 'created' in status %}
+    Refresh this page to see what happens if you try to recreate it.<br>
+{% endif %}
+
+    Now you can <a href="/">list</a> or <a href="/delete">delete</a> your table.
+  </body>
+</html>
