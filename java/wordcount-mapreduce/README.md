@@ -72,7 +72,7 @@ The command by default spins up 4 n1-standard-4 worker nodes and a single n1-sta
 
 The actual gcloud command:
 
-    gcloud beta dataproc clusters create dp --bucket MYBUCKET --initialization-actions \
+    gcloud dataproc clusters create dp --bucket MYBUCKET --initialization-actions \
     gs://MYBUCKET/bigtable-dataproc-init.sh --num-workers 4 --zone us-central1-b \
     --master-machine-type n1-standard-4 --worker-machine-type n1-standard-4
 
@@ -86,7 +86,7 @@ The helper script can also start a job for you.
     
 This is an alisa for the `glcoud` command:
 
-    gcloud beta dataproc jobs submit hadoop --cluster dp --async \
+    gcloud dataproc jobs submit hadoop --cluster dp --async \
     --jar target/wordcount-mapreduce-0-SNAPSHOT.jar \
     wordcount-hbase <sourceFiles> <outputTable>
     
@@ -122,7 +122,7 @@ The help script helps us here as well.
     
 Which maps to the fairly easy to remember:
 
-    gcloud beta dataproc clusters delete dp
+    gcloud dataproc clusters delete dp
 
 ## Contributing changes
 
