@@ -13,7 +13,7 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
-PHASE="beta"
+PHASE=""
 DEFAULT_ZONE="us-central1-b"
 DEFAULT_CLUSTER='dp'
 

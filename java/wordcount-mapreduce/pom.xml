@@ -31,7 +31,7 @@
     <bigtable.clusterID>YOUR_CLUSTER_ID_HERE</bigtable.clusterID>
     <bigtable.zone>us-central1-b</bigtable.zone>
 
-    <bigtable.version>0.2.2</bigtable.version>
+    <bigtable.version>0.2.3</bigtable.version>
     <hbase.version>1.0.1.1</hbase.version><!-- needs to match Dataproc HBase version -->
     <hbase.if>1.0</hbase.if> <!-- hbase interface - it changed between 1.0 and 1.1.x -->
 
