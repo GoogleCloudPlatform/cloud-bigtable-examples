@@ -14,7 +14,7 @@
     <bigtable.clusterID>YOUR_CLUSTER_ID</bigtable.clusterID>
     <bigtable.zone>us-central1-b</bigtable.zone>
 
-    <bigtable.version>0.2.2</bigtable.version>
+    <bigtable.version>0.2.3</bigtable.version>
 
     <hadoop.version>2.4.1</hadoop.version>
     <hbase.version>1.1.1</hbase.version>

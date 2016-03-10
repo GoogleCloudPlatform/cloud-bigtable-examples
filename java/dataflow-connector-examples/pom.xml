@@ -38,7 +38,7 @@ limitations under the License.
 
   <properties>
     <dataflow.version>1.0.0</dataflow.version>
-    <bigtable.version>0.2.2</bigtable.version>
+    <bigtable.version>0.2.3</bigtable.version>
     <!-- For Netty HTTP2/TLS negotiation -->
     <alpn.jdk7.version>7.1.3.v20150130</alpn.jdk7.version>
     <alpn.jdk8.version>8.1.3.v20150130</alpn.jdk8.version>
