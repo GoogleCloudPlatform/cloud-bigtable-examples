@@ -40,11 +40,11 @@ update-deployment-config: env_cluster_id env_zone env_bucket env_docker_project_
 	$(VERB) sed -i 's@<DOCKER_PROJECT_ID>@'"$$DOCKER_PROJECT_ID"'@g' $(DEPLOYMENT_CONFIG)
 	$(VERB) sed -i 's/<ZONE>/'$$ZONE'/g' $(DEPLOYMENT_CONFIG)
 
-deploy-gateway:
-	$(VERB) gcloud deployment-manager deployments create $(DEPLOYMENT) --config $(DEPLOYMENT_CONFIG)
+deploy-gateway: env_project_id
+	$(VERB) gcloud --project $$PROJECT_ID deployment-manager deployments create $(DEPLOYMENT) --config $(DEPLOYMENT_CONFIG)
 
-delete-gateway:
-	$(VERB) gcloud deployment-manager deployments delete $(DEPLOYMENT)
+delete-gateway: env_project_id
+	$(VERB) gcloud --project $$PROJECT_ID deployment-manager deployments delete $(DEPLOYMENT)
 
 print-thrift-gateway-lb-ip:
 	$(VERB) gcloud compute forwarding-rules describe thrift-gateway-lb --region $(REGION) | grep IPAddress | sed 's/IPAddress: //'
