@@ -27,7 +27,7 @@
     <version>0.1-SNAPSHOT</version>
 
     <properties>
-        <bigtable.version>0.2.3</bigtable.version>
+        <bigtable.version>0.2.4</bigtable.version>
         <hbase.version>1.1.1</hbase.version>
 
         <hadoop.version>2.4.1</hadoop.version>
@@ -50,10 +50,55 @@
         <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
     </properties>
 
+
     <modules>
         <module>dataflow</module>
         <module>frontend</module>
     </modules>
+
+  <repositories>
+    <repository>
+      <id>snapshots-repo</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases><enabled>false</enabled></releases>
+      <snapshots><enabled>true</enabled></snapshots>
+    </repository>
+    <repository>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+        <checksumPolicy>warn</checksumPolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+        <updatePolicy>never</updatePolicy>
+        <checksumPolicy>fail</checksumPolicy>
+      </snapshots>
+      <id>google-maven-central</id>
+      <name>Google Maven Central</name>
+      <url>https://maven-central.storage.googleapis.com</url>
+      <layout>default</layout>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+        <checksumPolicy>warn</checksumPolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+        <updatePolicy>never</updatePolicy>
+        <checksumPolicy>fail</checksumPolicy>
+      </snapshots>
+      <id>google-maven-central</id>
+      <name>Google Maven Central</name>
+      <url>https://maven-central.storage.googleapis.com</url>
+      <layout>default</layout>
+    </pluginRepository>
+  </pluginRepositories>
 
     <dependencyManagement>
         <dependencies>
