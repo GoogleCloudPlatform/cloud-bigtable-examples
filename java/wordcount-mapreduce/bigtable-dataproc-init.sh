@@ -15,13 +15,10 @@
 
 # Values you must set
 
-ROLE=$(/usr/share/google/get_metadata_value attributes/dataproc-role)
 PROJECT=$(/usr/share/google/get_metadata_value project-id)
-BUCKET=$(/usr/share/google/get_metadata_value attributes/dataproc-bucket)
 
-# echo "*****"
-# gcloud -q components update
-# gcloud -q components update alpha beta
+ROLE=$(/usr/share/google/get_metadata_value attributes/dataproc-role)
+BUCKET=$(/usr/share/google/get_metadata_value attributes/dataproc-bucket)
 
 echo "Copying files from Bucket"
 gsutil -q cp gs://${BUCKET}/hbase-site.xml /etc/hadoop/conf/
@@ -37,5 +34,3 @@ echo "Adding classpath's"
 echo "export HADOOP_CLASSPATH=\"$(/usr/bin/hbase mapredcp):\$HADOOP_CLASSPATH\"" >> /etc/hadoop/conf/hadoop-env.sh
 echo "export HADOOP_CLASSPATH=\"$(/usr/bin/hbase mapredcp):\$HADOOP_CLASSPATH\"" >> /etc/hadoop/conf/mapred-env.sh
 
-# make it so we can use hbase if we need to.  (ie. hbase shell)
-echo "HBASE_OPTS=\"\${HBASE_OPTS} -Xbootclasspath/p:\${ALPN_JAR}\"" >> /etc/hbase/conf/hbase-env.sh
