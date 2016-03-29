@@ -28,6 +28,9 @@ Following these steps should get you to the hbase shell in 3 minutes.
 
 1. **`./quickstart.sh`** will write a valid hbase-site.xml for you.
 
+NOTE - The Quickstart script does not currently do disambiguation, so if you have more than one
+cluster it is suggested you use the maven command line below.
+
 Alternatively you can just use maven directly.
 
     mvn clean package exec:exec -Dbigtable.projectid=<PROJECT_ID> -Dbigtable.clusterid=<CLUSTER_ID> -Dbigtable.zone=<ZONE>
