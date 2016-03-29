@@ -23,11 +23,6 @@ You can install the dependencies and build the project using maven.
 
 ## Run the code
 
-Before running the application, make sure you have set the path to your JSON
-key file to the `GOOGLE_APPLICATION_CREDENTIALS` environment variable.
-
-    $ export GOOGLE_APPLICATION_CREDENTIALS=/path/to/json-key-file.json
-
 You can run a command using the hbasecli.sh script. Try checking the available commands:
 
     $ ./hbasecli.sh -help
