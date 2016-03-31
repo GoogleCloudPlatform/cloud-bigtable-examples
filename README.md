@@ -21,8 +21,9 @@ There are many examples / sample / demo programs here, each with its own README.
 * [dataflow-coinbase](java/dataflow-coinbase) - An end to end example that takes the last four hours of Bitcoin data and sends it to Google Cloud Dataflow, which process it and sends it to Google Cloud Bigtable.  Then there is a Managed VM application that displays the data in an angularJS app.
 
 ## GoLang
-* [search](https://github.com/GoogleCloudPlatform/gcloud-golang/tree/master/examples/bigtable/search) - Create and search a Cloud Bigtable.
+* [cbt](https://github.com/GoogleCloudPlatform/gcloud-golang/tree/master/bigtable/cmd/cbt) [doc](https://godoc.org/google.golang.org/cloud/bigtable/cmd/cbt) Basic command line interactions with Cloud Bigtable - A really great place to start learning the Go Client.
 * [Bigtable-Hello](https://github.com/GoogleCloudPlatform/gcloud-golang/tree/master/examples/bigtable/bigtable-hello) - Accessing Cloud Bigtable from a Managed VM
+* [search](https://github.com/GoogleCloudPlatform/gcloud-golang/tree/master/examples/bigtable/search) - Create and search a Cloud Bigtable.
 
 ## Python
 * [Thrift](python/thrift) - Setup an HBase Thrift server(s) to use Cloud Bigtable and access that from Python to do basic operations.
