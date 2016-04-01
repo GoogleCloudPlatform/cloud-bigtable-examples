@@ -11,8 +11,7 @@ There are many examples / sample / demo programs here, each with its own README.
 * [Hello World](java/hello-world) - A minimal application that demonstrates using the native HBase API to create a temporary table, write some rows, read them back and clean up
 * [Import HBase Sequence files](java/dataflow-import-examples) Import HBase sequence files directly to Cloud Bigtable using Dataflow.
 * [Dataproc Wordcount using Map/Reduce](java/dataproc-wordcount) - How to load data to Cloud Bigtable using Dataproc on GCE
-* [Managed VM Bigtable-Hello on GAE](java/managed-vm-gae) - Accessing Cloud Bigtable from a Managed VM / JSON Upload / Download
-* [Managed VM Bigtable-Hello using Jetty](java/jetty-managed-vm) - Accessing Cloud Bigtable from a Managed VM / JSON Upload / Download
+* [Managed VM Bigtable-Hello on GAE](java/managed-vm-gae) - Accessing Cloud Bigtable from App Engine Flexible / JSON Upload / Download
 * [Storm](java/storm) - Stream live data from Coinbase to Cloud Bigtable using Apache Storm
 
 ## Dataflow
