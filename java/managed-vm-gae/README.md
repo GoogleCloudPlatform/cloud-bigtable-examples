@@ -1,6 +1,6 @@
-# Cloud Bigtable for Managed VM's using App Engine Compat APIs<br />(Hello World for Cloud Bigtable)
+# Cloud Bigtable for App Engine Flex using Compat (standard) APIs<br />(Hello World for Cloud Bigtable)
 
-App Engine compat runtime has full access to [AppEngine Services and API's](https://cloud.google.com/appengine/docs/managed-vms/#standard_runtimes).
+App Engine compat runtime has full access to [AppEngine Services and API's](https://cloud.google.com/appengine/docs/flexible/#standard_runtimes).
 
 This app provides:
 
@@ -13,7 +13,7 @@ This app provides:
 1. [Requirements](#Requirements)
 1. [Project Setup](#Project-Setup)
 1. [Running Locally](#Running-Locally)
-1. [Deploying the AppEngine Runtime](#Deploying-the-AppEngine-Runtime)
+1. [Deploying the AppEngine Flexible Runtime](#Deploying-the-AppEngine-Runtime)
 1. [AppEngine Debugging Hints](#AppEngine-Debugging-Hints)
 1. [Using Bigtable-Hello](#Using-Bigtable-Hello)
 1. [Using-JSON](#Using-JSON)
@@ -77,15 +77,15 @@ The first thing to do, if you'd like to debug is use the `servlet.log()` methods
 1. Find your instance
   `gcloud preview app modules list`
 
-1. [Change the management of the instances](https://cloud.google.com/appengine/docs/managed-vms/access#changing_management)
+1. [Change the management of the instances](https://cloud.google.com/appengine/docs/flexible/access#changing_management)
 
 1. [SSH to the instance](https://cloud.google.com/sdk/gcloud/reference/compute/ssh)
 
-1. [Find the Container](https://cloud.google.com/appengine/docs/managed-vms/access#accessing_the_docker_container_in_production)
+1. [Find the Container](https://cloud.google.com/appengine/docs/flexible/access#accessing_the_docker_container_in_production)
 
 1. Either show the container log  `sudo docker logs <containerID>` or enter the container `sudo docker exec -it <containerID> /bin/bash`
 
-## Using Managed-vm-GAE
+## Using the example
 
 1. With your browser, go to [localhost:8080](localhost:8080) in your browser. (Local)  Or to https://<projectID>.appspot.com
 
