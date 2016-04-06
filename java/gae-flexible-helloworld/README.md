@@ -1,6 +1,6 @@
-# Cloud Bigtable for App Engine Flex using Compat (standard) APIs<br />(Hello World for Cloud Bigtable)
+# Google App Engine Flexible - Hello World
 
-App Engine compat runtime has full access to [AppEngine Services and API's](https://cloud.google.com/appengine/docs/flexible/#standard_runtimes).
+App Engine Flexible `compat` runtime has full access to [AppEngine Services and API's](https://cloud.google.com/appengine/docs/flexible/java/dev-jetty9-and-apis).
 
 This app provides:
 
@@ -22,7 +22,7 @@ This app provides:
 1. Latest version of [gcloud](https://cloud.google.com/sdk/) 
 1. Update with `gcloud components update`
 1. `gcloud init` (if you haven't already)
-1. `gcloud components install alpha beta app-engine-java`
+1. `gcloud components update alpha beta app-engine-java`
 1. **Java 1.8**
 1. [Maven](https://maven.apache.org/)
 
@@ -41,7 +41,7 @@ This app provides:
 
   Create a new Cluster -- You will need both the Zone and the Cluster ID
  
-1. Follow the [instructions to launch `HBase shell Quickstart`](https://cloud.google.com/bigtable/docs/hbase-shell-quickstart)
+1. Follow the [instructions to launch `HBase shell Quickstart`](https://cloud.google.com/bigtable/docs/quickstart)
 
 1. Create the table (tableName, Column Family)
 
@@ -77,11 +77,9 @@ The first thing to do, if you'd like to debug is use the `servlet.log()` methods
 1. Find your instance
   `gcloud preview app modules list`
 
-1. [Change the management of the instances](https://cloud.google.com/appengine/docs/flexible/access#changing_management)
+1. [Connect to an instance with ssh](https://cloud.google.com/appengine/docs/flexible/java/connecting-to-an-instance-with-ssh)
 
-1. [SSH to the instance](https://cloud.google.com/sdk/gcloud/reference/compute/ssh)
-
-1. [Find the Container](https://cloud.google.com/appengine/docs/flexible/access#accessing_the_docker_container_in_production)
+1. [Find the Container](https://cloud.google.com/appengine/docs/flexible/java/connecting-to-an-instance-with-ssh#accessing_the_docker_container_in_production)
 
 1. Either show the container log  `sudo docker logs <containerID>` or enter the container `sudo docker exec -it <containerID> /bin/bash`
 
