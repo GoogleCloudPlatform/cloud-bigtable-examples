@@ -71,13 +71,16 @@ module Shell
   class Shell
     attr_accessor :hbase
     attr_accessor :formatter
+    attr_accessor :interactive
+    alias interactive? interactive
 
     @debug = false
     attr_accessor :debug
 
-    def initialize(hbase, formatter)
+    def initialize(hbase, formatter, interactive=true)
       self.hbase = hbase
       self.formatter = formatter
+      self.interactive = interactive
     end
 
     def hbase_admin
@@ -264,6 +267,7 @@ Shell.load_command_group(
     alter_status
     alter_async
     get_table
+    locate_region
   ],
   :aliases => {
     'describe' => ['desc']
@@ -311,6 +315,9 @@ Shell.load_command_group(
     balancer
     balance_switch
     balancer_enabled
+    normalize
+    normalizer_switch
+    normalizer_enabled
     close_region
     compact
     flush
@@ -389,9 +396,19 @@ Shell.load_command_group(
   :full_name => 'SECURITY TOOLS',
   :comment => "NOTE: Above commands are only applicable if running with the AccessController coprocessor",
   :commands => %w[
+    list_security_capabilities
     grant
     revoke
     user_permission
+  ]
+)
+
+Shell.load_command_group(
+  'procedures',
+  :full_name => 'PROCEDURES MANAGEMENT',
+  :commands => %w[
+    abort_procedure
+    list_procedures
   ]
 )
 

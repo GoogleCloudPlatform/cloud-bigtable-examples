@@ -358,7 +358,8 @@ EOF
       unless filter.class == String
         get.setFilter(filter)
       else
-        get.setFilter(org.apache.hadoop.hbase.filter.ParseFilter.new.parseFilterString(filter))
+        get.setFilter(
+          org.apache.hadoop.hbase.filter.ParseFilter.new.parseFilterString(filter.to_java_bytes))
       end
 
       get.setConsistency(org.apache.hadoop.hbase.client.Consistency.valueOf(consistency)) if consistency
@@ -408,6 +409,8 @@ EOF
 
     def _hash_to_scan(args)
       if args.any?
+        enablemetrics = args["ALL_METRICS"].nil? ? false : args["ALL_METRICS"]
+        enablemetrics = enablemetrics || !args["METRICS"].nil?
         filter = args["FILTER"]
         startrow = args["STARTROW"] || ''
         stoprow = args["STOPROW"]
@@ -452,9 +455,11 @@ EOF
         unless filter.class == String
           scan.setFilter(filter)
         else
-          scan.setFilter(org.apache.hadoop.hbase.filter.ParseFilter.new.parseFilterString(filter))
+          scan.setFilter(
+            org.apache.hadoop.hbase.filter.ParseFilter.new.parseFilterString(filter.to_java_bytes))
         end
 
+        scan.setScanMetricsEnabled(enablemetrics) if enablemetrics
         scan.setTimeStamp(timestamp) if timestamp
         scan.setCacheBlocks(cache_blocks)
         scan.setReversed(reversed)
@@ -479,8 +484,10 @@ EOF
 
     #----------------------------------------------------------------------------------------------
     # Scans whole table or a range of keys and returns rows matching specific criteria
-    def _scan_internal(args = {})
-      raise(ArgumentError, "Arguments should be a Hash") unless args.kind_of?(Hash)
+    def _scan_internal(args = {}, scan = nil)
+      raise(ArgumentError, "Args should be a Hash") unless args.kind_of?(Hash)
+      raise(ArgumentError, "Scan argument should be org.apache.hadoop.hbase.client.Scan") \
+        unless scan == nil || scan.kind_of?(org.apache.hadoop.hbase.client.Scan)
 
       limit = args["LIMIT"] || -1
       maxlength = args.delete("MAXLENGTH") || -1
@@ -490,7 +497,8 @@ EOF
       @converters.clear()
 
       # Start the scanner
-      scanner = @table.getScanner(_hash_to_scan(args))
+      scan = scan == nil ? _hash_to_scan(args) : scan
+      scanner = @table.getScanner(scan)
       iter = scanner.iterator
 
       # Iterate results

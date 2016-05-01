@@ -1,4 +1,5 @@
 #
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -18,22 +19,32 @@
 
 module Shell
   module Commands
-    class EnableTableReplication< Command
+    class AbortProcedure < Command
       def help
         return <<-EOF
-Enable a table's replication switch.
+Given a procedure Id (and optional boolean may_interrupt_if_running parameter,
+default is true), abort a procedure in hbase. Use with caution. Some procedures
+might not be abortable. For experts only.
+
+If this command is accepted and the procedure is in the process of aborting,
+it will return true; if the procedure could not be aborted (eg. procedure
+does not exist, or procedure already completed or abort will cause corruption),
+this command will return false.
 
 Examples:
 
-  hbase> enable_table_replication 'table_name'
+  hbase> abort_procedure proc_id
+  hbase> abort_procedure proc_id, true
+  hbase> abort_procedure proc_id, false
 EOF
       end
 
-      def command(table_name)
+      def command(proc_id, may_interrupt_if_running=nil)
         format_simple_command do
-          replication_admin.enable_tablerep(table_name)
+          formatter.row([
+            admin.abort_procedure?(proc_id, may_interrupt_if_running).to_s
+          ])
         end
-        puts "The replication swith of table '#{table_name}' successfully enabled"
       end
     end
   end

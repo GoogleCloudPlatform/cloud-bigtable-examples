@@ -1,4 +1,5 @@
 #
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -18,22 +19,27 @@
 
 module Shell
   module Commands
-    class EnableTableReplication< Command
+    class ListProcedures < Command
       def help
         return <<-EOF
-Enable a table's replication switch.
+List all procedures in hbase. Examples:
 
-Examples:
-
-  hbase> enable_table_replication 'table_name'
+  hbase> list_procedures
 EOF
       end
 
-      def command(table_name)
-        format_simple_command do
-          replication_admin.enable_tablerep(table_name)
+      def command()
+        now = Time.now
+        formatter.header([ "Id", "Name", "State", "Start_Time", "Last_Update" ])
+
+        list = admin.list_procedures()
+        list.each do |proc|
+          start_time = Time.at(proc.getStartTime / 1000).to_s
+          last_update = Time.at(proc.getLastUpdate / 1000).to_s
+          formatter.row([ proc.getProcId, proc.getProcName, proc.getProcState, start_time, last_update ])
         end
-        puts "The replication swith of table '#{table_name}' successfully enabled"
+
+        formatter.footer(now, list.size)
       end
     end
   end

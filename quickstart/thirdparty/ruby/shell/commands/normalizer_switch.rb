@@ -1,4 +1,5 @@
 #
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -18,22 +19,24 @@
 
 module Shell
   module Commands
-    class EnableTableReplication< Command
+    class NormalizerSwitch < Command
       def help
         return <<-EOF
-Enable a table's replication switch.
-
+Enable/Disable region normalizer. Returns previous normalizer state.
+When normalizer is enabled, it handles all tables with 'NORMALIZATION_ENABLED' => true.
 Examples:
 
-  hbase> enable_table_replication 'table_name'
+  hbase> normalizer_switch true
+  hbase> normalizer_switch false
 EOF
       end
 
-      def command(table_name)
+      def command(enableDisable)
         format_simple_command do
-          replication_admin.enable_tablerep(table_name)
+          formatter.row([
+            admin.normalizer_switch(enableDisable)? "true" : "false"
+          ])
         end
-        puts "The replication swith of table '#{table_name}' successfully enabled"
       end
     end
   end
