@@ -14,12 +14,13 @@
     <bigtable.clusterID>YOUR_CLUSTER_ID</bigtable.clusterID>
     <bigtable.zone>us-central1-b</bigtable.zone>
 
-    <bigtable.version>0.2.4</bigtable.version>
+    <bigtable.version>0.3.0</bigtable.version>
 
     <hadoop.version>2.4.1</hadoop.version>
-    <hbase.version>1.1.1</hbase.version>
+    <hbase.version>1.2.1</hbase.version>
 
-    <compileSource>1.8</compileSource>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
 
   <repositories>
@@ -110,18 +111,6 @@
       </resource>
     </resources>
     <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.5.1</version>
-        <configuration>
-            <source>${compileSource}</source>
-            <target>${compileSource}</target>
-            <showWarnings>true</showWarnings>
-            <showDeprecation>false</showDeprecation>
-            <compilerArgument>-Xlint:-options</compilerArgument>
-        </configuration>
-      </plugin>
-
       <!-- Use Ant to configure the appropriate "tcnative.classifier" property -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
