@@ -37,13 +37,17 @@ module Shell
         while rootCause != nil && rootCause.respond_to?(:cause) && rootCause.cause != nil
           rootCause = rootCause.cause
         end
-        puts
-        puts "ERROR: #{rootCause}"
-        puts "Backtrace: #{rootCause.backtrace.join("\n           ")}" if debug
-        puts
-        puts "Here is some help for this command:"
-        puts help
-        puts
+        if @shell.interactive?
+          puts
+          puts "ERROR: #{rootCause}"
+          puts "Backtrace: #{rootCause.backtrace.join("\n           ")}" if debug
+          puts
+          puts "Here is some help for this command:"
+          puts help
+          puts
+        else
+          raise rootCause
+        end
       end
 
       def admin
@@ -94,10 +98,11 @@ module Shell
       def translate_hbase_exceptions(*args)
         yield
       rescue => e
+        # Since exceptions will be thrown from the java code, 'e' will always be NativeException.
+        # Check for the original java exception and use it if present.
         raise e unless e.respond_to?(:cause) && e.cause != nil
-        
-        # Get the special java exception which will be handled
         cause = e.cause
+
          # let individual command handle exceptions first
         if self.respond_to?(:handle_exceptions)
           self.handle_exceptions(cause, *args)
@@ -105,6 +110,15 @@ module Shell
         # Global HBase exception handling below if not handled by respective command above
         if cause.kind_of?(org.apache.hadoop.hbase.TableNotFoundException) then
           raise "Unknown table #{args.first}!"
+        end
+        if cause.kind_of?(org.apache.hadoop.hbase.UnknownRegionException) then
+          raise "Unknown region #{args.first}!"
+        end
+        if cause.kind_of?(org.apache.hadoop.hbase.NamespaceNotFoundException) then
+          raise "Unknown namespace #{args.first}!"
+        end
+        if cause.kind_of?(org.apache.hadoop.hbase.snapshot.SnapshotDoesNotExistException) then
+          raise "Unknown snapshot #{args.first}!"
         end
         if cause.kind_of?(org.apache.hadoop.hbase.client.RetriesExhaustedWithDetailsException) then
           exceptions = cause.getCauses

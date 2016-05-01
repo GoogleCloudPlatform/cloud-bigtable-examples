@@ -45,7 +45,7 @@ module Hbase
     #----------------------------------------------------------------------------------------------
     # Returns a list of tables in hbase
     def list(regex = ".*")
-      @admin.listTableNames(regex).map { |t| t.getNameAsString }    # SD/LV3 Google Change
+      @admin.listTableNames(regex).map { |t| t.getNameAsString }
     end
 
     #----------------------------------------------------------------------------------------------
@@ -99,6 +99,15 @@ module Hbase
       end
     end
 
+    def locate_region(table_name, row_key)
+      locator = @connection.getRegionLocator(TableName.valueOf(table_name))
+      begin
+        return locator.getRegionLocation(Bytes.toBytesBinary(row_key))
+      ensure
+        locator.close()
+      end
+    end
+
     #----------------------------------------------------------------------------------------------
     # Requests a cluster balance
     # Returns true if balancer ran
@@ -119,6 +128,27 @@ module Hbase
     # Returns the balancer's state (true is enabled).
     def balancer_enabled?()
       @admin.isBalancerEnabled()
+    end
+
+    #----------------------------------------------------------------------------------------------
+    # Requests region normalization for all configured tables in the cluster
+    # Returns true if normalizer ran successfully
+    def normalize()
+      @admin.normalize()
+    end
+
+    #----------------------------------------------------------------------------------------------
+    # Enable/disable region normalizer
+    # Returns previous normalizer switch setting.
+    def normalizer_switch(enableDisable)
+      @admin.setNormalizerRunning(java.lang.Boolean::valueOf(enableDisable))
+    end
+
+    #----------------------------------------------------------------------------------------------
+    # Query the current state of region normalizer.
+    # Returns the state of region normalizer (true is enabled).
+    def normalizer_enabled?()
+      @admin.isNormalizerEnabled()
     end
 
     #----------------------------------------------------------------------------------------------
@@ -214,6 +244,12 @@ module Hbase
     end
 
     #----------------------------------------------------------------------------------------------
+    # Parse arguments and update HTableDescriptor accordingly
+    def parse_htd_args(htd, arg)
+      htd.setNormalizationEnabled(JBoolean.valueOf(arg.delete(NORMALIZATION_ENABLED))) if arg[NORMALIZATION_ENABLED]
+    end
+
+    #----------------------------------------------------------------------------------------------
     # Creates a table
     def create(table_name, *args)
       # Fail if table name is not a string
@@ -306,6 +342,7 @@ module Hbase
           end
         end
         htd.setDurability(org.apache.hadoop.hbase.client.Durability.valueOf(arg.delete(DURABILITY))) if arg[DURABILITY]
+        parse_htd_args(htd, arg)
         set_user_metadata(htd, arg.delete(METADATA)) if arg[METADATA]
         set_descriptor_config(htd, arg.delete(CONFIGURATION)) if arg[CONFIGURATION]
 
@@ -408,10 +445,13 @@ module Hbase
     def truncate_preserve(table_name, conf = @conf)
       h_table = @connection.getTable(TableName.valueOf(table_name))
       locator = @connection.getRegionLocator(TableName.valueOf(table_name))
-      splits = locator.getAllRegionLocations().
-          map{|i| Bytes.toString(i.getRegionInfo().getStartKey)}.
-          delete_if{|k| k == ""}.to_java :String
-      locator.close()
+      begin
+        splits = locator.getAllRegionLocations().
+            map{|i| Bytes.toString(i.getRegionInfo().getStartKey)}.
+            delete_if{|k| k == ""}.to_java :String
+      ensure
+        locator.close()
+      end
 
       table_description = @admin.getTableDescriptor(TableName.valueOf(table_name))
       yield 'Disabling table...' if block_given?
@@ -559,6 +599,7 @@ module Hbase
         htd.setMaxFileSize(JLong.valueOf(arg.delete(MAX_FILESIZE))) if arg[MAX_FILESIZE]
         htd.setReadOnly(JBoolean.valueOf(arg.delete(READONLY))) if arg[READONLY]
         htd.setCompactionEnabled(JBoolean.valueOf(arg[COMPACTION_ENABLED])) if arg[COMPACTION_ENABLED]
+        parse_htd_args(htd, arg)
         htd.setMemStoreFlushSize(JLong.valueOf(arg.delete(MEMSTORE_FLUSHSIZE))) if arg[MEMSTORE_FLUSHSIZE]
         # DEFERRED_LOG_FLUSH is deprecated and was replaced by DURABILITY.  To keep backward compatible, it still exists.
         # However, it has to be set before DURABILITY so that DURABILITY could overwrite if both args are set
@@ -582,25 +623,9 @@ module Hbase
             k.strip!
 
             if (k =~ /coprocessor/i)
-              # validate coprocessor specs
               v = String.new(value)
               v.strip!
-              if !(v =~ /^([^\|]*)\|([^\|]+)\|[\s]*([\d]*)[\s]*(\|.*)?$/)
-                raise ArgumentError, "Coprocessor value doesn't match spec: #{v}"
-              end
-
-              # generate a coprocessor ordinal by checking max id of existing cps
-              maxId = 0
-              htd.getValues().each do |k1, v1|
-                attrName = org.apache.hadoop.hbase.util.Bytes.toString(k1.get())
-                # a cp key is coprocessor$(\d)
-                if (attrName =~ /coprocessor\$(\d+)/i)
-                  ids = attrName.scan(/coprocessor\$(\d+)/i)
-                  maxId = ids[0][0].to_i if ids[0][0].to_i > maxId
-                end
-              end
-              maxId += 1
-              htd.setValue(k + "\$" + maxId.to_s, value)
+              htd.addCoprocessorWithSpec(v)
               valid_coproc_keys << key
             end
           end
@@ -633,6 +658,14 @@ module Hbase
         for k, v in status.getRegionsInTransition()
           puts("    %s" % [v])
         end
+        master = status.getMaster()
+        puts("active master:  %s:%d %d" % [master.getHostname(), master.getPort(), master.getStartcode()])
+        puts("%d backup masters" % [ status.getBackupMastersSize() ])
+        for server in status.getBackupMasters()
+          puts("    %s:%d %d" % \
+            [ server.getHostname(), server.getPort(), server.getStartcode() ])
+        end
+
         master_coprocs = java.util.Arrays.toString(@admin.getMasterCoprocessors())
         if master_coprocs != nil
           puts("master coprocessors: %s" % master_coprocs)
@@ -653,7 +686,7 @@ module Hbase
         end
       elsif format == "replication"
         #check whether replication is enabled or not
-        if (!@admin.getConfiguration().getBoolean(org.apache.hadoop.hbase.HConstants::REPLICATION_ENABLE_KEY, 
+        if (!@admin.getConfiguration().getBoolean(org.apache.hadoop.hbase.HConstants::REPLICATION_ENABLE_KEY,
           org.apache.hadoop.hbase.HConstants::REPLICATION_ENABLE_DEFAULT))
           puts("Please enable replication first.")
         else
@@ -665,7 +698,7 @@ module Hbase
             rSourceString = "       SOURCE:"
             rLoadSink = sl.getReplicationLoadSink()
             rSinkString << " AgeOfLastAppliedOp=" + rLoadSink.getAgeOfLastAppliedOp().to_s
-            rSinkString << ", TimeStampsOfLastAppliedOp=" + 
+            rSinkString << ", TimeStampsOfLastAppliedOp=" +
 			    (java.util.Date.new(rLoadSink.getTimeStampsOfLastAppliedOp())).toString()
             rLoadSourceList = sl.getReplicationLoadSourceList()
             index = 0
@@ -674,7 +707,7 @@ module Hbase
               rSourceString << " PeerID=" + rLoadSource.getPeerID()
               rSourceString << ", AgeOfLastShippedOp=" + rLoadSource.getAgeOfLastShippedOp().to_s
               rSourceString << ", SizeOfLogQueue=" + rLoadSource.getSizeOfLogQueue().to_s
-              rSourceString << ", TimeStampsOfLastShippedOp=" + 
+              rSourceString << ", TimeStampsOfLastShippedOp=" +
 			      (java.util.Date.new(rLoadSource.getTimeStampOfLastShippedOp())).toString()
               rSourceString << ", Replication Lag=" + rLoadSource.getReplicationLag().to_s
               index = index + 1
@@ -694,6 +727,13 @@ module Hbase
       elsif format == "simple"
         load = 0
         regions = 0
+        master = status.getMaster()
+        puts("active master:  %s:%d %d" % [master.getHostname(), master.getPort(), master.getStartcode()])
+        puts("%d backup masters" % [ status.getBackupMastersSize() ])
+        for server in status.getBackupMasters()
+          puts("    %s:%d %d" % \
+            [ server.getHostname(), server.getPort(), server.getStartcode() ])
+        end
         puts("%d live servers" % [ status.getServersSize() ])
         for server in status.getServers()
           puts("    %s:%d %d" % \
@@ -708,7 +748,7 @@ module Hbase
         end
         puts("Aggregate load: %d, regions: %d" % [ load , regions ] )
       else
-        puts "#{status.getServersSize} servers, #{status.getDeadServers} dead, #{'%.4f' % status.getAverageLoad} average load"
+        puts "1 active master, #{status.getBackupMastersSize} backup masters, #{status.getServersSize} servers, #{status.getDeadServers} dead, #{'%.4f' % status.getAverageLoad} average load"
       end
     end
 
@@ -788,6 +828,9 @@ module Hbase
 
       set_user_metadata(family, arg.delete(METADATA)) if arg[METADATA]
       set_descriptor_config(family, arg.delete(CONFIGURATION)) if arg[CONFIGURATION]
+      family.setDFSReplication(JInteger.valueOf(arg.delete(org.apache.hadoop.hbase.
+        HColumnDescriptor::DFS_REPLICATION))) if arg.include?(org.apache.hadoop.hbase.
+        HColumnDescriptor::DFS_REPLICATION)
 
       arg.each_key do |unknown_key|
         puts("Unknown argument ignored for column family %s: %s" % [name, unknown_key])
@@ -992,5 +1035,24 @@ module Hbase
       @admin.deleteNamespace(namespace_name)
     end
 
+    #----------------------------------------------------------------------------------------------
+    # Get security capabilities
+    def get_security_capabilities
+      @admin.getSecurityCapabilities
+    end
+
+    # Abort a procedure
+    def abort_procedure?(proc_id, may_interrupt_if_running=nil)
+      if may_interrupt_if_running.nil?
+        @admin.abortProcedure(proc_id, true)
+      else
+        @admin.abortProcedure(proc_id, may_interrupt_if_running)
+      end
+    end
+
+    # List all procedures
+    def list_procedures()
+      @admin.listProcedures()
+    end
   end
 end

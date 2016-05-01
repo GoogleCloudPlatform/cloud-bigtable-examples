@@ -22,8 +22,8 @@
   <packaging>jar</packaging>
 
   <properties>
-    <bigtable.version>0.2.4</bigtable.version>
-    <hbase.version>1.1.2</hbase.version>
+    <bigtable.version>0.3.0</bigtable.version>
+    <hbase.version>1.2.1</hbase.version>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     

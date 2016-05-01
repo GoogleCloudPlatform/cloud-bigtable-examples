@@ -1,4 +1,6 @@
 #
+# Copyright The Apache Software Foundation
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -18,22 +20,24 @@
 
 module Shell
   module Commands
-    class EnableTableReplication< Command
+    class LocateRegion < Command
       def help
         return <<-EOF
-Enable a table's replication switch.
+Locate the region given a table name and a row-key
 
-Examples:
-
-  hbase> enable_table_replication 'table_name'
+  hbase> locate_region 'tableName', 'key0'
 EOF
       end
 
-      def command(table_name)
-        format_simple_command do
-          replication_admin.enable_tablerep(table_name)
-        end
-        puts "The replication swith of table '#{table_name}' successfully enabled"
+      def command(table, row_key)
+        now = Time.now
+
+        region_location = admin.locate_region(table, row_key)
+        hri = region_location.getRegionInfo()
+
+        formatter.header([ "HOST", "REGION" ])
+        formatter.row([region_location.getHostnamePort(), hri.toString()])
+        formatter.footer(now, 1)
       end
     end
   end
