@@ -26,9 +26,10 @@
   <url>http://maven.apache.org</url>
 
   <properties>
-    <bigtable.version>0.2.4</bigtable.version>
-    <hbase.version>1.1.1</hbase.version>
-    <compileSource>1.8</compileSource>
+    <bigtable.version>0.3.0</bigtable.version>
+    <hbase.version>1.2.1</hbase.version>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
 
   <repositories>
@@ -108,18 +109,6 @@
     </extensions>
 
     <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.5.1</version>
-        <configuration>
-          <source>${compileSource}</source>
-          <target>${compileSource}</target>
-          <showWarnings>true</showWarnings>
-          <showDeprecation>false</showDeprecation>
-          <compilerArgument>-Xlint:-options</compilerArgument>
-        </configuration>
-      </plugin>
-
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
