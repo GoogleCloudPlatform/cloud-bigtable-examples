@@ -26,6 +26,6 @@
   <property><name>google.bigtable.zone.name</name><value>${bigtable.zone}</value></property>
   <property>
     <name>hbase.client.connection.impl</name>
-    <value>com.google.cloud.bigtable.hbase1_0.BigtableConnection</value>
+    <value>com.google.cloud.bigtable.hbase1_2.BigtableConnection</value>
   </property>
 </configuration>
