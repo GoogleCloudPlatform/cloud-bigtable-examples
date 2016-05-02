@@ -27,8 +27,7 @@ limitations under the License.
       -Dbigtable.zone=<your zone>
       -Dbigtable.table=<Table to Read / Write>
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project>
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.google.cloud.bigtable.dataflow</groupId>
@@ -37,16 +36,16 @@ limitations under the License.
   <packaging>jar</packaging>
 
   <properties>
-    <dataflow.version>1.0.0</dataflow.version>
-    <bigtable.version>0.2.4</bigtable.version>
+    <dataflow.version>1.5.1</dataflow.version>
+    <bigtable.version>0.3.0</bigtable.version>
     <!-- For Netty HTTP2/TLS negotiation -->
-    <alpn.jdk7.version>7.1.3.v20150130</alpn.jdk7.version>
-    <alpn.jdk8.version>8.1.3.v20150130</alpn.jdk8.version>
+    <tcnative.classifier>linux-x86_64</tcnative.classifier> <!-- default for dataflow -->
     
     <bigtable.zone>us-central1-b</bigtable.zone>
     <bigtable.table>Dataflow_test</bigtable.table>
     <bigtable.hbase.version>${bigtable.version}</bigtable.hbase.version>
-    <compileSource>1.8</compileSource>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -102,46 +101,29 @@ limitations under the License.
     </dependency>
     <dependency>
         <groupId>com.google.cloud.bigtable</groupId>
-        <artifactId>bigtable-hbase-1.0</artifactId>
-        <version>${bigtable.version}</version>
-    </dependency>
-    <dependency>
-        <groupId>com.google.cloud.bigtable</groupId>
         <artifactId>bigtable-hbase-dataflow</artifactId>
         <version>${bigtable.version}</version>
     </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-tcnative-boringssl-static</artifactId>
+      <version>1.1.33.Fork13</version>
+      <classifier>${tcnative.classifier}</classifier>
+    </dependency>
  </dependencies>
 
-  <profiles>
+  <profiles>  <!-- These are only required for runlocal -->
     <profile>
-      <id>jdk7</id>
-        <activation>
-            <jdk>1.7</jdk>
-        </activation>
-        <properties>
-            <alpn.version>${alpn.jdk7.version}</alpn.version>
-        </properties>
+      <id>mac</id>
+      <properties>
+        <tcnative.classifier>osx-x86_64</tcnative.classifier>
+      </properties>      
     </profile>
     <profile>
-        <id>jdk8</id>
-        <activation>
-            <jdk>1.8</jdk>
-        </activation>
-        <properties>
-            <alpn.version>${alpn.jdk8.version}</alpn.version>
-        </properties>
-    </profile>
-
-    <profile>
-      <id>staged</id> 
-      <repositories>
-        <repository>
-          <id>snapshots-repo</id>
-          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-          <releases><enabled>false</enabled></releases>
-          <snapshots><enabled>true</enabled></snapshots>
-        </repository>
-      </repositories>
+      <id>windows</id>
+      <properties>
+        <tcnative.classifier>windows-x86_64</tcnative.classifier>
+      </properties>      
     </profile>
 
     <profile>
@@ -160,7 +142,6 @@ limitations under the License.
             <configuration>
               <executable>java</executable>
               <arguments>
-                <argument>-Xbootclasspath/p:${settings.localRepository}/org/mortbay/jetty/alpn/alpn-boot/${alpn.version}/alpn-boot-${alpn.version}.jar</argument>
                 <argument>-classpath</argument>
                 <classpath/>
                 <argument>com.google.cloud.bigtable.dataflow.example.HelloWorldWrite</argument>
@@ -193,7 +174,6 @@ limitations under the License.
             <configuration>
               <executable>java</executable>
               <arguments>
-                <argument>-Xbootclasspath/p:${settings.localRepository}/org/mortbay/jetty/alpn/alpn-boot/${alpn.version}/alpn-boot-${alpn.version}.jar</argument>
                 <argument>-classpath</argument>
                 <classpath/>
                 <argument>com.google.cloud.bigtable.dataflow.example.SourceRowCount</argument>
@@ -227,7 +207,6 @@ limitations under the License.
             <configuration>
               <executable>java</executable>
               <arguments>
-                <argument>-Xbootclasspath/p:${settings.localRepository}/org/mortbay/jetty/alpn/alpn-boot/${alpn.version}/alpn-boot-${alpn.version}.jar</argument>
                 <argument>-classpath</argument>
                 <classpath/>
                 <argument>com.google.cloud.bigtable.dataflow.example.PubsubWordCount</argument>
@@ -251,19 +230,6 @@ limitations under the License.
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>2.4</version>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <version>2.6</version>
         <configuration>
@@ -274,24 +240,7 @@ limitations under the License.
           </archive>
         </configuration>
       </plugin>
-      
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.3</version>
-        <configuration>
-            <source>${compileSource}</source>
-            <target>${compileSource}</target>
-            <showWarnings>true</showWarnings>
-            <showDeprecation>false</showDeprecation>
-            <compilerArgument>-Xlint:-options</compilerArgument>
-        </configuration>
-      </plugin>
-      
-      <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.17</version>
-      </plugin>
+
     </plugins>
   </build>
 

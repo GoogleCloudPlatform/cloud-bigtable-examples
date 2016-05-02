@@ -22,9 +22,11 @@ permissions and limitations under the License.
   <packaging>jar</packaging>
 
   <properties>
-    <dataflow.version>1.0.0</dataflow.version>
-    <bigtable.version>0.2.4</bigtable.version>
+    <dataflow.version>1.5.1</dataflow.version>
+    <bigtable.version>0.3.0</bigtable.version>
     <compileSource>1.8</compileSource>
+    <!-- For Netty HTTP2/TLS negotiation -->
+    <tcnative.classifier>linux-x86_64</tcnative.classifier> <!-- default for dataflow -->
 
     <bigtable.hbase.version>${bigtable.version}</bigtable.hbase.version>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -80,43 +82,22 @@ permissions and limitations under the License.
   </pluginRepositories>
 
   <dependencies>
-        <dependency>
-            <groupId>com.google.cloud.dataflow</groupId>
-            <artifactId>google-cloud-dataflow-java-sdk-all</artifactId>
-            <version>${dataflow.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.cloud.bigtable</groupId>
-            <artifactId>bigtable-hbase-1.0</artifactId>
-            <version>${bigtable.version}</version>
-        </dependency>
+    <dependency>
+        <groupId>com.google.cloud.dataflow</groupId>
+        <artifactId>google-cloud-dataflow-java-sdk-all</artifactId>
+        <version>${dataflow.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>com.google.cloud.bigtable</groupId>
+        <artifactId>bigtable-hbase-dataflow</artifactId>
+        <version>${bigtable.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-tcnative-boringssl-static</artifactId>
+      <version>1.1.33.Fork13</version>
+      <classifier>${tcnative.classifier}</classifier>
+    </dependency>
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifest>
-              <mainClass>com.example.bigtable.sample.WordCountDriver</mainClass>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>
