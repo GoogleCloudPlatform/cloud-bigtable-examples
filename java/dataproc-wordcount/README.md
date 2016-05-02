@@ -40,21 +40,11 @@ files to the VMs.  There are two ways to make a GCS Bucket:
 
         $ gsutil mb -p <project ID> gs://<bucketName>
 
-### Modify the **`pom.xml`**
-
-Edit your `pom.xml` and change the following properties:
-
-    <bucket>YOUR_BUCKET_HERE</bucket>
-    <dataproc.cluster>dp</dataproc.cluster>
-    <bigtable.projectID>YOUR_PROJECT_ID_HERE</bigtable.projectID>
-    <bigtable.clusterID>YOUR_CLUSTER_ID_HERE</bigtable.clusterID>
-    <bigtable.zone>us-central1-b</bigtable.zone>
-
 ### Build the Jar File
 
 You can build the MapReduce jar file using Maven:
 
-    $ mvn clean package
+    $ mvn clean package -Dbigtable.projectID=YOUR_PROJECT_ID_HERE -Dbigtable.clusterID=YOUR_CLUSTER_ID_HERE -Dbigtable.zone=YOUR_ZONE_HERE
 
 The output files will be copied to your bucket during the `package` Maven phase.
 
@@ -76,11 +66,12 @@ The command by default spins up 4 `n1-standard-4 worker` nodes and a single `n1-
 
 The actual `gcloud` command:
 
-    gcloud dataproc clusters create dp --bucket MYBUCKET --initialization-actions \
-        gs://MYBUCKET/bigtable-dataproc-init.sh --num-workers 4 --zone us-central1-b \
-        --master-machine-type n1-standard-4 --worker-machine-type n1-standard-4
-
-Note the **Initialization Actions** script tells Cloud Dataproc how to use Cloud Bigtable and connects it to the Cloud Bigtable cluster you configured in the `pom.xml` file.
+    gcloud dataproc clusters create dp \
+        --bucket MYBUCKET \
+        --num-workers 4 \
+        --zone us-central1-b \
+        --master-machine-type n1-standard-4 \
+        --worker-machine-type n1-standard-4
 
 ### Starting your job
 
@@ -90,9 +81,12 @@ The helper script can also start a job for you.
 
 This is an alias for the `gcloud` command:
 
-    gcloud dataproc jobs submit hadoop --cluster dp --async \
-        --jar target/wordcount-mapreduce-0-SNAPSHOT.jar \
-        wordcount-hbase <sourceFiles> <outputTable>
+    gcloud dataproc jobs submit hadoop \
+        --cluster dp \
+        --jar target/wordcount-mapreduce-0-SNAPSHOT-jar-with-dependancies.jar \
+        wordcount-hbase \
+        <sourceFiles> \
+        <outputTable>
 
 Here, `wordcount-hbase` is the command we are executing (the first parameter to our MapReduce job).
 
@@ -100,9 +94,8 @@ Here, `wordcount-hbase` is the command we are executing (the first parameter to 
 
 You can view your results using the Developers Console (**Bigdata > Dataproc > Jobs**)
 
- Once your job is complete (Green circle), you can connect to your master node and look at your results using `hbase shell`
+ Once your job is complete (Green circle), you can connect to your master node and look at your results using [hbase shell](https://cloud.google.com/bigtable/docs/quickstart)
 
-    $ ./cluster.sh ssh
     $ hbase shell
 
     hbase Shell; enter 'help<RETURN>' for list of supported commands.

@@ -66,7 +66,6 @@ create)   # create <bucket> [<clusterName> [zone]]
   
   gcloud dataproc clusters create "${CLUSTER}" \
     --bucket "$2" \
-    --initialization-actions "gs://$2/bigtable-dataproc-init.sh" \
     --num-workers 4 \
     --zone $ZONE \
     --master-machine-type n1-standard-4 \
@@ -85,7 +84,8 @@ start)  # start [<clusterName>]
 
   TARGET="WordCount-$(date +%s)"
   gcloud dataproc jobs submit hadoop --cluster "$CLUSTER" \
-    --jar target/wordcount-mapreduce-0-SNAPSHOT.jar wordcount-hbase \
+    --jar target/wordcount-mapreduce-0-SNAPSHOT-jar-with-dependencies.jar \
+    wordcount-hbase \
     gs://lesv-big-public-data/books/book \
     gs://lesv-big-public-data/books/b10 \
     gs://lesv-big-public-data/books/b100 \

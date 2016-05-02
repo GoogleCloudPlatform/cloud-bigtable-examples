@@ -22,20 +22,21 @@
   <packaging>jar</packaging>
 
   <properties>
-    <bucket>YOUR_BUCKET_HERE</bucket>
     <dataproc.cluster>dp</dataproc.cluster>
     <bigtable.projectID>YOUR_PROJECT_ID_HERE</bigtable.projectID>
     <bigtable.clusterID>YOUR_CLUSTER_ID_HERE</bigtable.clusterID>
     <bigtable.zone>us-central1-b</bigtable.zone>
 
-    <bigtable.version>0.2.4</bigtable.version>
-    <hbase.version>1.0.1.1</hbase.version><!-- needs to match Dataproc HBase version -->
-    <hbase.if>1.0</hbase.if> <!-- hbase interface - it changed between 1.0 and 1.1.x -->
+    <bigtable.version>0.3.0</bigtable.version>
+    <hbase.version>1.2.1</hbase.version><!-- may need to match Dataproc HBase version -->
+    <hbase.if>1.2</hbase.if> <!-- hbase interface - it changed between 1.0 and 1.1.x -->
 
     <hadoop.version>2.4.1</hadoop.version>
     <compat.module>hbase-hadoop2-compat</compat.module>
 
-    <compileSource>1.7</compileSource>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
   </properties>
@@ -117,63 +118,26 @@
 
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.4.0</version>
+        <artifactId>maven-assembly-plugin</artifactId>
         <executions>
-          
           <execution>
-          <id>gsutil: cp to bucket</id>
-          <phase>package</phase>
-          <goals>
-            <goal>exec</goal>
-          </goals>
-          <configuration> 
-            <executable>gsutil</executable>
-            <arguments>
-              <argument>-m</argument>
-              <argument>-q</argument>
-              <argument>cp</argument>
-              <argument>-r</argument>
-              <argument>bigtable-dataproc-init.sh</argument>
-              <argument>${settings.localRepository}/com/google/cloud/bigtable/bigtable-hbase-${hbase.if}/${bigtable.version}/bigtable-hbase-${hbase.if}-${bigtable.version}.jar</argument>
-              <argument>${settings.localRepository}/com/google/cloud/bigtable/bigtable-hbase-mapreduce/${bigtable.version}/bigtable-hbase-mapreduce-${bigtable.version}.jar</argument>
-              <argument>target/${project.artifactId}-${project.version}/WEB-INF/classes/hbase-site.xml</argument>
-              <argument>gs://${bucket}</argument>
-            </arguments>
-          </configuration>
-        </execution>
-
-      </executions>
-      </plugin>      
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>2.6</version>
+            <phase>package</phase>
+            <goals>
+                <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
         <configuration>
+          <descriptorRefs>
+              <!-- This tells Maven to include all dependencies -->
+              <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>com.example.bigtable.sample.WordCountDriver</mainClass>
+                <mainClass>com.example.bigtable.sample.WordCountDriver</mainClass>
             </manifest>
           </archive>
         </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.3</version>
-        <configuration>
-            <source>${compileSource}</source>
-            <target>${compileSource}</target>
-            <showWarnings>true</showWarnings>
-            <showDeprecation>false</showDeprecation>
-            <compilerArgument>-Xlint:-options</compilerArgument>
-        </configuration>
-      </plugin>
-      <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.18.1</version>
       </plugin>
     </plugins>
   </build>
