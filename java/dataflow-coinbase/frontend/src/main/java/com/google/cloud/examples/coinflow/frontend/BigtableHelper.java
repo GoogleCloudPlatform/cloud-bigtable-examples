@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.google.cloud.examples.coinflow.frontend;
 
 import org.apache.hadoop.conf.Configuration;
@@ -32,70 +33,80 @@ import javax.servlet.ServletContextListener;
  **/
 public class BigtableHelper implements ServletContextListener {
 
-    private static String PROJECT_ID = System.getenv("BIGTABLE_PROJECT");
-    private static String CLUSTER_ID = System.getenv("BIGTABLE_CLUSTER");
-    private static String ZONE = System.getenv("BIGTABLE_ZONE");
+  private static String PROJECT_ID = System.getenv("BIGTABLE_PROJECT");
+  private static String CLUSTER_ID = System.getenv("BIGTABLE_CLUSTER");
+  private static String ZONE = System.getenv("BIGTABLE_ZONE");
 
-    // The initial connection to Cloud Bigtable is an expensive operation -- We cache this Connection
-// to speed things up.  For this sample, keeping them here is a good idea, for
-// your application, you may wish to keep this somewhere else.
-    private static Connection connection = null;     // The authenticated connection
+  // The initial connection to Cloud Bigtable is an expensive operation -- We cache this Connection
+  // to speed things up.  For this sample, keeping them here is a good idea, for
+  // your application, you may wish to keep this somewhere else.
+  private static Connection connection = null; // The authenticated connection
 
-    private static ServletContext sc;
+  private static ServletContext sc;
 
-    /**
-     * Connect will establish the connection to Cloud Bigtable.
-     **/
-    public static void connect() throws IOException {
-        Configuration c = HBaseConfiguration.create();
+  /**
+   * Connect will establish the connection to Cloud Bigtable.
+   **/
+  public static void connect() throws IOException {
+    Configuration c = HBaseConfiguration.create();
 
-        c.setClass("hbase.client.connection.impl",
-                com.google.cloud.bigtable.hbase1_1.BigtableConnection.class,
-                org.apache.hadoop.hbase.client.Connection.class);   // Required for Cloud Bigtable
+    c.setClass(
+        "hbase.client.connection.impl",
+        com.google.cloud.bigtable.hbase1_1.BigtableConnection.class,
+        org.apache.hadoop.hbase.client.Connection.class); // Required for Cloud Bigtable
 
-        if (ZONE == null) ZONE = "us-central1-b"; // default
-        if (PROJECT_ID == null || CLUSTER_ID == null ) {
-            sc.log("environment variables BIGTABLE_PROJECT, BIGTABLE_CLUSTER, and BIGTABLE_ZONE need to be defined.");
-            return;
-        }
-        c.set("google.bigtable.project.id", PROJECT_ID);
-        c.set("google.bigtable.cluster.name", CLUSTER_ID);
-        c.set("google.bigtable.zone.name", ZONE);
-
-        connection = ConnectionFactory.createConnection(c);
+    if (ZONE == null) {
+      ZONE = "us-central1-b"; // default
     }
-
-    public static Connection getConnection() {
-        if(connection == null) {
-            try {
-                connect();
-            } catch (IOException e) {
-                sc.log("connect ", e);
-            }
-        }
-        if(connection == null) sc.log("BigtableHelper-No Connection");
-        return connection;
+    if (PROJECT_ID == null || CLUSTER_ID == null) {
+      sc.log(
+          "environment variables "
+              + "BIGTABLE_PROJECT, BIGTABLE_CLUSTER, and BIGTABLE_ZONE "
+              + "need to be defined.");
+      return;
     }
+    c.set("google.bigtable.project.id", PROJECT_ID);
+    c.set("google.bigtable.cluster.name", CLUSTER_ID);
+    c.set("google.bigtable.zone.name", ZONE);
 
-    public void contextInitialized(ServletContextEvent event) {
-        // This will be invoked as part of a warmup request, or the first user
-        // request if no warmup request was invoked.
-        sc = event.getServletContext();
-        try {
-            connect();
-        } catch (IOException e) {
-            sc.log("BigtableHelper - connect ", e);
-        }
-        if(connection == null) sc.log("BigtableHelper-No Connection");
-    }
+    connection = ConnectionFactory.createConnection(c);
+  }
 
-    public void contextDestroyed(ServletContextEvent event) {
-        // App Engine does not currently invoke this method.
-        try {
-            connection.close();
-        } catch(IOException io) {
-            sc.log("contextDestroyed ", io);
-        }
-        connection = null;
+  public static Connection getConnection() {
+    if (connection == null) {
+      try {
+        connect();
+      } catch (IOException e) {
+        sc.log("connect ", e);
+      }
     }
+    if (connection == null) {
+      sc.log("BigtableHelper-No Connection");
+    }
+    return connection;
+  }
+
+  public void contextInitialized(ServletContextEvent event) {
+    // This will be invoked as part of a warmup request, or the first user
+    // request if no warmup request was invoked.
+    sc = event.getServletContext();
+    try {
+      connect();
+    } catch (IOException e) {
+      sc.log("BigtableHelper - connect ", e);
+    }
+    if (connection == null) {
+      sc.log("BigtableHelper-No Connection");
+    }
+  }
+
+  public void contextDestroyed(ServletContextEvent event) {
+    // App Engine does not currently invoke this method.
+    try {
+      connection.close();
+    } catch (IOException io) {
+      sc.log("contextDestroyed ", io);
+    }
+    connection = null;
+  }
 }

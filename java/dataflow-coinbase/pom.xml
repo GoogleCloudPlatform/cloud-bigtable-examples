@@ -26,6 +26,14 @@
     <packaging>pom</packaging>
     <version>0.1-SNAPSHOT</version>
 
+    <!-- Parent POM defines common plugins and properties. -->
+    <parent>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>shared-configuration</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../../java-repo-tools</relativePath>
+    </parent>
+
     <properties>
         <bigtable.version>0.2.4</bigtable.version>
         <hbase.version>1.1.1</hbase.version>
