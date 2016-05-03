@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -20,29 +20,27 @@
 
 package com.google.cloud.examples.coinflow.sources;
 
-
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.cloud.examples.coinflow.data.CoinbaseData;
-import org.testng.annotations.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.testng.annotations.Test;
 
 public class CoinbaseSourceTest {
 
-    String testMessage = "{\"type\":\"received\",\"sequence\":256819612," +
-            "\"order_id\":\"3cbbe784-6a57-4680-8080-e0a17fd98a65\"," +
-            "\"order_type\":\"limit\",\"size\":\"2.363\",\"price\":\"233" +
-            ".24\"," +
-            "\"side\":\"buy\",\"funds\":null,\"product_id\":\"BTC-USD\"," +
-            "\"time\":\"2015-09-17T21:27:11.554604Z\"}";
+  String testMessage =
+      "{\"type\":\"received\",\"sequence\":256819612,"
+          + "\"order_id\":\"3cbbe784-6a57-4680-8080-e0a17fd98a65\","
+          + "\"order_type\":\"limit\",\"size\":\"2.363\",\"price\":\"233"
+          + ".24\","
+          + "\"side\":\"buy\",\"funds\":null,\"product_id\":\"BTC-USD\","
+          + "\"time\":\"2015-09-17T21:27:11.554604Z\"}";
 
-
-    @Test
-    public void deserializationTest() {
-        CoinbaseSource.DeserializeCoinbase deserializeCoinbase = new
-                CoinbaseSource.DeserializeCoinbase();
-        CoinbaseData msg = deserializeCoinbase.deserializeData(testMessage);
-        assertThat(msg.getType()).isEqualTo("received");
-    }
-
+  @Test
+  public void deserializationTest() {
+    CoinbaseSource.DeserializeCoinbase deserializeCoinbase =
+        new CoinbaseSource.DeserializeCoinbase();
+    CoinbaseData msg = deserializeCoinbase.deserializeData(testMessage);
+    assertThat(msg.getType()).isEqualTo("received");
+  }
 }

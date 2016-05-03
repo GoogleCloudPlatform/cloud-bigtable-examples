@@ -16,14 +16,11 @@
 
 package com.google.cloud.examples.coinflow.frontend;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.appengine.api.users.User;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
 import com.google.cloud.examples.coinflow.data.CoinbaseData;
 import com.google.cloud.examples.coinflow.data.Schema;
 import com.google.cloud.examples.coinflow.utils.DateHelpers;
-import org.apache.hadoop.hbase.Cell;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
@@ -33,65 +30,66 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class CoinflowServlet extends HttpServlet {
-    private static final TableName TABLE = TableName.valueOf("coinbase");
+  private static final TableName TABLE = TableName.valueOf("coinbase");
 
-    private static final Logger LOG = LoggerFactory.getLogger(CoinflowServlet
-            .class);
+  private static final Logger LOG = LoggerFactory.getLogger(CoinflowServlet.class);
 
-    private static class PriceTimestamp {
+  private static class PriceTimestamp {
 
-        public PriceTimestamp(float price, long timestamp) {
-            this.price = price;
-            this.timestamp = timestamp;
-        }
-
-        public final float price;
-        public final long timestamp;
+    public PriceTimestamp(float price, long timestamp) {
+      this.price = price;
+      this.timestamp = timestamp;
     }
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    public final float price;
+    public final long timestamp;
+  }
 
-    @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        LOG.info("In CoinflowServlet doGet");
+  private ObjectMapper objectMapper = new ObjectMapper();
 
-        if (req.getRequestURI().equals("/favicon.ico")) return;
+  @Override
+  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    LOG.info("In CoinflowServlet doGet");
 
-        try (Table t = BigtableHelper.getConnection().getTable(TABLE)) {
-
-            DateTime dateTime = new DateTime().minusHours(4);
-            long before_ts = dateTime.getMillis();
-            long now_ts = new DateTime().getMillis();
-
-            String beforeRowKey = "match_" + before_ts;
-            String afterRowKey = "match_" + now_ts;
-
-            Scan scan = new Scan(beforeRowKey.getBytes(), afterRowKey.getBytes());
-            ResultScanner rs = t.getScanner(scan);
-            resp.addHeader("Access-Control-Allow-Origin", "*");
-            resp.setContentType("text/plain");
-
-            List<PriceTimestamp> prices = new ArrayList<>();
-            for (Result r : rs) {
-                String data = new String(r.getValue(Schema.CF.getBytes(), Schema.QUALIFIER
-                        .getBytes()));
-                CoinbaseData coinData = objectMapper.readValue(data, CoinbaseData.class);
-                PriceTimestamp priceTimestamp = new PriceTimestamp(Float.parseFloat(coinData
-                        .getPrice()), DateHelpers.convertDateToTime(coinData.getTime()));
-                prices.add(priceTimestamp);
-            }
-            String pricesStr = objectMapper.writeValueAsString(prices);
-            resp.getWriter().println(pricesStr);
-        }
-
+    if (req.getRequestURI().equals("/favicon.ico")) {
+      return;
     }
+
+    try (Table t = BigtableHelper.getConnection().getTable(TABLE)) {
+
+      DateTime dateTime = new DateTime().minusHours(4);
+      long beforeMillis = dateTime.getMillis();
+      long nowMillis = new DateTime().getMillis();
+
+      String beforeRowKey = "match_" + beforeMillis;
+      String afterRowKey = "match_" + nowMillis;
+
+      Scan scan = new Scan(beforeRowKey.getBytes(), afterRowKey.getBytes());
+      ResultScanner rs = t.getScanner(scan);
+      resp.addHeader("Access-Control-Allow-Origin", "*");
+      resp.setContentType("text/plain");
+
+      List<PriceTimestamp> prices = new ArrayList<>();
+      for (Result r : rs) {
+        String data = new String(r.getValue(Schema.CF.getBytes(), Schema.QUALIFIER.getBytes()));
+        CoinbaseData coinData = objectMapper.readValue(data, CoinbaseData.class);
+        PriceTimestamp priceTimestamp =
+            new PriceTimestamp(
+                Float.parseFloat(coinData.getPrice()),
+                DateHelpers.convertDateToTime(coinData.getTime()));
+        prices.add(priceTimestamp);
+      }
+      String pricesStr = objectMapper.writeValueAsString(prices);
+      resp.getWriter().println(pricesStr);
+    }
+  }
 }

@@ -17,7 +17,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.google.cloud.examples.coinflow.data;
 
 /**
@@ -25,12 +24,12 @@ package com.google.cloud.examples.coinflow.data;
  */
 public class Schema {
 
-    /**
-     * The column family we insert the Coinflow messages into.
-     */
-    public static final String CF = "bc";
-    /**
-     * The column qualifier we insert the Coinflow messages into.
-     */
-    public static final String QUALIFIER = "data";
+  /**
+   * The column family we insert the Coinflow messages into.
+   */
+  public static final String CF = "bc";
+  /**
+   * The column qualifier we insert the Coinflow messages into.
+   */
+  public static final String QUALIFIER = "data";
 }
