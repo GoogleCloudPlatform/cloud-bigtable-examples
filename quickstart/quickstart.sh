@@ -94,9 +94,9 @@ function prompt() {
 # Test for java
 hash java 2>/dev/null  || { echo >&2 'Java needs to be installed'; exit 1; }
 
-if [[ -z "$JAVA_HOME" ]]; then
-  echo >&2 'JAVA_HOME is not set.'; exit 1;
-fi
+# if [[ -z "$JAVA_HOME" ]]; then
+#   echo >&2 'JAVA_HOME is not set.'; exit 1;
+# fi
 
 # Test for Maven
 hash mvn 2>/dev/null  || { echo >&2 'Apache Maven needs to be installed.'; exit 1; }

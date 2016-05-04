@@ -34,19 +34,21 @@
     <compat.module>hbase-hadoop2-compat</compat.module>
 
     <appengine.version>1.9.24</appengine.version>
-    <compileSource>1.7</compileSource>
 
     <slf4j.version>1.7.12</slf4j.version>
     <log4j.version>1.2.17</log4j.version>
     <junit.version>4.11</junit.version>
     <mockito.version>1.9.5</mockito.version>
 
-    <gcloud.plugin.version>2.0.9.89.v20151202</gcloud.plugin.version>
+    <gcloud.plugin.version>2.0.9.106.v20160420</gcloud.plugin.version>
 
     <requiredMavenVersion>3.2.1</requiredMavenVersion>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
+
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
 
   <dependencies>
@@ -107,18 +109,6 @@
         </resource>
     </resources>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <version>3.2</version>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>${compileSource}</source>
-          <target>${compileSource}</target>
-          <showDeprecation>true</showDeprecation>
-          <showWarnings>true</showWarnings>
-        </configuration>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
