@@ -17,8 +17,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 package com.google.cloud.examples.coinflow.utils;
 
 import org.slf4j.Logger;
@@ -30,35 +28,32 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-
 public class DateHelpers {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DateHelpers
-            .class);
+  private static final Logger LOG = LoggerFactory.getLogger(DateHelpers.class);
 
-    /**
-     * Helper function that converts Coinbase timestamps to milliseconds
-     * since epoch.
-     * @param date in the Coinbase format to convert to milliseconds
-     * @return The time in milliseconds since the epoch specified by the date
-     */
-    public static long convertDateToTime(String date) {
-        // chop off Z at end
-        String initialDate = new String(date);
-        date = date.substring(0, date.length() - 4);
-        DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-        df1.setTimeZone(TimeZone.getTimeZone("UTC"));
-        System.out.println("parsing date " + date);
-        Date result;
-        try {
-            result = df1.parse(date);
-            System.out.println("parsing date " + result);
-        } catch (ParseException e) {
-            LOG.error("Error trying to parse date: " + initialDate);
-            LOG.error(e.getMessage());
-            return -1;
-        }
-        return result.getTime();
+  /**
+   * Helper function that converts Coinbase timestamps to milliseconds
+   * since epoch.
+   * @param date in the Coinbase format to convert to milliseconds
+   * @return The time in milliseconds since the epoch specified by the date
+   */
+  public static long convertDateToTime(String date) {
+    // chop off Z at end
+    String initialDate = new String(date);
+    date = date.substring(0, date.length() - 4);
+    DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+    df1.setTimeZone(TimeZone.getTimeZone("UTC"));
+    System.out.println("parsing date " + date);
+    Date result;
+    try {
+      result = df1.parse(date);
+      System.out.println("parsing date " + result);
+    } catch (ParseException e) {
+      LOG.error("Error trying to parse date: " + initialDate);
+      LOG.error(e.getMessage());
+      return -1;
     }
-
+    return result.getTime();
+  }
 }

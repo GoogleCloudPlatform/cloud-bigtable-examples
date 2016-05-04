@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -20,20 +20,16 @@
 
 package com.google.cloud.examples.coinflow.utils;
 
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.testng.annotations.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class DataHelpersTest {
 
-
-    @Test
-    public void dateConversionTest() {
-        String testTimestamp = "2015-09-17T18:02:13.998217Z";
-        assertThat(DateHelpers.convertDateToTime(testTimestamp))
-                .isBetween(1442512933000L, 1442512934000L);
-
-    }
-
+  @Test
+  public void dateConversionTest() {
+    String testTimestamp = "2015-09-17T18:02:13.998217Z";
+    assertThat(DateHelpers.convertDateToTime(testTimestamp))
+        .isBetween(1442512933000L, 1442512934000L);
+  }
 }
