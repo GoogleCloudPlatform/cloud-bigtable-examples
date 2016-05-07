@@ -24,8 +24,8 @@ creating the table if it doesn't exist
 
 import random
 from string import ascii_uppercase, digits
+
 import rest_client
-import sys
 
 # Use localhost, change IP to external IP of REST server if running on remote
 # client. use gcloud compute firewall-rules to open firewall rules

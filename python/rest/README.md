@@ -61,7 +61,8 @@ which creates a virtual Python environment:
 
 ## Instructions
 
-* `put_get.py` demonstrates some simple operations directly using requests.
+* `put_get.py` demonstrates some simple operations directly using requests. You
+  must create the test table `some-table2` with column family `cf` first.
 
 * `put_get_with_client.py` uses `rest_client.py` to wrap some of the details
 in methods, as well as creating the table `new-table5001` if it doesn't exist.
