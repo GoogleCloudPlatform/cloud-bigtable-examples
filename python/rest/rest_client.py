@@ -17,6 +17,7 @@
 import base64
 from collections import OrderedDict
 import json
+
 import requests
 
 
@@ -59,13 +60,13 @@ class HbaseRestClient(object):
         ])
         rows = [cell]
         json_output = {"Row": rows}
-        r = requests.post(self.base_url + "/" + self.table_name + "/" + row_key,
-                          data=json.dumps(json_output),
-                          headers={
-                              "Content-Type": "application/json",
-                              "Accept": "application/json",
-                          }
-                          )
+        r = requests.post(
+            self.base_url + "/" + self.table_name + "/" + row_key,
+            data=json.dumps(json_output),
+            headers={
+               "Content-Type": "application/json",
+               "Accept": "application/json",
+            })
         if r.status_code != 200:
             print "got status code %d when putting" % r.status_code
 

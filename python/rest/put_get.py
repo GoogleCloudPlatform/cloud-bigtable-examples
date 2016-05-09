@@ -27,11 +27,12 @@ put_get_with_client.py
 """
 
 import base64
+from collections import OrderedDict
 import json
 import random
-import requests
-from collections import OrderedDict
 from string import ascii_uppercase, digits
+
+import requests
 
 # Use localhost, change IP to external IP of REST server if running on remote
 # client. use gcloud compute firewall-rules to open firewall rules
@@ -47,7 +48,7 @@ row_key = ''.join(random.choice(ascii_uppercase + digits) for _ in range(10))
 column = "cf:count"
 value = "hello world"
 
-#HBase REST interface requires all these values be encoded.
+# HBase REST interface requires all these values be encoded.
 rowKeyEncoded = base64.b64encode(row_key)
 encodedColumn = base64.b64encode(column)
 encodedValue = base64.b64encode(value)
@@ -81,7 +82,7 @@ assert got_value == value
 
 
 # now we can delete the value
-requests.delete(base_url + "/" + table_name + "/" +row_key)
+requests.delete(base_url + "/" + table_name + "/" + row_key)
 
 # verify we now get a 404 when attempting to GET the value
 request = requests.get(base_url + "/" + table_name + "/" + row_key,
