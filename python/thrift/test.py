@@ -16,15 +16,18 @@
 #
 
 import random
-import requests
 import string
 
-# Create a random row key to minimize chances of intersecting with other clients
-row_key = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+import requests
+
+# Create a random row key to minimize chances of intersecting with other
+# clients.
+row_key = ''.join(
+    random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
 
 # First we build a URL assuming some-table2 exists, using the random
 # row key, the column cf:count, and we specify the 'str' type
-# so our strings are directly store
+# so our strings are directly store.
 url = 'http://localhost:5000/some-table2/%s/cf:count/str' % row_key
 r = requests.get(url)
 assert r.text == "Not found"
@@ -38,10 +41,11 @@ r = requests.get(url)
 assert r.text == "Not found"
 
 
-# repeat process for ints
-# note that int types are still strings at the HTTP layer, the last section of the URL
-# that we want to serialize the data we pass in now as an int
-row_key = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+# Repeat the process for ints.
+# Note that int types are still strings at the HTTP layer, the last section of
+# the URL that we want to serialize the data we pass in now as an int.
+row_key = ''.join(
+    random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
 
 url = 'http://localhost:5000/some-table2/%s/cf:count/int' % row_key
 r = requests.get(url)
@@ -56,4 +60,3 @@ r = requests.get(url)
 assert r.text == "Not found"
 
 print "Done testing."
-
