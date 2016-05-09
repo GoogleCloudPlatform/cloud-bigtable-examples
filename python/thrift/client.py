@@ -17,13 +17,13 @@
 
 
 import sys
-sys.path.append('gen-py')
+sys.path.append('gen-py')  # noqa
 
-from thrift.transport import TSocket
-from thrift.protocol import TBinaryProtocol
-from thrift.transport import TTransport
-from thrift import Thrift
 from hbase import Hbase
+from thrift import Thrift
+from thrift.protocol import TBinaryProtocol
+from thrift.transport import TSocket
+from thrift.transport import TTransport
 
 
 class ThriftClient(object):
@@ -63,11 +63,15 @@ class ThriftClient(object):
             print '%s' % tx.message
 
     def put_row(self, table, row_key, column, value):
-        """ Puts a value in a specific cell in Hbase based on table name, row key, and the full column name
+        """ Puts a value in a specific cell in Hbase based on table name, row
+        key, and the full column name
+
         :param table:
         :param row_key: The key of the row we want to put a value in
-        :param column: The column name including the column family with the colon format, such as 'cf:count'
-        :param value: The array of bytes (using Python's string type) to insert as the value for this cell
+        :param column: The column name including the column family with the
+                       colon format, such as 'cf:count'
+        :param value: The array of bytes (using Python's string type) to insert
+                      as the value for this cell
         :return: None
         """
         try:
@@ -78,10 +82,13 @@ class ThriftClient(object):
             print '%s' % tx.message
 
     def delete_column(self, table, row_key, column):
-        """ Deletes a column from a row in the table. If it's the last remaining column it will also delete the row.
+        """ Deletes a column from a row in the table. If it's the last remaining
+        column it will also delete the row.
+
         :param table: The name of the table
         :param row_key: The key of the row we want to put a value in
-        :param column: The column name including the column family with the colon format, such as 'cf:count'
+        :param column: The column name including the column family with the
+                       colon format, such as 'cf:count'
         :return: None
         """
         try:

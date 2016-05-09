@@ -15,12 +15,13 @@
 # limitations under the License.
 #
 
-from flask import Flask, request
-
-app = Flask(__name__)
+import struct
 
 from client import ThriftClient
-import struct
+from flask import Flask, request
+
+
+app = Flask(__name__)
 
 
 def _encode_int(n):
@@ -43,7 +44,8 @@ def _decode_int(s):
     return struct.unpack('>i', s)[0]
 
 
-@app.route('/<table>/<key>/<column>/<type_>', methods=['GET', 'POST', 'DELETE'])
+@app.route(
+    '/<table>/<key>/<column>/<type_>', methods=['GET', 'POST', 'DELETE'])
 def get(table, key, column, type_):
     """
     Handle our incoming REST requests to interface with Bigtable.
