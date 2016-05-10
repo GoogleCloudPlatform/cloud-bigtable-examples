@@ -96,6 +96,13 @@ workstation.
 
 ### (optional) Deploy a Google Compute Engine VM to build HBase container
 
+First, [enable the Compute Engine
+API](https://console.cloud.google.com/flows/enableapi?apiid=compute) on your
+project.
+
+Next, create a new Compute Engine VM based on the [container-optimized
+image](https://cloud.google.com/compute/docs/containers/container_vms).
+
 ```bash
 $ gcloud compute instances create thrift-builder \
       --project $PROJECT_ID --zone $ZONE --image container-vm \
@@ -174,6 +181,10 @@ Container Registry:
 ## Deploy the HBase Thrift gateway cluster
 
 This step can be done from your local workstation.
+
+First, [enable the Cloud Deployment Manager
+API](https://console.cloud.google.com/flows/enableapi?apiid=manager) on your
+project.
 
 Run the following command to update the
 [`thrift-gateway/deployment.yaml`](thrift-gateway/deployment.yaml) file
