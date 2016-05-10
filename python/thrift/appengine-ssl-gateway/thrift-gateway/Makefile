@@ -47,7 +47,7 @@ delete-gateway: env_project_id
 	$(VERB) gcloud --project $$PROJECT_ID deployment-manager deployments delete $(DEPLOYMENT)
 
 print-thrift-gateway-lb-ip:
-	$(VERB) gcloud compute forwarding-rules describe thrift-gateway-lb --region $(REGION) | grep IPAddress | sed 's/IPAddress: //'
+	$(VERB) gcloud --project $$PROJECT_ID compute forwarding-rules describe thrift-gateway-lb --region $(REGION) | grep IPAddress | sed 's/IPAddress: //'
 
 # Docker container for the Thrift gateway
 
