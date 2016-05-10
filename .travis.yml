@@ -32,6 +32,7 @@ env:
   matrix:
   - CONFIG=java_jdk8
   - CONFIG=java_oracle8
+  - CONFIG=python
 branches:
   only:
   - master

@@ -58,26 +58,46 @@ build_java() {
   )
 }
 
-build_java_jdk8() {
-  use_java jdk8
-  build_java
+build_python() {
+  sudo pip install --upgrade pip wheel virtualenv
+  sudo pip install --upgrade nox-automation
+  (
+  cd python
+  nox --stop-on-first-error --session lint
+  )
 }
 
-build_java_oracle8() {
-  use_java oracle8
-  build_java
+print_usage() {
+  echo "
+Usage: $0 { java_jdk8 |
+            java_oracle8 |
+            python }
+"
 }
 
 # -------- main --------
 
 if [ "$#" -ne 1 ]; then
-  echo "
-Usage: $0 { java_jdk8 |
-            java_oracle8 }
-"
+  print_usage
   exit 1
 fi
 
 set -e  # exit immediately on error
 set -x  # display all commands
-eval "build_$1"
+case $1 in
+java_jdk8)
+  use_java jdk8
+  build_java
+  ;;
+java_oracle8)
+  use_java oracle8
+  build_java
+  ;;
+python)
+  build_python
+  ;;
+*)
+  print_usage
+  exit 1
+  ;;
+esac
