@@ -25,8 +25,8 @@ from the underlying libraries:
     HelloWorld: Write some greetings to the table
     HelloWorld: Scan for all greetings:
         Hello World!
-	    Hello Cloud Bigtable!
-	    Hello HBase!
+        Hello Cloud Bigtable!
+        Hello HBase!
     HelloWorld: Delete the table
 
 ## Understanding the code
