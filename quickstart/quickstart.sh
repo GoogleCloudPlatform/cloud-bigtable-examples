@@ -22,6 +22,10 @@
 # 3. have created a Cloud Bigtable Cluster
 
 # Prequsites: gcloud, mvn, Java
+echo ''
+echo 'There is currently a problem exiting HBase Shell (java.lang.IllegalThreadStateException),'
+echo 'this does not affect operation.'
+echo ''
 
 # Allow overriding the date function for unit testing.
 function my_date() {
