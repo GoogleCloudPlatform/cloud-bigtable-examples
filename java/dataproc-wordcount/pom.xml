@@ -22,7 +22,6 @@
   <packaging>jar</packaging>
 
   <properties>
-    <dataproc.cluster>dp</dataproc.cluster>
     <bigtable.projectID>YOUR_PROJECT_ID_HERE</bigtable.projectID>
     <bigtable.clusterID>YOUR_CLUSTER_ID_HERE</bigtable.clusterID>
     <bigtable.zone>us-central1-b</bigtable.zone>
