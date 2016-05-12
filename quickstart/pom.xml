@@ -142,19 +142,18 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.4.0</version>
         <configuration>
-          <executable>java</executable>
+          <mainClass>org.jruby.Main</mainClass>
           <arguments>
-            <argument>-Xms512m</argument>
-            <argument>-Xmx2048m</argument>
-            <argument>-XX:+UseConcMarkSweepGC</argument>
-            <argument>-Dhbase.ruby.sources=thirdparty/ruby</argument>
-            <argument>-classpath</argument>
-            <classpath/>
-            <argument>org.jruby.Main</argument>
             <argument>-d</argument>
             <argument>-X+O</argument>
             <argument>thirdparty/hirb.rb</argument>
           </arguments>
+          <systemProperties>
+            <systemProperty>
+              <key>hbase.ruby.sources</key>
+              <value>thirdparty/ruby</value>
+            </systemProperty>
+          </systemProperties>
         </configuration>
       </plugin>
     </plugins>

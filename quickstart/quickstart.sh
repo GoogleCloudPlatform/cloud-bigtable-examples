@@ -20,13 +20,8 @@
 # 1. gcloud auth login
 # 2. either given --project NAME or gcloud config set project XXXXX
 # 3. have created a Cloud Bigtable Cluster
-#
-# NOTE - This only works w/ HBase 1.1.2 for now.
 
 # Prequsites: gcloud, mvn, Java
-
-# TODO(): Add disambiguation for multiple clusters
-# TODO(): Handle gcloud alpha bigtable clusters list failure -- no cluster admin api. :(
 
 # Allow overriding the date function for unit testing.
 function my_date() {
@@ -90,20 +85,15 @@ function prompt() {
   read -p "${msg}" PROMPT_RESPONSE
 }
 
-
 # Test for java
 hash java 2>/dev/null  || { echo >&2 'Java needs to be installed'; exit 1; }
-
-# if [[ -z "$JAVA_HOME" ]]; then
-#   echo >&2 'JAVA_HOME is not set.'; exit 1;
-# fi
 
 # Test for Maven
 hash mvn 2>/dev/null  || { echo >&2 'Apache Maven needs to be installed.'; exit 1; }
 
 # Test for gcloud
 hash gcloud 2>/dev/null  || { echo >&2 'gcloud needs to be installed from https://cloud.google.com/sdk/'; exit 1; }
-NOTLOGGEDIN=$(gcloud auth list --format text | grep active_account | grep None)
+NOTLOGGEDIN=$(gcloud auth list --format text 2>/dev/null | grep active_account | grep None)
 if [[ -n "$NOTLOGGEDIN" ]]; then
   echo >&2 'Please login using: gcloud init'; exit 1;
 fi
@@ -112,22 +102,24 @@ if [ "$1" == "--project" ]; then
   _projectID=$2
 else
   # If possible set a default project
-  _defProj=$(gcloud config list project | grep project)
+  _defProj=$(gcloud config list project 2>/dev/null | grep project)
   if [ $? -eq 0 ] && [ -n "${_defProj}" ]; then
     _projectID="${_defProj##project = }"
-  else
-    _projectID=""
-  fi
-fi
 
-HAVEPROJECT=$(gcloud projects list --format text | grep "${_projectID}" | grep projectId 1>/dev/null)
-if [ $? -ne 0 ]; then
-  { echo "Project ${_projectID} not found."; exit 1; }
+    HAVEPROJECT=$(gcloud projects list --format text 2>/dev/null | grep "${_projectID}" | grep projectId 1>/dev/null)
+    if [ $? -ne 0 ]; then
+      { echo "Project ${_projectID} not found."; exit 1; }
+    fi
+  else
+    ix=1;for item in $(gcloud projects list --format='value (projectId)' 2>/dev/null ); do PROJ[$ix]=$item; echo $ix. $item; ((ix++)); done
+    prompt "Select the project? "
+    _projectID=${PROJ[$PROMPT_RESPONSE]}
+  fi
 fi
 
 # Test for Cluster api enabled
 
-HAVECLCMD=$(gcloud alpha bigtable clusters list 2>&1 1>/dev/null | grep ERROR)
+HAVECLCMD=$(gcloud alpha bigtable clusters list --project ${_projectID} 2>&1 1>/dev/null | grep ERROR)
 if [[ $HAVECLCMD == ERROR* ]]; then
   echo "Project ID= ${_projectID}"
   prompt 'Cluster ID= '
@@ -135,13 +127,21 @@ if [[ $HAVECLCMD == ERROR* ]]; then
   prompt 'Zone= '
   _zone=$PROMPT_RESPONSE
 else
-  HAVECLUSTER=$(gcloud alpha bigtable clusters list --project "${_projectID}" --format yaml | grep "name:" )
-  if [ $? -eq 0 ]; then
-    IFS='/' read -ra ADDR <<< "$HAVECLUSTER"
-    _zone=${ADDR[3]}
-    _clusterID=${ADDR[5]}
+  ix=0
+  for item in $(gcloud alpha bigtable clusters list  --format 'value (ID, ZONE)'); do
+    (((${ix}&1)==0)) && _c[$ix/2]=$item || _z[$ix/2]=$item
+    ((ix++))
+  done
+  if [ $ix -eq 2 ]; then
+    _zone=${_z[0]}
+    _clusterID=${_c[0]}
   else
-    { echo "Project ${_projectID} does not have any Cloud Bigtable clusters created."; exit 1; }
+    for ((i=0; i<($ix/2); i++)); do
+      echo $i. ${_c[$i]} ${_z[$i]}
+    done
+    prompt "Cluster? "
+    _zone=${_z[$PROMPT_RESPONSE]}
+    _clusterID=${_c[$PROMPT_RESPONSE]}
   fi
 fi
 
@@ -149,4 +149,4 @@ echo "Project ID= ${_projectID}"
 echo "Cluster ID= ${_clusterID}"
 echo "Zone=       ${_zone}"
 
-mvn clean package exec:exec -Dbigtable.projectID=${_projectID} -Dbigtable.clusterID=${_clusterID} -Dbigtable.zone=${_zone} "$@"
+mvn clean package exec:java -Dbigtable.projectID=${_projectID} -Dbigtable.clusterID=${_clusterID} -Dbigtable.zone=${_zone} "$@"
