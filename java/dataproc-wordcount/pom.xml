@@ -87,6 +87,16 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-client</artifactId>
+      <version>${hbase.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-server</artifactId>
+      <version>${hbase.version}</version>
+    </dependency>
+    <dependency>
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase-${hbase.if}</artifactId>
       <version>${bigtable.version}</version>
@@ -95,23 +105,22 @@
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase-mapreduce</artifactId>
       <version>${bigtable.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.cloud.bigtable</groupId>
+          <artifactId>bigtable-hbase-1.1</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
-
-    <dependency>
-        <groupId>org.apache.hbase</groupId>
-        <artifactId>hbase-client</artifactId>
-        <version>${hbase.version}</version>
-    </dependency>
-
   </dependencies>
 
   <build>
-    <outputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/classes</outputDirectory> 
+    <outputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/classes</outputDirectory>
 
     <resources>
         <resource>
             <directory>src/main/resources</directory>
-            <filtering>true</filtering> 
+            <filtering>true</filtering>
         </resource>
     </resources>
 
