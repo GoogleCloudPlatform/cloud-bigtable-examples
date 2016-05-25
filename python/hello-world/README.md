@@ -20,7 +20,7 @@ First, set your [Google Application Default Credentials](https://developers.goog
 Install the dependencies with pip.
 
 ```
-pip install -r requirements.txt
+$ pip install -r requirements.txt
 ```
 
 Run the application. Replace the command-line parameters with values for your cluster.
