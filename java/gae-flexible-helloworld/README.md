@@ -34,20 +34,22 @@ This app provides:
 
 1. Select **APIs & Auth > APIs**  
 
-1. Enable the **Cloud Bigtable API** and the **Cloud Bigtable Admin API**<br />
-  (You may need to search for the API.)
+1. [Enable the APIs](https://console.cloud.google.com/flows/enableapi?apiid=bigtable,bigtabletableadmin&showconfirmation=true): **Cloud Bigtable API** and the **Cloud Bigtable Admin API**<br />
+   (You may need to search for the API.)
 
-1. Select **Storage > Bigtable > Create Cluster**
+1. Select **Storage > Bigtable > Create Cluster**.
 
-  Create a new Cluster -- You will need both the Zone and the Cluster ID
+    Create a new Cluster -- You will need both the Zone and the Cluster ID
  
 1. Follow the [instructions to launch `HBase shell Quickstart`](https://cloud.google.com/bigtable/docs/quickstart)
 
 1. Create the table (tableName, Column Family)
 
- `create 'gae-hello', 'visits'`<br />
- `create 'from-json', 'cf1', 'cf2', 'cf3', 'cf4'`
- `exit`
+```
+create 'gae-hello', 'visits'
+create 'from-json', 'cf1', 'cf2', 'cf3', 'cf4'
+exit
+```
  
 ## Running Locally
 
@@ -55,11 +57,11 @@ This app provides:
 
     `mvn clean gcloud:run -Pmac  -Dbigtable.projectID=myProject -Dbigtable.clusterID=myCluster -Dbigtable.zone=myZone`
 
-NOTE - The `-Pmac` is REQUIRED for running on a Macintosh, `-Pwindows` is used for running on Windows, and the option is not required for Linux.
+    NOTE - The `-Pmac` is REQUIRED for running on a Macintosh, `-Pwindows` is used for running on Windows, and the option is not required for Linux.
 
-NOTE - These parameters are required every time you run the app, if you plan on running it a lot, you may wish to set these values in the `pom.xml` directly.
+    NOTE - These parameters are required every time you run the app, if you plan on running it a lot, you may wish to set these values in the `pom.xml` directly.
 
-1. Access the page by going to `localhost:8080` from your browser, it should ask you to login, and count that for you.
+1. Access the page by going to [localhost:8080](http://localhost:8080) from your browser, it should ask you to login, and count that for you.
     
 ## Deploying the AppEngine Runtime
     
@@ -67,9 +69,9 @@ NOTE - These parameters are required every time you run the app, if you plan on 
  
     `mvn clean gcloud:deploy -Dbigtable.projectID=myProject -Dbigtable.clusterID=myCluster -Dbigtable.zone=myZone`
 
-NOTE - These parameters are required every time you run the app, if you plan on running it a lot, you may wish to set these values in the `pom.xml` directly.
+    NOTE - These parameters are required every time you run the app, if you plan on running it a lot, you may wish to set these values in the `pom.xml` directly.
 
-1. go to the new default module which will be displayed in results from the deploy.  It will look like: `https://PROJECTID.appspot.com` you can go to that url to test.
+1. Go to the new default module which will be displayed in results from the deploy.  It will look like: `https://PROJECTID.appspot.com` you can go to that URL to test.
 
 ## AppEngine Debugging Hints
 The first thing to do, if you'd like to debug is use the `servlet.log()` methods, they seem to work when other loggers don't.  Then take control of your GAE instance:
@@ -85,18 +87,18 @@ The first thing to do, if you'd like to debug is use the `servlet.log()` methods
 
 ## Using the example
 
-1. With your browser, go to [localhost:8080](localhost:8080) in your browser. (Local)  Or to https://<projectID>.appspot.com
+1. With your browser, go to [localhost:8080](http://localhost:8080) in your browser. (Local)  Or to `https://<projectID>.appspot.com`
 
 1. Sign-in with Google. Your visit should increment the counter.
 
 ## Using JSON
 
-1. Entities (rows) can be accessed using //projectID.appspot.com/json/rowkey
+1. Entities (rows) can be accessed using `https://<projectID>.appspot.com/json/rowkey`
   * GET - Will wrap up everything as JSON
   * POST - Will convert the JSON to ColumnFamily : Qualifier and write the data
   * DELETE - Will remove the row.
 
-1. The URL should be either localhost:8080, docker:8080, or  https://<projectID>.appspot.com
+1. The URL should be either localhost:8080, docker:8080, or `https://<projectID>.appspot.com`
 1. `curl -H "Content-Type: application/json" -X POST -d '{"username":"red","id":535}' http://localhost:8080/json/blueword`
 
 1. `curl -X GET http://localhost:8080/json/blueword`
