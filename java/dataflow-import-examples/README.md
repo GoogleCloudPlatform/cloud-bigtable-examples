@@ -49,6 +49,7 @@ The user must provide the following command line arguments:
 Arguments may be hardcoded in pom.xml or as overriding properties on maven command line. The
  following command supplies all arguments from command line:
 ```
+mvn package
 mvn exec:exec -DImportByDataflow -Ddataflow.project=${DATAFLOW_PROJECT} \
      -Dbigtable.project=${BIGTABLE_PROJECT} -Dbigtable.cluster=${BIGTABLE_CLUSTER} \
      -Dbigtable.zone=${BIGTABLE_ZONE}  -Dgs=${GCS_BUCKET} \
@@ -60,6 +61,7 @@ mvn exec:exec -DImportByDataflow -Ddataflow.project=${DATAFLOW_PROJECT} \
 The following command supplies runner, bigtable name and input file location from command line,
  assuming other properties are hardcoded in pom.xml:
 ```
+mvn package
 mvn exec:exec -DImportByDataflow -Ddataflow.runner=DirectPipelineRunner \
  -Dbigtable.table=${BIGTABLE_TABLE} -Dfile.pattern=${INPUT_FILE_PATTERN}
 ```
