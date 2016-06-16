@@ -174,8 +174,7 @@ the resources created for this sample.
 
 1.  Click **Delete**.
 
-![Screenshot of the Delete
-cluster](https://cloud.google.com/bigtable/img/delete-quickstart-cluster.png)
+    ![Delete](https://cloud.google.com/bigtable/img/delete-quickstart-cluster.png)
 
 1. Type the cluster ID, then click **Delete** to delete the cluster.
 
