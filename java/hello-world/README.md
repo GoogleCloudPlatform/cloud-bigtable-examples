@@ -7,6 +7,24 @@ See the [documentation for this
 sample](https://cloud.google.com/bigtable/docs/samples-java-hello) for a brief
 explanation of the code.
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [Downloading the sample](#downloading-the-sample)
+- [Costs](#costs)
+- [Before you begin](#before-you-begin)
+  - [Installing Maven](#installing-maven)
+  - [Creating a Project in the Google Cloud Platform Console](#creating-a-project-in-the-google-cloud-platform-console)
+  - [Enabling billing for your project.](#enabling-billing-for-your-project)
+  - [Install the Google Cloud SDK.](#install-the-google-cloud-sdk)
+  - [Setting Google Application Default Credentials](#setting-google-application-default-credentials)
+- [Provisioning a cluster](#provisioning-a-cluster)
+- [Running the application](#running-the-application)
+- [Cleaning up](#cleaning-up)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 
 ## Downloading the sample
 
