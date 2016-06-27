@@ -19,7 +19,7 @@ provision the cluster.
 
 You can install the dependencies and build the project using maven.
 
-    $ mvn package -Dbigtable.projectID=myProject -Dbigtable.clusterID=myCluster -Dbigtable.zone=myZone
+    $ mvn package -Dbigtable.projectID=myProject -Dbigtable.instanceID=myInstance
 
 ## Run the code
 
@@ -67,6 +67,8 @@ For example, the filter expression `cf1:mycolumn>po` would match rows in which
 `po`. This expression would match the values `pony` and `sunrise`, because these
 values come after the value `po`. The expression would not match the values
 `apple` or `pi`, which come before `po`.
+
+NOTE - the operators should be escaped with a backslash.
 
 ## Understanding the code
 

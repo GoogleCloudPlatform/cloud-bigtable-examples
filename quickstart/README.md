@@ -42,7 +42,7 @@ Alternatively you can just use maven directly.
 
 1. Create a table (tableName, Column Family)
  
-    \> `create table 'test', 'cf'`
+    \> `create 'test', 'cf'`
  
 1. List Tables
 

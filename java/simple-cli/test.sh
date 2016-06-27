@@ -14,5 +14,24 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.set -x -e
 
+./hbasecli.sh -help
 
-java -jar target/cloud-bigtable-simple-cli-1.0-SNAPSHOT-jar-with-dependencies.jar $@
+echo 'creating the table'
+./hbasecli.sh create simple-table f
+./hbasecli.sh list
+
+echo 'adding entries'
+
+./hbasecli.sh put simple-table John f name John 
+./hbasecli.sh put simple-table Jane f name Jane
+./hbasecli.sh put simple-table Bill f name Bill
+./hbasecli.sh put simple-table Les f name Les
+
+echo 'getting entry'
+./hbasecli.sh get simple-table Les
+
+echo 'scan'
+./hbasecli.sh scan simple-table
+
+echo 'scan w/ escaped predicate'
+./hbasecli.sh scan simple-table f:name\>Jane

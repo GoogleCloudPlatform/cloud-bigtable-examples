@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.example.bigtable.simplecli</groupId>
   <artifactId>cloud-bigtable-simple-cli</artifactId>
@@ -11,12 +10,11 @@
 
   <properties>
     <bigtable.projectID>YOUR_PROJECT_ID</bigtable.projectID>
-    <bigtable.clusterID>YOUR_CLUSTER_ID</bigtable.clusterID>
+    <bigtable.instanceID>YOUR_INSTANCE_ID</bigtable.instanceID>
     <bigtable.zone>us-central1-b</bigtable.zone>
 
-    <bigtable.version>0.3.0</bigtable.version>
+    <bigtable.version>0.9.0-SNAPSHOT</bigtable.version>
 
-    <hadoop.version>2.4.1</hadoop.version>
     <hbase.version>1.2.1</hbase.version>
 
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -70,7 +68,7 @@
   <dependencies>
     <dependency>
       <groupId>com.google.cloud.bigtable</groupId>
-      <artifactId>bigtable-hbase-1.1</artifactId>
+      <artifactId>bigtable-hbase-1.2</artifactId>
       <version>${bigtable.version}</version>
     </dependency>
 
