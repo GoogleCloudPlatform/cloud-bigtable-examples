@@ -123,12 +123,12 @@ key file path.
 [application-default-credentials]: https://developers.google.com/identity/protocols/application-default-credentials
 
 
-## Provisioning a cluster
+## Provisioning an instance
 
 Follow the instructions in the [user
-documentation](https://cloud.google.com/bigtable/docs/creating-cluster) to
-create a Google Cloud Platform project and Cloud Bigtable cluster if necessary.
-You'll need to reference your project id, zone and cluster id to run the
+documentation](https://cloud.google.com/bigtable/docs/creating-instance) to
+create a Google Cloud Platform project and Cloud Bigtable instance if necessary.
+You'll need to reference your project id and instance id to run the
 application.
 
 
@@ -138,15 +138,13 @@ Set the following environment variables or replace them with the appropriate
 values in the `mvn` commands. Set:
 
 +   `GCLOUD_PROJECT` to the project ID,
-+   `BIGTABLE_CLUSTER` to the Bigtable cluster ID,
-+   `BIGTABLE_ZONE` to the Bigtable compute zone (example: us-central1-b).
++   `BIGTABLE_INSTANCE` to the Bigtable cluster ID,
 
 Build and run the sample using Maven.
 
     mvn package
     mvn exec:java -Dbigtable.projectID=${GCLOUD_PROJECT} \
-        -Dbigtable.clusterID=${BIGTABLE_CLUSTER} \
-        -Dbigtable.zone=${BIGTABLE_ZONE}
+        -Dbigtable.instanceID=${BIGTABLE_INSTANCE}
 
 You will see output resembling the following, interspersed with informational logging
 from the underlying libraries:
