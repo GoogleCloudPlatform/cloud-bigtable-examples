@@ -94,8 +94,8 @@ access control, billing, and services.
 ### Enabling billing for your project.
 
 If you haven't already enabled billing for your project, [enable
-billing][enable-billing] now.  Enabling billing allows the application to
-consume billable resources such as running instances and storing data.
+billing][enable-billing] now.  Enabling billing allows is required to use Cloud Bigtable
+and to create VM instances.
 
 [enable-billing]: https://console.cloud.google.com/project/_/settings
 
@@ -115,10 +115,10 @@ SDK][cloud-sdk-init] with the command:
 
 		gcloud init
 
-Alternatively, create a service account key and set the
-`GOOGLE_APPLICATION_CREDENTIALS` environment variable to the service account
-key file path.
+Or with the [application-default login](https://cloud.google.com/sdk/gcloud/reference/beta/auth/application-default/login) command:
 
+    gcloud beta auth application-default login
+    
 [cloud-sdk-init]: https://cloud.google.com/sdk/docs/initializing
 [application-default-credentials]: https://developers.google.com/identity/protocols/application-default-credentials
 
@@ -135,7 +135,7 @@ application.
 ## Running the application
 
 Set the following environment variables or replace them with the appropriate
-values in the `mvn` commands. Set:
+values in the `mvn` commands below. Set:
 
 +   `GCLOUD_PROJECT` to the project ID,
 +   `BIGTABLE_INSTANCE` to the Bigtable cluster ID,

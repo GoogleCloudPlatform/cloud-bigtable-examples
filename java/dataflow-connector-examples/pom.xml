@@ -37,7 +37,7 @@ limitations under the License.
 
   <properties>
     <dataflow.version>1.5.1</dataflow.version>
-    <bigtable.version>0.3.0</bigtable.version>
+    <bigtable.version>0.9.0-SNAPSHOT</bigtable.version>
     <!-- For Netty HTTP2/TLS negotiation -->
     <tcnative.classifier>linux-x86_64</tcnative.classifier> <!-- default for dataflow -->
     
@@ -127,6 +127,34 @@ limitations under the License.
     </profile>
 
     <profile>
+      <id>Test</id>
+        <activation>
+            <property>
+                <name>Test</name>
+            </property>
+        </activation>
+        <build>
+          <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.4.0</version>
+            <configuration>
+              <executable>/bin/echo</executable>
+              <arguments>
+                <argument>--project=${bigtable.projectID}</argument>
+                <argument>--bigtableProjectId=${bigtable.projectID}</argument>
+                <argument>--bigtableInstanceId=${bigtable.instanceID}</argument>
+                <argument>--bigtableTableId=${bigtable.table}</argument>
+                <argument>--stagingLocation=${gs}/staging</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+          </plugins>
+        </build>
+    </profile>
+
+    <profile>
       <id>HelloWorldWrite</id>
         <activation>
             <property>
@@ -148,8 +176,7 @@ limitations under the License.
                 <argument>--runner=BlockingDataflowPipelineRunner</argument>
                 <argument>--project=${bigtable.projectID}</argument>
                 <argument>--bigtableProjectId=${bigtable.projectID}</argument>
-                <argument>--bigtableClusterId=${bigtable.clusterID}</argument>
-                <argument>--bigtableZoneId=${bigtable.zone}</argument>
+                <argument>--bigtableInstanceId=${bigtable.instanceID}</argument>
                 <argument>--bigtableTableId=${bigtable.table}</argument>
                 <argument>--stagingLocation=${gs}/staging</argument>
               </arguments>
@@ -180,8 +207,7 @@ limitations under the License.
                 <argument>--runner=BlockingDataflowPipelineRunner</argument>
                 <argument>--project=${bigtable.projectID}</argument>
                 <argument>--bigtableProjectId=${bigtable.projectID}</argument>
-                <argument>--bigtableClusterId=${bigtable.clusterID}</argument>
-                <argument>--bigtableZoneId=${bigtable.zone}</argument>
+                <argument>--bigtableInstanceId=${bigtable.instanceID}</argument>
                 <argument>--bigtableTableId=${bigtable.table}</argument>
                 <argument>--stagingLocation=${gs}/staging</argument>
                 <argument>--resultLocation=${gs}/count</argument>
@@ -213,8 +239,7 @@ limitations under the License.
                 <argument>--runner=BlockingDataflowPipelineRunner</argument>
                 <argument>--project=${bigtable.projectID}</argument>
                 <argument>--bigtableProjectId=${bigtable.projectID}</argument>
-                <argument>--bigtableClusterId=${bigtable.clusterID}</argument>
-                <argument>--bigtableZoneId=${bigtable.zone}</argument>
+                <argument>--bigtableInstanceId=${bigtable.clusterID}</argument>
                 <argument>--bigtableTableId=${bigtable.table}</argument>
                 <argument>--stagingLocation=${gs}/staging</argument>
                 <argument>--inputFile=${gs}/romeo_juliet.txt</argument>

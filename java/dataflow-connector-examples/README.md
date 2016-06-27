@@ -17,9 +17,9 @@ A starter set of examples for writing [Google Cloud Dataflow](https://cloud.goog
       * Install Maven
   * You may wish to also Run an Example Pipeline
 
-### Provision a Bigtable Cluster
+### Provision a Bigtable Instance
 
-* Create a [Cloud Bigtable cluster](https://cloud.google.com/bigtable/docs/creating-cluster) using the [Developer Console](https://cloud.google.com/console) by clicking on the **Storage** > **Cloud Bigtable** > **New Cluster** button.  After that, enter the **Cluster name**, **ID**, **zone**, and **number of nodes**. Once you have entered those values, click the **Create** button.
+* Create a [Cloud Bigtable cluster](https://cloud.google.com/bigtable/docs/creating-cluster) using the [Developer Console](https://cloud.google.com/console) by clicking on the **Storage** > **Cloud Bigtable** > **New Instance** button.  After that, enter the **Instance name**, **ID**, **zone**, and **number of nodes**. Once you have entered those values, click the **Create** button.
 
 ### Create a Google Cloud Storage Bucket
 
@@ -44,12 +44,11 @@ Note - you may wish to keep the HBase shell open in a tab throughout.
 This pipeline needs to be configured with four command line options for Cloud Bigtable:
 
  * `-Dbigtable.projectID=<projectID>` - this will also be used for your Dataflow projectID
- * `-Dbigtable.clusterID=<clusterID>`
+ * `-Dbigtable.instanceID=<instanceID>`
  * `-Dgs=gs://my_bucket` - A Google Cloud Storage bucket.
 
 Optional Arguments
 
- * `-Dbigtable.zone=<your zone>` - defaults to us-central1-b
  * `-Dbigtable.table=<Table to Read / Write>` defaults to 'Dataflow_test'
     
 # HelloWorld - Writing Data
@@ -58,7 +57,7 @@ The HelloWorld examples take two strings, converts them to their upper-case repr
 
 HelloWorldWrite does a few Puts to show the basics of writing to Cloud Bigtable through Cloud Dataflow.
 
-    mvn package exec:exec -DHelloWorldWrite -Dbigtable.projectID=<projectID> -Dbigtable.clusterID=<clusterID> -Dgs=<Your bucket>
+    mvn package exec:exec -DHelloWorldWrite -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> -Dgs=<Your bucket>
 
 You can verify that the data was written by using HBase shell and typing `scan 'Dataflow_test'`. You can also remove the data, if you wish, using `deleteall 'Dataflow_test', 'Hello'` and `deleteall 'Dataflow_test', 'World'`.
 
@@ -73,7 +72,7 @@ Download the file which Cloud Pubsub messages are created from:
 
 Type the following to run:
 
-    mvn package exec:exec -DPubsubWordCount -Dbigtable.projectID=<projectID> -Dbigtable.clusterID=<clusterID> -Dgs=gs://my_bucket -DpubsubTopic=projects/ProjectID/topics/shakes
+    mvn package exec:exec -DPubsubWordCount -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> -Dgs=gs://my_bucket -DpubsubTopic=projects/ProjectID/topics/shakes
 
 This is a streaming sample, which means it doesn't end.  When data has been processed, typically, a few minutes after Maven has completed, you can view the results by using HBase Shell and typing `scan 'Dataflow_test'`.
 
@@ -85,7 +84,7 @@ And once you have seen the data, you can cancel the job by `gcloud alpha dataflo
 
 SourceRowCount shows the use of a Bigtable Source - a construct that knows how to scan a Bigtable Table.  SourceRowCount performs a simple row count using the Cloud Bigtable Source and writes the count to a file in Google Storage.
 
-    mvn package exec:exec -DSourceRowCount -Dbigtable.projectID=<projectID> -Dbigtable.clusterID=<clusterID> -Dgs=<Your bucket>
+    mvn package exec:exec -DSourceRowCount -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> -Dgs=<Your bucket>
 
 You can verify the results by frist typing: `gsutil ls gs://my_bucket/**` there should be a file that looks like count-XXXXXX-of-YYYYYY.  Execute the following `gsutil cp gs://my_bucket/count-XXXXXX-of-YYYYYY .` then typing `cat count-XXXXXX-of-YYYYYY`
 
