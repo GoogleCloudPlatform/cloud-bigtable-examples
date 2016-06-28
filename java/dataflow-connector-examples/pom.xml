@@ -42,7 +42,6 @@ limitations under the License.
     <!-- For Netty HTTP2/TLS negotiation -->
     <tcnative.classifier>linux-x86_64</tcnative.classifier> <!-- default for dataflow -->
     
-    <bigtable.zone>us-central1-b</bigtable.zone>
     <bigtable.table>Dataflow_test</bigtable.table>
     <pubsubTopic>projects/${bigtable.projectID}/topics/shakes</pubsubTopic>
     <bigtable.hbase.version>${bigtable.version}</bigtable.hbase.version>
@@ -253,7 +252,7 @@ limitations under the License.
                 <argument>--runner=BlockingDataflowPipelineRunner</argument>
                 <argument>--project=${bigtable.projectID}</argument>
                 <argument>--bigtableProjectId=${bigtable.projectID}</argument>
-                <argument>--bigtableInstanceId=${bigtable.clusterID}</argument>
+                <argument>--bigtableInstanceId=${bigtable.instanceID}</argument>
                 <argument>--bigtableTableId=${bigtable.table}</argument>
                 <argument>--stagingLocation=${gs}/staging</argument>
                 <argument>--inputFile=${gs}/romeo_juliet.txt</argument> <!-- gs doesn't have trailing / -->
