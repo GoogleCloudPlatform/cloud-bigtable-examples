@@ -9,7 +9,7 @@
   <url>http://maven.apache.org</url>
 
   <properties>
-    <bigtable.hbase.version>0.3.0</bigtable.hbase.version>
+    <bigtable.hbase.version>0.9.0</bigtable.hbase.version>
     <!-- For Netty HTTP2/TLS negotiation -->
     <tcnative.classifier>linux-x86_64</tcnative.classifier> <!-- default for dataflow -->
 
@@ -110,9 +110,8 @@
                 <argument>com.google.cloud.bigtable.dataflow.example.ImportByDataflow</argument>
                 <argument>--runner=${dataflow.runner}</argument>
                 <argument>--project=${dataflow.project}</argument>
-                <argument>--bigtableProjectId=${bigtable.project}</argument>
-                <argument>--bigtableClusterId=${bigtable.cluster}</argument>
-                <argument>--bigtableZoneId=${bigtable.zone}</argument>
+                <argument>--bigtableProjectId=${bigtable.projectID}</argument>
+                <argument>--bigtableInstanceId=${bigtable.instanceID}</argument>
                 <argument>--bigtableTableId=${bigtable.table}</argument>
                 <argument>--stagingLocation=${dataflow.staging.location}</argument>
                 <argument>--filePattern=${file.pattern}</argument>
