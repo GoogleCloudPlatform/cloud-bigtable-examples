@@ -59,8 +59,27 @@ HelloWorldWrite does a few Puts to show the basics of writing to Cloud Bigtable 
 
     mvn package exec:exec -DHelloWorldWrite -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> -Dgs=<Your bucket>
 
-You can verify that the data was written by using HBase shell and typing `scan 'Dataflow_test'`. You can also remove the data, if you wish, using `deleteall 'Dataflow_test', 'Hello'` and `deleteall 'Dataflow_test', 'World'`.
+You can verify that the data was written by using HBase shell and typing `scan 'Dataflow_test'`. You can also remove the data, if you wish, using:
 
+    deleteall 'Dataflow_test', 'Hello'
+    deleteall 'Dataflow_test', 'World'
+
+# SourceRowCount - Reading from Cloud Bigtable
+
+SourceRowCount shows the use of a Bigtable Source - a construct that knows how to scan a Bigtable Table.  SourceRowCount performs a simple row count using the Cloud Bigtable Source and writes the count to a file in Google Storage.
+
+    mvn package exec:exec -DSourceRowCount -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> -Dgs=<Your bucket>
+
+You can verify the results by frist typing: 
+
+    gsutil ls gs://my_bucket/**
+    
+There should be a file that looks like count-XXXXXX-of-YYYYYY.  Type:
+
+    gsutil cp gs://my_bucket/count-XXXXXX-of-YYYYYY . 
+    cat count-XXXXXX-of-YYYYYY
+
+<!-- 
 # PubsubWordCount - Reading from Cloud Pubsub and writing to Cloud Bigtable
 
 The PubsubWordCount example reads from Cloud Pubsub and writes to Cloud Bigtable. It starts two jobs: one publishes messages to Cloud Pubsub, and the other one pulls messages, performs a word count for each message, and writes word count result to Cloud Bigtable. 
@@ -74,28 +93,19 @@ Type the following to run:
 
     mvn package exec:exec -DPubsubWordCount -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> -Dgs=gs://my_bucket -DpubsubTopic=projects/ProjectID/topics/shakes
 
-This is a streaming sample, which means it doesn't end.  When data has been processed, typically, a few minutes after Maven has completed, you can view the results by using HBase Shell and typing `scan 'Dataflow_test'`.
+This is a streaming sample, which means it doesn't end.  When data has been processed, typically, a few minutes after Maven has completed, you can view the results by using HBase Shell:
 
-You can verify that the job is still running by `gcloud alpha dataflow jobs list`
+    scan 'Dataflow_test'
 
-And once you have seen the data, you can cancel the job by `gcloud alpha dataflow jobs cancel <ID>`. ID is from the dataflow jobs list command earlier.  **Not canceling this job could lead to  substantial costs.**
+You can verify that the job is still running:
 
-# SourceRowCount - Reading from Cloud Bigtable
+    gcloud alpha dataflow jobs list
 
-SourceRowCount shows the use of a Bigtable Source - a construct that knows how to scan a Bigtable Table.  SourceRowCount performs a simple row count using the Cloud Bigtable Source and writes the count to a file in Google Storage.
+And once you have seen the data, you can cancel the job:
 
-    mvn package exec:exec -DSourceRowCount -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> -Dgs=<Your bucket>
-
-You can verify the results by frist typing: `gsutil ls gs://my_bucket/**` there should be a file that looks like count-XXXXXX-of-YYYYYY.  Execute the following `gsutil cp gs://my_bucket/count-XXXXXX-of-YYYYYY .` then typing `cat count-XXXXXX-of-YYYYYY`
-
+    gcloud alpha dataflow jobs cancel <ID>
     
-## Ocasional issues
+ID is from the dataflow jobs list command earlier.  
 
-Occasionally, you may see log messages similar to the following. It is safe to ignore these warnings, which will be fixed in a future release:
-
-    INFO: Job finished with status DONE
-    [WARNING] thread Thread[pool-1-thread-1,5,com.example.bigtable.dataflow.pardo.HelloWorldBigtablePardo] was interrupted but is still alive after waiting at least 15000msecs
-    [WARNING] thread Thread[pool-1-thread-1,5,com.example.bigtable.dataflow.pardo.HelloWorldBigtablePardo] will linger despite being asked to die via interruption
-    [WARNING] NOTE: 1 thread(s) did not finish despite being asked to  via interruption. This is not a problem with exec:java, it is a problem with the running code. Although not serious, it should be remedied.
-    [WARNING] Couldn't destroy threadgroup org.codehaus.mojo.exec.ExecJavaMojo$IsolatedThreadGroup[name=com.example.bigtable.dataflow.pardo.HelloWorldBigtablePardo,maxpri=10]
-    java.lang.IllegalThreadStateException
+**Not canceling this job could lead to  substantial costs.**
+ -->
