@@ -43,7 +43,7 @@ import com.google.cloud.dataflow.sdk.transforms.ParDo;
  * </p>
  * <ul>
  *  <li> --bigtableProjectId=[bigtable project]
- *  <li> --bigtableInstanceId=[bigtable cluster id]
+ *  <li> --bigtableInstanceId=[bigtable instance id]
  *  <li> --bigtableTableId=[bigtable tableName]
  * <p>
  * To run this starter example locally using DirectPipelineRunner, just execute it with the four

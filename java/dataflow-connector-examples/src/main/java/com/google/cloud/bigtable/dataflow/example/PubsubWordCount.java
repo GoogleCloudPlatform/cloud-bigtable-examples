@@ -147,7 +147,7 @@ public class PubsubWordCount {
    *        --project=[dataflow project] \\
    *        --stagingLocation=gs://[your google storage bucket] \\
    *        --bigtableProjectId=[bigtable project] \\
-   *        --bigtableInstanceId=[bigtable cluster id] \\
+   *        --bigtableInstanceId=[bigtable instance id] \\
    *        --bigtableTableId=[bigtable tableName]
    *        --inputFile=[file path on GCS]
    *        --pubsubTopic=projects/[project name]/topics/[topic name]

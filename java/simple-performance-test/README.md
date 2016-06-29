@@ -1,6 +1,6 @@
 # Simple Cloud Bigtable Performance test
 
-
+A command line tool to show write performance to a Cloud Bigtable Instance.
 
 **Table of Contents**
 
@@ -135,10 +135,10 @@ application.
 To avoid incurring extra charges to your Google Cloud Platform account, remove
 the resources created for this sample.
 
-1.  Go to the Clusters page in the [Cloud
+1.  Go to the Cloud Bigtable Instances page in the [Cloud
     Console](https://console.cloud.google.com).
 
-    [Go to the Clusters page](https://console.cloud.google.com/project/_/bigtable/clusters)
+    [Go to the Instances page](https://console.cloud.google.com/project/_/bigtable/instances)
 
 1.  Click the cluster name.
 
@@ -146,5 +146,5 @@ the resources created for this sample.
 
     ![Delete](https://cloud.google.com/bigtable/img/delete-quickstart-cluster.png)
 
-1. Type the cluster ID, then click **Delete** to delete the cluster.
+1. Type the instance ID, then click **Delete** to delete the instance.
 
