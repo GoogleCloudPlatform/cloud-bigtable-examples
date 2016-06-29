@@ -1,14 +1,7 @@
-# Cloud Bigtable Hello World
+# Simple Cloud Bigtable Performance test
 
-This is a simple application that demonstrates using the native HBase API
-to connect to and interact with Cloud Bigtable.
+A command line tool to show write performance to a Cloud Bigtable Instance.
 
-See the [documentation for this
-sample](https://cloud.google.com/bigtable/docs/samples-java-hello) for a brief
-explanation of the code.
-
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
 - [Downloading the sample](#downloading-the-sample)
@@ -40,7 +33,7 @@ Download the sample app and navigate into the app directory:
 
 2.  Change to the Hello World code sample directory.
 
-        cd cloud-bigtable-examples/java/hello-world
+        cd cloud-bigtable-examples/java/simple-performance-test
 
 [github-repo]: https://github.com/GoogleCloudPlatform/cloud-bigtable-examples
 [github-zip]: https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/archive/master.zip
@@ -122,7 +115,6 @@ Or with the [application-default login](https://cloud.google.com/sdk/gcloud/refe
 [cloud-sdk-init]: https://cloud.google.com/sdk/docs/initializing
 [application-default-credentials]: https://developers.google.com/identity/protocols/application-default-credentials
 
-
 ## Provisioning an instance
 
 Follow the instructions in the [user
@@ -131,31 +123,11 @@ create a Google Cloud Platform project and Cloud Bigtable instance if necessary.
 You'll need to reference your project id and instance id to run the
 application.
 
-
 ## Running the application
 
-Set the following environment variables or replace them with the appropriate
-values in the `mvn` commands below. Set:
 
-+   `GCLOUD_PROJECT` to the project ID,
-+   `BIGTABLE_INSTANCE` to the Bigtable cluster ID,
-
-Build and run the sample using Maven.
-
-    mvn package
-    mvn exec:java -Dbigtable.projectID=${GCLOUD_PROJECT} \
-        -Dbigtable.instanceID=${BIGTABLE_INSTANCE}
-
-You will see output resembling the following, interspersed with informational logging
-from the underlying libraries:
-
-    HelloWorld: Create table Hello-Bigtable
-    HelloWorld: Write some greetings to the table
-    HelloWorld: Scan for all greetings:
-        Hello World!
-        Hello Cloud Bigtable!
-        Hello HBase!
-    HelloWorld: Delete the table
+    mvn clean package
+    java -jar target/cloud-bigtable-simple-perf-test-1.0-SNAPSHOT-jar-with-dependencies.jar [project id] [instance id] [table] [row count] [value size]
 
 
 ## Cleaning up
@@ -163,10 +135,10 @@ from the underlying libraries:
 To avoid incurring extra charges to your Google Cloud Platform account, remove
 the resources created for this sample.
 
-1.  Go to the Clusters page in the [Cloud
+1.  Go to the Cloud Bigtable Instances page in the [Cloud
     Console](https://console.cloud.google.com).
 
-    [Go to the Clusters page](https://console.cloud.google.com/project/_/bigtable/clusters)
+    [Go to the Instances page](https://console.cloud.google.com/project/_/bigtable/instances)
 
 1.  Click the cluster name.
 
@@ -174,5 +146,5 @@ the resources created for this sample.
 
     ![Delete](https://cloud.google.com/bigtable/img/delete-quickstart-cluster.png)
 
-1. Type the cluster ID, then click **Delete** to delete the cluster.
+1. Type the instance ID, then click **Delete** to delete the instance.
 

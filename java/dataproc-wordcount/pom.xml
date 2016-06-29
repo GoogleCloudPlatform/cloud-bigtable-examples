@@ -23,10 +23,9 @@
 
   <properties>
     <bigtable.projectID>YOUR_PROJECT_ID_HERE</bigtable.projectID>
-    <bigtable.clusterID>YOUR_CLUSTER_ID_HERE</bigtable.clusterID>
-    <bigtable.zone>us-central1-b</bigtable.zone>
+    <bigtable.instanceID>YOUR_INSTANCE_ID_HERE</bigtable.instanceID>
 
-    <bigtable.version>0.3.0</bigtable.version>
+    <bigtable.version>0.9.0</bigtable.version>
     <hbase.version>1.2.1</hbase.version><!-- may need to match Dataproc HBase version -->
     <hbase.if>1.2</hbase.if> <!-- hbase interface - it changed between 1.0 and 1.1.x -->
 
@@ -91,11 +90,13 @@
       <artifactId>hbase-client</artifactId>
       <version>${hbase.version}</version>
     </dependency>
+<!-- 
     <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-server</artifactId>
       <version>${hbase.version}</version>
     </dependency>
+ -->
     <dependency>
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase-${hbase.if}</artifactId>

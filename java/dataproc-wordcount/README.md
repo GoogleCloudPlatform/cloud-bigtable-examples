@@ -44,7 +44,7 @@ files to the VMs.  There are two ways to make a GCS Bucket:
 
 You can build the MapReduce jar file using Maven:
 
-    $ mvn clean package -Dbigtable.projectID=YOUR_PROJECT_ID_HERE -Dbigtable.clusterID=YOUR_CLUSTER_ID_HERE -Dbigtable.zone=YOUR_ZONE_HERE
+    $ mvn clean package -Dbigtable.projectID=YOUR_PROJECT_ID -Dbigtable.instanceID=YOUR_INSTANCE_ID
 
 The output files will be copied to your bucket during the `package` Maven phase.
 

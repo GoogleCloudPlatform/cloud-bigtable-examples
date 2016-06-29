@@ -41,6 +41,12 @@ module Hbase
       end
       @connection = org.apache.hadoop.hbase.client.ConnectionFactory.createConnection(
           self.configuration)
+
+      at_exit do        # LV3 -- Make sure the connection is closed
+        shutdown       # LV3 -- ideally we'd call shutdown, but it gives a lot of logging now.
+#         Kernel.exit!(0) # LV3 -- close and ignore threads
+      end               # LV3
+
     end
 
     def admin(formatter)

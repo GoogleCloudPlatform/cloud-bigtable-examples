@@ -35,8 +35,7 @@ import javax.servlet.ServletContextListener;
 public class BigtableHelper implements ServletContextListener {
 
   private static String PROJECT_ID = System.getenv("BIGTABLE_PROJECT");
-  private static String CLUSTER_ID = System.getenv("BIGTABLE_CLUSTER");
-  private static String ZONE = System.getenv("BIGTABLE_ZONE");
+  private static String INSTANCE_ID = System.getenv("BIGTABLE_INSTANCE");
 
 // The initial connection to Cloud Bigtable is an expensive operation -- We cache this Connection
 // to speed things up.  For this sample, keeping them here is a good idea, for
@@ -52,16 +51,15 @@ public class BigtableHelper implements ServletContextListener {
     Configuration c = HBaseConfiguration.create();
 
     c.setClass("hbase.client.connection.impl",
-        com.google.cloud.bigtable.hbase1_1.BigtableConnection.class,
+        com.google.cloud.bigtable.hbase1_2.BigtableConnection.class,
         org.apache.hadoop.hbase.client.Connection.class);   // Required for Cloud Bigtable
 
-    if (PROJECT_ID == null || CLUSTER_ID == null || ZONE == null) {
-      sc.log("environment variables BIGTABLE_PROJECT, BIGTABLE_CLUSTER, and BIGTABLE_ZONE need to be defined.");
+    if (PROJECT_ID == null || INSTANCE_ID == null ) {
+      sc.log("environment variables BIGTABLE_PROJECT, and BIGTABLE_INSTANCE need to be defined.");
       return;
     }
     c.set("google.bigtable.project.id", PROJECT_ID);
-    c.set("google.bigtable.cluster.name", CLUSTER_ID);
-    c.set("google.bigtable.zone.name", ZONE);
+    c.set("google.bigtable.instance.id", INSTANCE_ID);
 
     connection = ConnectionFactory.createConnection(c);
   }

@@ -40,16 +40,15 @@ public class WritePerfTest {
   private static final int PRINT_COUNT = 10_000;
 
   public static void main(String[] args) throws IOException, InterruptedException {
-    Preconditions.checkArgument(args.length == 6,
-      "Usage: [project id] [zone] [cluster id] [table] [row count] [value size]");
-    writeTestData(args[0], args[1], args[2], TableName.valueOf(args[3]), Long.valueOf(args[4]),
-      Integer.valueOf(args[5]));
+    Preconditions.checkArgument(args.length == 5,
+      "Usage: [project id] [instance id] [table] [row count] [value size]");
+    writeTestData(args[0], args[1], TableName.valueOf(args[2]), Long.valueOf(args[3]), Integer.valueOf(args[4]));
   }
 
-  public static void writeTestData(String projectId, String zoneId, String clusterId,
+  public static void writeTestData(String projectId, String instanceId,
       TableName tableName, long rowCount, int valueSize) throws IOException {
     System.out.println("Writing to table: " + tableName);
-    try (Connection conn = BigtableConfiguration.connect(projectId, zoneId, clusterId)) {
+    try (Connection conn = BigtableConfiguration.connect(projectId, instanceId)) {
       BigtableUtilities.createTable(tableName, conn);
       runMutationTests(conn, tableName, rowCount, valueSize);
     }

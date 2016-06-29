@@ -19,13 +19,9 @@
 # This will start hbase shell using the pom.xml, assuming you have:
 # 1. gcloud auth login
 # 2. either given --project NAME or gcloud config set project XXXXX
-# 3. have created a Cloud Bigtable Cluster
+# 3. have created a Cloud Bigtable Instance
 
 # Prequsites: gcloud, mvn, Java
-echo ''
-echo 'There is currently a problem exiting HBase Shell (java.lang.IllegalThreadStateException),'
-echo 'this does not affect operation.'
-echo ''
 
 # Allow overriding the date function for unit testing.
 function my_date() {
@@ -110,7 +106,7 @@ else
   if [ $? -eq 0 ] && [ -n "${_defProj}" ]; then
     _projectID="${_defProj##project = }"
 
-    HAVEPROJECT=$(gcloud projects list --format text 2>/dev/null | grep "${_projectID}" | grep projectId 1>/dev/null)
+    HAVEPROJECT=$(gcloud projects list --format 'value (projectId)' 2>/dev/null | grep "${_projectID}")
     if [ $? -ne 0 ]; then
       { echo "Project ${_projectID} not found."; exit 1; }
     fi
@@ -121,36 +117,33 @@ else
   fi
 fi
 
-# Test for Cluster api enabled
+# Test for api enabled
 
-HAVECLCMD=$(gcloud alpha bigtable clusters list --project ${_projectID} 2>&1 1>/dev/null | grep ERROR)
+HAVECLCMD=$(gcloud beta bigtable instances list --project ${_projectID} 2>&1 1>/dev/null | grep ERROR)
 if [[ $HAVECLCMD == ERROR* ]]; then
   echo "Project ID= ${_projectID}"
-  prompt 'Cluster ID= '
-  _clusterID=$PROMPT_RESPONSE
-  prompt 'Zone= '
-  _zone=$PROMPT_RESPONSE
+  prompt 'Instance ID= '
+  _instanceID=$PROMPT_RESPONSE
 else
   ix=0
-  for item in $(gcloud alpha bigtable clusters list  --format 'value (ID, ZONE)'); do
-    (((${ix}&1)==0)) && _c[$ix/2]=$item || _z[$ix/2]=$item
+  for item in $(gcloud beta bigtable clusters list  --format 'value (INSTANCE)'); do
+    _c[$ix]=$item
     ((ix++))
   done
-  if [ $ix -eq 2 ]; then
-    _zone=${_z[0]}
-    _clusterID=${_c[0]}
+  if [ $ix -eq 1 ]; then
+    _instanceID=${_c[0]}
   else
-    for ((i=0; i<($ix/2); i++)); do
-      echo $i. ${_c[$i]} ${_z[$i]}
+    echo "Please choose an Instance to work with."
+    
+    for ((i=0; i<$ix; i++)); do
+      echo $i. ${_c[$i]}
     done
-    prompt "Cluster? "
-    _zone=${_z[$PROMPT_RESPONSE]}
-    _clusterID=${_c[$PROMPT_RESPONSE]}
+    prompt 'Instance ID= '
+    _instanceID=${_c[$PROMPT_RESPONSE]}
   fi
 fi
 
-echo "Project ID= ${_projectID}"
-echo "Cluster ID= ${_clusterID}"
-echo "Zone=       ${_zone}"
+echo "Project ID = ${_projectID}"
+echo "Instance ID= ${_instanceID}"
 
-mvn clean package exec:java -Dbigtable.projectID=${_projectID} -Dbigtable.clusterID=${_clusterID} -Dbigtable.zone=${_zone} "$@"
+mvn clean package exec:java -Dbigtable.projectID=${_projectID} -Dbigtable.instanceID=${_instanceID}

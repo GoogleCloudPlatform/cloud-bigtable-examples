@@ -43,14 +43,11 @@ import com.google.cloud.dataflow.sdk.transforms.ParDo;
  * </p>
  * <ul>
  *  <li> --bigtableProjectId=[bigtable project]
- *  <li> --bigtableClusterId=[bigtable cluster id]
- *  <li> --bigtableZoneId=[bigtable zone]
+ *  <li> --bigtableInstanceId=[bigtable instance id]
  *  <li> --bigtableTableId=[bigtable tableName]
  * <p>
  * To run this starter example locally using DirectPipelineRunner, just execute it with the four
- * Bigtable parameters from your favorite development environment.  You also need to configure
- * the GOOGLE_APPLICATION_CREDENTIALS environment variable as per the "How the Application Default
- * Credentials work" in https://developers.google.com/identity/protocols/application-default-credentials.
+ * Bigtable parameters from your favorite development environment.
  * <p>
  * To run this starter example using managed resource in Google Cloud Platform, you should also specify
  * the following command-line options: --project=<YOUR_PROJECT_ID>

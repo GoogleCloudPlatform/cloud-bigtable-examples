@@ -23,9 +23,7 @@ The user must provide the following command line arguments:
 
 + bigtableProjectId: id of the bigtable project that has the target table. 
 
-+ bigtableClusterId: cluser id of the bigtable project.
-
-+ bigtableZoneId: zone id of the bigtable project.
++ bigtableInstanceId: instance id of the bigtable project.
 
 + runner: specifies where dataflow job is run. If the input files are on local file system,
     use "DirectPipelineRunner". If the input files are on google cloud,
@@ -51,8 +49,8 @@ Arguments may be hardcoded in pom.xml or as overriding properties on maven comma
 ```
 mvn package
 mvn exec:exec -DImportByDataflow -Ddataflow.project=${DATAFLOW_PROJECT} \
-     -Dbigtable.project=${BIGTABLE_PROJECT} -Dbigtable.cluster=${BIGTABLE_CLUSTER} \
-     -Dbigtable.zone=${BIGTABLE_ZONE}  -Dgs=${GCS_BUCKET} \
+     -Dbigtable.projectID=${BIGTABLE_PROJECT} -Dbigtable.instanceID=${BIGTABLE_INSTANCE} \
+     -Dgs=${GCS_BUCKET} \
     -Ddataflow.staging.location=${GCS_BUCKET}/import-examples/staging" \
     -Ddataflow.runner=DirectPipelineRunner -Dbigtable.table=${BIGTABLE_TABLE} \
     -Dfile.pattern=${INPUT_FILE_PATTERN}

@@ -57,8 +57,7 @@ import com.google.cloud.dataflow.sdk.values.KV;
  * </p>
  * <ul>
  * <li>--bigtableProjectId=[bigtable project]
- * <li>--bigtableClusterId=[bigtable cluster id]
- * <li>--bigtableZoneId=[bigtable zone]
+ * <li>--bigtableInstanceId=[bigtable instance id]
  * <li>--bigtableTableId=[bigtable tableName]
  * <li>--inputFile=[file path on GCS]
  * <li>--pubsubTopic=projects/[project name]/topics/[topic name]
@@ -148,8 +147,7 @@ public class PubsubWordCount {
    *        --project=[dataflow project] \\
    *        --stagingLocation=gs://[your google storage bucket] \\
    *        --bigtableProjectId=[bigtable project] \\
-   *        --bigtableClusterId=[bigtable cluster id] \\
-   *        --bigtableZoneId=[bigtable zone]
+   *        --bigtableInstanceId=[bigtable instance id] \\
    *        --bigtableTableId=[bigtable tableName]
    *        --inputFile=[file path on GCS]
    *        --pubsubTopic=projects/[project name]/topics/[topic name]

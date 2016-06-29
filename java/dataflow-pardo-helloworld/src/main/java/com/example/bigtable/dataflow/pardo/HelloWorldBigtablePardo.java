@@ -85,8 +85,7 @@ public class HelloWorldBigtablePardo {
       CloudBigtableOptions options = c.getPipelineOptions().as(CloudBigtableOptions.class);
       Configuration config = new Configuration();
       config.set(BigtableOptionsFactory.PROJECT_ID_KEY, options.getBigtableProjectId());
-      config.set(BigtableOptionsFactory.ZONE_KEY, options.getBigtableZoneId());
-      config.set(BigtableOptionsFactory.CLUSTER_KEY, options.getBigtableClusterId());
+      config.set(BigtableOptionsFactory.INSTANCE_ID_KEY, options.getBigtableInstanceId());
 
       conn = new BigtableConnection(config);
       mutator = conn.getBufferedMutator(TableName.valueOf(options.getBigtableTableId()));
@@ -121,15 +120,10 @@ public class HelloWorldBigtablePardo {
 
     void setBigtableProjectId(String bigtableProjectId);
 
-    @Description("The Cloud Bigtable cluster id.")
-    String getBigtableClusterId();
+    @Description("The Cloud Bigtable instance id.")
+    String getBigtableInstanceId();
 
-    void setBigtableClusterId(String bigtableClusterId);
-
-    @Description("The Google Cloud zoneId in which the cluster resides.")
-    String getBigtableZoneId();
-
-    void setBigtableZoneId(String bigtableZoneId);
+    void setBigtableInstanceId(String bigtableInstanceId);
 
     @Description("Optional - The id of the Cloud Bigtable table." )
     String getBigtableTableId();
@@ -151,8 +145,7 @@ public class HelloWorldBigtablePardo {
    *        --project=[dataflow project] \\
    *        --stagingLocation=gs://[your google storage bucket] \\
    *        --bigtableProjectId=[bigtable project] \\
-   *        --bigtableClusterId=[bigtable cluster id] \\
-   *        --bigtableZoneId=[bigtable zone]
+   *        --bigtableInstanceId=[bigtable instance id] \\
    *        --bigtableTable=[bigtable tableName]
    */
   public static void main(String[] args) {

@@ -55,7 +55,7 @@ exit
 
 1. Build and run the Project
 
-    `mvn clean gcloud:run -Pmac  -Dbigtable.projectID=myProject -Dbigtable.clusterID=myCluster -Dbigtable.zone=myZone`
+    `mvn clean gcloud:run -Pmac  -Dbigtable.projectID=myProject -Dbigtable.instanceID=myInstance `
 
     NOTE - The `-Pmac` is REQUIRED for running on a Macintosh, `-Pwindows` is used for running on Windows, and the option is not required for Linux.
 
@@ -67,7 +67,7 @@ exit
     
 1. Deploy the application
  
-    `mvn clean gcloud:deploy -Dbigtable.projectID=myProject -Dbigtable.clusterID=myCluster -Dbigtable.zone=myZone`
+    `mvn clean gcloud:deploy -Dbigtable.projectID=myProject -Dbigtable.instanceID=myInstance`
 
     NOTE - These parameters are required every time you run the app, if you plan on running it a lot, you may wish to set these values in the `pom.xml` directly.
 
