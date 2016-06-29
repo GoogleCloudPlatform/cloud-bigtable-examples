@@ -106,7 +106,7 @@ else
   if [ $? -eq 0 ] && [ -n "${_defProj}" ]; then
     _projectID="${_defProj##project = }"
 
-    HAVEPROJECT=$(gcloud projects list --format text 2>/dev/null | grep "${_projectID}" | grep projectId 1>/dev/null)
+    HAVEPROJECT=$(gcloud projects list --format 'value (projectId)' 2>/dev/null | grep "${_projectID}")
     if [ $? -ne 0 ]; then
       { echo "Project ${_projectID} not found."; exit 1; }
     fi
