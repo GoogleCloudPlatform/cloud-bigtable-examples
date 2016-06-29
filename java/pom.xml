@@ -34,6 +34,5 @@ limitations under the License.
  -->
     <module>simple-cli</module>
     <module>simple-performance-test</module>
-    <module>storm</module>
   </modules>
 </project>

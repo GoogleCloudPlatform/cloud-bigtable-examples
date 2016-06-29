@@ -23,7 +23,7 @@ permissions and limitations under the License.
 
   <properties>
     <dataflow.version>1.5.1</dataflow.version>
-    <bigtable.version>0.9.0-SNAPSHOT</bigtable.version>
+    <bigtable.version>0.9.0</bigtable.version>
     <slf4j.version>1.7.21</slf4j.version>
     
     <bigtable.table>Dataflow_test</bigtable.table>
