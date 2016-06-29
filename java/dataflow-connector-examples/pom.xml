@@ -17,14 +17,13 @@ limitations under the License.
 <!--
   To run the samples:
   
-    mvn package exec:exec -DHelloWorldWrite -Dbigtable.projectID=<projectID> -Dbigtable.clusterID=<clusterID> -Dgs=<Your bucket>
+    mvn package exec:exec -DHelloWorldWrite -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> -Dgs=<Your bucket>
 
-    mvn package exec:exec -DSourceRowCount -Dbigtable.projectID=<projectID> -Dbigtable.clusterID=<clusterID> -Dgs=<Your bucket>
+    mvn package exec:exec -DSourceRowCount -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> -Dgs=<Your bucket>
     
-    mvn package exec:exec -DPubsubWordCount -Dbigtable.projectID=<projectID> -Dbigtable.clusterID=<clusterID> -Dgs=<Your bucket> -DpubsubTopic=projects/ProjectID/topics/TopicID
+    mvn package exec:exec -DPubsubWordCount -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> -Dgs=<Your bucket> -DpubsubTopic=projects/ProjectID/topics/TopicID
     
     Optional Arguments
-      -Dbigtable.zone=<your zone>
       -Dbigtable.table=<Table to Read / Write>
 -->
 <project>

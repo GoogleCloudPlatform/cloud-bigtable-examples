@@ -17,9 +17,8 @@ import com.google.common.base.Preconditions;
 public class SimplePerfTest {
 
   public static void main(String[] args) throws NumberFormatException, IOException {
-    Preconditions.checkArgument(args.length == 7,
-      "Usage: [type of test: just 'local-write' for now] [project id] [zone] [cluster id] [table] [row count] [value size]");
-    WritePerfTest.writeTestData(args[1], args[2], args[3], TableName.valueOf(args[4]),
-      Long.parseLong(args[5]), Integer.parseInt(args[6]));
+    Preconditions.checkArgument(args.length == 6,
+      "Usage: [type of test: just 'local-write' for now] [project id] [Instance id] [table] [row count] [value size]");
+    WritePerfTest.writeTestData(args[1], args[2], TableName.valueOf(args[3]), Long.parseLong(args[4]), Integer.parseInt(args[5]));
   }
 }

@@ -6,8 +6,7 @@
 
     <env-variables>
       <env-var name="BIGTABLE_PROJECT" value="${bigtable.projectID}" />
-      <env-var name="BIGTABLE_CLUSTER" value="${bigtable.clusterID}" />
-      <env-var name="BIGTABLE_ZONE" value="${bigtable.zone}" />
+      <env-var name="BIGTABLE_INSTANCE" value="${bigtable.instanceID}" />
     </env-variables>
 
     <system-properties>
