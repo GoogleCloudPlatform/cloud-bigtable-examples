@@ -77,7 +77,7 @@ exit
 The first thing to do, if you'd like to debug is use the `servlet.log()` methods, they seem to work when other loggers don't.  Then take control of your GAE instance:
 
 1. Find your instance
-  `gcloud preview app modules list`
+  `gcloud app instances list`
 
 1. [Connect to an instance with ssh](https://cloud.google.com/appengine/docs/flexible/java/connecting-to-an-instance-with-ssh)
 

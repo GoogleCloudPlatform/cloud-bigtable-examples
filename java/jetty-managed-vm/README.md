@@ -1,4 +1,4 @@
-# Cloud Bigtable on Managed VM's<br />(Hello World for Cloud Bigtable)
+# Cloud Bigtable on App Engine Flexible<br />(Hello World for Cloud Bigtable)
 
 With the Jetty runtime one can debug in the Docker container on a local machine.  
  
@@ -107,7 +107,7 @@ This describes a [Jetty](http://www.eclipse.org/jetty/) based [Servlet](http://w
 
 1. Deploy the application
 
- `gcloud preview app deploy app.yaml --docker-build=remote`
+ `gcloud app deploy`
 
 1. go to the new default module which will be displayed in results from the deploy.  It will look like: `https://20150624t111224-dot-default-dot-PROJECTID.appspot.com` 
 
