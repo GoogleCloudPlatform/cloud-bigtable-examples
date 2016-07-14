@@ -2,7 +2,7 @@
 
 This is a frontend visualization of the Dataflow/Bigtable/Coinbase example.
 
-This is based on the simpler [Managed VMS example](https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/tree/master/java/managed-vm-gae).
+This is based on the simpler [App Engine Flexible example](https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/tree/master/java/managed-vm-gae).
 
 # Prerequisites
 

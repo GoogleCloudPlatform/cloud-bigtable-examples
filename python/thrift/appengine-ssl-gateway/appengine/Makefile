@@ -31,7 +31,7 @@ KEY_FILE = stunnel.pem
 # step.
 deploy: env_project_id
 	$(VERB) if ! [ -e $(KEY_FILE) ]; then echo >&2 "$(KEY_FILE) missing"; exit 1; fi
-	$(VERB) gcloud preview app deploy app.yaml \
+	$(VERB) gcloud app deploy \
 	            --project $$PROJECT_ID --version thrift-gateway --no-promote
 
 clean:
