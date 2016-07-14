@@ -83,7 +83,7 @@ This is an alias for the `gcloud` command:
 
     gcloud dataproc jobs submit hadoop \
         --cluster dp \
-        --jar target/wordcount-mapreduce-0-SNAPSHOT-jar-with-dependancies.jar \
+        --jar target/wordcount-mapreduce-0-SNAPSHOT-jar-with-dependencies.jar \
         wordcount-hbase \
         <sourceFiles> \
         <outputTable>
