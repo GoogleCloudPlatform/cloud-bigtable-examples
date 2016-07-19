@@ -36,7 +36,7 @@ Alternatively you can just use maven directly.
 
     HBase Shell; enter 'help<RETURN>' for list of supported commands.
     Type "exit<RETURN>" to leave the HBase Shell
-    Version 1.1.1, rd0a115a7267f54e01c72c603ec53e91ec418292f, Tue Jun 23 14:56:34 PDT 2015
+    Version 1.2.1, rd0a115a7267f54e01c72c603ec53e91ec418292f, Tue Jun 23 14:56:34 PDT 2015
 
     hbase(main):001:0>
 

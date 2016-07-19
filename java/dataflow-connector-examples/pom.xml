@@ -36,10 +36,8 @@ limitations under the License.
 
   <properties>
     <dataflow.version>1.5.1</dataflow.version>
-    <bigtable.version>0.9.0</bigtable.version>
+    <bigtable.version>0.9.1</bigtable.version>
     <slf4j.version>1.7.21</slf4j.version>
-    <!-- For Netty HTTP2/TLS negotiation -->
-    <tcnative.classifier>linux-x86_64</tcnative.classifier> <!-- default for dataflow -->
     
     <bigtable.table>Dataflow_test</bigtable.table>
     <pubsubTopic>projects/${bigtable.projectID}/topics/shakes</pubsubTopic>
@@ -107,8 +105,7 @@ limitations under the License.
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-tcnative-boringssl-static</artifactId>
-      <version>1.1.33.Fork13</version>
-      <classifier>${tcnative.classifier}</classifier>
+      <version>1.1.33.Fork19</version>
     </dependency>
 
     <dependency>
@@ -125,19 +122,6 @@ limitations under the License.
  </dependencies>
 
   <profiles>  <!-- These are only required for runlocal -->
-    <profile>
-      <id>mac</id>
-      <properties>
-        <tcnative.classifier>osx-x86_64</tcnative.classifier>
-      </properties>      
-    </profile>
-    <profile>
-      <id>windows</id>
-      <properties>
-        <tcnative.classifier>windows-x86_64</tcnative.classifier>
-      </properties>      
-    </profile>
-
     <profile>
       <id>Test</id>
         <activation>

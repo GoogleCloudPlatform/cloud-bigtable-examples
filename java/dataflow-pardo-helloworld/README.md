@@ -30,7 +30,7 @@ pipeline that writes the words "Hello" and "World" into Cloud Bigtable.
     
 ## Run via maven
 
-`$ mvn compile exec:java -Dexec.mainClass="com.example.bigtable.dataflow.pardo.HelloWorldBigtablePardo" -Dexec.args="--runner=BlockingDataflowPipelineRunner --project=<PROJECTID> --bigtableProjectId=<PROJECTID> --bigtableInstanceId=<InstanceID> --bigtableTableId=Dataflow_test --stagingLocation=gs://<STORAGE_BUCKET>/staging"`
+`$ mvn package exec:exec -Dbigtable.projectID=PROJECT -Dbigtable.instanceID=INSTANCE -Dgs=gs://BUCKET`
 
 ### Verify
 
