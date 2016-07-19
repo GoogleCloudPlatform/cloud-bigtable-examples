@@ -23,14 +23,12 @@ permissions and limitations under the License.
   <url>http://maven.apache.org</url>
 
   <properties>
-    <bigtable.hbase.version>0.9.0</bigtable.hbase.version>
+    <bigtable.hbase.version>0.9.1</bigtable.hbase.version>
     <slf4j.version>1.7.21</slf4j.version>
-    <!-- For Netty HTTP2/TLS negotiation -->
-    <tcnative.classifier>linux-x86_64</tcnative.classifier> <!-- default for dataflow -->
 
     <bigtable.project>bigtable_project_id</bigtable.project>
     <bigtable.cluster>bigtable_cluster_id</bigtable.cluster>
-    <bigtable.zone>bigtable_zone</bigtable.zone>
+
     <bigtable.table>bigtable_table_name</bigtable.table>
     <dataflow.project>${bigtable.project}</dataflow.project>
     
@@ -98,8 +96,7 @@ permissions and limitations under the License.
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-tcnative-boringssl-static</artifactId>
-      <version>1.1.33.Fork13</version>
-      <classifier>${tcnative.classifier}</classifier>
+      <version>1.1.33.Fork19</version>
     </dependency>
 
     <dependency>

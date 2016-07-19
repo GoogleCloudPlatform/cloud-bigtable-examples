@@ -7,8 +7,6 @@ This app provides:
 1. A web interface that uses Cloud Bigtable to track the number of visits from an opaque version of your Google account.
 1. A simple REST interface that can read and write arbitrary data to a Cloud Bigtable table using GET, POST, and DELETE verbs.
 
-**SECURITY WARNING** – This app will read / write the two tables you create (**`gae-hello`** and **`from-json`**) The app provides NO ADDITIONAL SECURITY PROTECTIONS. We suggest that instances should only be available while testing and that test data be used.
-
 ## Table of Contents
 1. [Requirements](#Requirements)
 1. [Project Setup](#Project-Setup)
@@ -55,7 +53,7 @@ exit
 
 1. Build and run the Project
 
-    `mvn clean gcloud:run -Pmac  -Dbigtable.projectID=myProject -Dbigtable.instanceID=myInstance `
+    `mvn clean gcloud:run -Dbigtable.projectID=myProject -Dbigtable.instanceID=myInstance `
 
     NOTE - The `-Pmac` is REQUIRED for running on a Macintosh, `-Pwindows` is used for running on Windows, and the option is not required for Linux.
 

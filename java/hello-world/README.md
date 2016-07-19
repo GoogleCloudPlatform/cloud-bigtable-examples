@@ -9,6 +9,7 @@ explanation of the code.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
 **Table of Contents**
 
 - [Downloading the sample](#downloading-the-sample)
@@ -134,17 +135,10 @@ application.
 
 ## Running the application
 
-Set the following environment variables or replace them with the appropriate
-values in the `mvn` commands below. Set:
-
-+   `GCLOUD_PROJECT` to the project ID,
-+   `BIGTABLE_INSTANCE` to the Bigtable cluster ID,
-
 Build and run the sample using Maven.
 
     mvn package
-    mvn exec:java -Dbigtable.projectID=${GCLOUD_PROJECT} \
-        -Dbigtable.instanceID=${BIGTABLE_INSTANCE}
+    mvn exec:java -Dbigtable.projectID=GCLOUDPROJECT -Dbigtable.instanceID=BIGTABLEINSTANCE
 
 You will see output resembling the following, interspersed with informational logging
 from the underlying libraries:

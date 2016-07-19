@@ -25,7 +25,7 @@
   <version>1.0-SNAPSHOT</version>
 
   <properties>
-    <bigtable.version>0.9.0</bigtable.version>
+    <bigtable.version>0.9.1</bigtable.version>
     <hbase.version>1.2.1</hbase.version>
     <bigtable.projectID>YOUR_PROJECT_ID</bigtable.projectID>
     <bigtable.instanceID>YOUR_INSTANCE_ID</bigtable.instanceID>
@@ -33,10 +33,8 @@
     <hadoop.version>2.4.1</hadoop.version>
     <compat.module>hbase-hadoop2-compat</compat.module>
 
-    <appengine.version>1.9.38</appengine.version>
+    <appengine.version>1.9.40</appengine.version>
     <gcloud.plugin.version>2.0.9.111.v20160527</gcloud.plugin.version>
-    
-    <tcnative.classifier>linux-x86_64</tcnative.classifier> <!-- default for MVMs -->
 
     <slf4j.version>1.7.12</slf4j.version>
     <log4j.version>1.2.17</log4j.version>
@@ -115,8 +113,7 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-tcnative-boringssl-static</artifactId>
-      <version>1.1.33.Fork13</version>
-      <classifier>${tcnative.classifier}</classifier>
+      <version>1.1.33.Fork19</version>
     </dependency>
 
     <dependency>
@@ -132,21 +129,6 @@
 	    <version>20140107</version>
     </dependency>
   </dependencies>
-
-  <profiles>
-    <profile>
-      <id>mac</id>
-      <properties>
-        <tcnative.classifier>osx-x86_64</tcnative.classifier>
-      </properties>      
-    </profile>
-    <profile>
-      <id>windows</id>
-      <properties>
-        <tcnative.classifier>windows-x86_64</tcnative.classifier>
-      </properties>      
-    </profile>
-  </profiles>
 
   <build>
     <outputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/classes</outputDirectory> 
