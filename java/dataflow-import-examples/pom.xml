@@ -26,11 +26,11 @@ permissions and limitations under the License.
     <bigtable.hbase.version>0.9.1</bigtable.hbase.version>
     <slf4j.version>1.7.21</slf4j.version>
 
-    <bigtable.project>bigtable_project_id</bigtable.project>
-    <bigtable.cluster>bigtable_cluster_id</bigtable.cluster>
+    <bigtable.projectID>bigtable_project_id</bigtable.projectID>
+    <bigtable.instanceID>bigtable_instance_id</bigtable.instanceID>
 
     <bigtable.table>bigtable_table_name</bigtable.table>
-    <dataflow.project>${bigtable.project}</dataflow.project>
+    <dataflow.project>${bigtable.projectID}</dataflow.project>
     
     <dataflow.staging.location>gs://staging_folder_name</dataflow.staging.location>
     <file.pattern>name_or_prefix_of_data_file</file.pattern>
