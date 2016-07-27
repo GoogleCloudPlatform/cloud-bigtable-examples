@@ -35,9 +35,10 @@ limitations under the License.
     <module>dataproc-wordcount</module>
     <module>gae-flexible-helloworld</module>
     <module>hello-world</module>
-<!-- 
+<!--
     <module>jetty-managed-vm</module>
  -->
+    <module>dataflow-load-books</module>
     <module>simple-cli</module>
     <module>simple-performance-test</module>
   </modules>

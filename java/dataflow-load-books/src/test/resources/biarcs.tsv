@@ -1,0 +1,11 @@
+despatch	despatch/NN/dobj/0 when/WRB/compl/3 art/NN/ccomp/1	10	1820,2	1825,4	1828,2	1832,1	1844,1
+despatch	despatch/NN/dobj/0 when/WRB/compl/3 came/VBD/ccomp/1	10	1849,2	1851,2	1872,1	1873,1	1889,1	1896,1	1903,1	1970,1
+despatch	despatch/NN/dobj/0 when/WRB/compl/3 published/VBN/rcmod/1	12	1911,8	1961,3	2005,1
+despatch	despatch/NN/dobj/0 where/WRB/ref/3 was/VBD/rcmod/1	10	1911,1	1912,3	1923,2	1925,1	1939,1	1988,1	2005,1
+despatch	despatch/NN/dobj/0 which/WDT/pobj/3 made/VBN/rcmod/1	45	1853,1	1854,3	1860,1	1863,1	1866,2	1867,4	1871,1	1873,2	1874,2	1875,3	1877,1	1878,1	1879,1	1880,3	1889,2	1897,1	1898,3	1909,2	1910,1	1912,1	1922,1	1970,2	2004,2	2007,2	2008,2
+despatch	despatch/NN/dobj/0 which/WDT/ref/3 addressed/VBD/rcmod/1	12	1839,1	1863,1	1864,1	1871,2	1880,1	1967,2	1986,4
+despatch	despatch/NN/dobj/0 which/WDT/ref/3 addressed/VBN/rcmod/1	46	1854,1	1862,1	1875,1	1881,10	1902,1	1905,6	1937,1	1942,2	1962,1	1965,1	1970,9	1978,1	1984,1	1991,1	1997,1	1998,3	2000,1	2004,2	2006,1	2008,1
+despatch	despatch/NN/dobj/0 which/WDT/ref/3 admitted/VBN/rcmod/1	13	1832,4	1833,1	1836,1	1843,1	1844,1	1850,1	1853,1	1857,1	1859,1	2006,1
+despatch	despatch/NN/dobj/0 which/WDT/ref/3 allow/VB/rcmod/1	14	1913,2	1914,4	1920,4	1961,3	1974,1
+despatch	despatch/NN/dobj/0 which/WDT/ref/3 announced/VBD/rcmod/1	50	1828,1	1831,2	1832,1	1837,2	1846,1	1852,2	1856,1	1859,1	1867,1	1872,1	1883,2	1884,2	1886,1	1889,4	1895,1	1897,2	1898,4	1900,2	1908,2	1909,1	1910,1	1923,1	1935,2	1961,2	1965,1	1984,1	1995,2	2000,2	2002,2	2008,2
+despatch	despatch/NN/dobj/0 which/WDT/ref/3 answer/VB/rcmod/1	32	1894,3	1905,3	1907,6	1929,2	1939,9	1955,2	1973,1	1989,2	1993,1	2006,1	2008,2
