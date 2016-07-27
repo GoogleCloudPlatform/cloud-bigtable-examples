@@ -19,11 +19,11 @@
 import sys
 sys.path.append('gen-py')  # noqa
 
-from hbase import Hbase
-from thrift import Thrift
-from thrift.protocol import TBinaryProtocol
-from thrift.transport import TSocket
-from thrift.transport import TTransport
+from hbase import Hbase  # noqa
+from thrift import Thrift  # noqa
+from thrift.protocol import TBinaryProtocol  # noqa
+from thrift.transport import TSocket  # noqa
+from thrift.transport import TTransport  # noqa
 
 
 class ThriftClient(object):
