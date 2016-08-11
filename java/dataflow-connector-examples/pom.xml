@@ -35,7 +35,7 @@ limitations under the License.
   <packaging>jar</packaging>
 
   <properties>
-    <dataflow.version>1.5.1</dataflow.version>
+    <dataflow.version>1.6.0</dataflow.version>
     <bigtable.version>0.9.1</bigtable.version>
     <slf4j.version>1.7.21</slf4j.version>
     
