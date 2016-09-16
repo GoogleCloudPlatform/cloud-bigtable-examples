@@ -20,8 +20,8 @@ There are many examples / sample / demo programs here, each with its own README.
 
 ## Go
 * [cbt](https://github.com/GoogleCloudPlatform/gcloud-golang/tree/master/bigtable/cmd/cbt) [doc](https://godoc.org/google.golang.org/cloud/bigtable/cmd/cbt) Basic command line interactions with Cloud Bigtable - A really great place to start learning the Go Client.
-* [hello_world](https://github.com/GoogleCloudPlatform/gcloud-golang/tree/master/examples/bigtable/hello_world) - Basic Hello world example application demonstrating how to read and write to a Cloud Bigtable instance. 
-* [user_visit_counter](https://github.com/GoogleCloudPlatform/gcloud-golang/tree/master/examples/bigtable/user_visit_counter) - Accessing Cloud Bigtable from App Engine Flexible
+* [helloworld](https://github.com/GoogleCloudPlatform/gcloud-golang/tree/master/examples/bigtable/helloworld) - Basic Hello world example application demonstrating how to read and write to a Cloud Bigtable instance. 
+* [usercounter](https://github.com/GoogleCloudPlatform/gcloud-golang/tree/master/examples/bigtable/usercounter) - Accessing Cloud Bigtable from App Engine Flexible
 * [search](https://github.com/GoogleCloudPlatform/gcloud-golang/tree/master/examples/bigtable/search) - Create and search a Cloud Bigtable.
 
 ## Python
