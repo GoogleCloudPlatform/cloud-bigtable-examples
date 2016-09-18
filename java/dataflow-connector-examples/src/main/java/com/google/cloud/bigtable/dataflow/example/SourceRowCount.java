@@ -90,7 +90,8 @@ public class SourceRowCount {
 
     // CloudBigtableTableConfiguration contains the project, zone, cluster and table to connect to.
     // You can supply an optional Scan() to filter the rows that will be read.
-    CloudBigtableScanConfiguration config = CloudBigtableScanConfiguration.fromCBTOptions(options);
+    CloudBigtableScanConfiguration config =
+        CloudBigtableScanConfiguration.fromCBTOptions(options, scan);
 
     Pipeline p = Pipeline.create(options);
 

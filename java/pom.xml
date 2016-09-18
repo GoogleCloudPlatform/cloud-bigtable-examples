@@ -25,7 +25,6 @@ limitations under the License.
     <module>dataflow-coinbase</module>
     <module>dataflow-connector-examples</module>
     <module>dataflow-import-examples</module>
-    <module>dataflow-pardo-helloworld</module>
     <module>dataproc-wordcount</module>
     <module>gae-flexible-helloworld</module>
     <module>hello-world</module>
