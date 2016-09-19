@@ -29,13 +29,6 @@ There are many examples / sample / demo programs here, each with its own README.
   * [AppEngine SSL Gateway](python/thrift/appengine-ssl-gateway) - Shows how to setup and secure an HBase Thrift gateway and then access it from App Engine.
 * [REST](python/rest) - Setup an HBase REST server(s) to use Cloud Bigtable and access it from Python and do basic operations.
 
-<!-- Comment out 'til I can update to Dataproc and more.
-## Scala / Spark
-* [Standalone-Wordcount](https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/tree/master/scala/spark-standalone-wordcount) – Simple Spark job that counts the number of times a word appears in a text file
-* [PubSub](https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/tree/master/scala/spark-pubsub) – Integrating Spark Streaming with Cloud Pubsub
-* [Streaming-Wordcount](https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/tree/master/scala/spark-streaming-wordcount) – Pulls new files from a GCS directory every 30 seconds and perform a simple Spark job that counts the number of times a word appears in each new file
- -->
-
 ## Contributing changes
 * See [CONTRIBUTING.md](CONTRIBUTING.md)
 
