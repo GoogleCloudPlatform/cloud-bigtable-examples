@@ -16,13 +16,13 @@ limitations under the License.
 -->
 <!--
   To run the samples:
-  
+
     mvn package exec:exec -DHelloWorldWrite -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> -Dgs=<Your bucket>
 
     mvn package exec:exec -DSourceRowCount -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> -Dgs=<Your bucket>
-    
+
     mvn package exec:exec -DPubsubWordCount -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> -Dgs=<Your bucket> -DpubsubTopic=projects/ProjectID/topics/TopicID
-    
+
     Optional Arguments
       -Dbigtable.table=<Table to Read / Write>
 -->
@@ -35,10 +35,10 @@ limitations under the License.
   <packaging>jar</packaging>
 
   <properties>
-    <dataflow.version>1.6.0</dataflow.version>
-    <bigtable.version>0.9.2</bigtable.version>
+    <dataflow.version>1.8.0</dataflow.version>
+    <bigtable.version>0.9.3</bigtable.version>
     <slf4j.version>1.7.21</slf4j.version>
-    
+
     <bigtable.table>Dataflow_test</bigtable.table>
     <pubsubTopic>projects/${bigtable.projectID}/topics/shakes</pubsubTopic>
     <bigtable.hbase.version>${bigtable.version}</bigtable.hbase.version>
@@ -238,7 +238,7 @@ limitations under the License.
                 <argument>--bigtableInstanceId=${bigtable.instanceID}</argument>
                 <argument>--bigtableTableId=${bigtable.table}</argument>
                 <argument>--stagingLocation=${gs}/staging</argument>
-                <argument>--inputFile=${gs}/romeo_juliet.txt</argument> <!-- gs doesn't have trailing / -->
+                <argument>--inputFile=gs://lesv-big-public-data/books/b100</argument>
                 <argument>--pubsubTopic=${pubsubTopic}</argument>
              </arguments>
             </configuration>

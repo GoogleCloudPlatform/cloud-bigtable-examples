@@ -24,7 +24,7 @@
   <url>http://maven.apache.org</url>
 
   <properties>
-    <bigtable.version>0.9.2</bigtable.version>
+    <bigtable.version>0.9.3</bigtable.version>
     <hbase.version>1.2.1</hbase.version>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
