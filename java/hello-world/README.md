@@ -20,7 +20,7 @@ explanation of the code.
   - [Enabling billing for your project.](#enabling-billing-for-your-project)
   - [Install the Google Cloud SDK.](#install-the-google-cloud-sdk)
   - [Setting Google Application Default Credentials](#setting-google-application-default-credentials)
-- [Provisioning a cluster](#provisioning-a-cluster)
+- [Provisioning an instance](#provisioning-an-instance)
 - [Running the application](#running-the-application)
 - [Cleaning up](#cleaning-up)
 
