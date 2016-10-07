@@ -1,7 +1,12 @@
 # Google Cloud Bigtable examples
 [![ghit.me](https://ghit.me/badge.svg?repo=googlecloudplatform/cloud-bigtable-examples)](https://ghit.me/repo/googlecloudplatform/cloud-bigtable-examples)
+[![Stack Overflow][stackoverflow-shield]][stackoverflow-link]
 
-There are many examples / sample / demo programs here, each with its own README.
+Bigger than a data warehouse, fast enough for real-time access, and less expensive than running virtual machines. The world-renowned database that powers Google is now available to you worldwide.
+
+## Overview
+
+[Google Cloud Bigtable](https://cloud.google.com/bigtable/) offers you a fast, fully managed, almost infinitely scalable NoSQL database service that's ideal for web, mobile, and IoT applications requiring terabytes to petabytes of data. Unlike comparable market offerings, Cloud Bigtable doesn't require you to sacrifice speed, scale, or cost efficiency when your applications grow. The Bigtable service that Cloud Bigtable relies upon has been battle-tested at Google for more than 10 years—it's the database driving major applications such as Search, Analytics, Maps and Gmail.
 
 ## Quickstart
 [Quickstart/HBase](quickstart) - Create a Cloud Bigtable Cluster and the hbase shell from within a docker container on your local machine
@@ -29,9 +34,26 @@ There are many examples / sample / demo programs here, each with its own README.
   * [AppEngine SSL Gateway](python/thrift/appengine-ssl-gateway) - Shows how to setup and secure an HBase Thrift gateway and then access it from App Engine.
 * [REST](python/rest) - Setup an HBase REST server(s) to use Cloud Bigtable and access it from Python and do basic operations.
 
+## Questions and discussions
+
+If you have questions or run into issues with Google Cloud Bigtable or the
+client libraries, you can use any of the following forums:
+
+* Stack Overflow: tag questions with [`google-cloud-bigtable`][stackoverflow-link]
+* Mailing list: [google-cloud-bigtable-discuss@][google-cloud-bigtable-discuss]
+
+You can also subscribe to
+[google-cloud-bigtable-announce@][google-cloud-bigtable-announce] list to receive
+infrequent product and client library announcements.
+
 ## Contributing changes
 * See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 
 ## Licensing
 * See [LICENSE](LICENSE)
+
+[stackoverflow-shield]: https://img.shields.io/badge/stackoverflow-google--cloud--bigtable-blue.svg
+[stackoverflow-link]: http://stackoverflow.com/search?q=[google-cloud-bigtable]
+[google-cloud-bigtable-discuss]: https://groups.google.com/group/google-cloud-bigtable-discuss
+[google-cloud-bigtable-announce]: https://groups.google.com/group/google-cloud-bigtable-announce
