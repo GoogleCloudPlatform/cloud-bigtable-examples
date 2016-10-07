@@ -24,6 +24,7 @@ Started guide](https://cloud.google.com/bigtable/docs/hbase-shell-quickstart#bef
   * Initialize the Cloud SDK
 
         $ gcloud init
+        $ gcloud auth application-default login
 
 ### Make a GCS Bucket
 

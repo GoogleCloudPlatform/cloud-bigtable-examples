@@ -33,8 +33,8 @@ This step is required for the Pub / Sub sample.
 
 ### Create a Bigtable Table
 
-* Using the [HBase shell](https://cloud.google.com/bigtable/docs/hbase-shell-quickstart) 
- 
+* Using the [HBase shell](https://cloud.google.com/bigtable/docs/hbase-shell-quickstart)
+
     `create 'Dataflow_test',  'cf'`
 
 Note - you may wish to keep the HBase shell open in a tab throughout.
@@ -50,7 +50,7 @@ This pipeline needs to be configured with four command line options for Cloud Bi
 Optional Arguments
 
  * `-Dbigtable.table=<Table to Read / Write>` defaults to 'Dataflow_test'
-    
+
 # HelloWorld - Writing Data
 
 The HelloWorld examples take two strings, converts them to their upper-case representation and writes them to Bigtable.
@@ -70,24 +70,19 @@ SourceRowCount shows the use of a Bigtable Source - a construct that knows how t
 
     mvn package exec:exec -DSourceRowCount -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> -Dgs=<Your bucket>
 
-You can verify the results by frist typing: 
+You can verify the results by frist typing:
 
     gsutil ls gs://my_bucket/**
-    
+
 There should be a file that looks like count-XXXXXX-of-YYYYYY.  Type:
 
-    gsutil cp gs://my_bucket/count-XXXXXX-of-YYYYYY . 
+    gsutil cp gs://my_bucket/count-XXXXXX-of-YYYYYY .
     cat count-XXXXXX-of-YYYYYY
 
-<!-- 
+<!--
 # PubsubWordCount - Reading from Cloud Pubsub and writing to Cloud Bigtable
 
-The PubsubWordCount example reads from Cloud Pubsub and writes to Cloud Bigtable. It starts two jobs: one publishes messages to Cloud Pubsub, and the other one pulls messages, performs a word count for each message, and writes word count result to Cloud Bigtable. 
-
-Download the file which Cloud Pubsub messages are created from:
-
-    $ curl -f http://www.gutenberg.org/cache/epub/1112/pg1112.txt > romeo_juliet.txt
-    $ gsutil cp romeo_juliet.txt gs://my_bucket/
+The PubsubWordCount example reads from Cloud Pubsub and writes to Cloud Bigtable. It starts two jobs: one publishes messages to Cloud Pubsub, and the other one pulls messages, performs a word count for each message, and writes word count result to Cloud Bigtable.
 
 Type the following to run:
 
@@ -99,13 +94,13 @@ This is a streaming sample, which means it doesn't end.  When data has been proc
 
 You can verify that the job is still running:
 
-    gcloud alpha dataflow jobs list
+    gcloud  dataflow jobs list
 
 And once you have seen the data, you can cancel the job:
 
-    gcloud alpha dataflow jobs cancel <ID>
-    
-ID is from the dataflow jobs list command earlier.  
+    gcloud  dataflow jobs cancel <ID>
+
+ID is from the dataflow jobs list command earlier.
 
 **Not canceling this job could lead to  substantial costs.**
  -->

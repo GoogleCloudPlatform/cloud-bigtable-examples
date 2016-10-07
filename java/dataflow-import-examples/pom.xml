@@ -23,7 +23,7 @@ permissions and limitations under the License.
   <url>http://maven.apache.org</url>
 
   <properties>
-    <bigtable.hbase.version>0.9.2</bigtable.hbase.version>
+    <bigtable.hbase.version>0.9.3</bigtable.hbase.version>
     <slf4j.version>1.7.21</slf4j.version>
 
     <bigtable.projectID>bigtable_project_id</bigtable.projectID>
@@ -31,7 +31,7 @@ permissions and limitations under the License.
 
     <bigtable.table>bigtable_table_name</bigtable.table>
     <dataflow.project>${bigtable.projectID}</dataflow.project>
-    
+
     <dataflow.staging.location>gs://staging_folder_name</dataflow.staging.location>
     <file.pattern>name_or_prefix_of_data_file</file.pattern>
     <dataflow.runner>BlockingDataflowPipelineRunner</dataflow.runner>

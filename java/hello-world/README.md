@@ -116,10 +116,10 @@ SDK][cloud-sdk-init] with the command:
 
 		gcloud init
 
-Or with the [application-default login](https://cloud.google.com/sdk/gcloud/reference/beta/auth/application-default/login) command:
+Or with the [application-default login](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) command:
 
-    gcloud beta auth application-default login
-    
+    gcloud auth application-default login
+
 [cloud-sdk-init]: https://cloud.google.com/sdk/docs/initializing
 [application-default-credentials]: https://developers.google.com/identity/protocols/application-default-credentials
 
