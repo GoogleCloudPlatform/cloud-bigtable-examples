@@ -27,9 +27,9 @@
     <!-- Parent POM defines common plugins and properties. -->
     <parent>
         <groupId>com.google.cloud</groupId>
-        <artifactId>shared-configuration</artifactId>
+        <artifactId>bigtable-samples</artifactId>
         <version>1.0.0</version>
-        <relativePath>../../java-repo-tools</relativePath>
+        <relativePath>..</relativePath>
     </parent>
 
     <properties>

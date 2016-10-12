@@ -22,6 +22,13 @@ permissions and limitations under the License.
   <name>dataflow-import-examples</name>
   <url>http://maven.apache.org</url>
 
+  <parent>
+    <groupId>com.google.cloud</groupId>
+    <artifactId>bigtable-samples</artifactId>
+    <version>1.0.0</version>
+    <relativePath>..</relativePath>
+  </parent>
+
   <properties>
     <bigtable.hbase.version>0.9.3</bigtable.hbase.version>
     <slf4j.version>1.7.21</slf4j.version>
