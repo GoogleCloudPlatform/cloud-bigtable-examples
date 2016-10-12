@@ -34,6 +34,17 @@ limitations under the License.
 	<version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
+  <!-- Parent POM defines common plugins and properties.
+       TODO: use the parent when this sample passes checkstyles.
+       See: https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/issues/59
+  <parent>
+    <groupId>com.google.cloud</groupId>
+    <artifactId>bigtable-samples</artifactId>
+    <version>1.0.0</version>
+    <relativePath>..</relativePath>
+  </parent>
+  -->
+
   <properties>
     <dataflow.version>1.8.0</dataflow.version>
     <bigtable.version>0.9.3</bigtable.version>
