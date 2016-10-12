@@ -48,11 +48,15 @@ You can also subscribe to
 infrequent product and client library announcements.
 
 ## Contributing changes
-* See [CONTRIBUTING.md](CONTRIBUTING.md)
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for more information on how to contribute
+to this project.
 
-## Licensing
-* See [LICENSE](LICENSE)
+## License
+
+Apache 2.0; see [LICENSE](LICENSE) for details.
+
+<!-- references -->
 
 [travis-shield]: https://travis-ci.org/GoogleCloudPlatform/cloud-bigtable-examples.svg
 [travis-link]: https://travis-ci.org/GoogleCloudPlatform/cloud-bigtable-examples/builds
