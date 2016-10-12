@@ -1,5 +1,6 @@
 # Google Cloud Bigtable examples
-[![ghit.me](https://ghit.me/badge.svg?repo=googlecloudplatform/cloud-bigtable-examples)](https://ghit.me/repo/googlecloudplatform/cloud-bigtable-examples)
+
+[![Travis CI status][travis-shield]][travis-link]
 [![Stack Overflow][stackoverflow-shield]][stackoverflow-link]
 
 Bigger than a data warehouse, fast enough for real-time access, and less expensive than running virtual machines. The world-renowned database that powers Google is now available to you worldwide.
@@ -53,6 +54,8 @@ infrequent product and client library announcements.
 ## Licensing
 * See [LICENSE](LICENSE)
 
+[travis-shield]: https://travis-ci.org/GoogleCloudPlatform/cloud-bigtable-examples.svg
+[travis-link]: https://travis-ci.org/GoogleCloudPlatform/cloud-bigtable-examples/builds
 [stackoverflow-shield]: https://img.shields.io/badge/stackoverflow-google--cloud--bigtable-blue.svg
 [stackoverflow-link]: http://stackoverflow.com/search?q=[google-cloud-bigtable]
 [google-cloud-bigtable-discuss]: https://groups.google.com/group/google-cloud-bigtable-discuss
