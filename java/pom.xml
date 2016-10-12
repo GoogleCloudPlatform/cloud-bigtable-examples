@@ -21,6 +21,13 @@ limitations under the License.
   <artifactId>bigtable-samples</artifactId>
   <packaging>pom</packaging>
 
+	<!-- Parent POM defines common plugins and properties. -->
+	<parent>
+		<groupId>com.google.cloud.samples</groupId>
+		<artifactId>shared-configuration</artifactId>
+		<version>1.0.0</version>
+	</parent>
+
   <modules>
     <module>dataflow-coinbase</module>
     <module>dataflow-connector-examples</module>
