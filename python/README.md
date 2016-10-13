@@ -1,5 +1,9 @@
-# Python REST/Thrift Examples
+![status: inactive](https://img.shields.io/badge/status-inactive-red.svg)
 
+The Google Cloud Bigtable Python samples have moved. This directory is no
+longer actively developed or maintained.
 
-These examples demonstrate how to use the HBase client to serve as a REST or 
-Thrift gateway to Google Cloud Bigtable.
+For new work on this check out the
+[Bigtable
+samples](https://github.com/GoogleCloudPlatform/python-docs-samples/tree/master/bigtable)
+in the Google Cloud Platform Python samples repository.
