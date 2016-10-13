@@ -31,9 +31,15 @@ Bigger than a data warehouse, fast enough for real-time access, and less expensi
 * [search](https://github.com/GoogleCloudPlatform/gcloud-golang/tree/master/examples/bigtable/search) - Create and search a Cloud Bigtable.
 
 ## Python
-* [Thrift](python/thrift) - Setup an HBase Thrift server(s) to use Cloud Bigtable and access that from Python to do basic operations.
-  * [AppEngine SSL Gateway](python/thrift/appengine-ssl-gateway) - Shows how to setup and secure an HBase Thrift gateway and then access it from App Engine.
-* [REST](python/rest) - Setup an HBase REST server(s) to use Cloud Bigtable and access it from Python and do basic operations.
+* [Hello
+  World](https://github.com/GoogleCloudPlatform/python-docs-samples/tree/master/bigtable/hello)
+  A minimal application that demonstrates using the Googe Cloud Client
+  libraries to create a temporary table, write some rows, read them back and
+  clean up.
+* [Hello World
+  (Happybase)](https://github.com/GoogleCloudPlatform/python-docs-samples/tree/master/bigtable/hello_happybase)
+  A minimal application that demonstrates using the Happybase API create a
+  temporary table, write some rows, read them back and clean up.
 
 ## Questions and discussions
 
