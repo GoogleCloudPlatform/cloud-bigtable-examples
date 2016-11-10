@@ -99,11 +99,5 @@
       <version>0.30</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>com.google.cloud.bigtable</groupId>
-      <artifactId>bigtable-hbase-1.1</artifactId>
-      <version>0.9.4</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 </project>

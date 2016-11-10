@@ -18,7 +18,7 @@ package com.example.bigtable.loadbooks;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.cloud.bigtable.hbase.BigtableConfiguration;
+import com.google.bigtable.repackaged.com.google.cloud.hbase.BigtableConfiguration;
 import com.google.common.io.Resources;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.TableName;
