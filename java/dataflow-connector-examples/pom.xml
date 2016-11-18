@@ -47,7 +47,7 @@ limitations under the License.
 
   <properties>
     <dataflow.version>1.8.0</dataflow.version>
-    <bigtable.version>0.9.3</bigtable.version>
+    <bigtable.version>0.9.4</bigtable.version>
     <slf4j.version>1.7.21</slf4j.version>
 
     <bigtable.table>Dataflow_test</bigtable.table>
