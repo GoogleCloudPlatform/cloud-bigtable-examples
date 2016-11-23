@@ -15,10 +15,9 @@
  */
 package com.example.cloud.bigtable.helloworld;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.ConnectionFactory;
+
+import com.google.cloud.bigtable.hbase.BigtableConfiguration;
 
 import java.io.IOException;
 
@@ -48,20 +47,12 @@ public class BigtableHelper implements ServletContextListener {
  * Connect will establish the connection to Cloud Bigtable.
  **/
   public static void connect() throws IOException {
-    Configuration c = HBaseConfiguration.create();
-
-    c.setClass("hbase.client.connection.impl",
-        com.google.cloud.bigtable.hbase1_2.BigtableConnection.class,
-        org.apache.hadoop.hbase.client.Connection.class);   // Required for Cloud Bigtable
-
     if (PROJECT_ID == null || INSTANCE_ID == null ) {
       sc.log("environment variables BIGTABLE_PROJECT, and BIGTABLE_INSTANCE need to be defined.");
       return;
     }
-    c.set("google.bigtable.project.id", PROJECT_ID);
-    c.set("google.bigtable.instance.id", INSTANCE_ID);
 
-    connection = ConnectionFactory.createConnection(c);
+    connection = BigtableConfiguration.connect(PROJECT_ID, INSTANCE_ID);
   }
 
   public static Connection getConnection() {
