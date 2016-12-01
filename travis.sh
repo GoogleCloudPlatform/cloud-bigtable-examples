@@ -42,7 +42,8 @@ use_java() {
       echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | \
           sudo debconf-set-selections
       add_ppa 'ppa:webupd8team/java'
-      sudo apt-get -qqy install oracle-java8-installer
+      sudo apt-get -o Dpkg::Options::="--force-overwrite" -qqy install \
+          oracle-java8-installer
       export PATH=/usr/lib/jvm/java-8-oracle/bin:$PATH
       ;;
   esac

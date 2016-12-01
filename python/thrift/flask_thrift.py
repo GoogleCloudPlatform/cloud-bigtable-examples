@@ -107,6 +107,7 @@ def _delete_column(table, row_key, column):
     with ThriftClient() as client:
         client.delete_column(table, row_key, column)
 
+
 # set debug=True in the run() call to see better debugging messages
 if __name__ == '__main__':
     app.run()
