@@ -1,106 +1,33 @@
-# Google App Engine Flexible - Hello World
+gae-flexible-helloworld
+=======================
 
-App Engine Flexible `compat` runtime has full access to [AppEngine Services and API's](https://cloud.google.com/appengine/docs/flexible/java/dev-jetty9-and-apis).
+Moves the Bigtable Hello World application to Google App Engine Flexible.
 
-This app provides:
 
-1. A web interface that uses Cloud Bigtable to track the number of visits from an opaque version of your Google account.
-1. A simple REST interface that can read and write arbitrary data to a Cloud Bigtable table using GET, POST, and DELETE verbs.
+* [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+* [Maven](https://maven.apache.org/download.cgi) (at least 3.3.9)
+* [Google Cloud SDK](https://cloud.google.com/sdk/) (aka gcloud)
 
-## Table of Contents
-1. [Requirements](#Requirements)
-1. [Project Setup](#Project-Setup)
-1. [Running Locally](#Running-Locally)
-1. [Deploying the AppEngine Flexible Runtime](#Deploying-the-AppEngine-Runtime)
-1. [AppEngine Debugging Hints](#AppEngine-Debugging-Hints)
-1. [Using Bigtable-Hello](#Using-Bigtable-Hello)
-1. [Using-JSON](#Using-JSON)
+Initialize the Google Cloud SDK using:
 
-## Requirements
-1. Latest version of [gcloud](https://cloud.google.com/sdk/) 
-1. Update with `gcloud components update`
-1. `gcloud init` (if you haven't already)
-1. `gcloud components update alpha beta app-engine-java`
-1. **Java 1.8**
-1. [Maven](https://maven.apache.org/)
+    gcloud init
 
-## Project Setup
+    gcloud auth application-default login
 
-1. Follow the instructions for  [Creating a Google Developers Console project and client ID](https://developers.google.com/identity/sign-in/web/devconsole-project)
+This skeleton is ready to run.
 
-1. Use [Cloud Console](https://cloud.google.com/console) to enable billing.
+    mvn -Dbigtable.projectID=PROJECTID -Dbigtable.instanceID=INSTANCEID jetty:run-exploded
 
-1. Select **APIs & Auth > APIs**  
 
-1. [Enable the APIs](https://console.cloud.google.com/flows/enableapi?apiid=bigtable,bigtabletableadmin&showconfirmation=true): **Cloud Bigtable API** and the **Cloud Bigtable Admin API**<br />
-   (You may need to search for the API.)
+    mvn -Dbigtable.projectID=PROJECTID -Dbigtable.instanceID=INSTANCEID appengine:deploy
 
-1. Select **Storage > Bigtable > Create Cluster**.
 
-    Create a new Cluster -- You will need both the Zone and the Cluster ID
- 
-1. Follow the [instructions to launch `HBase shell Quickstart`](https://cloud.google.com/bigtable/docs/quickstart)
+    mvn -Dbigtable.projectID=PROJECTID -Dbigtable.instanceID=INSTANCEID test
 
-1. Create the table (tableName, Column Family)
 
-```
-create 'gae-hello', 'visits'
-create 'from-json', 'cf1', 'cf2', 'cf3', 'cf4'
-exit
-```
- 
-## Running Locally
+As you add / modify the source code (`src/main/java/...`) it's very useful to add [unit testing](https://cloud.google.com/appengine/docs/java/tools/localunittesting)
+to (`src/main/test/...`).  The following resources are quite useful:
 
-1. Build and run the Project
-
-    `mvn clean gcloud:run -Dbigtable.projectID=myProject -Dbigtable.instanceID=myInstance `
-
-    NOTE - The `-Pmac` is REQUIRED for running on a Macintosh, `-Pwindows` is used for running on Windows, and the option is not required for Linux.
-
-    NOTE - These parameters are required every time you run the app, if you plan on running it a lot, you may wish to set these values in the `pom.xml` directly.
-
-1. Access the page by going to [localhost:8080](http://localhost:8080) from your browser, it should ask you to login, and count that for you.
-    
-## Deploying the AppEngine Runtime
-    
-1. Deploy the application
- 
-    `mvn clean gcloud:deploy -Dbigtable.projectID=myProject -Dbigtable.instanceID=myInstance`
-
-    NOTE - These parameters are required every time you run the app, if you plan on running it a lot, you may wish to set these values in the `pom.xml` directly.
-
-1. Go to the new default module which will be displayed in results from the deploy.  It will look like: `https://PROJECTID.appspot.com` you can go to that URL to test.
-
-## AppEngine Debugging Hints
-The first thing to do, if you'd like to debug is use the `servlet.log()` methods, they seem to work when other loggers don't.  Then take control of your GAE instance:
-
-1. Find your instance
-  `gcloud app services list`
-
-1. [Connect to an instance with ssh](https://cloud.google.com/appengine/docs/flexible/java/connecting-to-an-instance-with-ssh)
-
-1. [Find the Container](https://cloud.google.com/appengine/docs/flexible/java/connecting-to-an-instance-with-ssh#accessing_the_docker_container_in_production)
-
-1. Either show the container log  `sudo docker logs <containerID>` or enter the container `sudo docker exec -it <containerID> /bin/bash`
-
-## Using the example
-
-1. With your browser, go to [localhost:8080](http://localhost:8080) in your browser. (Local)  Or to `https://<projectID>.appspot.com`
-
-1. Sign-in with Google. Your visit should increment the counter.
-
-## Using JSON
-
-1. Entities (rows) can be accessed using `https://<projectID>.appspot.com/json/rowkey`
-  * GET - Will wrap up everything as JSON
-  * POST - Will convert the JSON to ColumnFamily : Qualifier and write the data
-  * DELETE - Will remove the row.
-
-1. The URL should be either localhost:8080, docker:8080, or `https://<projectID>.appspot.com`
-1. `curl -H "Content-Type: application/json" -X POST -d '{"username":"red","id":535}' http://localhost:8080/json/blueword`
-
-1. `curl -X GET http://localhost:8080/json/blueword`
-
-1. `curl -H "Content-Type: application/json" -X DELETE  http://localhost:8080/json/blueword`
-
-You will note that none of these examples use [Column Family]() specifiers.  It defaults to using **`cf1`**, if you wish to use the other column families specify `<columnFamily>:<column>` where columnFamily is one of cf1, cf2, cf3, or cf4 that you created earlier.
+* [Junit4](http://junit.org/junit4/)
+* [Mockito](http://mockito.org/)
+* [Truth](http://google.github.io/truth/)
