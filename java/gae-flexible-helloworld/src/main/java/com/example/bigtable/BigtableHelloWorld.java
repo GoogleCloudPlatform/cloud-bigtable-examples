@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you
  * may not use this file except in compliance with the License. You may
@@ -61,14 +61,14 @@ public class BigtableHelloWorld {
       admin.createTable(descriptor);
       // [END creating_a_table]
     } catch (IOException e) {
-      return "Table exists.";    // TODO()
+      return "Table exists.";
     }
     return "Create table " + TABLE_NAME.toString();
 
   }
 
   /**
-   * Connects to Cloud Bigtable, runs some basic operations and prints the results
+   * Connects to Cloud Bigtable, runs some basic operations and prints the results.
    */
   public static String doHelloWorld() {
 
@@ -78,14 +78,14 @@ public class BigtableHelloWorld {
     // Create the Bigtable connection, use try-with-resources to make sure it gets closed
     Connection connection = BigtableHelper.getConnection();
     result.append(create(connection));
-    result.append("<br /><br />");
+    result.append("<br><br>");
     try (Table table = connection.getTable(TableName.valueOf(TABLE_NAME))) {
 
       // Retrieve the table we just created so we can do some reads and writes
 
       // [START writing_rows]
       // Write some rows to the table
-      result.append("Write some greetings to the table<br />");
+      result.append("Write some greetings to the table<br>");
       for (int i = 0; i < GREETINGS.length; i++) {
         // Each row has a unique row key.
         //
@@ -112,13 +112,13 @@ public class BigtableHelloWorld {
       String rowKey = "greeting0";
       Result getResult = table.get(new Get(Bytes.toBytes(rowKey)));
       String greeting = Bytes.toString(getResult.getValue(COLUMN_FAMILY_NAME, COLUMN_NAME));
-      result.append("Get a single greeting by row key\n");
+      result.append("Get a single greeting by row key<br>");
       // [END getting_a_row]
       result.append("     ");
       result.append(rowKey);
       result.append("= ");
       result.append(greeting);
-      result.append("<br />");
+      result.append("<br>");
 
       // [START scanning_all_rows]
       // Now scan across all rows.
@@ -130,12 +130,12 @@ public class BigtableHelloWorld {
         byte[] valueBytes = row.getValue(COLUMN_FAMILY_NAME, COLUMN_NAME);
         result.append("    ");
         result.append(Bytes.toString(valueBytes));
-        result.append("<br />");
+        result.append("<br>");
       }
       // [END scanning_all_rows]
 
     } catch (IOException e) {
-      result.append("Exception while running HelloWorld: " + e.getMessage() + "<br />");
+      result.append("Exception while running HelloWorld: " + e.getMessage() + "<br>");
       result.append(e.toString());
       return result.toString();
     }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,14 @@
 package com.example.bigtable;
 
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
-
 import org.apache.hadoop.hbase.client.Connection;
-import com.google.cloud.bigtable.hbase.BigtableConfiguration;
 
 import java.io.IOException;
 
-import javax.servlet.annotation.WebListener;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 
 /**
  * BigtableHelper, a ServletContextListener, is setup in web.xml to run before a JSP is run.
@@ -56,18 +54,20 @@ public class BigtableHelper implements ServletContextListener {
       return;
     }
 
-     connection = BigtableConfiguration.connect(PROJECT_ID, INSTANCE_ID);
+    connection = BigtableConfiguration.connect(PROJECT_ID, INSTANCE_ID);
   }
 
   public static Connection getConnection() {
-    if(connection == null) {
+    if (connection == null) {
       try {
         connect();
       } catch (IOException e) {
         sc.log("connect ", e);
       }
     }
-    if(connection == null) sc.log("BigtableHelper-No Connection");
+    if (connection == null) {
+      sc.log("BigtableHelper-No Connection");
+    }
     return connection;
   }
 
@@ -75,32 +75,48 @@ public class BigtableHelper implements ServletContextListener {
     // This will be invoked as part of a warmup request, or the first user
     // request if no warmup request was invoked.
 
-    if (PROJECT_ID != null && PROJECT_ID.startsWith("$")) PROJECT_ID = null;
-    if (INSTANCE_ID != null && INSTANCE_ID.startsWith("$")) INSTANCE_ID = null;
+    if (PROJECT_ID != null && PROJECT_ID.startsWith("$")) {
+      PROJECT_ID = null;
+    }
+    if (INSTANCE_ID != null && INSTANCE_ID.startsWith("$")) {
+      INSTANCE_ID = null;
+    }
 
     if (event != null) {
       sc = event.getServletContext();
-      if (PROJECT_ID == null) PROJECT_ID = sc.getInitParameter("BIGTABLE_PROJECT");
-      if (INSTANCE_ID == null) INSTANCE_ID = sc.getInitParameter("BIGTABLE_INSTANCE");
+      if (PROJECT_ID == null) {
+        PROJECT_ID = sc.getInitParameter("BIGTABLE_PROJECT");
+      }
+      if (INSTANCE_ID == null) {
+        INSTANCE_ID = sc.getInitParameter("BIGTABLE_INSTANCE");
+      }
     }
 
-    if (PROJECT_ID == null) PROJECT_ID = System.getProperty("BIGTABLE_PROJECT");
-    if (INSTANCE_ID == null) INSTANCE_ID = System.getProperty("BIGTABLE_INSTANCE");
+    if (PROJECT_ID == null) {
+      PROJECT_ID = System.getProperty("BIGTABLE_PROJECT");
+    }
+    if (INSTANCE_ID == null) {
+      INSTANCE_ID = System.getProperty("BIGTABLE_INSTANCE");
+    }
 
     try {
       connect();
     } catch (IOException e) {
-        sc.log("BigtableHelper - connect ", e);
+      sc.log("BigtableHelper - connect ", e);
     }
-     if(connection == null) sc.log("BigtableHelper-No Connection");
- }
+    if (connection == null) {
+      sc.log("BigtableHelper-No Connection");
+    }
+  }
 
   public void contextDestroyed(ServletContextEvent event) {
     // App Engine does not currently invoke this method.
-    if (connection == null) return;
+    if (connection == null) {
+      return;
+    }
     try {
       connection.close();
-    } catch(IOException io) {
+    } catch (IOException io) {
       sc.log("contextDestroyed ", io);
     }
     connection = null;

@@ -3,7 +3,7 @@
 <%@ page import="com.example.bigtable.BigtableHelloWorld" %>
 <!-- [START_EXCLUDE] -->
 <%--
-  ~ Copyright (c) 2016 Google Inc. All Rights Reserved.
+  ~ Copyright 2016 Google Inc.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License"); you
   ~ may not use this file except in compliance with the License. You may
@@ -26,7 +26,7 @@
 <body>
     <h1>Hello App Engine -- Flexible!</h1>
 
-  <p>This is <%= BigtableHelloWorld.doHelloWorld() %>.</p>
+  <p>This is <%= BigtableHelloWorld.doHelloWorld() %>.
 
 </body>
 </html>

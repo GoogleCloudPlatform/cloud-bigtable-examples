@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,40 +17,25 @@
 package com.example.bigtable;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.when;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Unit tests for {@link HelloAppEngine}.
  */
 
 @RunWith(JUnit4.class)
-public class BigtableHelloWorldTest {
-  private static final String FAKE_URL = "fake.fk/hello";
-
-  private static BigtableHelper helper;
+@SuppressWarnings("checkstyle:abbreviationaswordinname")
+public class ITBigtableHelloWorld {
+  private BigtableHelper helper;
 
   @Before
   public void setUp() throws Exception {
     helper = new BigtableHelper();
     helper.contextInitialized(null);
-  }
-
-  @After public void tearDown() {
-
   }
 
   @Test
