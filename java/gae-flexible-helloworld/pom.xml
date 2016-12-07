@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Copyright 2016 Google Inc. All Rights Reserved.
+Copyright 2016 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -160,7 +160,7 @@ limitations under the License.
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
+        <artifactId>maven-failsafe-plugin</artifactId>
         <version>2.19.1</version>
         <configuration>
           <systemPropertyVariables>
@@ -227,4 +227,11 @@ limitations under the License.
     </pluginRepository>
   </pluginRepositories>
  -->
+   <parent>  <!-- used for our testing, not required for your apps -->
+    <groupId>com.google.cloud</groupId>
+    <artifactId>bigtable-samples</artifactId>
+    <version>1.0.0</version>
+    <relativePath>..</relativePath>
+  </parent>
+
 </project>

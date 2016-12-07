@@ -14,20 +14,30 @@ Initialize the Google Cloud SDK using:
 
     gcloud auth application-default login
 
-This skeleton is ready to run.
+Then you need to [Create a Cloud Bigtable Instance](https://cloud.google.com/bigtable/docs/creating-instance)
+
+### Run Locally
 
     mvn -Dbigtable.projectID=PROJECTID -Dbigtable.instanceID=INSTANCEID jetty:run-exploded
 
+### Deploy to App Engine Flexible
 
     mvn -Dbigtable.projectID=PROJECTID -Dbigtable.instanceID=INSTANCEID appengine:deploy
 
+### Run Integration Tests &
 
-    mvn -Dbigtable.projectID=PROJECTID -Dbigtable.instanceID=INSTANCEID test
+    mvn -Dbigtable.projectID=PROJECTID -Dbigtable.instanceID=INSTANCEID verify
 
 
-As you add / modify the source code (`src/main/java/...`) it's very useful to add [unit testing](https://cloud.google.com/appengine/docs/java/tools/localunittesting)
+As you add / modify the source code (`src/main/java/...`) it's very useful to add
+[unit testing](https://cloud.google.com/appengine/docs/java/tools/localunittesting)
 to (`src/main/test/...`).  The following resources are quite useful:
 
-* [Junit4](http://junit.org/junit4/)
+* [JUnit4](http://junit.org/junit4/)
 * [Mockito](http://mockito.org/)
 * [Truth](http://google.github.io/truth/)
+
+### When done
+
+Cloud Bigtable Instances should be [deleted](https://cloud.google.com/bigtable/docs/deleting-instance)
+when they are no longer being used as they use significant resources.
