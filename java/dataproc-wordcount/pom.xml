@@ -32,15 +32,11 @@
   </parent> -->
 
   <properties>
+    <bigtable.version>0.9.5</bigtable.version>
     <bigtable.projectID>YOUR_PROJECT_ID_HERE</bigtable.projectID>
     <bigtable.instanceID>YOUR_INSTANCE_ID_HERE</bigtable.instanceID>
 
-    <bigtable.version>0.9.4</bigtable.version>
-    <hbase.version>1.2.1</hbase.version><!-- may need to match Dataproc HBase version -->
-    <hbase.if>1.2</hbase.if> <!-- hbase interface - it changed between 1.0 and 1.1.x -->
-
-    <hadoop.version>2.4.1</hadoop.version>
-    <compat.module>hbase-hadoop2-compat</compat.module>
+    <bigtable.version>0.9.5-SNAPSHOT</bigtable.version>
 
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -96,30 +92,15 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.hbase</groupId>
-      <artifactId>hbase-client</artifactId>
-      <version>${hbase.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.cloud.bigtable</groupId>
-      <artifactId>bigtable-hbase-${hbase.if}</artifactId>
-      <version>${bigtable.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-tcnative-boringssl-static</artifactId>
-      <version>1.1.33.Fork19</version>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-client</artifactId>
+      <version>2.7.3</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase-mapreduce</artifactId>
       <version>${bigtable.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>com.google.cloud.bigtable</groupId>
-          <artifactId>bigtable-hbase-1.1</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
   </dependencies>
 
