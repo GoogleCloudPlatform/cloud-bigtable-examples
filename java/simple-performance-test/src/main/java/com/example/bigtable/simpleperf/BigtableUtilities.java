@@ -16,6 +16,7 @@
 package com.example.bigtable.simpleperf;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
@@ -47,7 +48,7 @@ public class BigtableUtilities {
   }
 
   public static void printPerformance(String prefix, Stopwatch stopwatch, int count) {
-    long elapsed = stopwatch.elapsedMillis();
+    long elapsed = stopwatch.elapsed(TimeUnit.MILLISECONDS);
     if (elapsed == 0) {
       System.out.println(String.format("%s %d in %d ms.", prefix, count, elapsed));
     } else {

@@ -16,6 +16,7 @@
 package com.example.bigtable.simpleperf;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -58,8 +59,8 @@ public class WritePerfTest {
   protected static void runMutationTests(Connection conn, TableName tableName, long rowCount,
       int valueSize) throws IOException {
     System.out.println("starting mutations");
-    Stopwatch uberStopwatch = new Stopwatch();
-    Stopwatch incrementalStopwatch = new Stopwatch();
+    Stopwatch uberStopwatch = Stopwatch.createUnstarted();
+    Stopwatch incrementalStopwatch = Stopwatch.createUnstarted();
     try (BufferedMutator mutator = conn.getBufferedMutator(tableName)) {
       // Use the same value over and over again. Creating new random data takes time. Don't count
       // creating a large array towards Bigtable performance
@@ -89,13 +90,14 @@ public class WritePerfTest {
       incrementalStopwatch.start();
       System.out.println("Flushing");
       mutator.flush();
-      System.out.println(String.format("Flush took %d ms.", incrementalStopwatch.elapsedMillis()));
+      System.out.println(String.format("Flush took %d ms.",
+              incrementalStopwatch.elapsed(TimeUnit.MILLISECONDS)));
       BigtableUtilities.printPerformance("full batch", uberStopwatch, PRINT_COUNT);
     } catch (RetriesExhaustedWithDetailsException e) {
       logExceptions(e);
     }
   }
-  
+
 
   protected static void doPut(BufferedMutator mutator, byte[] value) throws IOException {
     byte[] key = Bytes.toBytes(RandomStringUtils.randomAlphanumeric(10));
