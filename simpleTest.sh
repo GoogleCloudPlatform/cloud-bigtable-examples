@@ -186,33 +186,33 @@ mvn clean
 echo ""
 echo ""
 
-cd ../simple-cli
-echo "****  simple-cli"
-mvn clean package -Dbigtable.projectID=${_projectID} -Dbigtable.instanceID=${_instanceID} ${_version}
-
-echo 'creating the table'
-./hbasecli.sh create scli_${ts} f
-./hbasecli.sh list
-
-echo 'adding entries'
-
-./hbasecli.sh put scli_${ts} John f name John
-./hbasecli.sh put scli_${ts} Jane f name Jane
-./hbasecli.sh put scli_${ts} Bill f name Bill
-./hbasecli.sh put scli_${ts} Les f name Les
-
-echo 'getting entry'
-./hbasecli.sh get scli_${ts} Les
-
-echo 'scan'
-./hbasecli.sh scan scli_${ts}
-
-echo 'scan w/ escaped predicate'
-./hbasecli.sh scan scli_${ts} f:name\>Jane
-echo ""
-mvn clean
-echo ""
-echo ""
+# cd ../simple-cli
+# echo "****  simple-cli"
+# mvn clean package -Dbigtable.projectID=${_projectID} -Dbigtable.instanceID=${_instanceID} ${_version}
+#
+# echo 'creating the table'
+# ./hbasecli.sh create scli_${ts} f
+# ./hbasecli.sh list
+#
+# echo 'adding entries'
+#
+# ./hbasecli.sh put scli_${ts} John f name John
+# ./hbasecli.sh put scli_${ts} Jane f name Jane
+# ./hbasecli.sh put scli_${ts} Bill f name Bill
+# ./hbasecli.sh put scli_${ts} Les f name Les
+#
+# echo 'getting entry'
+# ./hbasecli.sh get scli_${ts} Les
+#
+# echo 'scan'
+# ./hbasecli.sh scan scli_${ts}
+#
+# echo 'scan w/ escaped predicate'
+# ./hbasecli.sh scan scli_${ts} f:name\>Jane
+# echo ""
+# mvn clean
+# echo ""
+# echo ""
 
 cd ../hello-world
 echo "****  hello-world"

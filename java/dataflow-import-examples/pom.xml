@@ -57,6 +57,7 @@ permissions and limitations under the License.
       <releases><enabled>false</enabled></releases>
       <snapshots><enabled>true</enabled></snapshots>
     </repository>
+<!--
     <repository>
       <releases>
         <enabled>true</enabled>
@@ -73,8 +74,10 @@ permissions and limitations under the License.
       <url>https://maven-central.storage.googleapis.com</url>
       <layout>default</layout>
     </repository>
+ -->
   </repositories>
 
+<!--
   <pluginRepositories>
     <pluginRepository>
       <releases>
@@ -93,6 +96,7 @@ permissions and limitations under the License.
       <layout>default</layout>
     </pluginRepository>
   </pluginRepositories>
+ -->
 
   <dependencies>
     <dependency>

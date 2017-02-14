@@ -24,7 +24,7 @@
 
     <bigtable.version>0.9.5.1</bigtable.version>
 
-    <hbase.version>1.2.1</hbase.version>
+    <hbase.version>1.2.4</hbase.version>
 
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -37,6 +37,7 @@
       <releases><enabled>false</enabled></releases>
       <snapshots><enabled>true</enabled></snapshots>
     </repository>
+<!--
     <repository>
       <releases>
         <enabled>true</enabled>
@@ -53,8 +54,10 @@
       <url>https://maven-central.storage.googleapis.com</url>
       <layout>default</layout>
     </repository>
+ -->
   </repositories>
 
+<!--
   <pluginRepositories>
     <pluginRepository>
       <releases>
@@ -73,6 +76,7 @@
       <layout>default</layout>
     </pluginRepository>
   </pluginRepositories>
+ -->
 
   <dependencies>
     <dependency>
