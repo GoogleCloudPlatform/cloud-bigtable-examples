@@ -37,6 +37,7 @@
       <releases><enabled>false</enabled></releases>
       <snapshots><enabled>true</enabled></snapshots>
     </repository>
+<!--
     <repository>
       <releases>
         <enabled>true</enabled>
@@ -53,8 +54,10 @@
       <url>https://maven-central.storage.googleapis.com</url>
       <layout>default</layout>
     </repository>
+ -->
   </repositories>
 
+<!--
   <pluginRepositories>
     <pluginRepository>
       <releases>
@@ -73,6 +76,7 @@
       <layout>default</layout>
     </pluginRepository>
   </pluginRepositories>
+ -->
 
   <dependencies>
     <dependency>
