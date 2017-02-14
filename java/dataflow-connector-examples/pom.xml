@@ -47,7 +47,7 @@ limitations under the License.
 
   <properties>
     <dataflow.version>1.8.0</dataflow.version>
-    <bigtable.version>0.9.4</bigtable.version>
+    <bigtable.version>0.9.5.1</bigtable.version>
     <slf4j.version>1.7.21</slf4j.version>
 
     <bigtable.table>Dataflow_test</bigtable.table>
@@ -65,6 +65,7 @@ limitations under the License.
       <releases><enabled>false</enabled></releases>
       <snapshots><enabled>true</enabled></snapshots>
     </repository>
+<!--
     <repository>
       <releases>
         <enabled>true</enabled>
@@ -81,8 +82,10 @@ limitations under the License.
       <url>https://maven-central.storage.googleapis.com</url>
       <layout>default</layout>
     </repository>
+ -->
   </repositories>
 
+<!--
   <pluginRepositories>
     <pluginRepository>
       <releases>
@@ -101,6 +104,7 @@ limitations under the License.
       <layout>default</layout>
     </pluginRepository>
   </pluginRepositories>
+ -->
 
   <dependencies>
     <dependency>
@@ -116,7 +120,7 @@ limitations under the License.
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-tcnative-boringssl-static</artifactId>
-      <version>1.1.33.Fork19</version>
+      <version>1.1.33.Fork26</version>
     </dependency>
 
     <dependency>
