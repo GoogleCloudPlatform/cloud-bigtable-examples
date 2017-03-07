@@ -35,8 +35,8 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import org.apache.hadoop.hbase.client.Mutation;
 import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.util.Bytes;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -60,11 +60,7 @@ public class LoadBooks {
           KV<String, Integer> ngram = c.element();
           byte[] key = ngram.getKey().getBytes(STRING_ENCODING);
           int count = ngram.getValue();
-
-          // The byte order of a newly-created byte buffer is
-          // always big endian (network byte order).
-          // http://docs.oracle.com/javase/6/docs/api/java/nio/ByteBuffer.html#order()
-          byte[] data = ByteBuffer.allocate(Integer.BYTES).putInt(count).array();
+          byte[] data = Bytes.toBytes(count);
           c.output(new Put(key).addColumn(FAMILY, COUNT_QUALIFIER, data));
         }
       };
