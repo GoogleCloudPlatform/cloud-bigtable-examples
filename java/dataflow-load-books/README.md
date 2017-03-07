@@ -20,7 +20,7 @@ enable the Cloud Bigtable APIs and create an instance.
 
 Create the `helloworld` table and `cf1` family.
 
-    go get cloud.google.com/go/bigtable/cmd/cbt
+    go get -u cloud.google.com/go/bigtable/cmd/cbt
     cbt -project=my-project -instance=my-instance ls
     cbt -project=my-project -instance=my-instance createtable helloworld
     cbt -project=my-project -instance=my-instance createfamily helloworld cf1
