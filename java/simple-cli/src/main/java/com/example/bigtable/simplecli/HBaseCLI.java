@@ -264,7 +264,7 @@ public class HBaseCLI {
             // Create the table based on the passed in arguments.
             // We used the standard HBase Admin and HTableDescriptor classes.
             Admin admin = connection.getAdmin();
-            HTableDescriptor tableDescriptor = new HTableDescriptor(tableName);
+            HTableDescriptor tableDescriptor = new HTableDescriptor(TableName.valueOf(tableName));
             for (String colFamily : columnFamilies) {
                 tableDescriptor.addFamily(new HColumnDescriptor(colFamily));
             }

@@ -23,7 +23,7 @@
   <packaging>jar</packaging>
 
   <properties>
-    <bigtable.version>0.9.3</bigtable.version>
+    <bigtable.version>0.9.5.1</bigtable.version>
     <hbase.version>1.2.1</hbase.version> <!-- Be sure to update thirdparty when you change this -->
     <bigtable.connection>com.google.cloud.bigtable.hbase1_2.BigtableConnection</bigtable.connection>
 
@@ -90,7 +90,7 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-tcnative-boringssl-static</artifactId>
-      <version>1.1.33.Fork19</version>
+      <version>1.1.33.Fork26</version>
     </dependency>
   </dependencies>
 
