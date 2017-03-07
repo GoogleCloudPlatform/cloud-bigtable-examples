@@ -34,7 +34,7 @@
   </parent> -->
 
   <properties>
-    <bigtable.version>0.9.3</bigtable.version>
+    <bigtable.version>0.9.5.1</bigtable.version>
     <hbase.version>1.2.1</hbase.version>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -100,8 +100,15 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-tcnative-boringssl-static</artifactId>
-      <version>1.1.33.Fork19</version>
+      <version>1.1.33.Fork26</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>19.0</version>
+    </dependency>
+
   </dependencies>
 
   <build>
