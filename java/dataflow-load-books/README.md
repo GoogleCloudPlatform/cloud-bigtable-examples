@@ -18,12 +18,12 @@ quickstart](https://cloud.google.com/bigtable/docs/quickstart-hbase) or the
 [cbt quickstart](https://cloud.google.com/bigtable/docs/quickstart-cbt) to
 enable the Cloud Bigtable APIs and create an instance.
 
-Create the `helloworld` table and `cf1` family.
+Create the `books` table and `cf1` family.
 
     go get -u cloud.google.com/go/bigtable/cmd/cbt
     cbt -project=my-project -instance=my-instance ls
-    cbt -project=my-project -instance=my-instance createtable helloworld
-    cbt -project=my-project -instance=my-instance createfamily helloworld cf1
+    cbt -project=my-project -instance=my-instance createtable books
+    cbt -project=my-project -instance=my-instance createfamily books cf1
 
 Run the load tool.
 
@@ -32,7 +32,7 @@ Run the load tool.
         -Dexec.args="--project=my-project \
             --bigtableProjectId=my-project \
             --bigtableInstanceId=my-instance \
-            --bigtableTableId=helloworld \
+            --bigtableTableId=books \
             --runner=BlockingDataflowPipelineRunner \
             --stagingLocation=gs://my-bucket/optional-prefix \
             --inputFile=gs://books/syntactic-ngrams/eng/biarcs.*-of-99.gz"
@@ -54,8 +54,8 @@ To run the tests against a local Bigtable emulator:
 
 1.  Create the test table.
 
-        cbt -project ignored -instance ignored createtable helloworld
-        cbt -project ignored -instance ignored createfamily helloworld cf1
+        cbt -project ignored -instance ignored createtable books 
+        cbt -project ignored -instance ignored createfamily books cf1
 
 1.  Run the tests.
 
