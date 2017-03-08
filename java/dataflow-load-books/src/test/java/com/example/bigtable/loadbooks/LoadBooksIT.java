@@ -44,8 +44,8 @@ public class LoadBooksIT {
   private static final String EMULATOR_ENV = "BIGTABLE_EMULATOR_HOST";
   private static final String INSTANCE_ENV = "BIGTABLE_INSTANCE_ID";
   private static final String PROJECT_ENV = "GOOGLE_CLOUD_PROJECT";
-  private static final String TABLE_NAME = "helloworld";
-  private static final byte[] TABLE_ID = "helloworld".getBytes(StandardCharsets.UTF_8);
+  private static final String TABLE_NAME = "books";
+  private static final byte[] TABLE_ID = "books".getBytes(StandardCharsets.UTF_8);
   private static final byte[] COLUMN_FAMILY_ID = "cf1".getBytes(StandardCharsets.UTF_8);
   private static final byte[] COLUMN_ID = "count".getBytes(StandardCharsets.UTF_8);
 
