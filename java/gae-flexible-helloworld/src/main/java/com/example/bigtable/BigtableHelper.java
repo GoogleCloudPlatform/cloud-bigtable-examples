@@ -71,6 +71,7 @@ public class BigtableHelper implements ServletContextListener {
     return connection;
   }
 
+  @Override
   public void contextInitialized(ServletContextEvent event) {
     // This will be invoked as part of a warmup request, or the first user
     // request if no warmup request was invoked.
@@ -109,6 +110,7 @@ public class BigtableHelper implements ServletContextListener {
     }
   }
 
+  @Override
   public void contextDestroyed(ServletContextEvent event) {
     // App Engine does not currently invoke this method.
     if (connection == null) {
