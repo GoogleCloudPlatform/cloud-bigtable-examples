@@ -64,7 +64,6 @@ public class BigtableHelloWorld {
       return "Table exists.";
     }
     return "Create table " + Bytes.toString(TABLE_NAME);
-
   }
 
   /**

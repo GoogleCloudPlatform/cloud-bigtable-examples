@@ -13,15 +13,19 @@
 #  limitations under the License.
 # [START appyaml]
 runtime: java
-vm: true
-threadsafe: true
+env: flex
 
 handlers:
 - url: /.*
   script: this field is required, but ignored
   secure: always
 
-env_variables:
-  BIGTABLE_PROJECT:   "${bigtable.projectID}"
-  BIGTABLE_INSTANCE:  "${bigtable.instanceID}"
-# [END appyaml]
+resources:
+  cpu: 2
+  memory_gb: 2
+
+manual_scaling:
+  instances: 1
+
+beta_settings:
+  java_quickstart: true

@@ -24,7 +24,7 @@ limitations under the License.
   <artifactId>helloWorld</artifactId>
 
   <properties>
-    <appengine.maven.plugin.version>1.0.0</appengine.maven.plugin.version>
+    <appengine.maven.plugin.version>1.2.1</appengine.maven.plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -34,7 +34,7 @@ limitations under the License.
     <hbase.version>1.2.4</hbase.version>
     <bigtable.projectID>YOUR_PROJECT_ID</bigtable.projectID>
     <bigtable.instanceID>YOUR_INSTANCE_ID</bigtable.instanceID>
-    <jetty-maven-plugin-version>9.3.7.v20160115</jetty-maven-plugin-version>
+    <jetty-maven-plugin-version>9.4.2.v20170220</jetty-maven-plugin-version>
 
     <hadoop.version>2.4.1</hadoop.version>
     <compat.module>hbase-hadoop2-compat</compat.module>
