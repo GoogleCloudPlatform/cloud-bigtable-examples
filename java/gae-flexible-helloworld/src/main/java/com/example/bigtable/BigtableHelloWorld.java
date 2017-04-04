@@ -63,8 +63,7 @@ public class BigtableHelloWorld {
     } catch (IOException e) {
       return "Table exists.";
     }
-    return "Create table " + TABLE_NAME.toString();
-
+    return "Create table " + Bytes.toString(TABLE_NAME);
   }
 
   /**

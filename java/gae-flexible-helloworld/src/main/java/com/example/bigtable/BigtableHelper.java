@@ -34,8 +34,8 @@ import javax.servlet.annotation.WebListener;
 @WebListener
 public class BigtableHelper implements ServletContextListener {
 
-  private static String PROJECT_ID = System.getenv("BIGTABLE_PROJECT");
-  private static String INSTANCE_ID = System.getenv("BIGTABLE_INSTANCE");
+  private static String PROJECT_ID;
+  private static String INSTANCE_ID;
 
 // The initial connection to Cloud Bigtable is an expensive operation -- We cache this Connection
 // to speed things up.  For this sample, keeping them here is a good idea, for
@@ -71,16 +71,10 @@ public class BigtableHelper implements ServletContextListener {
     return connection;
   }
 
+  @Override
   public void contextInitialized(ServletContextEvent event) {
     // This will be invoked as part of a warmup request, or the first user
     // request if no warmup request was invoked.
-
-    if (PROJECT_ID != null && PROJECT_ID.startsWith("$")) {
-      PROJECT_ID = null;
-    }
-    if (INSTANCE_ID != null && INSTANCE_ID.startsWith("$")) {
-      INSTANCE_ID = null;
-    }
 
     if (event != null) {
       sc = event.getServletContext();
@@ -90,6 +84,13 @@ public class BigtableHelper implements ServletContextListener {
       if (INSTANCE_ID == null) {
         INSTANCE_ID = sc.getInitParameter("BIGTABLE_INSTANCE");
       }
+    }
+
+    if (PROJECT_ID != null && PROJECT_ID.startsWith("$")) {
+      PROJECT_ID = null;
+    }
+    if (INSTANCE_ID != null && INSTANCE_ID.startsWith("$")) {
+      INSTANCE_ID = null;
     }
 
     if (PROJECT_ID == null) {
@@ -107,8 +108,10 @@ public class BigtableHelper implements ServletContextListener {
     if (connection == null) {
       sc.log("BigtableHelper-No Connection");
     }
+    sc.log("ctx Initialized: " + PROJECT_ID + " " + INSTANCE_ID);
   }
 
+  @Override
   public void contextDestroyed(ServletContextEvent event) {
     // App Engine does not currently invoke this method.
     if (connection == null) {
