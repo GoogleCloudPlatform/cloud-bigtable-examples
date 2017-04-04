@@ -86,10 +86,10 @@ public class BigtableHelper implements ServletContextListener {
       }
     }
 
-    if (PROJECT_ID != null && PROJECT_ID.startsWith("$")) {
+    if (PROJECT_ID != null && PROJECT_ID.startsWith("@")) {
       PROJECT_ID = null;
     }
-    if (INSTANCE_ID != null && INSTANCE_ID.startsWith("$")) {
+    if (INSTANCE_ID != null && INSTANCE_ID.startsWith("@")) {
       INSTANCE_ID = null;
     }
 
