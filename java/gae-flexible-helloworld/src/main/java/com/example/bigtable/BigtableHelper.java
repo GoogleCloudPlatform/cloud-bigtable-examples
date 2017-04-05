@@ -50,7 +50,9 @@ public class BigtableHelper implements ServletContextListener {
   public static void connect() throws IOException {
 
     if (PROJECT_ID == null || INSTANCE_ID == null ) {
-      sc.log("environment variables BIGTABLE_PROJECT, and BIGTABLE_INSTANCE need to be defined.");
+      if (sc != null) {
+        sc.log("environment variables BIGTABLE_PROJECT, and BIGTABLE_INSTANCE need to be defined.");
+      }
       return;
     }
 
@@ -62,11 +64,15 @@ public class BigtableHelper implements ServletContextListener {
       try {
         connect();
       } catch (IOException e) {
-        sc.log("connect ", e);
+        if (sc != null) {
+          sc.log("connect ", e);
+        }
       }
     }
     if (connection == null) {
-      sc.log("BigtableHelper-No Connection");
+      if (sc != null) {
+        sc.log("BigtableHelper-No Connection");
+      }
     }
     return connection;
   }
@@ -103,12 +109,18 @@ public class BigtableHelper implements ServletContextListener {
     try {
       connect();
     } catch (IOException e) {
-      sc.log("BigtableHelper - connect ", e);
+      if (sc != null) {
+        sc.log("BigtableHelper - connect ", e);
+      }
     }
     if (connection == null) {
-      sc.log("BigtableHelper-No Connection");
+      if (sc != null) {
+        sc.log("BigtableHelper-No Connection");
+      }
     }
-    sc.log("ctx Initialized: " + PROJECT_ID + " " + INSTANCE_ID);
+    if (sc != null) {
+      sc.log("ctx Initialized: " + PROJECT_ID + " " + INSTANCE_ID);
+    }
   }
 
   @Override
@@ -120,7 +132,9 @@ public class BigtableHelper implements ServletContextListener {
     try {
       connection.close();
     } catch (IOException io) {
-      sc.log("contextDestroyed ", io);
+      if (sc != null) {
+        sc.log("contextDestroyed ", io);
+      }
     }
     connection = null;
   }
