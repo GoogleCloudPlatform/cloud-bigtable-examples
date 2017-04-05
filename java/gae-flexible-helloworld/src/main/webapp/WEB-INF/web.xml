@@ -25,10 +25,10 @@ limitations under the License.
   </welcome-file-list>
   <context-param>
       <param-name>BIGTABLE_PROJECT</param-name>
-      <param-value>${bigtable.projectID}</param-value>
+      <param-value>@bigtable.projectID@</param-value>
   </context-param>
   <context-param>
       <param-name>BIGTABLE_INSTANCE</param-name>
-      <param-value>${bigtable.instanceID}</param-value>
+      <param-value>@bigtable.instanceID@</param-value>
   </context-param>
 </web-app>
