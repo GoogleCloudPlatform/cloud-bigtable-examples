@@ -21,7 +21,7 @@ limitations under the License.
   <version>0.1-SNAPSHOT</version>
 
   <groupId>com.example.google.cloud.bigtable</groupId>
-  <artifactId>helloWorld</artifactId>
+  <artifactId>gae-flexible-bigtable-hello</artifactId>
 
   <properties>
     <appengine.maven.plugin.version>1.2.1</appengine.maven.plugin.version>
@@ -122,6 +122,20 @@ limitations under the License.
           </execution>
         </executions>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.0.2</version>
+        <configuration>
+          <encoding>UTF-8</encoding>
+          <delimiters>  <!-- Gradle Delimiter -->
+            <delimiter>@</delimiter>
+          </delimiters>
+          <useDefaultDelimiters>false</useDefaultDelimiters>
+        </configuration>
+      </plugin>
+
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
