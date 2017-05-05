@@ -44,3 +44,6 @@ client-secret.json
 .project
 .classpath
 .settings
+
+# ignore the credential file for the loadgen
+autoscaler/loadgen/loadgen_image/service_account.json
