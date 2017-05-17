@@ -26,9 +26,9 @@ Bigger than a data warehouse, fast enough for real-time access, and less expensi
 
 ## Go
 * [cbt](https://github.com/GoogleCloudPlatform/gcloud-golang/tree/master/bigtable/cmd/cbt) [doc](https://godoc.org/google.golang.org/cloud/bigtable/cmd/cbt) Basic command line interactions with Cloud Bigtable - A really great place to start learning the Go Client.
-* [helloworld](https://github.com/GoogleCloudPlatform/gcloud-golang/tree/master/examples/bigtable/helloworld) - Basic Hello world example application demonstrating how to read and write to a Cloud Bigtable instance. 
-* [usercounter](https://github.com/GoogleCloudPlatform/gcloud-golang/tree/master/examples/bigtable/usercounter) - Accessing Cloud Bigtable from App Engine Flexible
-* [search](https://github.com/GoogleCloudPlatform/gcloud-golang/tree/master/examples/bigtable/search) - Create and search a Cloud Bigtable.
+* [helloworld](https://github.com/GoogleCloudPlatform/golang-samples/tree/master/bigtable/helloworld) - Basic Hello world example application demonstrating how to read and write to a Cloud Bigtable instance. 
+* [usercounter](https://github.com/GoogleCloudPlatform/golang-samples/tree/master/bigtable/usercounter) - Accessing Cloud Bigtable from App Engine Flexible
+* [search](https://github.com/GoogleCloudPlatform/golang-samples/tree/master/bigtable/search) - Create and search a Cloud Bigtable.
 
 ## Python
 * [Hello
