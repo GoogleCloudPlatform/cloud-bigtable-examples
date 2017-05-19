@@ -20,7 +20,7 @@ Bigger than a data warehouse, fast enough for real-time access, and less expensi
 * [GAE Flexible-Hello World](java/gae-flexible-helloworld) - Accessing Cloud Bigtable from App Engine Flexible / JSON Upload / Download
 
 ## Dataflow
-* [Connector-Examples](java/dataflow-connector-examples) - Using the cloud dataflow connector for Bigtable, do write Hello World to two rows, Use Cloud Pub / Sub to count Shakespeare, and count the number of rows in a Table.
+* [Connector-Examples](java/dataflow-connector-examples) - Using the cloud dataflow connector for Bigtable, do write Hello World to two rows, Use Cloud Pub / Sub to count Shakespeare, count the number of rows in a Table, and copy records from BigQuery to BigTable.
 * [Pardo-HelloWorld](java/dataflow-pardo-helloworld) - example of using Cloud Dataflow without the connector.
 * [dataflow-coinbase](java/dataflow-coinbase) - An end to end example that takes the last four hours of Bitcoin data and sends it to Google Cloud Dataflow, which process it and sends it to Google Cloud Bigtable.  Then there is an App Engine Flexible application that displays the data in an angularJS app.
 
