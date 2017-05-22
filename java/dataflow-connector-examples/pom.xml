@@ -51,6 +51,7 @@ limitations under the License.
     <slf4j.version>1.7.21</slf4j.version>
 
     <bigtable.table>Dataflow_test</bigtable.table>
+    <bq.query>SELECT year, month, day, wikimedia_project, language, title, views FROM `bigquery-samples.wikipedia_benchmark.Wiki1M` limit 1000000</bq.query>
     <pubsubTopic>projects/${bigtable.projectID}/topics/shakes</pubsubTopic>
     <bigtable.hbase.version>${bigtable.version}</bigtable.hbase.version>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -260,6 +261,38 @@ limitations under the License.
           </plugin>
           </plugins>
         </build>
+    </profile>
+    <profile>
+      <id>BigQueryBigtableTransfer</id>
+      <activation>
+        <property>
+          <name>BigQueryBigtableTransfer</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.4.0</version>
+            <configuration>
+              <executable>java</executable>
+              <arguments>
+                <argument>-classpath</argument>
+                <classpath/>
+                <argument>com.google.cloud.bigtable.dataflow.example.BigQueryBigtableTransfer</argument>
+                <argument>--runner=BlockingDataflowPipelineRunner</argument>
+                <argument>--project=${bigtable.projectID}</argument>
+                <argument>--bigtableProjectId=${bigtable.projectID}</argument>
+                <argument>--bigtableInstanceId=${bigtable.instanceID}</argument>
+                <argument>--bigtableTableId=${bigtable.table}</argument>
+                <argument>--bqQuery=${bq.query}</argument>
+                <argument>--stagingLocation=${gs}/staging</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
   <build>

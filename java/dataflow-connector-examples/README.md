@@ -79,6 +79,17 @@ There should be a file that looks like count-XXXXXX-of-YYYYYY.  Type:
     gsutil cp gs://my_bucket/count-XXXXXX-of-YYYYYY .
     cat count-XXXXXX-of-YYYYYY
 
+# BigQueryBigtableTransfer - Copying records from BigQuery to Cloud Bigtable
+
+BigQueryBigtableTransfer shows the use of BigQuery as a source, and writes the records into Bigtable.  To make this sample generic, UUID is generated as the item key for each record.  This has to be designed before putting into actual use.
+
+    mvn package exec:exec -DBigQueryBigtableTransfer -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> -Dgs=<Your bucket> -Dbq.query='<BigQuery SQL (Standard SQL)>'
+
+You can verify the results by looking into BigTable:
+
+    gsutil ls gs://my_bucket/**
+
+
 <!--
 # PubsubWordCount - Reading from Cloud Pubsub and writing to Cloud Bigtable
 
