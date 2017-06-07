@@ -333,6 +333,8 @@ Shell.load_command_group(
     catalogjanitor_enabled
     compact_rs
     trace
+    splitormerge_switch
+    splitormerge_enabled
   ],
   # TODO remove older hlog_roll command
   :aliases => {
@@ -357,6 +359,8 @@ Shell.load_command_group(
     remove_peer_tableCFs
     enable_table_replication
     disable_table_replication
+    get_peer_config
+    list_peer_configs
   ]
 )
 
@@ -369,7 +373,9 @@ Shell.load_command_group(
     restore_snapshot
     delete_snapshot
     delete_all_snapshot
+    delete_table_snapshots
     list_snapshots
+    list_table_snapshots
   ]
 )
 

@@ -99,6 +99,38 @@ module Hbase
       end
     end
 
+    #----------------------------------------------------------------------------------------------
+    # Enable/disable one split or merge switch
+    # Returns previous switch setting.
+    def splitormerge_switch(type, enabled)
+      switch_type = nil
+      if type == 'SPLIT'
+        switch_type = org.apache.hadoop.hbase.client.Admin::MasterSwitchType::SPLIT
+      elsif type == 'MERGE'
+        switch_type = org.apache.hadoop.hbase.client.Admin::MasterSwitchType::MERGE
+      else
+        raise ArgumentError, 'only SPLIT or MERGE accepted for type!'
+      end
+      @admin.setSplitOrMergeEnabled(
+        java.lang.Boolean.valueOf(enabled), java.lang.Boolean.valueOf(false),
+        switch_type)[0]
+    end
+
+    #----------------------------------------------------------------------------------------------
+    # Query the current state of the split or merge switch.
+    # Returns the switch's state (true is enabled).
+    def splitormerge_enabled(type)
+      switch_type = nil
+      if type == 'SPLIT'
+        switch_type = org.apache.hadoop.hbase.client.Admin::MasterSwitchType::SPLIT
+      elsif type == 'MERGE'
+        switch_type = org.apache.hadoop.hbase.client.Admin::MasterSwitchType::MERGE
+      else
+        raise ArgumentError, 'only SPLIT or MERGE accepted for type!'
+      end
+      @admin.isSplitOrMergeEnabled(switch_type)
+    end
+
     def locate_region(table_name, row_key)
       locator = @connection.getRegionLocator(TableName.valueOf(table_name))
       begin
@@ -111,8 +143,8 @@ module Hbase
     #----------------------------------------------------------------------------------------------
     # Requests a cluster balance
     # Returns true if balancer ran
-    def balancer()
-      @admin.balancer()
+    def balancer(force)
+      @admin.balancer(java.lang.Boolean::valueOf(force))
     end
 
     #----------------------------------------------------------------------------------------------
@@ -513,6 +545,7 @@ module Hbase
 
       # Get table descriptor
       htd = @admin.getTableDescriptor(TableName.valueOf(table_name))
+      hasTableUpdate = false
 
       # Process all args
       args.each do |arg|
@@ -533,18 +566,11 @@ module Hbase
 
           # If column already exist, then try to alter it. Create otherwise.
           if htd.hasFamily(column_name.to_java_bytes)
-            @admin.modifyColumn(table_name, descriptor)
+            htd.modifyFamily(descriptor)
           else
-            @admin.addColumn(table_name, descriptor)
+            htd.addFamily(descriptor)
           end
-
-          if wait == true
-            puts "Updating all regions with the new schema..."
-            alter_status(table_name)
-          end
-
-          # We bypass descriptor when adding column families; refresh it to apply other args correctly.
-          htd = @admin.getTableDescriptor(TableName.valueOf(table_name))
+          hasTableUpdate = true
           next
         end
 
@@ -554,7 +580,8 @@ module Hbase
           # Delete column family
           if method == "delete"
             raise(ArgumentError, "NAME parameter missing for delete method") unless name
-            @admin.deleteColumn(table_name, name)
+            htd.removeFamily(name.to_java_bytes)
+            hasTableUpdate = true
           # Unset table attributes
           elsif method == "table_att_unset"
             raise(ArgumentError, "NAME parameter missing for table_att_unset method") unless name
@@ -571,7 +598,7 @@ module Hbase
               end
               htd.remove(name)
             end
-            @admin.modifyTable(table_name.to_java_bytes, htd)
+            hasTableUpdate = true
           # Unknown method
           else
             raise ArgumentError, "Unknown method: #{method}"
@@ -581,15 +608,6 @@ module Hbase
             puts("Unknown argument ignored: %s" % [unknown_key])
           end
 
-          if wait == true
-            puts "Updating all regions with the new schema..."
-            alter_status(table_name)
-          end
-
-          if method == "delete"
-            # We bypass descriptor when deleting column families; refresh it to apply other args correctly.
-            htd = @admin.getTableDescriptor(TableName.valueOf(table_name))
-          end
           next
         end
 
@@ -634,17 +652,23 @@ module Hbase
             arg.delete(key)
           end
 
-          @admin.modifyTable(table_name.to_java_bytes, htd)
+          hasTableUpdate = true
 
           arg.each_key do |unknown_key|
             puts("Unknown argument ignored: %s" % [unknown_key])
           end
 
-          if wait == true
-            puts "Updating all regions with the new schema..."
-            alter_status(table_name)
-          end
           next
+        end
+      end
+
+      # Bulk apply all table modifications.
+      if hasTableUpdate
+        @admin.modifyTable(table_name, htd)
+
+        if wait == true
+          puts "Updating all regions with the new schema..."
+          alter_status(table_name)
         end
       end
     end
@@ -911,9 +935,21 @@ module Hbase
     end
 
     #----------------------------------------------------------------------------------------------
+    # Deletes the table snapshots matching the given regex
+    def delete_table_snapshots(tableNameRegex, snapshotNameRegex = ".*")
+      @admin.deleteTableSnapshots(tableNameRegex, snapshotNameRegex).to_a
+    end
+
+    #----------------------------------------------------------------------------------------------
     # Returns a list of snapshots
     def list_snapshot(regex = ".*")
       @admin.listSnapshots(regex).to_a
+    end
+
+    #----------------------------------------------------------------------------------------------
+    # Returns a list of table snapshots
+    def list_table_snapshots(tableNameRegex, snapshotNameRegex = ".*")
+      @admin.listTableSnapshots(tableNameRegex, snapshotNameRegex).to_a
     end
 
     # Apply config specific to a table/column to its descriptor
