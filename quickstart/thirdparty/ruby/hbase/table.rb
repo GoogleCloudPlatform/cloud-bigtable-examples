@@ -281,6 +281,7 @@ EOF
     def _get_internal(row, *args)
       get = org.apache.hadoop.hbase.client.Get.new(row.to_s.to_java_bytes)
       maxlength = -1
+      count = 0
       @converters.clear()
 
       # Normalize args
@@ -369,6 +370,10 @@ EOF
       result = @table.get(get)
       return nil if result.isEmpty
 
+      # Get stale info from results
+      is_stale = result.isStale
+      count += 1
+
       # Print out results.  Result can be Cell or RowResult.
       res = {}
       result.list.each do |kv|
@@ -386,7 +391,7 @@ EOF
       end
 
       # If block given, we've yielded all the results, otherwise just return them
-      return ((block_given?) ? nil : res)
+      return ((block_given?) ? [count, is_stale]: res)
     end
 
     #----------------------------------------------------------------------------------------------
@@ -443,6 +448,9 @@ EOF
         # This will overwrite any startrow/stoprow settings
         scan.setRowPrefixFilter(rowprefixfilter.to_java_bytes) if rowprefixfilter
 
+        # Clear converters from last scan.
+        @converters.clear()
+
         columns.each do |c|
           family, qualifier = parse_column_name(c.to_s)
           if qualifier
@@ -494,8 +502,6 @@ EOF
       count = 0
       res = {}
 
-      @converters.clear()
-
       # Start the scanner
       scan = scan == nil ? _hash_to_scan(args) : scan
       scanner = @table.getScanner(scan)
@@ -505,6 +511,7 @@ EOF
       while iter.hasNext
         row = iter.next
         key = org.apache.hadoop.hbase.util.Bytes::toStringBinary(row.getRow)
+        is_stale |= row.isStale
 
         row.list.each do |kv|
           family = String.from_java_bytes(kv.getFamily)
@@ -530,7 +537,7 @@ EOF
       end
 
       scanner.close()
-      return ((block_given?) ? count : res)
+      return ((block_given?) ? [count, is_stale] : res)
     end
 
      # Apply OperationAttributes to puts/scans/gets
