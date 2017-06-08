@@ -33,14 +33,14 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-monitoring</artifactId>
+      <version>0.19.0-alpha</version>
+    </dependency>
+    <dependency>
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-client-core</artifactId>
       <version>${bigtable.client.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.apis</groupId>
-      <artifactId>google-api-services-monitoring</artifactId>
-      <version>v3-rev400-1.22.0</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>

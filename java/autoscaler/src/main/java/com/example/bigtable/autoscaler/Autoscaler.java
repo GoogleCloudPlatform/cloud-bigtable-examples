@@ -1,5 +1,4 @@
-
-/**
+/*
  * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -22,23 +21,20 @@ package com.example.bigtable.autoscaler;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.text.SimpleDateFormat;
-import java.util.TimeZone;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.joda.time.DateTime;
-
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.monitoring.v3.Monitoring;
-import com.google.api.services.monitoring.v3.MonitoringScopes;
-import com.google.api.services.monitoring.v3.model.Point;
 import com.google.bigtable.admin.v2.Cluster;
 import com.google.cloud.bigtable.grpc.BigtableClusterName;
 import com.google.cloud.bigtable.grpc.BigtableClusterUtilities;
+import com.google.cloud.monitoring.spi.v3.MetricServiceClient;
+import com.google.cloud.monitoring.spi.v3.PagedResponseWrappers.ListTimeSeriesPagedResponse;
+import com.google.monitoring.v3.ListTimeSeriesRequest.TimeSeriesView;
+import com.google.monitoring.v3.Point;
+import com.google.monitoring.v3.ProjectName;
+import com.google.monitoring.v3.TimeInterval;
+import com.google.protobuf.Timestamp;
 
 /**
  * An example that leverages <a href="https://cloud.google.com/bigtable/docs/">Cloud Bigtable</a>
@@ -60,7 +56,7 @@ public class Autoscaler {
 
   /**
    * The minimum number of nodes to use. The default minimum is 3. If you have a lot of data, the
-   * rule of thumb is to not go below 1 node per terabyte for SSD clusters, and 5 terabytes for HDD.
+   * rule of thumb is to not go below 2.5 TB per node for SSD clusters, and 8 TB for HDD.
    * The bigtable.googleapis.com/disk/bytes_used metric is useful in figuring out the minimum number
    * of nodes.
    */
@@ -73,43 +69,11 @@ public class Autoscaler {
    */
   public static final int MAX_NODE_COUNT = 30;
 
-  /**
-   * Builds and returns a CloudMonitoring service object authorized with the
-   * application default credentials.
-   *
-   * @return CloudMonitoring service object that is ready to make requests.
-   * @throws GeneralSecurityException if authentication fails.
-   * @throws IOException              if authentication fails.
-   */
-  static Monitoring createMonitoringService() throws GeneralSecurityException, IOException {
-    // Grab the Application Default Credentials from the environment.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault()
-        .createScoped(MonitoringScopes.all());
-
-    // Create and return the CloudMonitoring service object
-    return new Monitoring.Builder(
-        new NetHttpTransport(),
-        new JacksonFactory(),
-        credential)
-        .setApplicationName("Cloud Bigtable Autoscaler")
-        .build();
-  }
-
-  public static SimpleDateFormat rfc3339 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'");
-
-  static {
-    rfc3339.setTimeZone(TimeZone.getTimeZone("UTC"));
-  }
-
-  protected static String format(DateTime dt) {
-    return rfc3339.format(dt.toDate());
-  }
-
-  private String projectId;
+  private ProjectName projectName;
   private String clusterId;
   private String zoneId;
-  private Monitoring monitoringService;
   private BigtableClusterUtilities clusterUtility;
+  private MetricServiceClient metricServiceClient;
 
   /**
    * Constructor for the auto-scaler with the minimum required information: project and instance ids.
@@ -120,30 +84,13 @@ public class Autoscaler {
    */
   public Autoscaler(String projectId, String instanceId)
       throws GeneralSecurityException, IOException {
-    this.projectId = projectId;
     clusterUtility = BigtableClusterUtilities.forInstance(projectId, instanceId);
     Cluster cluster = clusterUtility.getSingleCluster();
     this.clusterId = new BigtableClusterName(cluster.getName()).getClusterId();
     this.zoneId = BigtableClusterUtilities.getZoneId(cluster);
-    this.monitoringService = createMonitoringService();
-  }
-
-  /**
-   * Constructor with project, instance, cluster and zone ids.
-   * @param projectId
-   * @param instanceId
-   * @param clusterId
-   * @param zoneId
-   * @throws GeneralSecurityException
-   * @throws IOException
-   */
-  public Autoscaler(String projectId, String instanceId, String clusterId, String zoneId)
-      throws GeneralSecurityException, IOException {
-    this.projectId = projectId;
-    this.clusterId = clusterId;
-    this.zoneId = zoneId;
-    this.monitoringService = createMonitoringService();
-    clusterUtility = BigtableClusterUtilities.forInstance(projectId, instanceId);
+    // Instantiates a client
+    metricServiceClient = MetricServiceClient.create();
+    projectName = ProjectName.create(projectId);
   }
 
   /**
@@ -152,13 +99,19 @@ public class Autoscaler {
    * @throws IOException
    */
   Point getLatestValue() throws IOException {
-    return this.monitoringService.projects().timeSeries()
-        .list("projects/" + this.projectId)
-        .setFilter("metric.type=\"" + CPU_METRIC + "\"")
-        .setPageSize(1)
-        .setIntervalStartTime(format(new DateTime().minusMinutes(5)))
-        .setIntervalEndTime(format(new DateTime()))
-        .execute().getTimeSeries().get(0).getPoints().get(0);
+    Timestamp now = asTimestamp(System.currentTimeMillis());
+    Timestamp fiveMinutesAgo =
+        asTimestamp(System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(5));
+    TimeInterval interval =
+        TimeInterval.newBuilder().setStartTime(fiveMinutesAgo).setEndTime(now).build();
+    String filter = "metric.type=\"" + CPU_METRIC + "\"";
+    ListTimeSeriesPagedResponse response =
+        metricServiceClient.listTimeSeries(projectName, filter, interval, TimeSeriesView.FULL);
+    return response.getPage().getValues().iterator().next().getPointsList().get(0);
+  }
+
+  protected Timestamp asTimestamp(long currentTimeMillis) {
+    return Timestamp.newBuilder().setSeconds(TimeUnit.MILLISECONDS.toSeconds(currentTimeMillis)).build();
   }
 
   /**
@@ -200,8 +153,12 @@ public class Autoscaler {
    * @throws GeneralSecurityException
    */
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+    if (args.length < 2) {
+      System.out.println("Usage: " + Autoscaler.class.getName() + " <project-id> <instance-id>");
+      System.exit(-1);
+    }
     Autoscaler autoscaler = new Autoscaler(args[0], args[1]);
     ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    scheduler.scheduleAtFixedRate(autoscaler.getRunnable(), 1, 1, TimeUnit.MINUTES);
+    scheduler.scheduleAtFixedRate(autoscaler.getRunnable(), 0, 1, TimeUnit.MINUTES);
   }
 }
