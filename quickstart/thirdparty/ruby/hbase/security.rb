@@ -137,9 +137,9 @@ module Hbase
       all_perms.each do |value|
           user_name = String.from_java_bytes(value.getUser)
           if (table_regex != nil && isNamespace?(table_regex))
-            namespace = table_regex[1...table_regex.length]
+            namespace = value.getNamespace()
           else
-            namespace = (value.getTableName != nil) ? value.getTableName.getNamespaceAsString() : ''
+            namespace = (value.getTableName != nil) ? value.getTableName.getNamespaceAsString() : value.getNamespace()
           end
           table = (value.getTableName != nil) ? value.getTableName.getNameAsString() : ''
           family = (value.getFamily != nil) ?
@@ -174,12 +174,9 @@ module Hbase
 
      # Does Namespace exist
     def namespace_exists?(namespace_name)
-      namespaceDesc = @admin.getNamespaceDescriptor(namespace_name)
-      if(namespaceDesc == nil)
-        return false
-      else
-        return true
-      end
+      return @admin.getNamespaceDescriptor(namespace_name) != nil
+    rescue org.apache.hadoop.hbase.NamespaceNotFoundException => e
+      return false
     end
 
     # Make sure that security features are available

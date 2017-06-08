@@ -30,7 +30,7 @@ Following these steps should get you to the hbase shell in 3 minutes.
 
 Alternatively you can just use maven directly.
 
-    mvn clean package exec:exec -Dbigtable.projectID=... -Dbigtable.instanceID=...
+    mvn clean package exec:java -Dbigtable.projectID=... -Dbigtable.instanceID=...
 
 ## HBase shell
 

@@ -1,4 +1,5 @@
 #
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -18,38 +19,24 @@
 
 module Shell
   module Commands
-    class UserPermission < Command
+    # Command for set switch for split and merge
+    class SplitormergeSwitch < Command
       def help
-        return <<-EOF
-Show all permissions for the particular user.
-Syntax : user_permission <table>
+        print <<-EOF
+Enable/Disable one switch. You can set switch type 'SPLIT' or 'MERGE'. Returns previous split state.
+Examples:
 
-Note: A namespace must always precede with '@' character.
-
-For example:
-
-    hbase> user_permission
-    hbase> user_permission '@ns1'
-    hbase> user_permission '@.*'
-    hbase> user_permission '@^[a-c].*'
-    hbase> user_permission 'table1'
-    hbase> user_permission 'namespace1:table1'
-    hbase> user_permission '.*'
-    hbase> user_permission '^[A-C].*'
+  hbase> splitormerge_switch 'SPLIT', true
+  hbase> splitormerge_switch 'SPLIT', false
 EOF
       end
 
-      def command(table_regex=nil)
-        #format_simple_command do
-        #admin.user_permission(table_regex)
-        now = Time.now
-        formatter.header(["User", "Namespace,Table,Family,Qualifier:Permission"])
-
-        count = security_admin.user_permission(table_regex) do |user, permission|
-          formatter.row([ user, permission])
+      def command(switch_type, enabled)
+        format_simple_command do
+          formatter.row(
+            [admin.splitormerge_switch(switch_type, enabled) ? 'true' : 'false']
+          )
         end
-
-        formatter.footer(now, count)
       end
     end
   end

@@ -1,4 +1,3 @@
-#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -18,38 +17,26 @@
 
 module Shell
   module Commands
-    class UserPermission < Command
+    class ListPeerConfigs < Command
       def help
         return <<-EOF
-Show all permissions for the particular user.
-Syntax : user_permission <table>
-
-Note: A namespace must always precede with '@' character.
-
-For example:
-
-    hbase> user_permission
-    hbase> user_permission '@ns1'
-    hbase> user_permission '@.*'
-    hbase> user_permission '@^[a-c].*'
-    hbase> user_permission 'table1'
-    hbase> user_permission 'namespace1:table1'
-    hbase> user_permission '.*'
-    hbase> user_permission '^[A-C].*'
-EOF
+          No-argument method that outputs the replication peer configuration for each peer defined on this cluster.
+        EOF
       end
 
-      def command(table_regex=nil)
-        #format_simple_command do
-        #admin.user_permission(table_regex)
-        now = Time.now
-        formatter.header(["User", "Namespace,Table,Family,Qualifier:Permission"])
-
-        count = security_admin.user_permission(table_regex) do |user, permission|
-          formatter.row([ user, permission])
+      def command
+        format_simple_command do
+          peer_configs = replication_admin.list_peer_configs
+          unless peer_configs.nil?
+            peer_configs.each do |peer_config_entry|
+              peer_id = peer_config_entry[0]
+              peer_config = peer_config_entry[1]
+              formatter.row(["PeerId", peer_id])
+              GetPeerConfig.new(@shell).format_peer_config(peer_config)
+              formatter.row([" "])
+            end
+          end
         end
-
-        formatter.footer(now, count)
       end
     end
   end
