@@ -69,10 +69,43 @@ public class Autoscaler {
    */
   public static final int MAX_NODE_COUNT = 30;
 
+  /**
+   * This is the percentage of average CPU used at which to reduce the number of nodes.
+   * <p>
+   * Reducing the number of nodes at 50% average CPU utilization will work for cases where high
+   * throughput is the main concern of the system. Systems that are latency sensitive, such as
+   * online applications, should aim for a lower percentage.
+   */
+  public static double CPU_PERCENT_TO_DOWNSCALE = .5;
+  
+  /**
+   * This is the percentage of average CPU used at which to increase the number of nodes.
+   * <p>
+   * Increase the number of nodes at 70% average CPU utilization is a pretty safe number as a
+   * balance of throughput and latency. This number can go as high as 80% for batch systems that
+   * don't care too much about latency. If this number is too high, latency will have a sudden rapid
+   * increase.
+   */
+  public static double CPU_PERCENT_TO_UPSCALE = .7;
+
+  private static Timestamp timeXSecondsAgo(int secondsAgo) {
+    long timeInSeconds = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+    return Timestamp.newBuilder().setSeconds(timeInSeconds - secondsAgo).build();
+  }
+
   private ProjectName projectName;
   private String clusterId;
   private String zoneId;
+
+  /**
+   * This object can get the size of a cluster and resize it.
+   */
   private BigtableClusterUtilities clusterUtility;
+
+  /**
+   * This object can read metrics from stackdriver. See more <a href=
+   * "https://cloud.google.com/monitoring/docs/reference/libraries#client-libraries-install-java">here<a>.
+   */
   private MetricServiceClient metricServiceClient;
 
   /**
@@ -99,19 +132,14 @@ public class Autoscaler {
    * @throws IOException
    */
   Point getLatestValue() throws IOException {
-    Timestamp now = asTimestamp(System.currentTimeMillis());
-    Timestamp fiveMinutesAgo =
-        asTimestamp(System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(5));
+    Timestamp now = timeXSecondsAgo(0);
+    Timestamp fiveMinutesAgo = timeXSecondsAgo(5);
     TimeInterval interval =
         TimeInterval.newBuilder().setStartTime(fiveMinutesAgo).setEndTime(now).build();
     String filter = "metric.type=\"" + CPU_METRIC + "\"";
     ListTimeSeriesPagedResponse response =
         metricServiceClient.listTimeSeries(projectName, filter, interval, TimeSeriesView.FULL);
     return response.getPage().getValues().iterator().next().getPointsList().get(0);
-  }
-
-  protected Timestamp asTimestamp(long currentTimeMillis) {
-    return Timestamp.newBuilder().setSeconds(TimeUnit.MILLISECONDS.toSeconds(currentTimeMillis)).build();
   }
 
   /**
@@ -124,14 +152,13 @@ public class Autoscaler {
       public void run() {
         try {
           double latestValue = getLatestValue().getValue().getDoubleValue();
-          System.out.println(latestValue);
-          if (latestValue < .5) {
+          if (latestValue < CPU_PERCENT_TO_DOWNSCALE) {
             int clusterSize = clusterUtility.getClusterNodeCount(clusterId, zoneId);
             if (clusterSize > MIN_NODE_COUNT) {
               clusterUtility.setClusterSize(clusterId, zoneId,
                 Math.max(clusterSize - 3, MIN_NODE_COUNT));
             }
-          } else if (latestValue > .7) {
+          } else if (latestValue > CPU_PERCENT_TO_UPSCALE) {
             int clusterSize = clusterUtility.getClusterNodeCount(clusterId, zoneId);
             if (clusterSize <= MAX_NODE_COUNT) {
               clusterUtility.setClusterSize(clusterId, zoneId,
