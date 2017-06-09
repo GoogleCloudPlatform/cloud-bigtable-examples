@@ -88,9 +88,9 @@ public class Autoscaler {
    */
   public static double CPU_PERCENT_TO_UPSCALE = .7;
 
-  private static Timestamp timeXSecondsAgo(int secondsAgo) {
+  private static Timestamp timeXMinutesAgo(int minutesAgo) {
     long timeInSeconds = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
-    return Timestamp.newBuilder().setSeconds(timeInSeconds - secondsAgo).build();
+    return Timestamp.newBuilder().setSeconds(timeInSeconds - (minutesAgo * 60)).build();
   }
 
   private ProjectName projectName;
@@ -132,8 +132,8 @@ public class Autoscaler {
    * @throws IOException
    */
   Point getLatestValue() throws IOException {
-    Timestamp now = timeXSecondsAgo(0);
-    Timestamp fiveMinutesAgo = timeXSecondsAgo(5);
+    Timestamp now = timeXMinutesAgo(0);
+    Timestamp fiveMinutesAgo = timeXMinutesAgo(5);
     TimeInterval interval =
         TimeInterval.newBuilder().setStartTime(fiveMinutesAgo).setEndTime(now).build();
     String filter = "metric.type=\"" + CPU_METRIC + "\"";
