@@ -77,7 +77,7 @@ public class Autoscaler {
    * online applications, should aim for a lower percentage.
    */
   public static double CPU_PERCENT_TO_DOWNSCALE = .5;
-  
+
   /**
    * This is the percentage of average CPU used at which to increase the number of nodes.
    * <p>
@@ -87,6 +87,11 @@ public class Autoscaler {
    * increase.
    */
   public static double CPU_PERCENT_TO_UPSCALE = .7;
+
+  /**
+   * Number of seconds to sleep after a scaling operation to wait for changes to take effect.
+   */
+  private static int SLEEP_DURATION_S = 600;
 
   private static Timestamp timeXMinutesAgo(int minutesAgo) {
     long timeInSeconds = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
@@ -132,6 +137,7 @@ public class Autoscaler {
    * @throws IOException
    */
   Point getLatestValue() throws IOException {
+    // [START get_bigtable_cpu]
     Timestamp now = timeXMinutesAgo(0);
     Timestamp fiveMinutesAgo = timeXMinutesAgo(5);
     TimeInterval interval =
@@ -140,6 +146,7 @@ public class Autoscaler {
     ListTimeSeriesPagedResponse response =
         metricServiceClient.listTimeSeries(projectName, filter, interval, TimeSeriesView.FULL);
     return response.getPage().getValues().iterator().next().getPointsList().get(0);
+    // [END get_bigtable_cpu]
   }
 
   /**
@@ -151,20 +158,24 @@ public class Autoscaler {
       @Override
       public void run() {
         try {
+          // [START scale_bigtable]
           double latestValue = getLatestValue().getValue().getDoubleValue();
           if (latestValue < CPU_PERCENT_TO_DOWNSCALE) {
             int clusterSize = clusterUtility.getClusterNodeCount(clusterId, zoneId);
             if (clusterSize > MIN_NODE_COUNT) {
               clusterUtility.setClusterSize(clusterId, zoneId,
                 Math.max(clusterSize - 3, MIN_NODE_COUNT));
+                Thread.sleep(SLEEP_DURATION_S * 1000);
             }
           } else if (latestValue > CPU_PERCENT_TO_UPSCALE) {
             int clusterSize = clusterUtility.getClusterNodeCount(clusterId, zoneId);
             if (clusterSize <= MAX_NODE_COUNT) {
               clusterUtility.setClusterSize(clusterId, zoneId,
                 Math.min(clusterSize + 3, MAX_NODE_COUNT));
+                Thread.sleep(SLEEP_DURATION_S * 1000);
             }
           }
+          // [END scale_bigtable]
         } catch (Exception e) {
           e.printStackTrace();
         }
