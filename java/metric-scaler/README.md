@@ -35,6 +35,6 @@ To build the sample, we use Maven.
 ```bash
 mvn clean compile
 
-To run the autoscaler:
+To run the metrics scaler:
 
-   mvn exec:java -Dexec.mainClass="com.example.bigtable.autoscaler.Autoscaler" -Dexec.args="<project-id> <bigtable-instance-id>"
+   mvn exec:java -Dexec.mainClass="com.example.bigtable.scaler.MetricScaler" -Dexec.args="<project-id> <bigtable-instance-id>"
