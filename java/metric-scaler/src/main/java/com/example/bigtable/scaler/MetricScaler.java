@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.bigtable.autoscaler;
+package com.example.bigtable.scaler;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -45,7 +45,7 @@ import com.google.protobuf.Timestamp;
  * overloaded.  This example is not a comprehensive solution, but rather a starting point by which
  * a product grade auto-scaler can be built that is targted to your specific situation.
  */
-public class Autoscaler {
+public class MetricScaler {
 
   /**
    * This metric represents the average CPU load of a cluster. More metrics can be found
@@ -70,6 +70,11 @@ public class Autoscaler {
   public static final int MAX_NODE_COUNT = 30;
 
   /**
+   * Number of minutes to wait between checks for scaling operations.  Metrics will take a while to 
+   */
+  public static final long MINUTES_BETWEEN_CHECKS = 10;
+
+  /**
    * This is the percentage of average CPU used at which to reduce the number of nodes.
    * <p>
    * Reducing the number of nodes at 50% average CPU utilization will work for cases where high
@@ -87,11 +92,6 @@ public class Autoscaler {
    * increase.
    */
   public static double CPU_PERCENT_TO_UPSCALE = .7;
-
-  /**
-   * Number of seconds to sleep after a scaling operation to wait for changes to take effect.
-   */
-  private static int SLEEP_DURATION_S = 600;
 
   private static Timestamp timeXMinutesAgo(int minutesAgo) {
     long timeInSeconds = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
@@ -120,7 +120,7 @@ public class Autoscaler {
    * @throws GeneralSecurityException
    * @throws IOException
    */
-  public Autoscaler(String projectId, String instanceId)
+  public MetricScaler(String projectId, String instanceId)
       throws GeneralSecurityException, IOException {
     clusterUtility = BigtableClusterUtilities.forInstance(projectId, instanceId);
     Cluster cluster = clusterUtility.getSingleCluster();
@@ -160,19 +160,18 @@ public class Autoscaler {
         try {
           // [START scale_bigtable]
           double latestValue = getLatestValue().getValue().getDoubleValue();
+          int SIZE_CHANGE_STEP = 3;
           if (latestValue < CPU_PERCENT_TO_DOWNSCALE) {
             int clusterSize = clusterUtility.getClusterNodeCount(clusterId, zoneId);
             if (clusterSize > MIN_NODE_COUNT) {
               clusterUtility.setClusterSize(clusterId, zoneId,
-                Math.max(clusterSize - 3, MIN_NODE_COUNT));
-                Thread.sleep(SLEEP_DURATION_S * 1000);
+                Math.max(clusterSize - SIZE_CHANGE_STEP, MIN_NODE_COUNT));
             }
           } else if (latestValue > CPU_PERCENT_TO_UPSCALE) {
             int clusterSize = clusterUtility.getClusterNodeCount(clusterId, zoneId);
             if (clusterSize <= MAX_NODE_COUNT) {
               clusterUtility.setClusterSize(clusterId, zoneId,
-                Math.min(clusterSize + 3, MAX_NODE_COUNT));
-                Thread.sleep(SLEEP_DURATION_S * 1000);
+                Math.min(clusterSize + SIZE_CHANGE_STEP, MAX_NODE_COUNT));
             }
           }
           // [END scale_bigtable]
@@ -186,17 +185,17 @@ public class Autoscaler {
   /**
    * Given a project id and instance id, checks a the CPU usage every minute, and adjust the node
    * count accordingly.
-   * @param args an Array containing projectId and instanceId to autoscale.
+   * @param args an Array containing projectId and instanceId to scale.
    * @throws IOException
    * @throws GeneralSecurityException
    */
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     if (args.length < 2) {
-      System.out.println("Usage: " + Autoscaler.class.getName() + " <project-id> <instance-id>");
+      System.out.println("Usage: " + MetricScaler.class.getName() + " <project-id> <instance-id>");
       System.exit(-1);
     }
-    Autoscaler autoscaler = new Autoscaler(args[0], args[1]);
+    MetricScaler scaler = new MetricScaler(args[0], args[1]);
     ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    scheduler.scheduleAtFixedRate(autoscaler.getRunnable(), 0, 1, TimeUnit.MINUTES);
+    scheduler.scheduleAtFixedRate(scaler.getRunnable(), 0, MINUTES_BETWEEN_CHECKS, TimeUnit.MINUTES);
   }
 }
