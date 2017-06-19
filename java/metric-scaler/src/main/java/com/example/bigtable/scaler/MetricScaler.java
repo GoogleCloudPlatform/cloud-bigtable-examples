@@ -70,9 +70,15 @@ public class MetricScaler {
   public static final int MAX_NODE_COUNT = 30;
 
   /**
-   * Number of minutes to wait between checks for scaling operations.  Metrics will take a while to 
+   * The number of minutes to wait between checks for scaling operations. It takes a few minutes for
+   * changes to the cluster size to have an impact.
    */
   public static final long MINUTES_BETWEEN_CHECKS = 10;
+
+  /**
+   * The number of nodes to increase or decrease the cluster by.
+   */
+  public static final int SIZE_CHANGE_STEP = 3;
 
   /**
    * This is the percentage of average CPU used at which to reduce the number of nodes.
@@ -94,8 +100,9 @@ public class MetricScaler {
   public static double CPU_PERCENT_TO_UPSCALE = .7;
 
   private static Timestamp timeXMinutesAgo(int minutesAgo) {
+    int secondsAgo = minutesAgo * 60;
     long timeInSeconds = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
-    return Timestamp.newBuilder().setSeconds(timeInSeconds - (minutesAgo * 60)).build();
+    return Timestamp.newBuilder().setSeconds(timeInSeconds - secondsAgo).build();
   }
 
   private ProjectName projectName;
@@ -160,7 +167,6 @@ public class MetricScaler {
         try {
           // [START scale_bigtable]
           double latestValue = getLatestValue().getValue().getDoubleValue();
-          int SIZE_CHANGE_STEP = 3;
           if (latestValue < CPU_PERCENT_TO_DOWNSCALE) {
             int clusterSize = clusterUtility.getClusterNodeCount(clusterId, zoneId);
             if (clusterSize > MIN_NODE_COUNT) {
