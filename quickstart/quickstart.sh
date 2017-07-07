@@ -72,7 +72,7 @@ function handle_error() {
   logerror "Command failed: ${bash_command} on line ${lineno}."
   logerror "Exit code of failed command: ${errcode}"
 
-  consolidate_error_logs
+#  consolidate_error_logs
   exit ${errcode}
 }
 
@@ -146,5 +146,5 @@ fi
 echo "Project ID = ${_projectID}"
 echo "Instance ID= ${_instanceID}"
 
-mvn clean package exec:java -Dbigtable.projectID=${_projectID} -Dbigtable.instanceID=${_instanceID}
+mvn clean package exec:java -Dbigtable.projectID="${_projectID}" -Dbigtable.instanceID="${_instanceID}"
 
