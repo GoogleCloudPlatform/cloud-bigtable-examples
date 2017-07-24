@@ -33,11 +33,7 @@
     </parent>
 
     <properties>
-        <bigtable.version>0.9.7.1</bigtable.version>
-        <hbase.version>1.1.1</hbase.version>
-
-        <hadoop.version>2.4.1</hadoop.version>
-        <compat.module>hbase-hadoop2-compat</compat.module>
+        <bigtable.version>1.0.0-pre1</bigtable.version>
 
         <appengine.version>1.9.26</appengine.version>
         <compileSource>1.7</compileSource>
@@ -46,7 +42,6 @@
         <log4j.version>1.2.17</log4j.version>
         <junit.version>4.11</junit.version>
         <mockito.version>1.9.5</mockito.version>
-        <dataflow.version>1.0.0</dataflow.version>
 
         <gcloud.plugin.version>2.0.9.89.v20151202</gcloud.plugin.version>
 
@@ -116,14 +111,8 @@
 
             <dependency>
                 <groupId>com.google.cloud.bigtable</groupId>
-                <artifactId>bigtable-hbase-1.1</artifactId>
+                <artifactId>bigtable-hbase-1.x</artifactId>
                 <version>${bigtable.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.hbase</groupId>
-                <artifactId>hbase-client</artifactId>
-                <version>${hbase.version}</version>
             </dependency>
 
             <dependency>
@@ -150,12 +139,6 @@
                 <groupId>org.eclipse.jetty.websocket</groupId>
                 <artifactId>websocket-client</artifactId>
                 <version>9.3.0.M2</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.google.cloud.dataflow</groupId>
-                <artifactId>google-cloud-dataflow-java-sdk-all</artifactId>
-                <version>${dataflow.version}</version>
             </dependency>
 
             <dependency>

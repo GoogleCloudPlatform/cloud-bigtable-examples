@@ -105,11 +105,6 @@
       <version>${hbase.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.google.cloud.bigtable</groupId>
-      <artifactId>bigtable-hbase-${hbase.if}</artifactId>
-      <version>${bigtable.version}</version>
-    </dependency>
-    <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-tcnative-boringssl-static</artifactId>
       <version>1.1.33.Fork26</version>
@@ -118,12 +113,6 @@
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase-mapreduce</artifactId>
       <version>${bigtable.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>com.google.cloud.bigtable</groupId>
-          <artifactId>bigtable-hbase-1.1</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
   </dependencies>
 

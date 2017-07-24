@@ -30,8 +30,7 @@ limitations under the License.
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
-    <bigtable.version>0.9.7.1</bigtable.version>
-    <hbase.version>1.2.4</hbase.version>
+    <bigtable.version>1.0.0-pre1</bigtable.version>
     <bigtable.projectID>YOUR_PROJECT_ID</bigtable.projectID>
     <bigtable.instanceID>YOUR_INSTANCE_ID</bigtable.instanceID>
     <jetty-maven-plugin-version>9.4.2.v20170220</jetty-maven-plugin-version>
@@ -51,14 +50,8 @@ limitations under the License.
   <dependencies>
     <dependency>
       <groupId>com.google.cloud.bigtable</groupId>
-      <artifactId>bigtable-hbase-1.2</artifactId>
+      <artifactId>bigtable-hbase-1.x</artifactId>
       <version>${bigtable.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.hbase</groupId>
-      <artifactId>hbase-client</artifactId>
-      <version>${hbase.version}</version>
     </dependency>
 
     <dependency>
