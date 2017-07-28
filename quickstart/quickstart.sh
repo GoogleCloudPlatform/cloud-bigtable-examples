@@ -119,14 +119,14 @@ fi
 
 # Test for api enabled
 
-HAVECLCMD=$(gcloud beta bigtable instances list --project ${_projectID} 2>&1 1>/dev/null | grep ERROR)
+HAVECLCMD=$(gcloud bigtable instances list --project ${_projectID} 2>&1 1>/dev/null | grep ERROR)
 if [[ $HAVECLCMD == ERROR* ]]; then
   echo "Project ID= ${_projectID}"
   prompt 'Instance ID= '
   _instanceID=$PROMPT_RESPONSE
 else
   ix=0
-  for item in $(gcloud beta bigtable clusters list  --format 'value (INSTANCE)'); do
+  for item in $(gcloud bigtable clusters list  --format 'value (INSTANCE)'); do
     _c[$ix]=$item
     ((ix++))
   done
