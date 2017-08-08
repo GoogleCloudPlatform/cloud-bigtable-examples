@@ -2,16 +2,16 @@
 
 ## Overview
 
-This sample demonstrates how to use  [Google Cloud Dataproc](http://cloud.google.com/dataproc), which
+This sample demonstrates how to use  [Google Cloud Dataproc](https://cloud.google.com/dataproc), which
 provides a managed [Apache Spark](https://spark.apache.org/) environment with
-[Google Cloud Bigtable](http://cloud.google.com/bigtable/docs).
+[Google Cloud Bigtable](https://cloud.google.com/bigtable/docs).
 
 This specific example provides the classic map reduce example of counting words
 in a text file.
 
 ## Prerequisites
 
-1. A [Google Cloud project](console.cloud.google.com) with billing enabled. Please
+1. A [Google Cloud project](https://console.cloud.google.com/) with billing enabled. Please
 be aware of [Bigtable](https://cloud.google.com/bigtable/pricing)
 and [Dataproc](https://cloud.google.com/dataproc/docs/resources/pricing) pricing.
 
@@ -40,7 +40,7 @@ Create a Cloud DataProc instance:
 
 The Spark job is assembled into a fat jar with all its dependencies. To build, run
 
-   mvn assembly:assembly
+    mvn assembly:assembly
 
 ## Test your job locally (optional but recommended)
 
@@ -52,8 +52,8 @@ cluster.
 
     spark-submit --master local --class com.example.bigtable.spark.wordcount.WordCount \
     target/cloud-bigtable-dataproc-spark-wordcount-0.1-jar-with-dependencies.jar \
-     your-project-id your-bigtable-instance-id wordcount-scratch \
-     src/test/resources/countme.txt
+    your-project-id your-bigtable-instance-id wordcount-scratch \
+    src/test/resources/countme.txt
 
 The job will create the table specified (here, `wordcount`) if it doesn't already exist.
 
@@ -62,7 +62,7 @@ The job will create the table specified (here, `wordcount`) if it doesn't alread
 ### Create a Google Cloud Storage bucket
 
 For deployed jobs on Cloud Dataproc, it's easiest to read a file from Google
-Cloud Storage. You can use `gsutil` to create the bucket.
+Cloud Storage. You can use `gsutil` to create the bucket:
 
     gsutil mb gs://your-unique-bucket-id
 
