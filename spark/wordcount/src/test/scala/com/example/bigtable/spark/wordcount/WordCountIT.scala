@@ -76,7 +76,7 @@ class WordCountIT extends FlatSpec with BeforeAndAfterEach with BeforeAndAfterAl
   override def afterAll(): Unit = {
     fixture.connection.close()
   }
-
+                   /*
   "writeWordCount" should "write to Bigtable" in {
     val TestWord = "test_word"
     val Count = 3
@@ -91,13 +91,17 @@ class WordCountIT extends FlatSpec with BeforeAndAfterEach with BeforeAndAfterAl
 
     val count = getWordCount(TestWord)
     count should equal(Count)
-  }
+  }                  */
 
   "main runner" should "count words in sample file" in {
     val f = fixture
     val path = getClass.getResource("/countme.txt").getPath
+    val OutputTableName = "wordcount-output"
 
-    WordCount.runner(ProjectId, BigTableInstance, WordCountTableName, path, this.sc)
+    WordCount.runner(ProjectId, BigTableInstance,
+      WordCountTableName,
+      OutputTableName,
+      path, this.sc)
 
     val table = f.connection.getTable(f.tableName)
     val scanner = table.getScanner(new Scan())

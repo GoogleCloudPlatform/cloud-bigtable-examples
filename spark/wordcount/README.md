@@ -28,7 +28,7 @@ install Spark locally.
 
 If you don't already have a Cloud Bigtable instance, create one
 
-     gcloud bigtable instances create test-instance --cluster test-cluster --cluster-zone us-east1-b --cluster-num-nodes 3
+     gcloud beta bigtable instances create test-instance --cluster test-cluster --cluster-zone us-east1-b --cluster-num-nodes 3
 
 ## Create a Cloud Dataproc Cluster
 
@@ -76,7 +76,7 @@ Now submit your job to Cloud Dataproc:
 
     gcloud dataproc jobs submit spark --cluster spark-cluster \
     --class com.example.bigtable.spark.wordcount.WordCount  \
-    --jar target/cloud-bigtable-hello-world-1.0-SNAPSHOT-jar-with-dependencies.jar \
+    --jars target/cloud-bigtable-hello-world-1.0-SNAPSHOT-jar-with-dependencies.jar \
     -- your-project-id your-bigtable-instance-id wordcountproc gs://your-bucket-id/countme.txt
 
 ## Clean up resources
@@ -85,7 +85,7 @@ If you don't want to be charged for continued usage of Bigtable and Dataproc,
 delete your resources.
 
     gsutil rm your-bucket-id
-    gcloud bigtable instances delete test-instance
+    gcloud beta bigtable instances delete test-instance
     gcloud dataproc clusters delete spark-cluster
 
 

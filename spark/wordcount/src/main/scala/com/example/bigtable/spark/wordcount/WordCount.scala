@@ -17,9 +17,12 @@
 package com.example.bigtable.spark.wordcount
 
 import com.google.cloud.bigtable.hbase.BigtableConfiguration
-import org.apache.hadoop.hbase.{HColumnDescriptor, HTableDescriptor, TableName}
+import org.apache.hadoop.hbase.{HColumnDescriptor, HConstants, HTableDescriptor, TableName}
+import org.apache.hadoop.hbase.mapreduce.{TableInputFormat, TableOutputFormat}
 import org.apache.hadoop.hbase.client.{BufferedMutator, Connection, Put, RetriesExhaustedWithDetailsException}
+import org.apache.hadoop.hbase.io.ImmutableBytesWritable
 import org.apache.hadoop.hbase.util.Bytes
+import org.apache.hadoop.mapreduce.Job
 import org.apache.spark.SparkContext
 
 /**
@@ -33,21 +36,6 @@ object WordCount {
 
   def createConnection(ProjectId: String, InstanceID: String): Connection = {
     BigtableConfiguration.connect(ProjectId, InstanceID)
-  }
-
-  /**
-    * Write the count of the word to Cloud Bigtable using the word itself
-    * as the row key.
-    *
-    * @param word    The word we are writing the count of, and row key
-    * @param count   The frequency of the word in the document
-    * @param mutator A Cloud Bigtable mutator for writing
-    */
-  def writeWordCount(word: String, count: Integer, mutator: BufferedMutator) = {
-    mutator.mutate(new Put(Bytes.toBytes(word)).
-      addColumn(ColumnFamilyBytes,
-        ColumnNameBytes,
-        Bytes.toBytes(count)))
   }
 
   /**
@@ -82,8 +70,11 @@ object WordCount {
     * @param fileName   The file (local or gcs) to sort
     * @param sc         The Spark context
     */
-  def runner(projectId: String, instanceId: String,
-             tableName: String, fileName: String,
+  def runner(projectId: String,
+             instanceId: String,
+             tableName: String,
+             outputTableName: String,
+             fileName: String,
              sc: SparkContext) = {
     val createTableConnection = createConnection(projectId, instanceId)
     try {
@@ -92,6 +83,18 @@ object WordCount {
       createTableConnection.close()
     }
 
+    var conf = BigtableConfiguration.configure(
+      "waprin-spark", "test-bigtable2")
+    conf.set(TableInputFormat.INPUT_TABLE, outputTableName)
+    conf.set(TableOutputFormat.OUTPUT_TABLE, outputTableName)
+    conf.setInt(HConstants.HBASE_CLIENT_OPERATION_TIMEOUT, 60000)
+    conf.set(
+      "hbase.client.connection.impl",
+      "com.google.cloud.bigtable.hbase1_x.BigtableConnection")
+    val job = new Job(conf)
+    job.setOutputFormatClass(classOf[TableOutputFormat[ImmutableBytesWritable]])
+    conf = job.getConfiguration()
+
     val wordCounts = sc.textFile(fileName).
       flatMap(_.split(" ")).
       filter(_ != "").map((_, 1)).
@@ -99,7 +102,7 @@ object WordCount {
 
     // Create a per-partition connection to ensure each node has a
     // connection (partitions are on at most 1 node).
-    wordCounts.foreachPartition {
+    /*wordCounts.foreachPartition {
       partition => {
         val partitionConnection = createConnection(projectId, instanceId)
         val table = TableName.valueOf(tableName)
@@ -123,7 +126,8 @@ object WordCount {
           partitionConnection.close()
         }
       }
-    }
+    } */
+    wordCounts.saveAsNewAPIHadoopDataset(conf)
   }
 
   /**
@@ -134,8 +138,9 @@ object WordCount {
     val ProjectId = args(0)
     val InstanceID = args(1)
     val WordCountTableName = args(2)
-    val File = args(3)
+    val OutputTableName = args(3)
+    val File = args(4)
     val sc = new SparkContext()
-    runner(ProjectId, InstanceID, WordCountTableName, File, sc)
+    runner(ProjectId, InstanceID, WordCountTableName, OutputTableName, File, sc)
   }
 }
