@@ -99,6 +99,11 @@ object WordCount {
       flatMap(_.split(" ")).
       filter(_ != "").map((_, 1)).
       reduceByKey((a, b) => a + b)
+      .map({
+        case (word, count) =>
+          (null, new Put(Bytes.toBytes(word))
+            .addColumn(ColumnFamilyBytes, ColumnNameBytes, Bytes.toBytes(count)))
+      })
 
     // Create a per-partition connection to ensure each node has a
     // connection (partitions are on at most 1 node).
