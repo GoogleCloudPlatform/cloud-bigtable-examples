@@ -60,6 +60,14 @@ object WordCount {
     }
   }
 
+  def writeWordCount(word: String, count: Integer, mutator: BufferedMutator) = {
+       mutator.mutate(new Put(Bytes.toBytes(word)).
+         addColumn(ColumnFamilyBytes,
+              ColumnNameBytes,
+              Bytes.toBytes(count)))
+      }
+
+
   /**
     * Main entry point for running the WordCount spark job and writing
     * the results to Bigtable.
@@ -84,7 +92,7 @@ object WordCount {
     }
 
     var conf = BigtableConfiguration.configure(
-      "waprin-spark", "test-bigtable2")
+      "waprin-spark", "test-bigtable")
     conf.set(TableInputFormat.INPUT_TABLE, outputTableName)
     conf.set(TableOutputFormat.OUTPUT_TABLE, outputTableName)
     conf.setInt(HConstants.HBASE_CLIENT_OPERATION_TIMEOUT, 60000)
@@ -104,10 +112,15 @@ object WordCount {
           (null, new Put(Bytes.toBytes(word))
             .addColumn(ColumnFamilyBytes, ColumnNameBytes, Bytes.toBytes(count)))
       })
+    /*
+    val wordCounts = sc.textFile(fileName).
+      flatMap(_.split(" ")).
+      filter(_ != "").map((_, 1)).
+      reduceByKey((a, b) => a + b)
 
     // Create a per-partition connection to ensure each node has a
     // connection (partitions are on at most 1 node).
-    /*wordCounts.foreachPartition {
+    wordCounts.foreachPartition {
       partition => {
         val partitionConnection = createConnection(projectId, instanceId)
         val table = TableName.valueOf(tableName)
@@ -115,9 +128,9 @@ object WordCount {
         try {
           partition.foreach {
             wordCount => {
-              val (word, count) = wordCount
+              val (word, count2) = wordCount
               try {
-                writeWordCount(word, count, mutator)
+                writeWordCount(word, count2, mutator)
               } catch {
                 case retries_e: RetriesExhaustedWithDetailsException => {
                   println("Retries: " + retries_e.getClass)
