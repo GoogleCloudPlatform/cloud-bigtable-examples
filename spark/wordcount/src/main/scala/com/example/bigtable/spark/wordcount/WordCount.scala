@@ -19,7 +19,7 @@ package com.example.bigtable.spark.wordcount
 import com.google.cloud.bigtable.hbase.BigtableConfiguration
 import org.apache.hadoop.hbase.{HColumnDescriptor, HConstants, HTableDescriptor, TableName}
 import org.apache.hadoop.hbase.mapreduce.{TableInputFormat, TableOutputFormat}
-import org.apache.hadoop.hbase.client.{BufferedMutator, Connection, Put, RetriesExhaustedWithDetailsException}
+import org.apache.hadoop.hbase.client.{Connection, Put}
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable
 import org.apache.hadoop.hbase.util.Bytes
 import org.apache.hadoop.mapreduce.Job
@@ -60,14 +60,6 @@ object WordCount {
     }
   }
 
-  def writeWordCount(word: String, count: Integer, mutator: BufferedMutator) = {
-       mutator.mutate(new Put(Bytes.toBytes(word)).
-         addColumn(ColumnFamilyBytes,
-              ColumnNameBytes,
-              Bytes.toBytes(count)))
-      }
-
-
   /**
     * Main entry point for running the WordCount spark job and writing
     * the results to Bigtable.
@@ -91,7 +83,7 @@ object WordCount {
     }
 
     var conf = BigtableConfiguration.configure(
-      projectId, tableName)
+      projectId, instanceId)
     conf.set(TableInputFormat.INPUT_TABLE, tableName)
     conf.set(TableOutputFormat.OUTPUT_TABLE, tableName)
     conf.setInt(HConstants.HBASE_CLIENT_OPERATION_TIMEOUT, 60000)
