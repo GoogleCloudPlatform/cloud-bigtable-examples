@@ -48,7 +48,7 @@ To simplify copying the commands below, set the following environment variables:
 
     GOOGLE_CLOUD_PROJECT=your-project-id
     BIGTABLE_INSTANCE=your-bigtable-instance
-    BIGTALBE_TABLE=wordcount-scratch
+    BIGTABLE_TABLE=wordcount-scratch
     WORDCOUNT_FILE=src/test/resources/countme.txt
 
 ## Test your job locally (optional but recommended)
