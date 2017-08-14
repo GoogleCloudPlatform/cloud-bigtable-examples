@@ -42,6 +42,15 @@ The Spark job is assembled into a fat jar with all of its dependencies. To build
 
     mvn assembly:assembly
 
+## Setting environment variables
+
+To simplify copying the commands below, set the following environment variables:
+
+    GOOGLE_CLOUD_PROJECT=your-project-id
+    BIGTABLE_INSTANCE=your-bigtable-instance
+    BIGTALBE_TABLE=wordcount-scratch
+    WORDCOUNT_FILE=src/test/resources/countme.txt
+
 ## Test your job locally (optional but recommended)
 
 This step requires a local Spark installation.
@@ -52,8 +61,8 @@ cluster.
 
     spark-submit --master local --class com.example.bigtable.spark.wordcount.WordCount \
     target/cloud-bigtable-dataproc-spark-wordcount-0.1-jar-with-dependencies.jar \
-    your-project-id your-bigtable-instance-id wordcount-scratch \
-    src/test/resources/countme.txt
+    $GOOGLE_CLOUD_PROJECT $BIGTABLE_INSTANCE $BIGTABLE_TABLE \
+    $WORDCOUNT_FILE
 
 The job will create the table specified (here, `wordcount-scratch`) if it doesn't already exist.
 
@@ -70,6 +79,11 @@ Once done, upload the sample file (or a file of your choice) to the bucket:
 
     gsutil cp src/test/resources/countme.txt gs://your-unique-bucket-id
 
+Now set an appropriate environment variable:
+
+    WORDCOUNT_FILE=gs://your-unique-bucket-id/countme.txt
+
+
 ### Submit the job to Cloud Dataproc
 
 Now submit your job to Cloud Dataproc:
@@ -77,7 +91,7 @@ Now submit your job to Cloud Dataproc:
     gcloud dataproc jobs submit spark --cluster spark-cluster \
     --class com.example.bigtable.spark.wordcount.WordCount  \
     --jars target/cloud-bigtable-hello-world-1.0-SNAPSHOT-jar-with-dependencies.jar \
-    -- your-project-id your-bigtable-instance-id wordcountproc gs://your-bucket-id/countme.txt
+    -- $GOOGLE_CLOUD_PROJECT $BIGTABLE_INSTANCE $BIGTABLE_TABLE $WORDCOUNT_FILE
 
 ## Clean up resources
 
