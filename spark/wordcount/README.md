@@ -55,7 +55,7 @@ cluster.
     your-project-id your-bigtable-instance-id wordcount-scratch \
     src/test/resources/countme.txt
 
-The job will create the table specified (here, `wordcount`) if it doesn't already exist.
+The job will create the table specified (here, `wordcount-scratch`) if it doesn't already exist.
 
 ## Submit your job to Dataproc
 
