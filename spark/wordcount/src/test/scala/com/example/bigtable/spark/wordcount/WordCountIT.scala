@@ -65,7 +65,6 @@ class WordCountIT extends FlatSpec with BeforeAndAfterEach with BeforeAndAfterAl
     Bytes.toInt(result)
   }
 
-
   /**
     * Deletes scratch table after each test.
     */
@@ -76,22 +75,6 @@ class WordCountIT extends FlatSpec with BeforeAndAfterEach with BeforeAndAfterAl
   override def afterAll(): Unit = {
     fixture.connection.close()
   }
-                   /*
-  "writeWordCount" should "write to Bigtable" in {
-    val TestWord = "test_word"
-    val Count = 3
-
-    val f = fixture
-
-    val mutator = f.connection.getBufferedMutator(f.tableName)
-
-    WordCount.createTableIfNotExists(f.connection, WordCountTableName)
-    WordCount.writeWordCount(TestWord, Count, mutator)
-    mutator.close()
-
-    val count = getWordCount(TestWord)
-    count should equal(Count)
-  }                  */
 
   "main runner" should "count words in sample file" in {
     val f = fixture
@@ -100,7 +83,6 @@ class WordCountIT extends FlatSpec with BeforeAndAfterEach with BeforeAndAfterAl
 
     WordCount.runner(ProjectId, BigTableInstance,
       WordCountTableName,
-      OutputTableName,
       path, this.sc)
 
     val table = f.connection.getTable(f.tableName)

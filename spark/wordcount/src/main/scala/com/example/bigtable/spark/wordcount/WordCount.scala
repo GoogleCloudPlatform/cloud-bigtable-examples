@@ -81,7 +81,6 @@ object WordCount {
   def runner(projectId: String,
              instanceId: String,
              tableName: String,
-             outputTableName: String,
              fileName: String,
              sc: SparkContext) = {
     val createTableConnection = createConnection(projectId, instanceId)
@@ -92,9 +91,9 @@ object WordCount {
     }
 
     var conf = BigtableConfiguration.configure(
-      "waprin-spark", "test-bigtable")
-    conf.set(TableInputFormat.INPUT_TABLE, outputTableName)
-    conf.set(TableOutputFormat.OUTPUT_TABLE, outputTableName)
+      projectId, tableName)
+    conf.set(TableInputFormat.INPUT_TABLE, tableName)
+    conf.set(TableOutputFormat.OUTPUT_TABLE, tableName)
     conf.setInt(HConstants.HBASE_CLIENT_OPERATION_TIMEOUT, 60000)
     conf.set(
       "hbase.client.connection.impl",
@@ -112,39 +111,6 @@ object WordCount {
           (null, new Put(Bytes.toBytes(word))
             .addColumn(ColumnFamilyBytes, ColumnNameBytes, Bytes.toBytes(count)))
       })
-    /*
-    val wordCounts = sc.textFile(fileName).
-      flatMap(_.split(" ")).
-      filter(_ != "").map((_, 1)).
-      reduceByKey((a, b) => a + b)
-
-    // Create a per-partition connection to ensure each node has a
-    // connection (partitions are on at most 1 node).
-    wordCounts.foreachPartition {
-      partition => {
-        val partitionConnection = createConnection(projectId, instanceId)
-        val table = TableName.valueOf(tableName)
-        val mutator = partitionConnection.getBufferedMutator(table)
-        try {
-          partition.foreach {
-            wordCount => {
-              val (word, count2) = wordCount
-              try {
-                writeWordCount(word, count2, mutator)
-              } catch {
-                case retries_e: RetriesExhaustedWithDetailsException => {
-                  println("Retries: " + retries_e.getClass)
-                  throw retries_e.getCauses().get(0)
-                }
-              }
-            }
-          }
-        } finally {
-          mutator.close()
-          partitionConnection.close()
-        }
-      }
-    } */
     wordCounts.saveAsNewAPIHadoopDataset(conf)
   }
 
@@ -156,9 +122,8 @@ object WordCount {
     val ProjectId = args(0)
     val InstanceID = args(1)
     val WordCountTableName = args(2)
-    val OutputTableName = args(3)
-    val File = args(4)
+    val File = args(3)
     val sc = new SparkContext()
-    runner(ProjectId, InstanceID, WordCountTableName, OutputTableName, File, sc)
+    runner(ProjectId, InstanceID, WordCountTableName, File, sc)
   }
 }

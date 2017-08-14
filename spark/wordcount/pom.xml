@@ -53,24 +53,9 @@
         <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-server</artifactId>
-            <version>1.3.1</version>
+            <version>${hbase.version}</version>
         </dependency>
 
-        <!-- hadoop-client and hadoop-common are not used directly. They are
-        included here to workaround an issue with mismatched versions of Guava
-        being needed by hbase-client and spark -->
-        <!--
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-client</artifactId>
-            <version>${hadoop.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-common</artifactId>
-            <version>${hadoop.version}</version>
-        </dependency>
-        -->
 
         <dependency>
             <groupId>org.apache.hbase</groupId>
