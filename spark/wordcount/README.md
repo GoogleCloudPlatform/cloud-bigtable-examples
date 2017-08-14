@@ -38,7 +38,7 @@ Create a Cloud DataProc instance:
 
 ## Build the jar
 
-The Spark job is assembled into a fat jar with all its dependencies. To build, run
+The Spark job is assembled into a fat jar with all of its dependencies. To build, run:
 
     mvn assembly:assembly
 
