@@ -17,7 +17,7 @@ and [Dataproc](https://cloud.google.com/dataproc/docs/resources/pricing) pricing
 
 1. You have the [Google Cloud SDK](https://cloud.google.com/sdk/) installed.
 
-1. You have [Scala](https://www.scala-lang.org/) installed.
+1. (Optional but recommended) You have [Scala](https://www.scala-lang.org/) installed.
 
 1. You have basic familiarity with Spark and Scala. It may be helpful to
 install Spark locally.
