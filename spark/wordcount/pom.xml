@@ -16,7 +16,6 @@
         <spark.version>2.1.1</spark.version>
         <scala.version>2.11.0</scala.version>
         <scalatest.version>3.0.3</scalatest.version>
-        <hadoop.version>2.7.2</hadoop.version>
         <skipTests>true</skipTests>
     </properties>
 
