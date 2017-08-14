@@ -54,18 +54,6 @@ class WordCountIT extends FlatSpec with BeforeAndAfterEach with BeforeAndAfterAl
   }
 
   /**
-    * Helper to read word count from table.
-    * @return
-    */
-  private def getWordCount(word: String): Integer = {
-    val f = fixture
-    val get = new Get(Bytes.toBytes(word))
-    val table = f.connection.getTable(f.tableName)
-    val result = table.get(get).getValue(WordCount.ColumnFamilyBytes, WordCount.ColumnNameBytes)
-    Bytes.toInt(result)
-  }
-
-  /**
     * Deletes scratch table after each test.
     */
   override def afterEach() {
