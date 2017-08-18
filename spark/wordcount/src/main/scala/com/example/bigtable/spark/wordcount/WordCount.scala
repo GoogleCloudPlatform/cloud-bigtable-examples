@@ -16,7 +16,11 @@
 
 package com.example.bigtable.spark.wordcount
 
-import com.google.cloud.bigtable.hbase.BigtableConfiguration
+import java.util.concurrent.TimeUnit
+
+import com.google.bigtable.repackaged.com.google.cloud.bigtable.config.BigtableOptions
+import com.google.cloud.bigtable.hbase.{BigtableConfiguration, BigtableOptionsFactory}
+import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.hbase.{HColumnDescriptor, HConstants, HTableDescriptor, TableName}
 import org.apache.hadoop.hbase.mapreduce.{TableInputFormat, TableOutputFormat}
 import org.apache.hadoop.hbase.client.{Connection, Put}
@@ -34,9 +38,37 @@ object WordCount {
   val ColumnFamilyBytes = Bytes.toBytes(ColumnFamily)
   val ColumnNameBytes = Bytes.toBytes("Count")
 
+
   def createConnection(ProjectId: String, InstanceID: String): Connection = {
     BigtableConfiguration.connect(ProjectId, InstanceID)
   }
+
+
+  /**
+    * Sets parameters well-tuned for batch writes.
+    * Copied from Cloud Bigtable client configuration for Google Cloud
+    * Dataflow.
+    * https://github.com/GoogleCloudPlatform/cloud-bigtable-client/blob/bigtable-client-1.0.0-pre2/bigtable-dataflow-parent/bigtable-hbase-dataflow/src/main/java/com/google/cloud/bigtable/dataflow/CloudBigtableConfiguration.java#L159
+    * @param config Hadoop config to set options on.
+    */
+  private def setBatchConfigOptions(config: Configuration) = {
+    config.set(BigtableOptionsFactory.BIGTABLE_USE_CACHED_DATA_CHANNEL_POOL, "true")
+
+    // Dataflow should use a different endpoint for data operations than online traffic.
+    config.set(BigtableOptionsFactory.BIGTABLE_HOST_KEY, BigtableOptions.BIGTABLE_BATCH_DATA_HOST_DEFAULT)
+
+    config.set(BigtableOptionsFactory.INITIAL_ELAPSED_BACKOFF_MILLIS_KEY, String.valueOf(TimeUnit.SECONDS.toMillis(5)))
+
+    config.set(BigtableOptionsFactory.MAX_ELAPSED_BACKOFF_MILLIS_KEY, String.valueOf(TimeUnit.MINUTES.toMillis(5)))
+
+    // This setting can potentially decrease performance for large scale writes. However, this
+    // setting prevents problems that occur when streaming Sources, such as PubSub, are used.
+    // To override this behavior, call:
+    //    Builder.withConfiguration(BigtableOptionsFactory.BIGTABLE_ASYNC_MUTATOR_COUNT_KEY,
+    //                              BigtableOptions.BIGTABLE_ASYNC_MUTATOR_COUNT_DEFAULT);
+    config.set(BigtableOptionsFactory.BIGTABLE_ASYNC_MUTATOR_COUNT_KEY, "0")
+  }
+
 
   /**
     * Create a table in the Cloud Bigtable instance if it doesn't already
@@ -87,9 +119,10 @@ object WordCount {
     conf.set(TableInputFormat.INPUT_TABLE, tableName)
     conf.set(TableOutputFormat.OUTPUT_TABLE, tableName)
     conf.setInt(HConstants.HBASE_CLIENT_OPERATION_TIMEOUT, 60000)
-    conf.set(
-      "hbase.client.connection.impl",
-      "com.google.cloud.bigtable.hbase1_x.BigtableConnection")
+    setBatchConfigOptions(conf)
+
+    // workaround: https://issues.apache.org/jira/browse/SPARK-21549
+    conf.set("mapreduce.output.fileoutputformat.outputdir", "/tmp")
     val job = new Job(conf)
     job.setOutputFormatClass(classOf[TableOutputFormat[ImmutableBytesWritable]])
     conf = job.getConfiguration()

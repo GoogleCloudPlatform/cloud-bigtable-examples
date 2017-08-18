@@ -90,7 +90,7 @@ Now submit your job to Cloud Dataproc:
 
     gcloud dataproc jobs submit spark --cluster spark-cluster \
     --class com.example.bigtable.spark.wordcount.WordCount  \
-    --jars target/cloud-bigtable-hello-world-1.0-SNAPSHOT-jar-with-dependencies.jar \
+    --jars target/cloud-bigtable-dataproc-spark-wordcount-0.1-jar-with-dependencies.jar \
     -- $GOOGLE_CLOUD_PROJECT $BIGTABLE_INSTANCE $BIGTABLE_TABLE $WORDCOUNT_FILE
 
 ## Clean up resources
