@@ -6,7 +6,7 @@ This sample demonstrates how to use  [Google Cloud Dataproc](https://cloud.googl
 provides a managed [Apache Spark](https://spark.apache.org/) environment with
 [Google Cloud Bigtable](https://cloud.google.com/bigtable/docs).
 
-This specific example uses Spark Streaming to monitor a bucket, do a word
+This specific example uses [Spark Streaming](https://spark.apache.org/streaming/) to monitor a bucket, do a word
 count of files added to the bucket, and writing them to Cloud Bigtable.
 
 ## Prerequisites
