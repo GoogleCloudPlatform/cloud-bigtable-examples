@@ -16,10 +16,8 @@
 
 package com.example.bigtable.spark.wordcount
 
-import com.example.bigtable.spark.wordcount.WordCount.ColumnFamily
-import org.apache.hadoop.hbase.client.{Get, Scan}
-import org.apache.hadoop.hbase.{HColumnDescriptor, HTableDescriptor, TableName}
-import org.apache.hadoop.hbase.util.Bytes
+import org.apache.hadoop.hbase.client.{Scan}
+import org.apache.hadoop.hbase.{TableName}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, FlatSpec, Matchers}
 
 /**

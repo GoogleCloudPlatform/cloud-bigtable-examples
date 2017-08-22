@@ -23,15 +23,11 @@ package com.example.bigtable.spark.wordcount
 import org.scalatest.{BeforeAndAfterAll, Suite}
 
 import org.apache.spark.{SparkConf, SparkContext}
-import org.apache.spark.sql.SparkSession
-
 
 trait SparkSpec extends BeforeAndAfterAll {
   this: Suite =>
 
   private var _sc: SparkContext = _
-  private var _spark: SparkSession = _
-
 
   override def beforeAll(): Unit = {
     super.beforeAll()
@@ -44,9 +40,6 @@ trait SparkSpec extends BeforeAndAfterAll {
 
     _sc = new SparkContext(conf)
 
-    _spark = SparkSession.builder().
-      appName("Spark Bigtable Example").
-      getOrCreate()
     sc.setLogLevel("WARN")
   }
 
@@ -61,7 +54,4 @@ trait SparkSpec extends BeforeAndAfterAll {
   }
 
   implicit def sc: SparkContext = _sc
-  implicit def spark: SparkSession = _spark
-
-
 }
