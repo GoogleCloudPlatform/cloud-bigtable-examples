@@ -116,7 +116,6 @@ object WordCount {
 
     var conf = BigtableConfiguration.configure(
       projectId, instanceId)
-    conf.set(TableInputFormat.INPUT_TABLE, tableName)
     conf.set(TableOutputFormat.OUTPUT_TABLE, tableName)
     conf.setInt(HConstants.HBASE_CLIENT_OPERATION_TIMEOUT, 60000)
     setBatchConfigOptions(conf)
