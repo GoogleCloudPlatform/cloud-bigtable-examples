@@ -30,7 +30,7 @@ permissions and limitations under the License.
   </parent>
 
   <properties>
-    <bigtable.hbase.version>0.9.7.1</bigtable.hbase.version>
+    <bigtable.hbase.version>1.0.0-pre3</bigtable.hbase.version>
     <slf4j.version>1.7.21</slf4j.version>
 
     <bigtable.projectID>bigtable_project_id</bigtable.projectID>

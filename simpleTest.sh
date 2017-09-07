@@ -18,7 +18,7 @@
 
 set -e # exit on error
 
-bucket="rugged-memory-819-bt001" # default bucket
+bucket="lots_of_books" # default bucket
 
 function print_help() {
   echo "${0} [clientVersion] [bucket]"

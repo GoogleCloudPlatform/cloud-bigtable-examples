@@ -18,8 +18,11 @@ package com.example.bigtable.loadbooks;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.bigtable.repackaged.com.google.cloud.hbase.BigtableConfiguration;
-import com.google.common.io.Resources;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Connection;
@@ -32,10 +35,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.io.IOException;
-import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
+import com.google.cloud.bigtable.hbase.BigtableConfiguration;
+import com.google.common.io.Resources;
 
 /** Integration tests for the {@link LoadBooks} Dataflow pipeline. */
 @RunWith(JUnit4.class)
