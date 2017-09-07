@@ -20,6 +20,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.Set;
 import java.util.TreeSet;
 
+import io.grpc.StatusException;
+
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.BufferedMutator;
@@ -28,7 +30,6 @@ import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.RetriesExhaustedWithDetailsException;
 import org.apache.hadoop.hbase.util.Bytes;
 
-import com.google.bigtable.repackaged.io.grpc.StatusException;
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
