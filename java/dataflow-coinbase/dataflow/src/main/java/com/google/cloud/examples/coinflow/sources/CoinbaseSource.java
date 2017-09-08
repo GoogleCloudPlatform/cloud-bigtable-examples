@@ -21,14 +21,13 @@
 package com.google.cloud.examples.coinflow.sources;
 
 import com.google.cloud.bigtable.dataflow.CloudBigtableIO;
+import com.google.cloud.bigtable.dataflow.CloudBigtableOptions;
 import com.google.cloud.bigtable.dataflow.CloudBigtableScanConfiguration;
 import com.google.cloud.dataflow.sdk.Pipeline;
 import com.google.cloud.dataflow.sdk.coders.Coder;
 import com.google.cloud.dataflow.sdk.coders.StringUtf8Coder;
 import com.google.cloud.dataflow.sdk.io.Read;
 import com.google.cloud.dataflow.sdk.io.UnboundedSource;
-import com.google.cloud.dataflow.sdk.options.DataflowPipelineOptions;
-import com.google.cloud.dataflow.sdk.options.Description;
 import com.google.cloud.dataflow.sdk.options.PipelineOptions;
 import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
 import com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner;
@@ -95,8 +94,7 @@ public class CoinbaseSource extends UnboundedSource<String, UnboundedSource.Chec
     CloudBigtableScanConfiguration config =
         new CloudBigtableScanConfiguration.Builder()
             .withProjectId(options.getBigtableProjectId())
-            .withClusterId(options.getBigtableClusterId())
-            .withZoneId(options.getBigtableZoneId())
+            .withInstanceId(options.getBigtableInstanceId())
             .withTableId(options.getBigtableTableId())
             .build();
 
@@ -178,28 +176,5 @@ public class CoinbaseSource extends UnboundedSource<String, UnboundedSource.Chec
     public void finishBundle(DoFn<CoinbaseData, Mutation>.Context c) throws Exception {
       super.finishBundle(c);
     }
-  }
-
-  public interface CloudBigtableOptions extends DataflowPipelineOptions {
-
-    @Description("The Google Cloud projectId for the Cloud Bigtable cluster.")
-    String getBigtableProjectId();
-
-    void setBigtableProjectId(String bigtableProjectId);
-
-    @Description("The Cloud Bigtable cluster id.")
-    String getBigtableClusterId();
-
-    void setBigtableClusterId(String bigtableClusterId);
-
-    @Description("The Google Cloud zoneId in which the cluster resides.")
-    String getBigtableZoneId();
-
-    void setBigtableZoneId(String bigtableZoneId);
-
-    @Description("Optional - The id of the Cloud Bigtable table.")
-    String getBigtableTableId();
-
-    void setBigtableTableId(String bigtableTableId);
   }
 }

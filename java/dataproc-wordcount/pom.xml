@@ -35,7 +35,7 @@
     <bigtable.projectID>YOUR_PROJECT_ID_HERE</bigtable.projectID>
     <bigtable.instanceID>YOUR_INSTANCE_ID_HERE</bigtable.instanceID>
 
-    <bigtable.version>0.9.7.1</bigtable.version>
+    <bigtable.version>1.0.0-pre3</bigtable.version>
     <hbase.version>1.2.1</hbase.version><!-- may need to match Dataproc HBase version -->
     <hbase.if>1.2</hbase.if> <!-- hbase interface - it changed between 1.0 and 1.1.x -->
 
