@@ -15,11 +15,9 @@
  */
 
 package com.google.cloud.examples.coinflow.frontend;
+import com.google.cloud.bigtable.hbase.BigtableConfiguration;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.ConnectionFactory;
 
 import java.io.IOException;
 
@@ -34,8 +32,7 @@ import javax.servlet.ServletContextListener;
 public class BigtableHelper implements ServletContextListener {
 
   private static String PROJECT_ID = System.getenv("BIGTABLE_PROJECT");
-  private static String CLUSTER_ID = System.getenv("BIGTABLE_CLUSTER");
-  private static String ZONE = System.getenv("BIGTABLE_ZONE");
+  private static String INSTANCE_ID = System.getenv("BIGTABLE_INSTANCE");
 
   // The initial connection to Cloud Bigtable is an expensive operation -- We cache this Connection
   // to speed things up.  For this sample, keeping them here is a good idea, for
@@ -48,28 +45,15 @@ public class BigtableHelper implements ServletContextListener {
    * Connect will establish the connection to Cloud Bigtable.
    **/
   public static void connect() throws IOException {
-    Configuration c = HBaseConfiguration.create();
-
-    c.setClass(
-        "hbase.client.connection.impl",
-        com.google.cloud.bigtable.hbase1_1.BigtableConnection.class,
-        org.apache.hadoop.hbase.client.Connection.class); // Required for Cloud Bigtable
-
-    if (ZONE == null) {
-      ZONE = "us-central1-b"; // default
-    }
-    if (PROJECT_ID == null || CLUSTER_ID == null) {
+    if (PROJECT_ID == null || INSTANCE_ID == null) {
       sc.log(
           "environment variables "
-              + "BIGTABLE_PROJECT, BIGTABLE_CLUSTER, and BIGTABLE_ZONE "
+              + "BIGTABLE_PROJECT, and INSTANCE_ID "
               + "need to be defined.");
       return;
     }
-    c.set("google.bigtable.project.id", PROJECT_ID);
-    c.set("google.bigtable.cluster.name", CLUSTER_ID);
-    c.set("google.bigtable.zone.name", ZONE);
 
-    connection = ConnectionFactory.createConnection(c);
+    connection = BigtableConfiguration.connect(PROJECT_ID, INSTANCE_ID);
   }
 
   public static Connection getConnection() {
