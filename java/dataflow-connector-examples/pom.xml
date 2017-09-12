@@ -30,7 +30,7 @@ limitations under the License.
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.google.cloud.bigtable.dataflow</groupId>
-	<artifactId>bigtable-dataflow-example</artifactId>
+	<artifactId>dataflow-connector-examples</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
@@ -46,7 +46,7 @@ limitations under the License.
   -->
 
   <properties>
-    <dataflow.version>1.8.0</dataflow.version>
+    <beam.version>2.1.0</beam.version>
     <bigtable.version>1.0.0-pre3</bigtable.version>
     <slf4j.version>1.7.21</slf4j.version>
 
@@ -108,14 +108,14 @@ limitations under the License.
  -->
 
   <dependencies>
-    <dependency>
-        <groupId>com.google.cloud.dataflow</groupId>
-        <artifactId>google-cloud-dataflow-java-sdk-all</artifactId>
-        <version>${dataflow.version}</version>
+     <dependency>
+       <groupId>org.apache.beam</groupId>
+       <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
+       <version>${beam.version}</version>
     </dependency>
     <dependency>
         <groupId>com.google.cloud.bigtable</groupId>
-        <artifactId>bigtable-hbase-dataflow</artifactId>
+        <artifactId>bigtable-hbase-beam</artifactId>
         <version>${bigtable.version}</version>
     </dependency>
     <dependency>
@@ -185,7 +185,7 @@ limitations under the License.
                 <argument>-classpath</argument>
                 <classpath/>
                 <argument>com.google.cloud.bigtable.dataflow.example.HelloWorldWrite</argument>
-                <argument>--runner=BlockingDataflowPipelineRunner</argument>
+                <argument>--runner=DataflowRunner</argument>
                 <argument>--project=${bigtable.projectID}</argument>
                 <argument>--bigtableProjectId=${bigtable.projectID}</argument>
                 <argument>--bigtableInstanceId=${bigtable.instanceID}</argument>
