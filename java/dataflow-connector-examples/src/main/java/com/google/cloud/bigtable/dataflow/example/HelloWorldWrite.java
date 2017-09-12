@@ -15,18 +15,18 @@
  */
 package com.google.cloud.bigtable.dataflow.example;
 
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.transforms.Create;
+import org.apache.beam.sdk.transforms.DoFn;
+import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.hadoop.hbase.client.Mutation;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
 
-import com.google.cloud.bigtable.dataflow.CloudBigtableIO;
-import com.google.cloud.bigtable.dataflow.CloudBigtableOptions;
-import com.google.cloud.bigtable.dataflow.CloudBigtableTableConfiguration;
-import com.google.cloud.dataflow.sdk.Pipeline;
-import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
-import com.google.cloud.dataflow.sdk.transforms.Create;
-import com.google.cloud.dataflow.sdk.transforms.DoFn;
-import com.google.cloud.dataflow.sdk.transforms.ParDo;
+import com.google.cloud.bigtable.beam.CloudBigtableIO;
+import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
+
 
 /**
  * <p>
@@ -66,7 +66,7 @@ public class HelloWorldWrite {
   static final DoFn<String, Mutation> MUTATION_TRANSFORM = new DoFn<String, Mutation>() {
     private static final long serialVersionUID = 1L;
 
-    @Override
+    @ProcessElement
     public void processElement(DoFn<String, Mutation>.ProcessContext c) throws Exception {
       c.output(new Put(c.element().getBytes()).addColumn(FAMILY, QUALIFIER, VALUE));
     }
@@ -96,20 +96,20 @@ public class HelloWorldWrite {
     CloudBigtableOptions options =
         PipelineOptionsFactory.fromArgs(args).withValidation().as(CloudBigtableOptions.class);
 
-    // CloudBigtableTableConfiguration contains the project, zone, cluster and table to connect to.
     CloudBigtableTableConfiguration config =
-        CloudBigtableTableConfiguration.fromCBTOptions(options);
+        new CloudBigtableTableConfiguration.Builder()
+        .withProjectId(options.getBigtableProjectId())
+        .withInstanceId(options.getBigtableInstanceId())
+        .withTableId(options.getBigtableTableId())
+        .build();
 
     Pipeline p = Pipeline.create(options);
-    // This sets up serialization for Puts and Deletes so that Dataflow can potentially move them
-    // through the network
-    CloudBigtableIO.initializeForWrite(p);
 
     p
        .apply(Create.of("Hello", "World"))
        .apply(ParDo.of(MUTATION_TRANSFORM))
        .apply(CloudBigtableIO.writeToTable(config));
 
-    p.run();
+    p.run().waitUntilFinish();
   }
 }
