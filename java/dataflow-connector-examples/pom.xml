@@ -185,7 +185,7 @@ limitations under the License.
                 <argument>-classpath</argument>
                 <classpath/>
                 <argument>com.google.cloud.bigtable.dataflow.example.HelloWorldWrite</argument>
-                <argument>--runner=DataflowRunner</argument>
+                <argument>--runner=dataflow</argument>
                 <argument>--project=${bigtable.projectID}</argument>
                 <argument>--bigtableProjectId=${bigtable.projectID}</argument>
                 <argument>--bigtableInstanceId=${bigtable.instanceID}</argument>
@@ -216,7 +216,7 @@ limitations under the License.
                 <argument>-classpath</argument>
                 <classpath/>
                 <argument>com.google.cloud.bigtable.dataflow.example.SourceRowCount</argument>
-                <argument>--runner=BlockingDataflowPipelineRunner</argument>
+                <argument>--runner=dataflow</argument>
                 <argument>--project=${bigtable.projectID}</argument>
                 <argument>--bigtableProjectId=${bigtable.projectID}</argument>
                 <argument>--bigtableInstanceId=${bigtable.instanceID}</argument>
@@ -248,7 +248,7 @@ limitations under the License.
                 <argument>-classpath</argument>
                 <classpath/>
                 <argument>com.google.cloud.bigtable.dataflow.example.PubsubWordCount</argument>
-                <argument>--runner=BlockingDataflowPipelineRunner</argument>
+                <argument>--runner=dataflow</argument>
                 <argument>--project=${bigtable.projectID}</argument>
                 <argument>--bigtableProjectId=${bigtable.projectID}</argument>
                 <argument>--bigtableInstanceId=${bigtable.instanceID}</argument>
@@ -281,7 +281,7 @@ limitations under the License.
                 <argument>-classpath</argument>
                 <classpath/>
                 <argument>com.google.cloud.bigtable.dataflow.example.BigQueryBigtableTransfer</argument>
-                <argument>--runner=BlockingDataflowPipelineRunner</argument>
+                <argument>--runner=dataflow</argument>
                 <argument>--project=${bigtable.projectID}</argument>
                 <argument>--bigtableProjectId=${bigtable.projectID}</argument>
                 <argument>--bigtableInstanceId=${bigtable.instanceID}</argument>
