@@ -15,20 +15,19 @@
  */
 package com.google.cloud.bigtable.dataflow.example;
 
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.io.Read;
+import org.apache.beam.sdk.io.TextIO;
+import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.transforms.Count;
+import org.apache.beam.sdk.transforms.DoFn;
+import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.FirstKeyOnlyFilter;
 
-import com.google.cloud.bigtable.dataflow.CloudBigtableIO;
-import com.google.cloud.bigtable.dataflow.CloudBigtableOptions;
-import com.google.cloud.bigtable.dataflow.CloudBigtableScanConfiguration;
-import com.google.cloud.dataflow.sdk.Pipeline;
-import com.google.cloud.dataflow.sdk.io.Read;
-import com.google.cloud.dataflow.sdk.io.TextIO;
-import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
-import com.google.cloud.dataflow.sdk.transforms.Count;
-import com.google.cloud.dataflow.sdk.transforms.DoFn;
-import com.google.cloud.dataflow.sdk.transforms.ParDo;
+import com.google.cloud.bigtable.beam.CloudBigtableIO;
+import com.google.cloud.bigtable.beam.CloudBigtableScanConfiguration;
 
 /**
  * <p>This is a Source example of Bigtable with Dataflow. The main method outs the
@@ -71,7 +70,7 @@ public class SourceRowCount {
   static DoFn<Long, String> stringifier = new DoFn<Long, String>() {
     private static final long serialVersionUID = 1L;
 
-    @Override
+    @ProcessElement
     public void processElement(DoFn<Long, String>.ProcessContext context) throws Exception {
       context.output(context.element().toString());
     }
@@ -91,7 +90,12 @@ public class SourceRowCount {
     // CloudBigtableTableConfiguration contains the project, zone, cluster and table to connect to.
     // You can supply an optional Scan() to filter the rows that will be read.
     CloudBigtableScanConfiguration config =
-        CloudBigtableScanConfiguration.fromCBTOptions(options, scan);
+        new CloudBigtableScanConfiguration.Builder()
+        .withProjectId(options.getBigtableProjectId())
+        .withInstanceId(options.getBigtableInstanceId())
+        .withTableId(options.getBigtableTableId())
+        .withScan(scan)
+        .build();
 
     Pipeline p = Pipeline.create(options);
 
@@ -99,9 +103,9 @@ public class SourceRowCount {
        .apply(Read.from(CloudBigtableIO.read(config)))
        .apply(Count.<Result>globally())
        .apply(ParDo.of(stringifier))
-       .apply(TextIO.Write.to(options.getResultLocation()));
+       .apply(TextIO.write().to(options.getResultLocation()));
 
-    p.run();
+    p.run().waitUntilFinish();
 
     // Once this is done, you can get the result file via "gsutil cp <resultLocation>-00000-of-00001"
   }

@@ -17,32 +17,29 @@ package com.google.cloud.bigtable.dataflow.example;
 
 import java.util.Map;
 
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
+import org.apache.beam.sdk.options.Description;
+import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.transforms.DoFn;
+import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.hadoop.hbase.client.Mutation;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
 
-import com.google.cloud.bigtable.dataflow.CloudBigtableIO;
-import com.google.cloud.bigtable.dataflow.CloudBigtableOptions;
-import com.google.cloud.bigtable.dataflow.CloudBigtableTableConfiguration;
-import com.google.cloud.dataflow.sdk.Pipeline;
-import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
-import com.google.cloud.dataflow.sdk.options.Description;
-import com.google.cloud.dataflow.sdk.transforms.Create;
-import com.google.cloud.dataflow.sdk.transforms.DoFn;
-import com.google.cloud.dataflow.sdk.transforms.ParDo;
-import com.google.cloud.dataflow.sdk.io.BigQueryIO;
 import com.google.api.services.bigquery.model.TableRow;
+import com.google.cloud.bigtable.beam.CloudBigtableIO;
+import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
 
 /**
  * <p>
- * This is an example of Bigtable with Dataflow using a Sink.
- * The main method adds the data from BigQuery into the pipeline,
- * converts them to Puts, and then writes the Puts to a Bigtable table of your choice.
- * In this example, the item key is auto-generated using UUID.
- * This has to be designed/modified according to the access pattern in your application.
- * Prerequisites: Create a bigtable instance/cluster, and create the table. Expecting column family 'cf'
- * create 'bigquery_to_bigtable_test','cf'
- * </p>
+ * This is an example of Bigtable with Dataflow using a Sink. The main method adds the data from
+ * BigQuery into the pipeline, converts them to Puts, and then writes the Puts to a Cloud Bigtable
+ * table of your choice. In this example, the item key is auto-generated using UUID. This has to be
+ * designed/modified according to the access pattern in your application.
+ * <p>
+ * Prerequisites: Create a Cloud Bigtable instance/cluster, and create the table. Expecting column
+ * family 'cf' create 'bigquery_to_bigtable_test','cf'
  */
 
 public class BigQueryBigtableTransfer {
@@ -51,7 +48,7 @@ public class BigQueryBigtableTransfer {
   static final DoFn<TableRow, Mutation> MUTATION_TRANSFORM = new DoFn<TableRow, Mutation>() {
     private static final long serialVersionUID = 1L;
 
-    @Override
+    @ProcessElement
     public void processElement(DoFn<TableRow, Mutation>.ProcessContext c) throws Exception {
 
       TableRow row = c.element();
@@ -81,7 +78,6 @@ public class BigQueryBigtableTransfer {
     @Description("Query for BigQuery")
     String getBqQuery();
     void setBqQuery(String value);
-
   }
 
   /**
@@ -108,21 +104,23 @@ public class BigQueryBigtableTransfer {
     BigQueryBigtableTransferOptions options =
         PipelineOptionsFactory.fromArgs(args).withValidation().as(BigQueryBigtableTransferOptions.class);
 
-    // CloudBigtableTableConfiguration contains the project, zone, cluster and table to connect to.
+    // CloudBigtableTableConfiguration contains the project, instance and table to connect to.
     CloudBigtableTableConfiguration config =
-        CloudBigtableTableConfiguration.fromCBTOptions(options);
+        new CloudBigtableTableConfiguration.Builder()
+        .withProjectId(options.getBigtableProjectId())
+        .withInstanceId(options.getBigtableInstanceId())
+        .withTableId(options.getBigtableTableId())
+        .build();
 
     Pipeline p = Pipeline.create(options);
-    // This sets up serialization for Puts and Deletes so that Dataflow can potentially move them
-    // through the network
-    CloudBigtableIO.initializeForWrite(p);
 
     p
-       .apply(BigQueryIO.Read.named("ReadSourceTable").fromQuery(options.getBqQuery()).usingStandardSql())
-       .apply(ParDo.of(MUTATION_TRANSFORM))
-       .apply(CloudBigtableIO.writeToTable(config));
+        .apply(BigQueryIO.read().from("ReadSourceTable").fromQuery(options.getBqQuery())
+            .usingStandardSql())
+        .apply(ParDo.of(MUTATION_TRANSFORM))
+        .apply(CloudBigtableIO.writeToTable(config));
 
-    p.run();
+    p.run().waitUntilFinish();
 
   }
 }
