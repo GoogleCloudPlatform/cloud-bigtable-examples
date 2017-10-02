@@ -15,36 +15,29 @@
  */
 package com.google.cloud.bigtable.dataflow.example;
 
-import java.io.IOException;
-import java.util.Arrays;
 
+import org.apache.beam.runners.dataflow.DataflowRunner;
+import org.apache.beam.runners.dataflow.options.DataflowPipelineOptions;
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.io.TextIO;
+import org.apache.beam.sdk.io.gcp.pubsub.PubsubIO;
+import org.apache.beam.sdk.options.Default;
+import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.transforms.Count;
+import org.apache.beam.sdk.transforms.DoFn;
+import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.beam.sdk.transforms.windowing.FixedWindows;
+import org.apache.beam.sdk.transforms.windowing.Window;
+import org.apache.beam.sdk.values.KV;
 import org.apache.hadoop.hbase.client.Mutation;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 
-import com.google.api.services.pubsub.Pubsub;
-import com.google.api.services.pubsub.model.PublishRequest;
-import com.google.api.services.pubsub.model.PubsubMessage;
-import com.google.cloud.bigtable.dataflow.CloudBigtableIO;
-import com.google.cloud.bigtable.dataflow.CloudBigtableOptions;
-import com.google.cloud.bigtable.dataflow.CloudBigtableTableConfiguration;
-import com.google.cloud.dataflow.sdk.Pipeline;
-import com.google.cloud.dataflow.sdk.io.PubsubIO;
-import com.google.cloud.dataflow.sdk.io.TextIO;
-import com.google.cloud.dataflow.sdk.options.DataflowPipelineOptions;
-import com.google.cloud.dataflow.sdk.options.Default;
-import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
-import com.google.cloud.dataflow.sdk.runners.DataflowPipelineRunner;
-import com.google.cloud.dataflow.sdk.transforms.Count;
-import com.google.cloud.dataflow.sdk.transforms.DoFn;
-import com.google.cloud.dataflow.sdk.transforms.IntraBundleParallelization;
-import com.google.cloud.dataflow.sdk.transforms.ParDo;
-import com.google.cloud.dataflow.sdk.transforms.windowing.FixedWindows;
-import com.google.cloud.dataflow.sdk.transforms.windowing.Window;
-import com.google.cloud.dataflow.sdk.util.Transport;
-import com.google.cloud.dataflow.sdk.values.KV;
+import com.google.cloud.bigtable.beam.CloudBigtableIO;
+import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
+
 
 /**
  * <p>
@@ -82,7 +75,7 @@ public class PubsubWordCount {
       new DoFn<KV<String, Long>, Mutation>() {
         private static final long serialVersionUID = 1L;
 
-        @Override
+        @ProcessElement
         public void processElement(DoFn<KV<String, Long>, Mutation>.ProcessContext c)
             throws Exception {
           KV<String, Long> element = c.element();
@@ -103,7 +96,7 @@ public class PubsubWordCount {
   static class ExtractWordsFn extends DoFn<String, String> {
     private static final long serialVersionUID = 0;
 
-    @Override
+    @ProcessElement
     public void processElement(ProcessContext c) {
       Instant timestamp = c.timestamp();
       for (String word : c.element().split("[^a-zA-Z']+")) {
@@ -158,33 +151,33 @@ public class PubsubWordCount {
     BigtablePubsubOptions options =
         PipelineOptionsFactory.fromArgs(args).withValidation().as(BigtablePubsubOptions.class);
 
-    // CloudBigtableTableConfiguration contains the project, zone, cluster and table to connect to.
+    // CloudBigtableTableConfiguration contains the project, instance and table to connect to.
     CloudBigtableTableConfiguration config =
-        CloudBigtableTableConfiguration.fromCBTOptions(options);
+        new CloudBigtableTableConfiguration.Builder()
+        .withProjectId(options.getBigtableProjectId())
+        .withInstanceId(options.getBigtableInstanceId())
+        .withTableId(options.getBigtableTableId())
+        .build();
 
     // In order to cancel the pipelines automatically,
     // DataflowPipelineRunner is forced to be used.
     // Also enables the 2 jobs to run at the same time.
-    options.setRunner(DataflowPipelineRunner.class);
+    options.setRunner(DataflowRunner.class);
 
     options.as(DataflowPipelineOptions.class).setStreaming(true);
     Pipeline p = Pipeline.create(options);
 
-    // This sets up serialization for Puts and Deletes so that Dataflow can potentially move them
-    // through the network
-    CloudBigtableIO.initializeForWrite(p);
-
     FixedWindows window = FixedWindows.of(Duration.standardMinutes(options.getWindowSize()));
 
     p
-        .apply(PubsubIO.Read.topic(options.getPubsubTopic()))
+        .apply(PubsubIO.readStrings().fromTopic(options.getPubsubTopic()))
         .apply(Window.<String> into(window))
         .apply(ParDo.of(new ExtractWordsFn()))
         .apply(Count.<String> perElement())
         .apply(ParDo.of(MUTATION_TRANSFORM))
         .apply(CloudBigtableIO.writeToTable(config));
 
-    p.run();
+    p.run().waitUntilFinish();
     // Start a second job to inject messages into a Cloud Pubsub topic
     injectMessages(options);
   }
@@ -192,52 +185,25 @@ public class PubsubWordCount {
   private static void injectMessages(BigtablePubsubOptions options) {
     String inputFile = options.getInputFile();
     String topic = options.getPubsubTopic();
-    DataflowPipelineOptions copiedOptions = options.cloneAs(DataflowPipelineOptions.class);
+    DataflowPipelineOptions copiedOptions = options.as(DataflowPipelineOptions.class);
     copiedOptions.setStreaming(false);
     copiedOptions.setNumWorkers(INJECTORNUMWORKERS);
     copiedOptions.setJobName(copiedOptions.getJobName() + "-injector");
     Pipeline injectorPipeline = Pipeline.create(copiedOptions);
-    injectorPipeline.apply(TextIO.Read.from(inputFile))
+    injectorPipeline.apply(TextIO.read().from(inputFile))
         .apply(ParDo.of(new FilterEmptyStringsFn()))
-        .apply(IntraBundleParallelization.of(new PubsubBound(topic)).withMaxParallelism(20));
-    injectorPipeline.run();
+        .apply(PubsubIO.writeStrings().to(topic));
+    injectorPipeline.run().waitUntilFinish();
   }
 
   static class FilterEmptyStringsFn extends DoFn<String, String> {
     private static final long serialVersionUID = 0;
 
-    @Override
+    @ProcessElement
     public void processElement(ProcessContext c) {
-      if (!c.element().equals("")) {
+      if (!"".equals(c.element())) {
         c.output(c.element());
       }
-    }
-  }
-
-  /** A DoFn that publishes lines to Google Cloud PubSub. */
-  public static class PubsubBound extends DoFn<String, Void> {
-    private static final long serialVersionUID = 0;
-    private final String outputTopic;
-    public transient Pubsub pubsub;
-
-    public PubsubBound(String outputTopic) {
-      this.outputTopic = outputTopic;
-    }
-
-    @Override
-    public void startBundle(Context context) {
-      this.pubsub =
-          Transport.newPubsubClient(context.getPipelineOptions().as(DataflowPipelineOptions.class))
-              .build();
-    }
-
-    @Override
-    public void processElement(ProcessContext c) throws IOException {
-      PubsubMessage pubsubMessage = new PubsubMessage();
-      pubsubMessage.encodeData(c.element().getBytes());
-      PublishRequest publishRequest = new PublishRequest();
-      publishRequest.setMessages(Arrays.asList(pubsubMessage));
-      this.pubsub.projects().topics().publish(outputTopic, publishRequest).execute();
     }
   }
 }
