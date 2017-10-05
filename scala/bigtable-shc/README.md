@@ -43,7 +43,7 @@ If you don't already have a Cloud Bigtable instance, create one
 
 ## Create a Cloud Dataproc Cluster
 
-Create a Cloud Datadroc instance:
+Create a Cloud Dataproc instance:
 
     gcloud dataproc clusters create spark-cluster
 
@@ -68,8 +68,8 @@ disables the Bigtable client from throwing exceptions on namespace operations th
 
 Create environment variables for the following commands:
 
-    MY_BIGTABLE_TABLE=my-table
-    MY_SPARK_CLUSTER=spark-cluster
+    BIGTABLE_TABLE=my-table
+    SPARK_CLUSTER=spark-cluster
 
 ## Build the jar
 
@@ -88,14 +88,14 @@ While you will need a real Bigtable cluster, you can test the Spark job locally,
 if you have Spark insatlled. For testing, consider a Bigtable development
 cluster.
 
-  spark-submit --class com.example.bigtable.spark.shc.BigtableSource --master local[8] target/cloud-bigtable-dataproc-spark-shc-0.1-jar-with-dependencies.jar $MY_BIGTABLE_TABLE
+  spark-submit --class com.example.bigtable.spark.shc.BigtableSource --master local[8] target/cloud-bigtable-dataproc-spark-shc-0.1-jar-with-dependencies.jar $BIGTABLE_TABLE
 
 
 ### Submit the job to Cloud Dataproc
 
 Now submit your job to Cloud Dataproc:
 
-gcloud dataproc jobs submit spark  --cluster $MY_SPARK_CLUSTER --class com.example.bigtable.spark.shc.BigtableSource --jars target/cloud-bigtable-dataproc-spark-shc-0.1-jar-with-dependencies.jar -- $MY_BIGTABLE_TABLE
+gcloud dataproc jobs submit spark  --cluster $SPARK_CLUSTER --class com.example.bigtable.spark.shc.BigtableSource --jars target/cloud-bigtable-dataproc-spark-shc-0.1-jar-with-dependencies.jar -- $BIGTABLE_TABLE
 
 ## Clean up resources
 

@@ -46,6 +46,7 @@ The Spark job is assembled into a fat jar with all of its dependencies. To build
 
 To simplify copying the commands below, set the following environment variables:
 
+    SPARK_CLUSTER=your-spark-cluster
     GOOGLE_CLOUD_PROJECT=your-project-id
     BIGTABLE_INSTANCE=your-bigtable-instance
     BIGTABLE_TABLE=wordcount-scratch
@@ -88,7 +89,7 @@ Now set an appropriate environment variable:
 
 Now submit your job to Cloud Dataproc:
 
-    gcloud dataproc jobs submit spark --cluster spark-cluster \
+    gcloud dataproc jobs submit spark --cluster $SPARK_CLUSTER \
     --class com.example.bigtable.spark.wordcount.WordCount  \
     --jars target/cloud-bigtable-dataproc-spark-wordcount-0.1-jar-with-dependencies.jar \
     -- $GOOGLE_CLOUD_PROJECT $BIGTABLE_INSTANCE $BIGTABLE_TABLE $WORDCOUNT_FILE
