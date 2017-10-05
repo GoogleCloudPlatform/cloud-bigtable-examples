@@ -49,6 +49,7 @@ First create a scratch directory to add files to be counted to.
 To simplify copying the commands below, set the following environment variables:
 
     GOOGLE_CLOUD_PROJECT=your-project-id
+    SPARK_CLUSTER=your-spark-cluster
     BIGTABLE_INSTANCE=your-bigtable-instance
     BIGTABLE_TABLE=wordcount-scratch
     OUTPUT_DIR=a-scratch-file-directory
@@ -95,10 +96,10 @@ Now set an appropriate environment variable:
 
 Now submit your job to Cloud Dataproc:
 
-    gcloud dataproc jobs submit spark --cluster spark-cluster \
+    gcloud dataproc jobs submit spark --cluster $SPARK_CLUSTER \
     --class com.example.bigtable.spark.wordcount.WordCountStreaming  \
-    --jars target/cloud-bigtable-dataproc-spark-wordcount-0.1-jar-with-dependencies.jar \
-    -- $GOOGLE_CLOUD_PROJECT $BIGTABLE_INSTANCE $BIGTABLE_TABLE $WORDCOUNT_FILE
+    --jars target/cloud-bigtable-dataproc-streaming-spark-wordcount-0.1-jar-with-dependencies.jar  \
+    -- $GOOGLE_CLOUD_PROJECT $BIGTABLE_INSTANCE $BIGTABLE_TABLE $OUTPUT_DIR
 
 ### Now add files to the bucket
 
