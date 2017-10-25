@@ -42,6 +42,9 @@ Bigger than a data warehouse, fast enough for real-time access, and less expensi
   A minimal application that demonstrates using the Happybase API create a
   temporary table, write some rows, read them back and clean up.
 
+## NodeJS
+* [Hello World](node/hello-world) - A minimal application that demonstrates using the [`nodejs-bigtable`][nodejs-bigtable] library to create a temporary table, write some rows, read them back and clean up
+
 ## Questions and discussions
 
 If you have questions or run into issues with Google Cloud Bigtable or the
@@ -68,6 +71,7 @@ Apache 2.0; see [LICENSE](LICENSE) for details.
 [travis-shield]: https://travis-ci.org/GoogleCloudPlatform/cloud-bigtable-examples.svg
 [travis-link]: https://travis-ci.org/GoogleCloudPlatform/cloud-bigtable-examples/builds
 [stackoverflow-shield]: https://img.shields.io/badge/stackoverflow-google--cloud--bigtable-blue.svg
+[nodejs-bigtable]: https://github.com/googleapis/nodejs-bigtable
 [stackoverflow-link]: http://stackoverflow.com/search?q=[google-cloud-bigtable]
 [google-cloud-bigtable-discuss]: https://groups.google.com/group/google-cloud-bigtable-discuss
 [google-cloud-bigtable-announce]: https://groups.google.com/group/google-cloud-bigtable-announce
