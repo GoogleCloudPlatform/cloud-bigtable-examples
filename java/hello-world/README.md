@@ -116,7 +116,7 @@ SDK][cloud-sdk-init] with the command:
 
 		gcloud init
 
-Or with the [application-default login](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) command:
+Generate a credentials file by running the [application-default login](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) command:
 
     gcloud auth application-default login
 
