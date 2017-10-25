@@ -1,0 +1,8 @@
+{
+  "name": "bigtable-hello-world-node",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "@google-cloud/bigtable": "^0.10.2"
+  }
+}

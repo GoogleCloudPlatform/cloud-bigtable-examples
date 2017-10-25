@@ -59,6 +59,26 @@ build_java() {
   )
 }
 
+build_node() {
+  echo "travis_fold:start:node_setup"
+  curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
+  export NVM_DIR="$HOME/.nvm"
+  source $NVM_DIR/nvm.sh
+  nvm install 8
+  nvm use 8
+  echo "travis_fold:end:node_setup"
+  (
+  cd node
+  npm install
+  npm run lint
+  npm run doctoc
+  if git status --porcelain | grep -q README.md; then
+    echo "TOC need to be regenerated: \"npm run doctoc\"."
+    exit 1
+  fi
+  )
+}
+
 build_python() {
   sudo pip install --upgrade pip wheel virtualenv
   sudo pip install --upgrade nox-automation
@@ -93,6 +113,9 @@ java_jdk8)
 java_oracle8)
   use_java oracle8
   build_java
+  ;;
+node)
+  build_node
   ;;
 python)
   build_python
