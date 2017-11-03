@@ -25,20 +25,20 @@ Promise.resolve()
     const bigtableClient = bigtable();
     const instance = bigtableClient.instance(INSTANCE_ID);
 
-    /* If the table already exists, add `//` to the start of this line.
-    return [instance.table(TABLE_NAME)];
-    /*/
-
-    console.log(`Creating table ${TABLE_NAME}`);
-    const options = {
-      families: [COLUMN_FAMILY_NAME],
-    };
-    return instance.createTable(TABLE_NAME, options);
-
-    // */
+    table = instance.table(TABLE_NAME);
+    return table.exists();
   })
   .then((data) => {
-    table = data[0];
+    const tableExists = data[0];
+    if (!tableExists) {
+      console.log(`Creating table ${TABLE_NAME}`);
+      const options = {
+        families: [COLUMN_FAMILY_NAME],
+      };
+      return table.create(options);
+    }
+  })
+  .then(() => {
     console.log('Write some greetings to the table');
     const greetings = ['Hello World!', 'Hello Bigtable!', 'Hello Node!'];
     const rowsToInsert = greetings.map((greeting, index) => ({
