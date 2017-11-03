@@ -150,7 +150,7 @@ from the underlying libraries:
     Reading the entire table
       Read: Hello World!
       Read: Hello Bigtable!
-      Read: Hello HBase!
+      Read: Hello Node!
     Delete the table
 
 
