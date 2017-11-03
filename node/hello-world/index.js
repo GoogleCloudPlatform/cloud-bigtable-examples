@@ -36,7 +36,7 @@ const getRowGreeting = (row) => {
     // */
 
     console.log('Write some greetings to the table');
-    const greetings = ['Hello World!', 'Hello Bigtable!', 'Hello HBase!'];
+    const greetings = ['Hello World!', 'Hello Bigtable!', 'Hello Node!'];
     const rowsToInsert = greetings.map((greeting, index) => ({
       key: `greeting${index}`,
       data: {
