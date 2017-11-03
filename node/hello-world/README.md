@@ -98,7 +98,7 @@ Cloud Bigtable and to create VM instances.
 
 Make sure to [enable the Bigtable APIs][enable-bigtable-api].
 
-[enable-bigtable]: https://console.cloud.google.com/apis/library?q=bigtable
+[enable-bigtable-api]: https://console.cloud.google.com/apis/library?q=bigtable
 
 ### Install the Google Cloud SDK.
 
