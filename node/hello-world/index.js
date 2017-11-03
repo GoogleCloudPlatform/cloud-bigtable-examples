@@ -23,17 +23,15 @@ const getRowGreeting = (row) => {
     const bigtableClient = bigtable();
     const instance = bigtableClient.instance(INSTANCE_ID);
 
-    /* If the table already exists, add // to the start of this line.
     const table = instance.table(TABLE_NAME);
-    /*/
-
-    console.log(`Creating table ${TABLE_NAME}`);
-    const options = {
-      families: [COLUMN_FAMILY_NAME],
-    };
-    const [table] = await instance.createTable(TABLE_NAME, options);
-
-    // */
+    const [tableExists] = await table.exists();
+    if (!tableExists) {
+      console.log(`Creating table ${TABLE_NAME}`);
+      const options = {
+        families: [COLUMN_FAMILY_NAME],
+      };
+      await table.create(options);
+    }
 
     console.log('Write some greetings to the table');
     const greetings = ['Hello World!', 'Hello Bigtable!', 'Hello Node!'];
