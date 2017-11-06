@@ -30,7 +30,7 @@ limitations under the License.
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
-    <bigtable.version>1.0.0-pre3</bigtable.version>
+    <bigtable.version>1.0.0-pre4</bigtable.version>
     <bigtable.projectID>YOUR_PROJECT_ID</bigtable.projectID>
     <bigtable.instanceID>YOUR_INSTANCE_ID</bigtable.instanceID>
     <jetty-maven-plugin-version>9.4.2.v20170220</jetty-maven-plugin-version>
@@ -52,12 +52,6 @@ limitations under the License.
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase-1.x</artifactId>
       <version>${bigtable.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-tcnative-boringssl-static</artifactId>
-      <version>1.1.33.Fork26</version>
     </dependency>
 
     <!-- Compile/runtime dependencies -->
