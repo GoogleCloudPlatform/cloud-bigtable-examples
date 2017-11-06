@@ -44,3 +44,7 @@ client-secret.json
 .project
 .classpath
 .settings
+
+# node files
+node_modules/
+package-lock.json
