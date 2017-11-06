@@ -97,6 +97,11 @@ Now submit your job to Cloud Dataproc:
 
 gcloud dataproc jobs submit spark  --cluster $SPARK_CLUSTER --class com.example.bigtable.spark.shc.BigtableSource --jars target/cloud-bigtable-dataproc-spark-shc-0.1-jar-with-dependencies.jar -- $BIGTABLE_TABLE
 
+### Additional examples
+
+In addition to `BigtableSource.scala`, `AgeSource.scala` also demonstrates some simple
+examples usages that may be easier to understand.
+
 ## Clean up resources
 
 If you don't want to be charged for continued usage of Bigtable and Dataproc,
