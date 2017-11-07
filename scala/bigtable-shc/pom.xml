@@ -9,7 +9,7 @@
     <version>0.1</version>
 
     <properties>
-        <bigtable.version>1.0.0-pre2</bigtable.version>
+        <bigtable.version>1.0.0-pre4</bigtable.version>
         <hbase.version>1.3.1</hbase.version>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>com.google.cloud.bigtable</groupId>
             <artifactId>bigtable-hbase-1.x-hadoop</artifactId>
-            <version>1.0.0-pre3 </version>
+            <version>1.0.0-pre4</version>
         </dependency>
         <dependency>
             <groupId> com.hortonworks</groupId>
