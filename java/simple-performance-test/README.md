@@ -126,8 +126,7 @@ application.
 ## Running the application
 
 
-    mvn clean package
-    java -jar target/cloud-bigtable-simple-perf-test-1.0-SNAPSHOT-jar-with-dependencies.jar [project id] [instance id] [table] [row count] [value size]
+    mvn clean compile exec:java -Dexec.mainClass="com.example.bigtable.simpleperf.WritePerfTest" -Dexec.args="[project id] [instance id] [table] [row count] [value size]
 
 
 ## Cleaning up
