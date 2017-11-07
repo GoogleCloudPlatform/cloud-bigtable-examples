@@ -93,7 +93,7 @@ public class WritePerfTest {
       mutator.flush();
       System.out.println(String.format("Flush took %d ms.",
               incrementalStopwatch.elapsed(TimeUnit.MILLISECONDS)));
-      BigtableUtilities.printPerformance("full batch", uberStopwatch, PRINT_COUNT);
+      BigtableUtilities.printPerformance("full batch", uberStopwatch, Math.toIntExact(rowCount));
     } catch (RetriesExhaustedWithDetailsException e) {
       logExceptions(e);
     }
