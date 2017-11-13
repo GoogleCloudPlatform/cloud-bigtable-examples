@@ -1,4 +1,4 @@
-/**
+package com.google.cloud.bigtable.example.bulk_delete; /**
  * Copyright 2017 Google Inc. All Rights Reserved.
  * <p/>
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -17,19 +17,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.cloud.bigtable.example.bulk_delete.simple;
 
+import com.google.cloud.bigtable.beam.AbstractCloudBigtableTableDoFn;
+import com.google.cloud.bigtable.beam.CloudBigtableConfiguration;
 import com.google.cloud.bigtable.beam.CloudBigtableIO;
 import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
-import com.google.cloud.bigtable.example.bulk_delete.simple.steps.DeleteKeyDoFn;
-import com.google.cloud.bigtable.example.bulk_delete.simple.steps.ScanPrefixDoFn;
 import com.google.common.collect.Lists;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.Create;
+import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.Delete;
+import org.apache.hadoop.hbase.client.Mutation;
+import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.filter.KeyOnlyFilter;
 
 public class Main {
   public static void main(String[] args) {
@@ -56,6 +64,41 @@ public class Main {
         .apply("Delete keys", CloudBigtableIO.writeToTable(bigtableConfig));
 
     pipeline.run().waitUntilFinish();
+  }
+
+  /**
+   * Query Bigtable for all of the keys that start with the given prefix.
+   */
+  static class ScanPrefixDoFn extends AbstractCloudBigtableTableDoFn<String, byte[]> {
+    private final String tableId;
+
+    public ScanPrefixDoFn(CloudBigtableConfiguration config, String tableId) {
+      super(config);
+      this.tableId = tableId;
+    }
+
+    @ProcessElement
+    public void processElement(ProcessContext c) throws IOException {
+      Scan scan = new Scan()
+          .setRowPrefixFilter(c.element().getBytes())
+          .setFilter(new KeyOnlyFilter());
+
+      Table table = getConnection().getTable(TableName.valueOf(tableId));
+
+      for (Result result : table.getScanner(scan)) {
+        c.output(result.getRow());
+      }
+    }
+  }
+
+  /**
+   * Converts a row key into a delete mutation to be written to Bigtable.
+   */
+  static class DeleteKeyDoFn extends DoFn<byte[], Mutation> {
+    @ProcessElement
+    public void processElement(ProcessContext c) {
+      c.output(new Delete(c.element()));
+    }
   }
 }
 

@@ -1,4 +1,4 @@
-/**
+package com.google.cloud.bigtable.example.bulk_delete; /**
  * Copyright 2017 Google Inc. All Rights Reserved.
  * <p/>
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -17,28 +17,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.cloud.bigtable.example.bulk_delete.advanced;
 
-import com.google.common.collect.Range;
-import java.io.Serializable;
-import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.beam.runners.dataflow.options.DataflowPipelineOptions;
+import org.apache.beam.sdk.options.Description;
+import org.apache.beam.sdk.options.Validation.Required;
+import org.apache.beam.sdk.options.ValueProvider;
 
-/**
- * Simple wrapper around row key bytes. This allows us to use guava's {@link Range} class.
- */
-public class RowKey implements Comparable<RowKey>, Serializable {
-  private final byte[] bytes;
+interface JobOptions extends DataflowPipelineOptions {
+  @Required
+  @Description("The Google Cloud Bigtable instance ID .")
+  String getBigtableInstanceId();
+  void setBigtableInstanceId(String instanceId);
 
-  public RowKey(byte[] bytes) {
-    this.bytes = bytes;
-  }
-
-  @Override
-  public int compareTo(RowKey rowKey) {
-    return Bytes.compareTo(bytes, rowKey.bytes);
-  }
-
-  public byte[] getBytes() {
-    return bytes;
-  }
+  @Required
+  @Description("The Cloud Bigtable table ID in the instance." )
+  String getBigtableTableId();
+  void setBigtableTableId(String bigtableTableId);
 }
