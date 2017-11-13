@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>bigtable-samples</artifactId>
+    <groupId>com.google.cloud</groupId>
+    <version>1.0.0</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>dataflow-bulk-delete</artifactId>
+
+  <properties>
+    <!-- dependency versions -->
+    <beam.version>2.1.0</beam.version>
+    <bigtable.version>1.0.0-pre4</bigtable.version>
+    <slf4j.version>1.7.21</slf4j.version>
+    <bigtable.hbase.version>${bigtable.version}</bigtable.hbase.version>
+
+    <!-- options -->
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.beam</groupId>
+      <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
+      <version>${beam.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.beam</groupId>
+      <artifactId>beam-runners-direct-java</artifactId>
+      <version>${beam.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud.bigtable</groupId>
+      <artifactId>bigtable-hbase-beam</artifactId>
+      <version>${bigtable.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+  </dependencies>
+</project>
