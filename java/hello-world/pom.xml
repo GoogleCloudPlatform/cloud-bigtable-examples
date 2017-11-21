@@ -32,7 +32,7 @@
   </parent>
 
   <properties>
-    <bigtable.version>1.0.0-pre4</bigtable.version>
+    <bigtable.version>1.0.0</bigtable.version>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
