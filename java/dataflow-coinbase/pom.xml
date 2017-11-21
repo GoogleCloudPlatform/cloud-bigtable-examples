@@ -33,7 +33,7 @@
     </parent>
 
     <properties>
-        <bigtable.version>1.0.0-pre4</bigtable.version>
+        <bigtable.version>1.0.0</bigtable.version>
 
         <appengine.version>1.9.26</appengine.version>
         <compileSource>1.7</compileSource>
