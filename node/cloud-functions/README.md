@@ -89,10 +89,11 @@ contains the `index.js` file you want to deploy:
 
     cd cloud-functions
 
-Run the following command to deploy the Cloud Function (make sure to replace
-`BUCKET_NAME` with what you used for the bucket name):
+The following command will deploy the Cloud Function. Make sure to replace
+`BUCKET_NAME` with what you used for the bucket name. The `region` flag should
+specify the same region as the Bigtable cluster.
 
-    gcloud beta functions deploy helloBigtable --stage-bucket BUCKET_NAME --trigger-topic hello_bigtable
+    gcloud beta functions deploy helloBigtable --stage-bucket BUCKET_NAME --trigger-topic hello_bigtable --region=us-central1
 
 ## Triggering the Cloud Function
 
