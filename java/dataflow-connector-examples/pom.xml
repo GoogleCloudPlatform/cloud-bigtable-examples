@@ -47,7 +47,7 @@ limitations under the License.
 
   <properties>
     <beam.version>2.1.0</beam.version>
-    <bigtable.version>1.0.0-pre3</bigtable.version>
+    <bigtable.version>1.0.0-pre4</bigtable.version>
     <slf4j.version>1.7.21</slf4j.version>
 
     <bigtable.table>Dataflow_test</bigtable.table>
@@ -66,46 +66,7 @@ limitations under the License.
       <releases><enabled>false</enabled></releases>
       <snapshots><enabled>true</enabled></snapshots>
     </repository>
-<!--
-    <repository>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-        <checksumPolicy>warn</checksumPolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-        <updatePolicy>never</updatePolicy>
-        <checksumPolicy>fail</checksumPolicy>
-      </snapshots>
-      <id>google-maven-central</id>
-      <name>Google Maven Central</name>
-      <url>https://maven-central.storage.googleapis.com</url>
-      <layout>default</layout>
-    </repository>
- -->
   </repositories>
-
-<!--
-  <pluginRepositories>
-    <pluginRepository>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-        <checksumPolicy>warn</checksumPolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-        <updatePolicy>never</updatePolicy>
-        <checksumPolicy>fail</checksumPolicy>
-      </snapshots>
-      <id>google-maven-central</id>
-      <name>Google Maven Central</name>
-      <url>https://maven-central.storage.googleapis.com</url>
-      <layout>default</layout>
-    </pluginRepository>
-  </pluginRepositories>
- -->
 
   <dependencies>
      <dependency>
@@ -117,11 +78,6 @@ limitations under the License.
         <groupId>com.google.cloud.bigtable</groupId>
         <artifactId>bigtable-hbase-beam</artifactId>
         <version>${bigtable.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-tcnative-boringssl-static</artifactId>
-      <version>1.1.33.Fork26</version>
     </dependency>
 
     <dependency>
