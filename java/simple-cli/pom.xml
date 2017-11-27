@@ -22,7 +22,7 @@
     <bigtable.projectID>YOUR_PROJECT_ID</bigtable.projectID>
     <bigtable.instanceID>YOUR_INSTANCE_ID</bigtable.instanceID>
 
-    <bigtable.version>1.0.0-pre4</bigtable.version>
+    <bigtable.version>1.0.0</bigtable.version>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
