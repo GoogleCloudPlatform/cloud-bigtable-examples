@@ -88,14 +88,18 @@ While you will need a real Bigtable cluster, you can test the Spark job locally,
 if you have Spark insatlled. For testing, consider a Bigtable development
 cluster.
 
-  spark-submit --class com.example.bigtable.spark.shc.BigtableSource --master local[8] target/cloud-bigtable-dataproc-spark-shc-0.1-jar-with-dependencies.jar $BIGTABLE_TABLE
+    spark-submit --class com.example.bigtable.spark.shc.BigtableSource --master local[8] \
+      target/cloud-bigtable-dataproc-spark-shc-0.1-jar-with-dependencies.jar $BIGTABLE_TABLE
 
 
 ### Submit the job to Cloud Dataproc
 
 Now submit your job to Cloud Dataproc:
 
-gcloud dataproc jobs submit spark  --cluster $SPARK_CLUSTER --class com.example.bigtable.spark.shc.BigtableSource --jars target/cloud-bigtable-dataproc-spark-shc-0.1-jar-with-dependencies.jar -- $BIGTABLE_TABLE
+    gcloud dataproc jobs submit spark  --cluster $SPARK_CLUSTER \
+      --class com.example.bigtable.spark.shc.BigtableSource \
+      --jars target/cloud-bigtable-dataproc-spark-shc-0.1-jar-with-dependencies.jar \
+      -- $BIGTABLE_TABLE
 
 ### Additional examples
 
