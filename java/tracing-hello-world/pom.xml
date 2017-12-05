@@ -17,11 +17,11 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.example.bigtable.helloworld</groupId>
-  <artifactId>cloud-bigtable-hello-world</artifactId>
+  <artifactId>cloud-bigtable-tracing-hello-world</artifactId>
 
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>cloud-bigtable-hello-world</name>
+  <name>cloud-bigtable-tracing-hello-world</name>
   <url>http://maven.apache.org</url>
 
   <parent>

@@ -165,9 +165,14 @@ in the Google Cloud Console.
 
 ## Pom.xml
 
-Setting up the [pom.xml](pom.xml) is as follows
+Setting up the [pom.xml](pom.xml) is as follows.  
+
+NOTE: cloud-bigtable-hbase-1.x-hadoop, cloud-bigtable-dataflow and cloud-bigtable-beam
+do not require this configuration, since they already include
+[shaded](https://maven.apache.org/plugins/maven-shade-plugin/) versions of tracing dependencies.
 
 ```xml
+
    <!-- Opencensus dependencies.  Pay close attention to the exclusions. -->
 
     <!-- OpenCensus Java implementation -->
@@ -220,16 +225,25 @@ Here is the code from [HelloWorld](src/main/java/com/example/cloud/bigtable/hell
 that sets up tracing
 
 ```java
+
     // Force tracing for every request for demo purposes.
     Tracing.getTraceConfig().updateActiveTraceParams(
-      TraceParams.DEFAULT.toBuilder().setSampler(Samplers.probabilitySampler(1)).build());
-    // setup for zpages
+        TraceParams.DEFAULT.toBuilder().setSampler(Samplers.probabilitySampler(1)).build());
+
+    // HBase Bigtable specific setup for zpages
     HBaseTracingUtilities.setupTracingConfig();
 
-    // StackdriverStatsExporter.createAndRegisterWithProjectId(projectId, Duration.create(10, 0));
     StackdriverExporter.createAndRegisterWithProjectId(projectId);
 
+    // Start a web server on port 8080 for tracing data
     ZPageHandlers.startHttpServerAndRegisterAll(8080);
+
+    doHelloWorld(projectId, instanceId);
+
+    System.out.println("Sleeping for 1 minute so that you can view http://localhost:8080/tracez");
+    // Sleep for 1 minute.
+    Thread.sleep(TimeUnit.MINUTES.toSeconds(1));
+
 ```
 
 ## Cleaning up
