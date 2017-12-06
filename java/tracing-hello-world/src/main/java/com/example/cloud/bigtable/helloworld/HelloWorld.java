@@ -44,8 +44,6 @@ import org.apache.hadoop.hbase.util.Bytes;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.plaf.synth.SynthSeparatorUI;
-
 /**
  * A minimal application that connects to Cloud Bigtable using the native HBase API
  * and performs some basic operations.

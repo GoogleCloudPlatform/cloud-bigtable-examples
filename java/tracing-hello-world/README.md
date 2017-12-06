@@ -65,7 +65,7 @@ a [free trial][free-trial].
 
 ## Before you begin
 
-This sample assumes you have [Java 8][java8] installed.
+This sample assumes you have [Java 8][java8] JDK installed.
 
 [java8]: http://www.oracle.com/technetwork/java/javase/downloads/
 
