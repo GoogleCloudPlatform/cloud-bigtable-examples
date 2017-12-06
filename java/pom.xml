@@ -40,5 +40,6 @@ limitations under the License.
     <module>metric-scaler</module>
     <module>simple-cli</module>
     <module>simple-performance-test</module>
+    <module>dataflow-bulk-delete</module>
   </modules>
 </project>

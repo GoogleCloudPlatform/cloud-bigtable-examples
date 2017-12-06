@@ -6,7 +6,7 @@ This is based on the simpler [App Engine Flexible example](https://github.com/Go
 
 # Prerequisites
 
-1. Follow all the steps to start the Dataflow/Bigtable backend pipeline
+1. Follow all the com.google.cloud.bigtable.example.bulk_delete.steps to start the Dataflow/Bigtable backend pipeline
 1. Install [Bower](http://bower.io/)
 1. `bower install`
 
