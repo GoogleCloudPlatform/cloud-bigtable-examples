@@ -1,0 +1,9 @@
+{
+  "name": "bigtable-cloud-functions-example",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "@google-cloud/bigtable": "^0.10.2",
+    "mathjs": "^3.16.5"
+  }
+}
