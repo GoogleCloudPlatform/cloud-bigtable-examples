@@ -18,12 +18,18 @@ Otherwise please do the following:
   - Run a gcloud command to create a DataProc Cluster with initialization action to set it up to use Bigtable via Pig on Dataproc
     - The cloud-bigtable bucket contains a pig_init.sh file that will download nesessary mapreduce jars to set up your Dataproc cluster with Pig
   ```sh
-  ~$ gcloud beta dataproc clusters create [--zone=ZONE] [--initialization-actions=gs://cloud-bigtable/dataproc/pig_init.sh --[WORKER-MACHINE-TYPE] [YOUR CLUSTER NAME]
+  ~$ gcloud beta dataproc clusters create [--zone=ZONE] \
+       --initialization-actions=gs://cloud-bigtable/dataproc/pig_init.sh 
+       --worker-machine-type=[WORKER-MACHINE-TYPE] \
+       [YOUR CLUSTER NAME]
   ```
  
   - **_EXAMPLE_**
   ```sh
-  ~$ gcloud beta dataproc clusters create --zone=us-east1-c --initialization-actions=gs://cloud-bigtable/dataproc/pig_init.sh --worker-machine-type=n1-standard-1 my-cluster-dp
+  ~$ gcloud beta dataproc clusters create --zone=us-east1-c \
+       --initialization-actions=gs://cloud-bigtable/dataproc/pig_init.sh \
+       --worker-machine-type=n1-standard-1 \
+       my-cluster-dp
   ```
 - Refer to the list of availiable [worker-machine-types](https://cloud.google.com/compute/docs/machine-types)
 
@@ -31,7 +37,8 @@ Otherwise please do the following:
 
   - Run a gcloud command to create a bigtable instance
   ```sh
-  ~$ gcloud beta bigtable instances create [INSTANCE_ID] --cluster=[CLUSTER_ID] --cluster-zone=[CLUSTER_ZONE] --instance-type=[INSTANCE_TYPE; default="PRODUCTION"] --description=[DESCRIPTION]
+  ~$ gcloud beta bigtable instances create [INSTANCE_ID] --cluster=[CLUSTER_ID] --cluster-zone=[CLUSTER_ZONE] \
+       --instance-type=[INSTANCE_TYPE; default="PRODUCTION"] --description=[DESCRIPTION]
   ```
   - Required items:
     - INSTANCE_ID: Is the permanent identifier for your instance.
@@ -41,7 +48,8 @@ Otherwise please do the following:
  
   - **_EXAMPLE_**
   ```sh
-  ~$ gcloud beta bigtable instances create pig-test --cluster=test-cluster --cluster-zone=us-east1-c --instance-type=DEVELOPMENT --description=pig-test
+  ~$ gcloud beta bigtable instances create pig-test --cluster=test-cluster --cluster-zone=us-east1-c \
+       --instance-type=DEVELOPMENT --description=pig-test
   ```
 
 ### 3. **Confirm that cloud bigtable instance pig-test was created successfully**
@@ -111,7 +119,8 @@ Otherwise please do the following:
 
   - Run the following command to put some values in the table
   ```sh
-  ~$ cbt -project [PROJECT_NAME] -instance [INSTANCE_ID] set [TABLE_NAME] [ROW_NAME] [COLUMN_FAMILY]:[COLUMN_QUALIFIER]=[VALUE]
+  ~$ cbt -project [PROJECT_NAME] -instance [INSTANCE_ID] set [TABLE_NAME] [ROW_NAME] \
+       [COLUMN_FAMILY]:[COLUMN_QUALIFIER]=[VALUE]
   ```
   
   - **_EXAMPLE_**
@@ -146,12 +155,17 @@ Otherwise please do the following:
 	General form of gcloud command to submit a Pig job on Dataproc
     
   ```sh
-  ~$ gcloud beta dataproc jobs submit pig --cluster=[DATAPROC_CLUSTER_ID] (--execute=[QUERY], -e [QUERY]| --file=[FILE], -f [FILE]) [--async] [--bucket=[BUCKET_NAME] [--continue-on-failure] [--driver-log-levels=[PACKAGE=LEVEL,…]] [--jars=[JAR,…]] [--labels=[KEY=VALUE,…]] [--max-failures-per-hour=[MAX_FAILURES_PER_HOUR]] [--params=[PARAM=VALUE,…]] [--properties=[PROPERTY=VALUE,…]] [--region=[REGION]] [GCLOUD_WIDE_FLAG …]
+  ~$ gcloud beta dataproc jobs submit pig --cluster=[DATAPROC_CLUSTER_ID] (--execute=[QUERY], -e [QUERY]| \
+       --file=[FILE], -f [FILE]) [--async] [--bucket=[BUCKET_NAME] \
+       [--continue-on-failure] [--driver-log-levels=[PACKAGE=LEVEL,…]] [--jars=[JAR,…]] \
+       [--labels=[KEY=VALUE,…]] [--max-failures-per-hour=[MAX_FAILURES_PER_HOUR]] \
+       [--params=[PARAM=VALUE,…]] [--properties=[PROPERTY=VALUE,…]] [--region=[REGION]] [GCLOUD_WIDE_FLAG …]
   ```
 
   - **_EXAMPLE_**
   ```sh
-  ~$ gcloud beta dataproc jobs submit pig --cluster=my-cluster-dp -e "A = LOAD 'hbase://my-table' USING org.apache.pig.backend.hadoop.hbase.HBaseStorage('cf:*','-loadKey true') AS (grgeeting:chararray, data); DUMP A;" --properties=google.bigtable.project.id=my-project-321,google.bigtable.instance.id=pig-test,hbase.client.connection.impl=com.google.cloud.bigtable.hbase1_x.BigtableConnection
+  ~$ gcloud beta dataproc jobs submit pig --cluster=my-cluster-dp -e \
+       "A = LOAD 'hbase://my-table' USING org.apache.pig.backend.hadoop.hbase.HBaseStorage('cf:*','-loadKey true') AS (grgeeting:chararray, data); DUMP A;" --properties=google.bigtable.project.id=my-project-321,google.bigtable.instance.id=pig-test,hbase.client.connection.impl=com.google.cloud.bigtable.hbase1_x.BigtableConnection
   ```  
 
   - Below is the result snippet showing successfull execution of the job
