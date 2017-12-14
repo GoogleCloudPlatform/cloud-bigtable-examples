@@ -159,16 +159,12 @@ from the underlying libraries:
 To avoid incurring extra charges to your Google Cloud Platform account, remove
 the resources created for this sample.
 
-1.  Go to the Clusters page in the [Cloud
-    Console](https://console.cloud.google.com).
+1.  Go to the [Cloud Bigtable instance page](https://console.cloud.google.com/project/_/bigtable/instances) in the Cloud Console.
 
-    [Go to the Clusters page](https://console.cloud.google.com/project/_/bigtable/clusters)
+1.  Click on the instance name.
 
-1.  Click the cluster name.
+1.  Click **Delete instance**.
 
-1.  Click **Delete**.
+    ![Delete](https://cloud.google.com/bigtable/img/delete-quickstart-instance.png)
 
-    ![Delete](https://cloud.google.com/bigtable/img/delete-quickstart-cluster.png)
-
-1. Type the cluster ID, then click **Delete** to delete the cluster.
-
+1. Type the instance ID, then click **Delete** to delete the instance.
