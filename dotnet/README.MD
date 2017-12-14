@@ -133,12 +133,12 @@
  
  ## Running the application
  
- In appsettings.json replace `[PROJECT_ID]` with google cloud project name and `[BIGTABLEINSTANCE]` with what you called it when provisioning the instance.
+ In appsettings.json replace `<GCP-project-id>` with Google Cloud Platform project name and `<Bigtable-instance-id>` with what you called it when provisioning the instance.
  
     "projectId": `[PROJECT_ID]`,
-    "instanceId": `[BIGTABLEINSTANCE]`,
+    "instanceId": `[BIGTABLE_INSTANCE]`,
  
- Run the sample using `dotnet run` CLI command
+ Run the sample using `dotnet run` CLI command:
     
     dotnet run -c Release
  
@@ -153,8 +153,8 @@
             Row key: greeting0, Value: Hello World!
     Reading all rows using streaming
             Row key: greeting0, Value: Hello World!
-            Row key: greeting1, Value: Hellow Bigtable!
-            Row key: greeting2, Value: Hellow C#!
+            Row key: greeting1, Value: Hello Bigtable!
+            Row key: greeting2, Value: Hello C#!
     Deleting table: Hello-Bigtable
     Table Hello-Bigtable deleted succsessfully
     Press any key to exit
@@ -165,15 +165,14 @@
  To avoid incurring extra charges to your Google Cloud Platform account, remove
  the resources created for this sample.
  
- 1.  Go to the Clusters page in the [Cloud
-     Console](https://console.cloud.google.com).
+ 1.  Go to the [Instances page][Instances page] in the Cloud Cloud Platform
  
-     [Go to the Clusters page](https://console.cloud.google.com/project/_/bigtable/clusters)
+     [Instances page]:https://console.cloud.google.com/project/_/bigtable/instances
  
- 2.  Click the cluster name.
+ 2.  Click the isntance name.
  
  3.  Click **Delete**.
  
-     ![Delete](https://cloud.google.com/bigtable/img/delete-quickstart-cluster.png)
+     ![Delete]( https://cloud.google.com/bigtable/img/delete-quickstart-instance.png)
  
- 4. Type the cluster ID, then click **Delete** to delete the cluster.
+ 4. Type the instance ID, then click **Delete** to delete the instance.
