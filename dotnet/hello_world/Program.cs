@@ -69,7 +69,7 @@ namespace HelloWorld {
                 try {
                     BigtableTableAdminClient bigtableTableAdminClient = BigtableTableAdminClient.Create();
 
-                    Console.WriteLine($"Creating new table: {s_settings.TableName}");
+                    Console.WriteLine($"Create new table: {s_settings.TableName}");
 
                     // Check whether a table with given TableName already exists.
                     if (!DoesTableExist(tableAdmin)) {
@@ -106,7 +106,7 @@ namespace HelloWorld {
                       
                        https://cloud.google.com/bigtable/docs/schema-design */
 
-                    Console.WriteLine($"Writing some greetings to the table {s_settings.TableName}");
+                    Console.WriteLine($"Write some greetings to the table {s_settings.TableName}");
 
                     BigtableClient bigtableClient = BigtableClient.Create();
 
@@ -151,15 +151,14 @@ namespace HelloWorld {
                     }
                     #endregion
 
-                    #region Read the first row.
-                    Console.WriteLine("Reading the first row");
-                    int number = 1;
-                    for (int i = 0; i < number; i++) {
-                        BigtableByteString rowKey = String.Format("{0}{1}", s_settings.RowKeyPrefix, i);
-                        Row row = bigtableClient.ReadRow(tableClient, rowKey);
+                    #region Read the first row
+                    Console.WriteLine("Read the first row");
 
-                        Console.WriteLine($"\tRow key: {row.Key.ToStringUtf8()}, Value: {row.Families[0].Columns[0].Cells[0].Value.ToStringUtf8()}");
-                    }
+                    int rowIndex = 0;
+
+                    BigtableByteString readRowKey = String.Format("{0}{1}", s_settings.RowKeyPrefix, rowIndex);
+                    Row rowRead = bigtableClient.ReadRow(tableClient, readRowKey);
+                    Console.WriteLine($"\tRow key: {rowRead.Key.ToStringUtf8()}, Value: {rowRead.Families[0].Columns[0].Cells[0].Value.ToStringUtf8()}");
                     #endregion
 
                     #region Read all rows.
@@ -171,7 +170,7 @@ namespace HelloWorld {
                     printRead.Wait();
 
                     async Task PrintReadRowsAsync() {
-                        Console.WriteLine("Reading all rows using streaming");
+                        Console.WriteLine("Read all rows using streaming");
                         await responseRead.AsAsyncEnumerable().ForEachAsync(row => {
                             Console.WriteLine($"\tRow key: {row.Key.ToStringUtf8()}, Value: {row.Families[0].Columns[0].Cells[0].Value.ToStringUtf8()}");
                         });
@@ -179,7 +178,7 @@ namespace HelloWorld {
                     #endregion
 
                     #region Delete table.
-                    Console.WriteLine($"Deleting table: {s_settings.TableName}");
+                    Console.WriteLine($"Delete table: {s_settings.TableName}");
 
                     bigtableTableAdminClient.DeleteTable(new Google.Cloud.Bigtable.Admin.V2.TableName(
                         ProjectId,
