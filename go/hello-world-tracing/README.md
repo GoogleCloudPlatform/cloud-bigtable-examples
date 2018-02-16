@@ -2,6 +2,13 @@
 
 This is a simple application that demonstrates using the go Google Cloud
 API to connect to and interact with Cloud Bigtable.
+This project adds automatic exports of [tracing to stackdriver](https://cloud.google.com/trace/) and 
+[Z-Pages](https://github.com/census-instrumentation/opencensus-go/tree/master/zpages) that 
+show information about traces on the local machine.
+
+See the [documentation for this
+sample](https://cloud.google.com/bigtable/docs/samples-go-hello) for a brief
+explanation of the hello world code.
 
 **Table of Contents**
 
