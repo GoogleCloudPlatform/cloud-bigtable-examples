@@ -95,11 +95,11 @@ func openCensusOptions() []option.ClientOption {
 	}
 }
 
-// Connects to Cloud Bigtable, runs basic operations and print the results.
+// doHelloWorld connects to Cloud Bigtable, runs basic operations and print the results.
 func doHelloWorld(ctx context.Context, project, instance string) {
 	tableCount, err := stats.NewMeasureInt64("cloud.google.com/go/bigtable/example.helloworld/numtables", "count of tables", "Num")
 	if err != nil {
-		log.Fatalf("Video size measure not created: %v", err)
+		log.Fatalf("Table count measure not created: %v", err)
 	}
 
 	// Create view to see the processed table count cumulatively.
