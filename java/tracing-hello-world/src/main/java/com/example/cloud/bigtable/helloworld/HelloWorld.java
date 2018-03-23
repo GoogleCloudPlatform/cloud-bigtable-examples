@@ -19,11 +19,19 @@
  */
 package com.example.cloud.bigtable.helloworld;
 
+import com.google.api.MonitoredResource;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
 import com.google.cloud.bigtable.hbase.util.HBaseTracingUtilities;
 
+import io.opencensus.common.Duration;
+import io.opencensus.contrib.grpc.metrics.RpcViews;
 import io.opencensus.contrib.zpages.ZPageHandlers;
+import io.opencensus.exporter.stats.stackdriver.StackdriverStatsConfiguration;
+import io.opencensus.exporter.stats.stackdriver.StackdriverStatsExporter;
 import io.opencensus.exporter.trace.stackdriver.StackdriverExporter;
+import io.opencensus.exporter.trace.stackdriver.StackdriverTraceConfiguration;
+import io.opencensus.exporter.trace.stackdriver.StackdriverTraceExporter;
 import io.opencensus.trace.Tracing;
 import io.opencensus.trace.config.TraceParams;
 import io.opencensus.trace.samplers.Samplers;
@@ -151,14 +159,28 @@ public class HelloWorld {
     String projectId = requiredProperty("bigtable.projectID");
     String instanceId = requiredProperty("bigtable.instanceID");
 
-    // Force tracing for every request for demo purposes.
+    // Force tracing for every request for demo purposes.  Use the default settings
+    // in most cases.
     Tracing.getTraceConfig().updateActiveTraceParams(
         TraceParams.DEFAULT.toBuilder().setSampler(Samplers.probabilitySampler(1)).build());
 
+    StackdriverTraceExporter.createAndRegister(
+            StackdriverTraceConfiguration.builder()
+                .setProjectId(projectId)
+                .build());
+
+    // Enable stats exporter to Stackdriver with a 5 second export time.
+    // Production settings may vary.
+    StackdriverStatsExporter.createAndRegister(
+            StackdriverStatsConfiguration.builder()
+                  .setProjectId(projectId)
+                  .setExportInterval(Duration.create(5, 0))
+                  .build());
+
+    RpcViews.registerAllViews();
+
     // HBase Bigtable specific setup for zpages
     HBaseTracingUtilities.setupTracingConfig();
-
-    StackdriverExporter.createAndRegisterWithProjectId(projectId);
 
     // Start a web server on port 8080 for tracing data
     ZPageHandlers.startHttpServerAndRegisterAll(8080);
@@ -167,7 +189,7 @@ public class HelloWorld {
 
     System.out.println("Sleeping for 1 minute so that you can view http://localhost:8080/tracez");
     // Sleep for 1 minute.
-    Thread.sleep(TimeUnit.MINUTES.toSeconds(1));
+    Thread.sleep(TimeUnit.MINUTES.toMillis(1));
   }
 
   private static String requiredProperty(String prop) {
