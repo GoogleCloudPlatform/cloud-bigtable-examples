@@ -145,20 +145,21 @@
  You will see output resembling the following, interspersed with informational logging
  from the underlying libraries:
  
-    Creating new table: Hello-Bigtable
+    Create new table: Hello-Bigtable with column family cf, Instance: helloworld
     Table Hello-Bigtable created succsessfully
 
-    Writing some greetings to the table Hello-Bigtable
-    Reading the first row
+    Write some greetings to the table Hello-Bigtable
+            Greeting: --Hello World!-- written successfully
+            Greeting: --Hellow Bigtable!-- written successfully
+            Greeting: --Hellow C#!-- written successfully
+    Read the first row
             Row key: greeting0, Value: Hello World!
-    Reading all rows using streaming
+    Read all rows using streaming
             Row key: greeting0, Value: Hello World!
-            Row key: greeting1, Value: Hello Bigtable!
-            Row key: greeting2, Value: Hello C#!
-    Deleting table: Hello-Bigtable
-    Table Hello-Bigtable deleted succsessfully
-    Press any key to exit
- 
+            Row key: greeting1, Value: Hellow Bigtable!
+            Row key: greeting2, Value: Hellow C#!
+    Delete table: Hello-Bigtable
+    Table: Hello-Bigtable deleted succsessfully
  
  ## Cleaning up
  
