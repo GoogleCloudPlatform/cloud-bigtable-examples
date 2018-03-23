@@ -17,83 +17,112 @@ using Google.Cloud.Bigtable.V2;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Google.Protobuf;
 using System.Linq;
 using System.IO;
 using System;
 
 
-namespace HelloWorld {
-    class Program {
-        static HelloWorldSettings s_settings;
-
-        static void Main(string[] args) {
-
+namespace HelloWorld
+{
+    class Program
+    {
+        static void Main()
+        {
             #region Set up application settings.
             var builder = new ConfigurationBuilder().
                 SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                .AddJsonFile("appsettings.json", true, true);
 
             IConfigurationRoot configuration = builder.Build();
 
-            s_settings = new HelloWorldSettings();
-            configuration.Bind(s_settings);
+            HelloWorldSettings settings = new HelloWorldSettings();
+            configuration.Bind(settings);
             #endregion
 
-            HelloWorld helloWorld = new HelloWorld(s_settings.ProjectId, s_settings.InstanceId);
+            HelloWorld helloWorld = new HelloWorld(settings);
             helloWorld.DoHelloWorld();
         }
 
-        public class HelloWorld {
+        internal class HelloWorld
+        {
+            private readonly HelloWorldSettings _settings;
 
-            public string ProjectId { get; set; }
-            public string InstanceId { get; set; }
+            /// <summary>
+            /// Instance of <see cref="Google.Cloud.Bigtable.Admin.V2.TableName"/> used in <see cref="BigtableTableAdminClient"/> operations.
+            /// </summary>
+            private static Google.Cloud.Bigtable.Admin.V2.TableName _tableNameAdmin;
 
-            public HelloWorld(string projectId, string instanceId) {
-                ProjectId = projectId;
-                InstanceId = instanceId;
+            /// <summary>
+            /// instance of <see cref="Google.Cloud.Bigtable.V2.TableName"/> used in <see cref="BigtableClient"/> operations.
+            /// </summary>
+            private static Google.Cloud.Bigtable.V2.TableName _tableNameClient;
+
+            private static BigtableTableAdminClient _bigtableTableAdminClient;
+
+            private static BigtableClient _bigtableClient;
+
+            /// <summary>
+            /// Index of a greeting in _settings.Greetings.
+            /// </summary>
+            private static int _greetingIndex;
+
+            /// <summary>
+            /// This List containce mapping indices from <see cref="MutateRowsRequest"/> to _settings.Greetings.
+            /// </summary>
+            private List<int> _mapToOriginalGreetingIndex;
+
+            internal HelloWorld(HelloWorldSettings settings)
+            {
+                _settings = settings;
+                _bigtableTableAdminClient = BigtableTableAdminClient.Create();
+                _bigtableClient = BigtableClient.Create();
+                _tableNameAdmin = new Google.Cloud.Bigtable.Admin.V2.TableName(_settings.ProjectId, _settings.InstanceId, _settings.TableName);
+                _tableNameClient = new Google.Cloud.Bigtable.V2.TableName(_settings.ProjectId, _settings.InstanceId, _settings.TableName);
             }
 
-            public void DoHelloWorld() {
-
-                // Build Instance.
-                InstanceName instance = new InstanceName(ProjectId, InstanceId);
-
-                // Build TableName Admin.
-                Google.Cloud.Bigtable.Admin.V2.TableName tableAdmin = new Google.Cloud.Bigtable.Admin.V2.TableName(ProjectId, InstanceId, s_settings.TableName);
-
-                // Build TableName Client.
-                Google.Cloud.Bigtable.V2.TableName tableClient = new Google.Cloud.Bigtable.V2.TableName(ProjectId, InstanceId, s_settings.TableName);
-
+            internal void DoHelloWorld()
+            {
                 #region 1. Create table with column family.
-                try {
-                    BigtableTableAdminClient bigtableTableAdminClient = BigtableTableAdminClient.Create();
 
-                    Console.WriteLine($"Create new table: {s_settings.TableName}");
+                try
+                {
+                    Console.WriteLine($"Create new table: {_settings.TableName} with column family {_settings.ColumnFamily}, Instance: {_settings.InstanceId}");
 
                     // Check whether a table with given TableName already exists.
-                    if (!DoesTableExist(tableAdmin)) {
-                        bigtableTableAdminClient.CreateTable(
-                            instance,
-                            s_settings.TableName,
-                            new Table {
+                    if (!DoesTableExist(_bigtableTableAdminClient, _tableNameAdmin))
+                    {
+                        _bigtableTableAdminClient.CreateTable(
+                            new InstanceName(_settings.ProjectId, _settings.InstanceId),
+                            _settings.TableName,
+                            new Table
+                            {
                                 Granularity = Table.Types.TimestampGranularity.Millis,
                                 ColumnFamilies =
                                 {
-                                    { s_settings.ColumnFamily, new ColumnFamily { GcRule = new GcRule { MaxNumVersions = 1 } } }
+                                    {
+                                        _settings.ColumnFamily, new ColumnFamily
+                                        {
+                                            GcRule = new GcRule
+                                            {
+                                                MaxNumVersions = 1
+                                            }
+                                        }
+                                    }
                                 }
                             });
-                        if (DoesTableExist(tableAdmin)) {
-                            Console.WriteLine($"Table {s_settings.TableName} created succsessfully\n");
-                        } else {
-                            Console.WriteLine($"There was a problem creating a table {s_settings.TableName}");
-                        }
-                    } else {
-                        Console.WriteLine($"Table {s_settings.TableName} already exist");
+                        Console.WriteLine(DoesTableExist(_bigtableTableAdminClient, _tableNameAdmin)
+                            ? $"Table {_settings.TableName} created succsessfully\n"
+                            : $"There was a problem creating a table {_settings.TableName}");
                     }
+                    else
+                    {
+                        Console.WriteLine($"Table: {_settings.TableName} already exist");
+                    }
+
                     #endregion
 
-                    #region 2. Insert multiple rows in bulk using MutateRows.
+                    #region 2. Insert multiple rows.
+
                     /* Each row has a unique row key.
                                        
                        Note: This example uses sequential numeric IDs for simplicity, but
@@ -106,106 +135,151 @@ namespace HelloWorld {
                       
                        https://cloud.google.com/bigtable/docs/schema-design */
 
-                    Console.WriteLine($"Write some greetings to the table {s_settings.TableName}");
+                    Console.WriteLine($"Write some greetings to the table {_settings.TableName}");
 
-                    BigtableClient bigtableClient = BigtableClient.Create();
+                    // Insert 1 row using MutateRow()
+                    _greetingIndex = 0;
+                    try
+                    {
+                        _bigtableClient.MutateRow(_tableNameClient, _settings.RowKeyPrefix + _greetingIndex, MutationBuilder(_greetingIndex));
+                        Console.WriteLine($"\tGreeting: --{_settings.Greetings[_greetingIndex]}-- written successfully");
 
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"\tFailed to write Greeting: --{_settings.Greetings[_greetingIndex]}");
+                        Console.WriteLine(ex.Message);
+                        throw;
+                    }
+
+                    // Insert multiple rows using MutateRows()
                     // Build a MutateRowsRequest (contains table name and a collection of entries).
-                    MutateRowsRequest request = new MutateRowsRequest {
-                        TableNameAsTableName = tableClient
+                    MutateRowsRequest request = new MutateRowsRequest
+                    {
+                        TableNameAsTableName = _tableNameClient
                     };
 
-                    for (int i = 0; i < s_settings.Greetings.Length; i++) {
-                        string rowKey = String.Format("{0}{1}", s_settings.RowKeyPrefix, i);
+                    _mapToOriginalGreetingIndex = new List<int>();
 
+                    while (++_greetingIndex < _settings.Greetings.Length)
+                    {
+                        _mapToOriginalGreetingIndex.Add(_greetingIndex);
                         // Build an entry for every greeting (contains of row key and a collection of mutations).
-                        MutateRowsRequest.Types.Entry entry = new Google.Cloud.Bigtable.V2.MutateRowsRequest.Types.Entry();
-                        entry.Mutations.Add(Mutations.SetCell(s_settings.ColumnFamily, s_settings.ColumnName, new BigtableByteString(s_settings.Greetings[i])));
-                        entry.RowKey = ByteString.CopyFromUtf8(rowKey);
-
-                        request.Entries.Add(entry);
+                        request.Entries.Add(Mutations.CreateEntry(_settings.RowKeyPrefix + _greetingIndex,
+                            MutationBuilder(_greetingIndex)));
                     }
 
-                    BigtableClient.MutateRowsStream response = bigtableClient.MutateRows(request);
+                    BigtableClient.MutateRowsStream response = _bigtableClient.MutateRows(request);
 
-                    Task write = CheckWrittenAsync();
+                    Task write = CheckWrittenAsync(response);
                     write.Wait();
 
-                    async Task CheckWrittenAsync() {
-                        IAsyncEnumerator<MutateRowsResponse> responseStream = response.ResponseStream;
-                        while (await responseStream.MoveNext()) {
-                            MutateRowsResponse current = responseStream.Current;
-
-                            // Check whether rows where written successfully
-                            foreach (var entry in current.Entries) {
-                                if (entry.Status.Code == 0) {
-                                    Console.WriteLine($"\tRow key: " +
-                                        $"{request.Entries[(int)entry.Index].RowKey.ToStringUtf8()} written successfully");
-                                } else {
-                                    Console.WriteLine($"\tFailed to write Row key: " +
-                                        $"{request.Entries[(int)entry.Index].RowKey.ToStringUtf8()}");
-                                    Console.WriteLine(entry.Status.Message);
-                                }
-                            }
-                        }
-                    }
                     #endregion
 
                     #region Read the first row
+
                     Console.WriteLine("Read the first row");
 
                     int rowIndex = 0;
 
-                    BigtableByteString readRowKey = String.Format("{0}{1}", s_settings.RowKeyPrefix, rowIndex);
-                    Row rowRead = bigtableClient.ReadRow(tableClient, readRowKey);
-                    Console.WriteLine($"\tRow key: {rowRead.Key.ToStringUtf8()}, Value: {rowRead.Families[0].Columns[0].Cells[0].Value.ToStringUtf8()}");
+                    Row rowRead = _bigtableClient.ReadRow(_tableNameClient, _settings.RowKeyPrefix + rowIndex);
+                    Console.WriteLine(
+                        $"\tRow key: {rowRead.Key.ToStringUtf8()}, Value: {rowRead.Families[0].Columns[0].Cells[0].Value.ToStringUtf8()}");
+
                     #endregion
 
                     #region Read all rows.
-                    BigtableClient.ReadRowsStream responseRead = bigtableClient.ReadRows(new ReadRowsRequest {
-                        TableNameAsTableName = tableClient
-                    });
 
-                    Task printRead = PrintReadRowsAsync();
+                    BigtableClient.ReadRowsStream responseRead = _bigtableClient.ReadRows(_tableNameClient);
+
+                    Task printRead = PrintReadRowsAsync(responseRead);
                     printRead.Wait();
 
-                    async Task PrintReadRowsAsync() {
-                        Console.WriteLine("Read all rows using streaming");
-                        await responseRead.AsAsyncEnumerable().ForEachAsync(row => {
-                            Console.WriteLine($"\tRow key: {row.Key.ToStringUtf8()}, Value: {row.Families[0].Columns[0].Cells[0].Value.ToStringUtf8()}");
-                        });
-                    }
                     #endregion
 
                     #region Delete table.
-                    Console.WriteLine($"Delete table: {s_settings.TableName}");
 
-                    bigtableTableAdminClient.DeleteTable(new Google.Cloud.Bigtable.Admin.V2.TableName(
-                        ProjectId,
-                        InstanceId,
-                        s_settings.TableName), null);
-                    if (DoesTableExist(tableAdmin) == false) {
-                        Console.WriteLine($"Table {s_settings.TableName} deleted succsessfully");
+                    Console.WriteLine($"Delete table: {_settings.TableName}");
+
+                    _bigtableTableAdminClient.DeleteTable(_tableNameAdmin);
+                    if (DoesTableExist(_bigtableTableAdminClient, _tableNameAdmin) == false)
+                    {
+                        Console.WriteLine($"Table: {_settings.TableName} deleted succsessfully");
                     }
+
                     #endregion
 
-                } catch (Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     Console.WriteLine(ex.Message);
                 }
             }
 
-            public bool DoesTableExist(Google.Cloud.Bigtable.Admin.V2.TableName tableName) {
-
-                BigtableTableAdminClient bigtableTableAdminClient = BigtableTableAdminClient.Create();
-                try {
-                    var response = bigtableTableAdminClient.GetTable(tableName);
+            /// <summary>
+            /// Checks if table with a specific <see cref="Google.Cloud.Bigtable.V2.TableName"/> is already exist on the given <see cref="InstanceName"/>
+            /// </summary>
+            /// <param name="bigtableTableAdminClient"> an instance of <see cref="BigtableTableAdminClient"/></param>
+            /// <param name="tableName"> an instance of <see cref="Google.Cloud.Bigtable.Admin.V2.TableName"/> with tableId of the table in question</param>
+            private bool DoesTableExist(BigtableTableAdminClient bigtableTableAdminClient, Google.Cloud.Bigtable.Admin.V2.TableName tableName)
+            {
+                try
+                {
+                    bigtableTableAdminClient.GetTable(tableName);
                     return true;
-                } catch (Exception ex) {
-                    if (ex.Message.Contains("Table not found")) {
+                }
+                catch (Exception ex)
+                {
+                    if (ex.Message.Contains("Table not found"))
+                    {
                         return false;
                     }
                     throw;
                 }
+            }
+
+            /// <summary>
+            /// Waits for complete <see cref="BigtableClient.MutateRowsStream"/> and checks <see cref="Google.Rpc.Status.Code"/> of every entry of the <see cref="MutateRowsRequest"/>
+            /// </summary>
+            /// <param name="response"> a <see cref="BigtableClient.MutateRowsStream"/></param>
+            private async Task CheckWrittenAsync(BigtableClient.MutateRowsStream response)
+            {
+                IAsyncEnumerator<MutateRowsResponse> responseStream = response.ResponseStream;
+                while (await responseStream.MoveNext())
+                {
+                    MutateRowsResponse current = responseStream.Current;
+
+                    // Check whether rows where written successfully
+                    foreach (var entry in current.Entries)
+                    {
+                        _greetingIndex = _mapToOriginalGreetingIndex[(int) entry.Index];
+                        if (entry.Status.Code == 0)
+                        {
+                            Console.WriteLine($"\tGreeting: --{_settings.Greetings[_greetingIndex]}-- written successfully");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"\tFailed to write Greeting: --{_settings.Greetings[_greetingIndex]}");
+                            Console.WriteLine(entry.Status.Message);
+                        }
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Builds a <see cref="Mutation"/> for <see cref="MutateRowRequest"/> or an <see cref="MutateRowsRequest.Types.Entry"/>
+            /// </summary>
+            /// <param name="greetingNumber"> an index of a greeting</param>
+            private Mutation MutationBuilder(int greetingNumber) => 
+                Mutations.SetCell(_settings.ColumnFamily, $"field{greetingNumber}", _settings.Greetings[greetingNumber]);
+            
+            private async Task PrintReadRowsAsync(BigtableClient.ReadRowsStream responseRead)
+            {
+                Console.WriteLine("Read all rows using streaming");
+                await responseRead.AsAsyncEnumerable().ForEachAsync(row =>
+                {
+                    Console.WriteLine($"\tRow key: {row.Key.ToStringUtf8()}, Value: {row.Families[0].Columns[0].Cells[0].Value.ToStringUtf8()}");
+                });
             }
         }
     }
