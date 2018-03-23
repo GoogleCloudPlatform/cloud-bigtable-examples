@@ -163,6 +163,18 @@ of trace information
 Open [Stackriver traces](https://pantheon.corp.google.com/traces/traces) to see traces 
 in the Google Cloud Console.
 
+## View Stackdriver statistics
+
+Open [Stackriver Metrics Explorer](https://app.google.stackdriver.com/metrics-explorer) to see traces 
+in the Google Cloud Console.  Search for the word "OpenCensus" and select a metric; for example,
+`OpenCensus/grpc.io/client/roundtrip_latency/cumulative` will give you metrics about end-to-end
+latency.
+
+## Learn more
+
+[This blog post about Spanner / OpenCensus / Stackdriver integration](https://medium.com/@orijtech/cloud-spanner-instrumented-by-opencensus-and-exported-to-stackdriver-6ed61ed6ab4e) 
+is also relevant for Cloud Bigtable.  [opencensus.io](http://opencensus.io) provides additional information, including a [blog section](https://opencensus.io/blog.html).
+
 ## Pom.xml
 
 Setting up the [pom.xml](pom.xml) is as follows.  
@@ -172,8 +184,7 @@ do not require this configuration, since they already include
 [shaded](https://maven.apache.org/plugins/maven-shade-plugin/) versions of tracing dependencies.
 
 ```xml
-
-   <!-- Opencensus dependencies.  Pay close attention to the exclusions. -->
+    <!-- Opencensus dependencies.  Pay close attention to the exclusions. -->
 
     <!-- OpenCensus Java implementation -->
     <dependency>
@@ -217,6 +228,38 @@ do not require this configuration, since they already include
         </exclusion>
       </exclusions>
     </dependency>
+
+    <dependency>
+      <groupId>io.opencensus</groupId>
+      <artifactId>opencensus-exporter-stats-stackdriver</artifactId>
+      <version>${opencensus.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>io.opencensus</groupId>
+      <artifactId>opencensus-contrib-grpc-metrics</artifactId>
+      <version>${opencensus.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.grpc</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 ```
 
 ## Java code 
@@ -226,14 +269,28 @@ that sets up tracing
 
 ```java
 
-    // Force tracing for every request for demo purposes.
+    // Force tracing for every request for demo purposes.  Use the default settings
+    // in most cases.
     Tracing.getTraceConfig().updateActiveTraceParams(
         TraceParams.DEFAULT.toBuilder().setSampler(Samplers.probabilitySampler(1)).build());
 
+    StackdriverTraceExporter.createAndRegister(
+            StackdriverTraceConfiguration.builder()
+                .setProjectId(projectId)
+                .build());
+
+    // Enable stats exporter to Stackdriver with a 5 second export time.
+    // Production settings may vary.
+    StackdriverStatsExporter.createAndRegister(
+            StackdriverStatsConfiguration.builder()
+                  .setProjectId(projectId)
+                  .setExportInterval(Duration.create(5, 0))
+                  .build());
+
+    RpcViews.registerAllViews();
+
     // HBase Bigtable specific setup for zpages
     HBaseTracingUtilities.setupTracingConfig();
-
-    StackdriverExporter.createAndRegisterWithProjectId(projectId);
 
     // Start a web server on port 8080 for tracing data
     ZPageHandlers.startHttpServerAndRegisterAll(8080);
@@ -242,7 +299,7 @@ that sets up tracing
 
     System.out.println("Sleeping for 1 minute so that you can view http://localhost:8080/tracez");
     // Sleep for 1 minute.
-    Thread.sleep(TimeUnit.MINUTES.toSeconds(1));
+    Thread.sleep(TimeUnit.MINUTES.toMillis(1));
 
 ```
 
