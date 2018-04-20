@@ -1,0 +1,44 @@
+﻿.vs
+*.pyc
+*.user
+obj
+bin
+project.lock.json
+_site
+site
+dependencies
+snippetoutput
+# Legacy docs/external; now docs/dependencies
+external
+output
+*~
+.cr
+packages
+coverage
+releasebuild
+launchSettings.json
+
+# Used when generating APIs
+tmp
+googleapis
+toolkit
+
+# Testing
+integrationprogress.txt
+integration-test-failures.txt
+integration-test-failures.txt.tmp
+results.xml
+
+# Speech language codes temporary output
+language-codes.tmp.txt
+
+# Generated files when releasing
+tagselectedreleases.sh
+pushselectedreleases.sh
+
+# Generated files when building
+AllProjects.sln
+AllTests.txt
+
+# Test result files
+*.trx
