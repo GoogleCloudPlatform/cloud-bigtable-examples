@@ -19,22 +19,23 @@
  */
 package com.example.cloud.bigtable.createinstance;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.apache.hadoop.conf.Configuration;
-
 import com.google.bigtable.admin.v2.Cluster;
 import com.google.bigtable.admin.v2.CreateInstanceRequest;
 import com.google.bigtable.admin.v2.Instance;
 import com.google.bigtable.admin.v2.Instance.Type;
 import com.google.bigtable.admin.v2.ListInstancesRequest;
 import com.google.bigtable.admin.v2.ListInstancesResponse;
+
 import com.google.cloud.bigtable.config.BigtableOptions;
 import com.google.cloud.bigtable.config.Logger;
 import com.google.cloud.bigtable.grpc.BigtableInstanceGrpcClient;
 import com.google.cloud.bigtable.grpc.BigtableSession;
 import com.google.cloud.bigtable.grpc.io.ChannelPool;
+
+import org.apache.hadoop.conf.Configuration;
+
+import java.io.IOException;
+import java.util.List;
 
 /*
  * This sample code illustrates how to create Bigtable instance
