@@ -43,8 +43,6 @@ public class CreateInstanceMain{
   /** Constant <code>LOG.</code> */
   protected static final Logger LOG = new Logger(CreateInstanceMain.class);
   
-  private static final String DEFAULT_HOST = "bigtableadmin.googleapis.com";
-  
   private static BigtableInstanceGrpcClient instanceClient;
   private static String projectId;
   private static String instanceId;
@@ -52,20 +50,23 @@ public class CreateInstanceMain{
   private static String displayName;
   private static String clusterName;
   private static String instanceType;
-  private static String LOCATION_FORMAT;
-  private static String PARENT_FORMAT;
+  private static String locationFormat;
+  private static String parentFormat;
   
   public static void main(String[] args) throws Exception {
     //Project Id under which instance will be created.
-    projectId = args[0];
-    instanceId = args[1];
-    location = args[2];
-    displayName = args[3];
-    clusterName = args[4];
-    instanceType = args[5];
+    projectId = requiredProperty("bigtable.projectID");
+    instanceId = requiredProperty("bigtable.instanceID");
+    //Refer below link for location 
+    //  https://cloud.google.com/bigtable/docs/locations
+    location = requiredProperty("bigtable.location");
+    displayName = requiredProperty("bigtable.displayName");
+    clusterName = requiredProperty("bigtable.clusterName");
+    //provide instance type DEVELOPMENT or PRODUCTION.
+    instanceType = requiredProperty("bigtable.instance.type");
     //zone format API understands. 
-    LOCATION_FORMAT = "projects/" + projectId + "/locations/" + location;
-    PARENT_FORMAT = "projects/" + projectId;
+    locationFormat = "projects/" + projectId + "/locations/" + location;
+    parentFormat = "projects/" + projectId;
     
     LOG.info("instanceId " + instanceId + " will be created under projectId:" + projectId);
     
@@ -81,7 +82,7 @@ public class CreateInstanceMain{
   
   private void init() throws Exception  {
     BigtableOptions options = new BigtableOptions.Builder().build();
-    ChannelPool channelPool = BigtableSession.createChannelPool(DEFAULT_HOST, options);
+    ChannelPool channelPool = BigtableSession.createChannelPool(options.getAdminHost(), options);
     instanceClient = 
         new BigtableInstanceGrpcClient(channelPool);
   }
@@ -99,12 +100,12 @@ public class CreateInstanceMain{
     
     Cluster cluster = Cluster.newBuilder()
         .setName(clusterName)
-        .setLocation(LOCATION_FORMAT)
+        .setLocation(locationFormat)
         .build();
     
     CreateInstanceRequest request = CreateInstanceRequest.newBuilder()
         .setInstanceId(instanceId)
-        .setParent(PARENT_FORMAT)
+        .setParent(parentFormat)
         .setInstance(instance)
         .putClusters("cluster1", cluster)
         .build();
@@ -113,12 +114,21 @@ public class CreateInstanceMain{
   }
   
   private void listInstances() {
-    ListInstancesRequest.Builder request = ListInstancesRequest.newBuilder();
-    request.setParent(PARENT_FORMAT);
-    ListInstancesResponse response = instanceClient.listInstances(request.build());
-    List<Instance> instances = response.getInstancesList();
-    for (Instance instance : instances) {
+    ListInstancesRequest request = ListInstancesRequest
+        .newBuilder()
+        .setParent(parentFormat)
+        .build();
+    ListInstancesResponse response = instanceClient.listInstances(request);
+    for (Instance instance : response.getInstancesList()) {
       LOG.info("Instance:" + instance.getName());
     }
+  }
+  
+  private static String requiredProperty(String prop) {
+    String value = System.getProperty(prop);
+    if (value == null) {
+      throw new IllegalArgumentException("Missing required system property: " + prop);
+    }
+    return value;
   }
 }

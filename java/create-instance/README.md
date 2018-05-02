@@ -19,13 +19,18 @@ provision the cluster.
 
 You can install the dependencies and build the project using maven.
 
-    $ mvn package -Dbigtable.projectID=myProject -Dbigtable.instanceID=myInstance
+    $ mvn package
 
-## Run the code
+## Running the application
 
-You can run a command using the run.sh script. 
+Build and run the sample using Maven.
 
-    $ ./run.sh -help
+    mvn exec:java -Dbigtable.projectID=GCLOUDPROJECT 
+    -Dbigtable.instanceID=BIGTABLEINSTANCE 
+    -Dbigtable.location=location 
+    -Dbigtable.displayName=displayName
+    -Dbigtable.clusterName=clusterName
+    -Dbigtable.instance.type=DEVELOPMENT
 
 ## Contributing changes
 
