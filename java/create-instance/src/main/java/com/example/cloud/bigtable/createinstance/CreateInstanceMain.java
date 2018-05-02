@@ -58,22 +58,16 @@ public class CreateInstanceMain{
   public static void main(String[] args) throws Exception {
     //Project Id under which instance will be created.
     projectId = args[0];
-    LOG.info("projectId:" + projectId);
-    
     instanceId = args[1];
-    LOG.info("instanceId:" + instanceId);
-    
     location = args[2];
-    
     displayName = args[3];
-    
     clusterName = args[4];
-    
     instanceType = args[5];
-    
     //zone format API understands. 
     LOCATION_FORMAT = "projects/" + projectId + "/locations/" + location;
     PARENT_FORMAT = "projects/" + projectId;
+    
+    LOG.info("instanceId " + instanceId + " will be created under projectId:" + projectId);
     
     CreateInstanceMain main = new CreateInstanceMain();
     main.execute();
