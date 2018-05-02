@@ -32,8 +32,6 @@ import com.google.cloud.bigtable.grpc.BigtableInstanceGrpcClient;
 import com.google.cloud.bigtable.grpc.BigtableSession;
 import com.google.cloud.bigtable.grpc.io.ChannelPool;
 
-import org.apache.hadoop.conf.Configuration;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -88,9 +86,7 @@ public class CreateInstanceMain{
   }
   
   private void init() throws Exception  {
-    BigtableOptions options = BigtableOptionsFactoryCreateInstance
-        .fromConfiguration(new Configuration());
-    
+    BigtableOptions options = new BigtableOptions.Builder().build();
     ChannelPool channelPool = BigtableSession.createChannelPool(DEFAULT_HOST, options);
     instanceClient = 
         new BigtableInstanceGrpcClient(channelPool);
