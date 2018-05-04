@@ -21,19 +21,17 @@ package com.example.cloud.bigtable.createinstance;
 
 import com.google.bigtable.admin.v2.Cluster;
 import com.google.bigtable.admin.v2.CreateInstanceRequest;
+import com.google.bigtable.admin.v2.DeleteInstanceRequest;
 import com.google.bigtable.admin.v2.Instance;
 import com.google.bigtable.admin.v2.Instance.Type;
 import com.google.bigtable.admin.v2.ListInstancesRequest;
 import com.google.bigtable.admin.v2.ListInstancesResponse;
 
-import com.google.cloud.bigtable.config.BigtableOptions;
 import com.google.cloud.bigtable.config.Logger;
-import com.google.cloud.bigtable.grpc.BigtableInstanceGrpcClient;
+import com.google.cloud.bigtable.grpc.BigtableInstanceClient;
 import com.google.cloud.bigtable.grpc.BigtableSession;
-import com.google.cloud.bigtable.grpc.io.ChannelPool;
 
 import java.io.IOException;
-import java.util.List;
 
 /*
  * This sample code illustrates how to create Bigtable instance
@@ -43,7 +41,7 @@ public class CreateInstanceMain{
   /** Constant <code>LOG.</code> */
   protected static final Logger LOG = new Logger(CreateInstanceMain.class);
   
-  private static BigtableInstanceGrpcClient instanceClient;
+  private static BigtableInstanceClient instanceClient;
   private static String projectId;
   private static String instanceId;
   private static String location;
@@ -74,17 +72,20 @@ public class CreateInstanceMain{
     main.execute();
   }
   
-  private void execute() throws Exception {
-    init();
-    createInstance();
-    listInstances();
+  private void execute() {
+    try {
+      init();
+      createInstance();
+      listInstances();
+    } catch (Exception e) {
+      LOG.error("Exception in create instance.", e);
+    } finally {
+      deleteInstance();
+    }
   }
   
   private void init() throws Exception  {
-    BigtableOptions options = new BigtableOptions.Builder().build();
-    ChannelPool channelPool = BigtableSession.createChannelPool(options.getAdminHost(), options);
-    instanceClient = 
-        new BigtableInstanceGrpcClient(channelPool);
+    instanceClient = BigtableSession.createInstanceClient();;
   }
   
   private void createInstance() throws IOException {
@@ -122,6 +123,13 @@ public class CreateInstanceMain{
     for (Instance instance : response.getInstancesList()) {
       LOG.info("Instance:" + instance.getName());
     }
+  }
+  
+  private void deleteInstance() {
+    DeleteInstanceRequest request = DeleteInstanceRequest.newBuilder()
+      .setName(instanceId)
+      .build();
+    instanceClient.deleteInstance(request);
   }
   
   private static String requiredProperty(String prop) {
