@@ -127,8 +127,8 @@ public class CreateInstanceMain{
   
   private void deleteInstance() {
     DeleteInstanceRequest request = DeleteInstanceRequest.newBuilder()
-      .setName(instanceId)
-      .build();
+        .setName(instanceId)
+        .build();
     instanceClient.deleteInstance(request);
   }
   
