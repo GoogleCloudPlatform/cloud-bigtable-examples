@@ -23,14 +23,18 @@ You can install the dependencies and build the project using maven.
 
 ## Running the application
 
-Build and run the sample using Maven.
+Build and run the sample using Maven. If skip new cluster is set true, no need to set -Dbigtable.newclusterlocation, bigtable.newclusterNodes and -Dbigtable.newcluster.
 
-    mvn exec:java -Dbigtable.projectID=GCLOUDPROJECT 
-    -Dbigtable.instanceID=BIGTABLEINSTANCE 
-    -Dbigtable.location=location 
-    -Dbigtable.displayName=displayName
-    -Dbigtable.clusterName=clusterName
-    -Dbigtable.instance.type=DEVELOPMENT
+    mvn exec:java -Dbigtable.projectID=<provide bigtabel project id.>
+    -Dbigtable.instanceID=<provide instance id to be created.> 
+    -Dbigtable.location=<provide zone where instance will be created.> 
+    -Dbigtable.displayName=<provide display name.>
+    -Dbigtable.clusterName=<provide cluster name.>
+    -Dbigtable.instance.type=<DEVELOPMENT/PRODUCTION>
+    -Dbigtable.clusterNodes=<When instance type set to PRODUCTION, number of cluster nodes is mandatory. minimum 3 nodes.>
+    -Dbigtable.createNewCluster=<TRUE/FALSE, when set TRUE, instance.type must be set to PRODUCTION>
+    -Dbigtable.newclusterlocation=<provide another zone for new cluster to be created.>
+    -Dbigtable.newclusterName=<provide new cluster name to be created on another zone.>
 
 ## Contributing changes
 

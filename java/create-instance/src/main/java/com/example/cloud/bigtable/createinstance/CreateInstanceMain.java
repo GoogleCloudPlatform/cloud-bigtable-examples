@@ -20,6 +20,7 @@
 package com.example.cloud.bigtable.createinstance;
 
 import com.google.bigtable.admin.v2.Cluster;
+import com.google.bigtable.admin.v2.CreateClusterRequest;
 import com.google.bigtable.admin.v2.CreateInstanceRequest;
 import com.google.bigtable.admin.v2.DeleteInstanceRequest;
 import com.google.bigtable.admin.v2.Instance;
@@ -50,6 +51,10 @@ public class CreateInstanceMain{
   private static String instanceType;
   private static String locationFormat;
   private static String parentFormat;
+  private static Boolean isCreateNewCluster = false;
+  private static String newClusterLocation;
+  private static String newClusterName;
+  private static Integer clusterNodes;
   
   public static void main(String[] args) throws Exception {
     //Project Id under which instance will be created.
@@ -66,7 +71,16 @@ public class CreateInstanceMain{
     locationFormat = "projects/" + projectId + "/locations/" + location;
     parentFormat = "projects/" + projectId;
     
-    LOG.info("instanceId " + instanceId + " will be created under projectId:" + projectId);
+    if (instanceType.equals("PRODUCTION")) {
+      clusterNodes = Integer.valueOf(requiredProperty("bigtable.clusterNodes"));
+    }
+    
+    if (requiredProperty("bigtable.createNewCluster").equalsIgnoreCase("true")) {
+      setNewClusterProperties();
+      LOG.info("cluster " + newClusterName 
+          + " will be created under projectId:" + projectId
+          + " and zone " + newClusterLocation);
+    }
     
     CreateInstanceMain main = new CreateInstanceMain();
     main.execute();
@@ -77,6 +91,9 @@ public class CreateInstanceMain{
       init();
       createInstance();
       listInstances();
+      if (isCreateNewCluster) {
+        createCluster();
+      }
     } catch (Exception e) {
       LOG.error("Exception in create instance.", e);
     } finally {
@@ -99,10 +116,12 @@ public class CreateInstanceMain{
         .setType(type)
         .build();
     
-    Cluster cluster = Cluster.newBuilder()
-        .setName(clusterName)
-        .setLocation(locationFormat)
-        .build();
+    Cluster cluster = null;
+    if (instanceType.equals("PRODUCTION")) {
+      cluster = setClusterForProduction();
+    } else {
+      cluster = setClusterForDevelopment();
+    }
     
     CreateInstanceRequest request = CreateInstanceRequest.newBuilder()
         .setInstanceId(instanceId)
@@ -110,8 +129,37 @@ public class CreateInstanceMain{
         .setInstance(instance)
         .putClusters("cluster1", cluster)
         .build();
-    
+    LOG.info("Creating instance " + instanceId);
     instanceClient.createInstance(request);
+  }
+  
+  private Cluster setClusterForProduction() {
+    return Cluster.newBuilder()
+      .setName(clusterName)
+      .setLocation(locationFormat)
+      .setServeNodes(clusterNodes)
+      .build();
+  }
+  
+  private Cluster setClusterForDevelopment() {
+    return Cluster.newBuilder()
+      .setName(clusterName)
+      .setLocation(locationFormat)
+      .build();
+  }
+  
+  private void createCluster() {
+    Cluster cluster = Cluster.newBuilder()
+        .setServeNodes(clusterNodes)
+        .setLocation(newClusterLocation).build();
+    
+    CreateClusterRequest request = CreateClusterRequest.newBuilder()
+        .setCluster(cluster)
+        .setClusterId(newClusterName)
+        .setParent("projects/" + projectId + "/instances/" + instanceId)
+        .build();
+    LOG.info("Creating cluster " + newClusterName);
+    instanceClient.createCluster(request);
   }
   
   private void listInstances() {
@@ -126,10 +174,19 @@ public class CreateInstanceMain{
   }
   
   private void deleteInstance() {
+    LOG.info("Finally deleting instance " + instanceId);
     DeleteInstanceRequest request = DeleteInstanceRequest.newBuilder()
-        .setName(instanceId)
+        .setName("projects/" + projectId + "/instances/" + instanceId)
         .build();
     instanceClient.deleteInstance(request);
+    LOG.debug("Instance " + instanceId + " deleted.");
+  }
+  
+  private static void setNewClusterProperties() {
+    isCreateNewCluster = true;
+    newClusterLocation = requiredProperty("bigtable.newclusterlocation");
+    newClusterLocation = "projects/" + projectId + "/locations/" + newClusterLocation;
+    newClusterName = requiredProperty("bigtable.newclusterName");
   }
   
   private static String requiredProperty(String prop) {
