@@ -1,136 +1,134 @@
 # frozen_string_literal: true
 
 require 'bundler/setup'
-require 'google/cloud/bigtable'
-require 'google/cloud/bigtable/admin'
+require "google-cloud-bigtable"
 
 # Connect to bigtable and perform basic operations
 # 1. Create table with column family
-# 2. Insert rows
-# 3. Read rows
-# 4. Delete table
+# 2. Insert rows and Read rows
+# 3. Delete table
 class HelloWorld
-  attr_accessor :project_id, :instance_id, :keyfile
+  attr_accessor :project_id, :instance_id, :keyfile, :bigtable
 
   # @param project_id [String]
   # @param instance_id [String]
   # @param keyfile [String]
-  # 	keyfile .json or .p12 file path. It is optional in case of vm/machine
-  # 	have not in authorization scope
-  def initialize(project_id, instance_id, keyfile: nil)
+  # 	keyfile .json or .p12 file path. It is optional. In case of vm/machine
+  # 	have not in authorization scope keyfile required.
+  def initialize(project_id, instance_id, keyfile = nil)
     @project_id = project_id
     @instance_id = instance_id
     @keyfile = keyfile
+
+    # Init bigtable
+    gcloud = Google::Cloud.new(project_id, keyfile)
+    @bigtable = gcloud.bigtable
+  end
+
+  # # Create table
+  #
+  # Create table if not exist.
+  #
+  # @param table_id [String] Table name
+  # @param column_family [String] Connect family name
+  #
+  def create_table table_id, column_family
+    puts "Creating table '#{table_id}'"
+
+    instance = bigtable.instance(instance_id)
+
+    if instance.table(table_id)
+      puts " '#{table_id}' is already exists."
+    else
+      instance.create_table(table_id) do |column_families|
+        column_families.add(
+          column_family,
+          Google::Cloud::Bigtable::GcRule.max_versions(3)
+        )
+      end
+    end
+  end
+
+  # Write and Read rows.
+  #
+  # Each row has a unique row key.
+  #
+  # Note: This example uses sequential numeric IDs for simplicity, but
+  # this can result in poor performance in a production application.
+  # Since rows are stored in sorted order by key, sequential keys can
+  # result in poor distribution of operations across nodes.
+  #
+  # For more information about how to design a Bigtable schema for the
+  # best performance, see the documentation:
+  #
+  #	https://cloud.google.com/bigtable/docs/schema-design
+  #
+  # @param table_id [String] Table name
+  # @param column_qualifier [String] Column qualifer name
+  # @param column_family [String] Column family name
+  #
+  def write_and_read table_id, column_family, column_qualifier
+    client = bigtable.client(instance_id)
+    table = client.table(table_id)
+
+    puts "Write some greetings to the table '#{table_id}'"
+    greetings = ['Hello World!', 'Hello Bigtable!', 'Hello Ruby!']
+
+    # Insert rows one by one
+    # Note: To perform multiple mutation on multiple rows use `mutate_rows`.
+    greetings.each_with_index do |value, i|
+      puts "  Writing,  Row key: greeting#{i}, Value: #{value}"
+
+      entry = table.mutation_entry("greeting#{i}")
+      entry.set_cell(
+        column_family,
+        column_qualifier,
+        value,
+        timestamp: Time.now.to_i * 1000
+      )
+
+      table.mutate_row(entry)
+    end
+
+    puts 'Reading rows'
+    table.read_rows.each do |row|
+      p row
+    end
+  end
+
+  # # Delete table
+  # Get table and delete table
+  #
+  # @param table_id [String] Table name
+  #
+  def delete_table table_id
+    puts "Deleting the table '#{table_id}'"
+
+    instance = bigtable.instance(instance_id)
+    instance.table(table_id).delete
   end
 
   def do_hello_world
-    table_name = 'Hello-Bigtable'
-    column_family_name = 'cf'
-    column_name = 'greeting'
+    table_id = 'Hello-Bigtable'
+    column_family = 'cf'
+    column_qualifier = 'greeting'
 
-    table_admin_client = Google::Cloud::Bigtable::Admin::BigtableTableAdmin.new(
-      credentials: keyfile
-    )
+    # 1. Create table with column family
+    create_table(table_id, column_family)
 
-    ## 1. Create table with column familty
-    puts "Creating table '#{table_name}'"
+    # 2. Insert rows and Read rows
+    write_and_read(table_id, column_family, column_qualifier)
 
-    table_admin_client.create_table(
-      format_instance_name,
-      table_name,
-      granularity: 0,
-      column_families: {
-        column_family_name => Google::Bigtable::Admin::V2::ColumnFamily.new
-      }
-    )
-
-    bigtable_client = Google::Cloud::Bigtable.new(credentials: keyfile)
-    formated_table_name = format_table_name(table_name)
-
-    ## 2. Insert rows
-    puts "Write some greetings to the table '#{table_name}'"
-
-    # Each row has a unique row key.
-    #
-    # Note: This example uses sequential numeric IDs for simplicity, but
-    # this can result in poor performance in a production application.
-    # Since rows are stored in sorted order by key, sequential keys can
-    # result in poor distribution of operations across nodes.
-    #
-    # For more information about how to design a Bigtable schema for the
-    # best performance, see the documentation:
-    #
-    #	https://cloud.google.com/bigtable/docs/schema-design
-    #
-    # Insert rows one by one
-    greetings = ['Hello World!', 'Hello Bigtable!', 'Hello Ruby!']
-
-    greetings.each_with_index do |value, index|
-      puts "  Writing,  Row key: greeting#{index}, Value: #{value}"
-
-      mutation = {
-        set_cell: {
-          family_name: column_family_name,
-          column_qualifier: column_name,
-          value: value
-        }
-      }
-
-      bigtable_client.mutate_row(
-        formated_table_name,
-        "greeting#{index}",
-        [mutation]
-      )
-    end
-
-    # Note: To perform multiple mutation on multiple rows use `mutate_rows`.
-
-    ## 3. Read rows steam
-    puts 'Reading all rows using streaming'
-
-    bigtable_client.read_rows(formated_table_name).each do |response|
-      response.chunks.each do |row|
-        puts "  Row key: #{row.row_key}, Value: #{row.value}"
-      end
-    end
-
-    ## 4. Delete table
-    puts "Deleting the table '#{table_name}'"
-
-    table_admin_client.delete_table(formated_table_name)
-  end
-
-  private
-
-  # Build formated table name
-  # i.e projects/my-project/instances/my-instances/tables/Hello-Bigtable
-  #
-  # @param table_name [String]
-  # @return [String]
-  def format_table_name(table_name)
-    Google::Cloud::Bigtable::Admin::V2::BigtableTableAdminClient.table_path(
-      project_id,
-      instance_id,
-      table_name
-    )
-  end
-
-  # Build formated instance name
-  # i.e projects/my-project/instances/my-instance
-  #
-  # @return [String]
-  def format_instance_name
-    Google::Cloud::Bigtable::Admin::V2::BigtableTableAdminClient.instance_path(
-      project_id,
-      instance_id
-    )
+    # 3. Delete table
+    delete_table(table_id)
   end
 end
 
 # Main
-hello_world = HelloWorld.new(ENV['PROJECT_ID'], ENV['INSTANCE_ID'])
-hello_world.do_hello_world
+# hello_world = HelloWorld.new(ENV['PROJECT_ID'], ENV['INSTANCE_ID'])
+# hello_world.do_hello_world
 
 # Using keyfile
 # hello_world = HelloWorld.new(ENV['PROJECT_ID'], ENV['INSTANCE_ID'],
-#  keyfile: 'keyfile.json')
+#   keyfile: 'keyfile.json')
+# hello_world.do_hello_world
