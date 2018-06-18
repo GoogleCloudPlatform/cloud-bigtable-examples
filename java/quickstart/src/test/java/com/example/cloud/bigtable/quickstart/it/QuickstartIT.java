@@ -31,6 +31,7 @@ import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -86,5 +87,12 @@ public class QuickstartIT {
     System.setOut(stdOut);
     assertTrue(bout.toString().contains(data));
     Quickstart.main(projectId, instanceId, tableId);
+  }
+
+  @After
+  public void cleanup() throws Exception {
+    try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
+      connection.getAdmin().deleteTable(TableName.valueOf(tableId));
+    }
   }
 }

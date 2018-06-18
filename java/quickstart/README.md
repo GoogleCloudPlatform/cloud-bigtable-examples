@@ -123,18 +123,7 @@ Run the quick start to read the row you just wrote using `cbt`:
 ```
 Expected output similar to:
 ```
-    Row key: r1
-    Data: {
-        "cf1": {
-            "c1": [
-                {
-                    "value": "test-value",
-                    "labels": [],
-                    "timestamp": "1526104247827000"
-                }
-            ]
-        }
-    }
+    Row r1: test-value
 ```
 
 To run tests:
