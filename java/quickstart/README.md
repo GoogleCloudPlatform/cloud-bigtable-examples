@@ -1,7 +1,7 @@
-# Cloud Bigtable Hello World
+# Cloud Bigtable Quickstart
 
 This is a simple application that demonstrates using the native HBase API
-to connect to and interact with Cloud Bigtable.
+to connect to a Cloud Bigtable instance and read a row from a table.
 
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -36,7 +36,7 @@ Download the sample app and navigate into the app directory:
     Alternatively, you can [download the sample][github-zip] as a zip file and
     extract it.
 
-2.  Change to the Hello World code sample directory.
+2.  Change to the Quickstart code sample directory.
 
         cd cloud-bigtable-examples/java/quickstart
 
@@ -60,11 +60,11 @@ a [free trial][free-trial].
 
 ## Before you begin
 
-This sample assumes you have [Java 8][java8] installed.
+1. This sample assumes you have [Java 8][java8] installed.
 
 [java8]: http://www.oracle.com/technetwork/java/javase/downloads/
 
-### Installing Maven
+1. Install Maven
 
 These samples use the [Apache Maven][maven] build system. Before getting
 started, be sure to [download][maven-download] and [install][maven-install] it.
@@ -75,96 +75,73 @@ client libraries.
 [maven-download]: https://maven.apache.org/download.cgi
 [maven-install]: https://maven.apache.org/install.html
 
-### Creating a Project in the Google Cloud Platform Console
+1. [Select or create][projects] a Cloud Platform project.
 
-If you haven't already created a project, create one now. Projects enable you to
-manage all Google Cloud Platform resources for your app, including deployment,
-access control, billing, and services.
+1. Enable [billing][billing] for your project.
 
-1. Open the [Cloud Platform Console][cloud-console].
-1. In the drop-down menu at the top, select **Create a project**.
-1. Give your project a name.
-1. Make a note of the project ID, which might be different from the project
-   name. The project ID is used in commands and in configurations.
+1. Enable the Cloud Bigtable API][enable_api].
 
-[cloud-console]: https://console.cloud.google.com/
+    Note: The quickstart performs an operation on an existing table.
+    If you require your code to create instances or tables,
+    the [Admin API](https://console.cloud.google.com/flows/enableapi?apiid=bigtableadmin.googleapis.com)
+    must be enabled as well.
 
-### Enabling billing for your project.
+1. [Set up authentication with a service account][auth] so you can access the API from your local workstation.
 
-If you haven't already enabled billing for your project, [enable
-billing][enable-billing] now.  Enabling billing is required to use Cloud Bigtable
-and other operations like creating VM instances.
+1. Follow the instructions in the [user documentation](https://cloud.google.com/bigtable/docs/creating-instance) to
+create a Cloud Bigtable instance (if necessary).
 
-[enable-billing]: https://console.cloud.google.com/project/_/settings
-
-### Enable the Cloud Bigtable API
-
-  [Enable the Cloud Bigtable API][enable_api].
-
-  Note: The quickstart performs an operation on an existing table.
-  If you require your code to create instances or tables,
-  the [Admin API](https://console.cloud.google.com/flows/enableapi?apiid=bigtableadmin.googleapis.com)
-  must be enabled as well.
-
-### Authentication
-
-  [Set up authentication with a service account][auth] so you can access the API from your local workstation.
-
-### Install the Google Cloud SDK
-
-https://github.com/GoogleCloudPlatform/cloud-bigtable-examples/blob/424aa3526cdab2e116a6b79e6a8a1c087cfa4b37/java/hello-world/src/main/java/com/example/cloud/bigtable/helloworld/HelloWorld.java#L69-L78
-
-## Quickstart
-
-### Before you begin
-
-1.  Select or create a Cloud Platform project.
-
-    [Go to the projects page][projects]
-
-1.  Enable billing for your project.
-
-    [Enable billing][billing]
-
-
-
-
+1. Follow the [cbt tutorial](https://cloud.google.com/bigtable/docs/quickstart-cbt) to install the
+cbt command line tool.
+Here are the cbt commands to create a table, column family and add some data:
+```
+   cbt createtable my-table
+   cbt createfamily my-table cf1
+   cbt set my-table r1 cf1:c1=test-value
+```
 
 [projects]: https://console.cloud.google.com/project
 [billing]: https://support.google.com/cloud/answer/6293499#enable-billing
 [enable_api]: https://console.cloud.google.com/flows/enableapi?apiid=bigtable.googleapis.com
 [auth]: https://cloud.google.com/docs/authentication/getting-started
 
-GOOGLE_APPLICATION_CREDENTIALS
 
-## Provisioning an instance
+## Running the quickstart
 
-Follow the instructions in the [user
-documentation](https://cloud.google.com/bigtable/docs/creating-instance) to
-create a Google Cloud Platform project and Cloud Bigtable instance if necessary.
-You'll need to reference your project id and instance id to run the
-application.
-
-
-## Running the application
+The [Quick start](src/main/java/com/example/bigtable/quickstart/Quickstart.java) sample shows a
+basic usage of the Bigtable client library: reading rows from a table.
 
 Build and run the sample using Maven.
-
+```
     mvn package
-    mvn exec:java -Dbigtable.projectID=GCLOUDPROJECT -Dbigtable.instanceID=BIGTABLEINSTANCE
+```
 
-You will see output resembling the following, interspersed with informational logging
-from the underlying libraries:
+Run the quick start to read the row you just wrote using `cbt`:
+```
+   mvn exec:java -Dexec.mainClass="com.example.cloud.bigtable.quickstart.Quickstart" \
+         -Dexec.args="my-project-id my-bigtable-instance my-table"
+```
+Expected output similar to:
+```
+    Row key: r1
+    Data: {
+        "cf1": {
+            "c1": [
+                {
+                    "value": "test-value",
+                    "labels": [],
+                    "timestamp": "1526104247827000"
+                }
+            ]
+        }
+    }
+```
 
-    HelloWorld: Create table Hello-Bigtable
-    HelloWorld: Write some greetings to the table
-    HelloWorld: Scan for all greetings:
-        Hello World!
-        Hello Cloud Bigtable!
-        Hello HBase!
-    HelloWorld: Delete the table
-
-
+To run tests:
+```
+   export GOOGLE_CLOUD_PROJECT=my-project-id
+   mvn -Dbigtable.test.instance=test-instance clean verify
+```
 ## Cleaning up
 
 To avoid incurring extra charges to your Google Cloud Platform account, remove
