@@ -43,8 +43,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class QuickstartIT {
-
-
+  
   private final String instanceId = System.getProperty("bigtable.test.instance");
   private final String tableId = formatForTest("my-table");
   private final String columnFamilyName = "my-column-family";
