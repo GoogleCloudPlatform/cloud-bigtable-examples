@@ -27,6 +27,7 @@ import java.util.UUID;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Table;
@@ -43,13 +44,14 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class QuickstartIT {
-  
+
   private final String instanceId = System.getProperty("bigtable.test.instance");
   private final String tableId = formatForTest("my-table");
   private final String columnFamilyName = "my-column-family";
   private final String columnName = "my-column";
   private final String data = "my-data";
 
+  // provide your project id as an env var
   private final String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
 
   private String formatForTest(String name) {
@@ -61,18 +63,19 @@ public class QuickstartIT {
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
       HTableDescriptor descriptor = new HTableDescriptor(TableName.valueOf(tableId));
       descriptor.addFamily(new HColumnDescriptor(columnFamilyName));
-      connection.getAdmin().createTable(descriptor);
+      try (Admin admin = connection.getAdmin()) {
+        admin.createTable(descriptor);
+        // Retrieve the table we just created so we can do some reads and writes
+        try (Table table = connection.getTable(TableName.valueOf(tableId))) {
 
-      // Retrieve the table we just created so we can do some reads and writes
-      Table table = connection.getTable(TableName.valueOf(tableId));
+          String rowKey = "r1";
 
-      String rowKey = "r1";
-
-      Put put = new Put(Bytes.toBytes(rowKey));
-      put.addColumn(Bytes.toBytes(columnFamilyName), Bytes.toBytes(columnName),
-          Bytes.toBytes(data));
-      table.put(put);
-
+          Put put = new Put(Bytes.toBytes(rowKey));
+          put.addColumn(Bytes.toBytes(columnFamilyName), Bytes.toBytes(columnName),
+              Bytes.toBytes(data));
+          table.put(put);
+        }
+      }
     }
   }
 
@@ -85,7 +88,6 @@ public class QuickstartIT {
     Quickstart.main(projectId, instanceId, tableId);
     System.setOut(stdOut);
     assertTrue(bout.toString().contains(data));
-    Quickstart.main(projectId, instanceId, tableId);
   }
 
   @After

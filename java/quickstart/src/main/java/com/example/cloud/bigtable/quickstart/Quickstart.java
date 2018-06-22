@@ -45,19 +45,24 @@ public class Quickstart {
     try (Connection connection = BigtableConfiguration.connect(projectId, instanceId)) {
 
       // Create a connection to the table that already exists
-      Table table = connection.getTable(TableName.valueOf(tableId));
+      // Use try-with-resources to make sure the connection to the table is closed correctly
+      try (Table table = connection.getTable(TableName.valueOf(tableId))) {
 
-      // Read a row
-      String rowKey = "r1";
+        // Read a row
+        String rowKey = "r1";
 
-      // Retrieve the result
-      Result result = table.get(new Get(Bytes.toBytes(rowKey)));
+        // Retrieve the result
+        Result result = table.get(new Get(Bytes.toBytes(rowKey)));
 
-      // Convert row data to string
-      String rowValue = Bytes.toString(result.value());
+        // Convert row data to string
+        String rowValue = Bytes.toString(result.value());
 
-      System.out.printf("Row r1: %s", rowValue);
+        System.out.printf("Row r1: %s", rowValue);
 
+      }  catch (IOException e) {
+        // handle exception while connecting to a table
+        throw e;
+      }
     } catch (IOException e) {
       System.err.println("Exception while running quickstart: " + e.getMessage());
       e.printStackTrace();

@@ -95,9 +95,9 @@ create a Cloud Bigtable instance (if necessary).
 cbt command line tool.
 Here are the cbt commands to create a table, column family and add some data:
 ```
-   cbt createtable my-table
-   cbt createfamily my-table cf1
-   cbt set my-table r1 cf1:c1=test-value
+cbt createtable my-table
+cbt createfamily my-table cf1
+cbt set my-table r1 cf1:c1=test-value
 ```
 
 [projects]: https://console.cloud.google.com/project
@@ -113,24 +113,25 @@ basic usage of the Bigtable client library: reading rows from a table.
 
 Build and run the sample using Maven.
 ```
-    mvn package
+mvn package
 ```
 
 Run the quick start to read the row you just wrote using `cbt`:
 ```
-   mvn exec:java -Dexec.mainClass="com.example.cloud.bigtable.quickstart.Quickstart" \
+mvn exec:java -Dexec.mainClass="com.example.cloud.bigtable.quickstart.Quickstart" \
          -Dexec.args="my-project-id my-bigtable-instance my-table"
 ```
 Expected output similar to:
 ```
-    Row r1: test-value
+Row r1: test-value
 ```
 
 To run tests:
 ```
-   export GOOGLE_CLOUD_PROJECT=my-project-id
-   mvn -Dbigtable.test.instance=test-instance clean verify
+export GOOGLE_CLOUD_PROJECT=my-project-id
+mvn -Dbigtable.test.instance=test-instance clean verify
 ```
+
 ## Cleaning up
 
 To avoid incurring extra charges to your Google Cloud Platform account, remove
