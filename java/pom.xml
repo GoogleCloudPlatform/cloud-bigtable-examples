@@ -21,11 +21,14 @@ limitations under the License.
   <artifactId>bigtable-samples</artifactId>
   <packaging>pom</packaging>
 
-	<!-- Parent POM defines common plugins and properties. -->
-	<parent>
+  <!--
+    The parent pom defines common style checks and testing strategies for code samples.
+    Removing or replacing it should not affect the execution of the samples in anyway.
+  -->
+  <parent>
 		<groupId>com.google.cloud.samples</groupId>
 		<artifactId>shared-configuration</artifactId>
-		<version>1.0.2</version>
+		<version>1.0.10</version>
 	</parent>
 
   <modules>
@@ -41,5 +44,6 @@ limitations under the License.
     <module>simple-cli</module>
     <module>simple-performance-test</module>
     <module>dataflow-bulk-delete</module>
+    <module>quickstart</module>
   </modules>
 </project>
