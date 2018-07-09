@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
  * configuration of the project specified by --project.
  */
 public class CsvImport {
-    private static final byte[] FAMILY = Bytes.toBytes("cf");
+    private static final byte[] FAMILY = Bytes.toBytes("csv");
     private static final Logger LOG = LoggerFactory.getLogger(ParseEventFn.class);
 
     static final DoFn<String[], Mutation> MUTATION_TRANSFORM = new DoFn<String[], Mutation>() {

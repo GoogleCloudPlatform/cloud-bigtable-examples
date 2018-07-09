@@ -80,7 +80,10 @@ There should be a file that looks like count-XXXXXX-of-YYYYYY.  Type:
     cat count-XXXXXX-of-YYYYYY
 
 # CsvImport - Reading data from GCS and then Writing Data
+Use the Hbase shell to add a column family to your table called 'csv' for this example
 
+    `alter 'Dataflow_test',  'csv'`
+    
 ## Required Options for CSV import
 
 This pipeline needs to be configured with two additional command line options:
@@ -91,7 +94,7 @@ This pipeline needs to be configured with two additional command line options:
 The examples take a CSV file in a GCS bucket and writes each row to Bigtable.
 
     mvn package exec:exec -DCsvImport -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> 
-    -Dgs=<Your bucket>  -DinputFile="<Your file>" -Dheaders="<Your headers>"
+    -DinputFile="<Your file>" -Dheaders="<Your headers>"
     
 You can verify that the data was written by using HBase shell and typing `scan 'Dataflow_test'`. You can also delete the table, if you wish, using:
 
