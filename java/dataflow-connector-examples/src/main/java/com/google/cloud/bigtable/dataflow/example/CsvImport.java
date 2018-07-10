@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright Copyright 2018 Google LLC. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package com.google.cloud.bigtable.dataflow.example;
 
 import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
@@ -34,9 +35,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * <p>
- * This is an example of importing a CSV into Bigtable with Dataflow. The main method adds the
- * rows of the CSV into the pipeline, converts them to Puts, and then writes the Puts to a
- * Bigtable table.
+ * This is an example of importing a CSV into Bigtable with Dataflow. The main method adds the rows
+ * of the CSV into the pipeline, converts them to Puts, and then writes the Puts to a Bigtable
+ * table.
  * </p>
  * This pipeline needs to be configured with command line options:
  * </p>
@@ -47,8 +48,8 @@ import org.slf4j.LoggerFactory;
  * <li>--bigtableInstanceId=[bigtable instance id]
  * <li>--bigtableTableId=[bigtable tableName]
  * <p>
- * To run this starter example locally using DirectPipelineRunner, just execute it with the parameters
- * from your favorite development environment.
+ * To run this starter example locally using DirectPipelineRunner, just execute it with the
+ * parameters from your favorite development environment.
  * <p>
  * To run this starter example using managed resource in Google Cloud Platform, you should also
  * specify the following command-line options: --project=<YOUR_PROJECT_ID>
@@ -58,89 +59,85 @@ import org.slf4j.LoggerFactory;
  * configuration of the project specified by --project.
  */
 public class CsvImport {
-    private static final byte[] FAMILY = Bytes.toBytes("csv");
-    private static final Logger LOG = LoggerFactory.getLogger(ParseEventFn.class);
 
-    static final DoFn<String[], Mutation> MUTATION_TRANSFORM = new DoFn<String[], Mutation>() {
-        @ProcessElement
-        public void processElement(DoFn<String[], Mutation>.ProcessContext c) throws Exception {
-            try {
-                String[] headers = c.getPipelineOptions().as(BigtableCsvOptions.class).getHeaders().split(",");
+  private static final byte[] FAMILY = Bytes.toBytes("csv");
+  private static final Logger LOG = LoggerFactory.getLogger(CsvImport.class);
 
-                byte[] rowId = Bytes.toBytes(c.element()[0]);
-                Put row = new Put(rowId);
-                for (int i = 1; i < c.element().length; i++) {
-                    row.addColumn(FAMILY, Bytes.toBytes(headers[i]), Bytes.toBytes(c.element()[i]));
-                }
-                c.output(row);
-            } catch (Exception e) {
-                LOG.error("Failed to process input {}", c.element(), e);
-            }
+  static final DoFn<String, Mutation> MUTATION_TRANSFORM = new DoFn<String, Mutation>() {
+    @ProcessElement
+    public void processElement(DoFn<String, Mutation>.ProcessContext c) throws Exception {
+      try {
+        String[] headers = c.getPipelineOptions().as(BigtableCsvOptions.class).getHeaders()
+            .split(",");
+        String[] values = c.element().split(",");
 
+        byte[] rowkey = Bytes.toBytes(values[0]);
+        byte[][] headerBytes = new byte[headers.length][];
+        for (int i = 0; i < headers.length; i++) {
+          headerBytes[i] = Bytes.toBytes(headers[i]);
         }
-    };
 
-    static class ParseEventFn extends DoFn<String, String[]> {
-        @ProcessElement
-        public void processElement(ProcessContext c) {
-            c.output(c.element().split(","));
+        Put row = new Put(rowkey);
+        for (int i = 1; i < values.length; i++) {
+          row.addColumn(FAMILY, headerBytes[i], Bytes.toBytes(values[i]));
         }
+        c.output(row);
+      } catch (Exception e) {
+        LOG.error("Failed to process input {}", c.element(), e);
+      }
+
     }
+  };
 
-    public static interface BigtableCsvOptions extends CloudBigtableOptions {
-        String getHeaders();
+  public static interface BigtableCsvOptions extends CloudBigtableOptions {
 
-        void setHeaders(String headers);
+    @Description("The headers for the CSV file.")
+    String getHeaders();
 
-        String getInputFile();
+    void setHeaders(String headers);
 
-        void setInputFile(String location);
-    }
+    @Description("The Cloud Storage path to the CSV file..")
+    String getInputFile();
+
+    void setInputFile(String location);
+  }
 
 
-    /**
-     * <p>Creates a dataflow pipeline that reads a file and creates the following chain:</p>
-     * <ol>
-     * <li> Put each row of the CSV into the Pipeline.
-     * <li> Transform each row into an array of values.
-     * <li> Creates a Put object for each array.
-     * <li> Write the Put object to Bigtable.
-     * </ol>
-     *
-     * @param args Arguments to use to configure the Dataflow Pipeline.  The first three are required
-     *             when running via managed resource in Google Cloud Platform.  Those options should be omitted
-     *             for LOCAL runs.  The next two are to configure your CSV file. And the last four arguments are to
-     *             configure the Bigtable connection.
-     *             --runner=BlockingDataflowPipelineRunner
-     *             --project=[dataflow project] \\
-     *             --stagingLocation=gs://[your google storage bucket] \\
-     *             --headers=[comma separated list of headers] \\
-     *             --inputFile=gs://[your google storage object] \\
-     *             --bigtableProject=[bigtable project] \\
-     *             --bigtableInstanceId=[bigtable instance id] \\
-     *             --bigtableTableId=[bigtable tableName]
-     */
+  /**
+   * <p>Creates a dataflow pipeline that reads a file and creates the following chain:</p>
+   * <ol>
+   * <li> Put each row of the CSV into the Pipeline.
+   * <li> Creates a Put object for each row.
+   * <li> Write the Put object to Bigtable.
+   * </ol>
+   *
+   * @param args Arguments to use to configure the Dataflow Pipeline.  The first three are required
+   * when running via managed resource in Google Cloud Platform.  Those options should be omitted
+   * for LOCAL runs.  The next two are to configure your CSV file. And the last four arguments are
+   * to configure the Bigtable connection. --runner=BlockingDataflowPipelineRunner
+   * --project=[dataflow project] \\ --stagingLocation=gs://[your google storage bucket] \\
+   * --headers=[comma separated list of headers] \\ --inputFile=gs://[your google storage object] \\
+   * --bigtableProject=[bigtable project] \\ --bigtableInstanceId=[bigtable instance id] \\
+   * --bigtableTableId=[bigtable tableName]
+   */
 
-    public static void main(String[] args) {
-        BigtableCsvOptions options =
-                PipelineOptionsFactory.fromArgs(args).withValidation().as(BigtableCsvOptions.class);
+  public static void main(String[] args) {
+    BigtableCsvOptions options =
+        PipelineOptionsFactory.fromArgs(args).withValidation().as(BigtableCsvOptions.class);
 
-        CloudBigtableTableConfiguration config =
-                new CloudBigtableTableConfiguration.Builder()
-                        .withProjectId(options.getBigtableProjectId())
-                        .withInstanceId(options.getBigtableInstanceId())
-                        .withTableId(options.getBigtableTableId())
-                        .build();
+    CloudBigtableTableConfiguration config =
+        new CloudBigtableTableConfiguration.Builder()
+            .withProjectId(options.getBigtableProjectId())
+            .withInstanceId(options.getBigtableInstanceId())
+            .withTableId(options.getBigtableTableId())
+            .build();
 
-        Pipeline p = Pipeline.create(options);
+    Pipeline p = Pipeline.create(options);
 
-        PCollection<String> lines = p.apply("ReadMyFile", TextIO.read().from(options.getInputFile()));
+    p.apply("ReadMyFile", TextIO.read().from(options.getInputFile()))
+        .apply("TransformParsingsToBigtable", ParDo.of(MUTATION_TRANSFORM))
+        .apply("WriteToBigtable", CloudBigtableIO.writeToTable(config));
 
-        lines
-                .apply("ParseEvent", ParDo.of(new ParseEventFn()))
-                .apply("TransformParsingsToBigtable", ParDo.of(MUTATION_TRANSFORM))
-                .apply("WriteToBigtable", CloudBigtableIO.writeToTable(config));
-
-        p.run().waitUntilFinish();
-    }
+    p.run().waitUntilFinish();
+  }
 }
