@@ -25,11 +25,12 @@ import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
 
 public class BigtableHelperWithConfiguration {
-    public static Connection connection = null;
 
-    public static void connect() throws IOException {
-        Configuration config = HBaseConfiguration.create();
-        connection = ConnectionFactory.createConnection(config);
-    }
+  public static Connection connection = null;
+
+  public static void connect() throws IOException {
+    Configuration config = HBaseConfiguration.create();
+    connection = ConnectionFactory.createConnection(config);
+  }
 }
 // [START bigtable_connecting_helper_with_config]

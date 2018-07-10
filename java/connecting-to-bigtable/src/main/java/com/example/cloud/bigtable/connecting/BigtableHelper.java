@@ -25,31 +25,32 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.Connection;
 
 public class BigtableHelper {
-    public static String projectId;
-    public static String instanceId;
-    public static String appProfileId;
 
-    public static void main(String... args) {
-        projectId = args[0];  // my-gcp-project-id
-        instanceId = args[1]; // my-bigtable-instance-id
+  public static String projectId;
+  public static String instanceId;
+  public static String appProfileId;
 
-        // Include the following line if you are using app profiles.
-        // If you do not include the following line, the connection uses the
-        // default app profile.
-        appProfileId = args[2];    // my-bigtable-app-profile-id
-    }
+  public static void main(String... args) {
+    projectId = args[0];  // my-gcp-project-id
+    instanceId = args[1]; // my-bigtable-instance-id
 
-    public static Connection connection = null;
+    // Include the following line if you are using app profiles.
+    // If you do not include the following line, the connection uses the
+    // default app profile.
+    appProfileId = args[2];    // my-bigtable-app-profile-id
+  }
 
-    public static void connect() throws IOException {
-        Configuration config = BigtableConfiguration.configure(projectId, instanceId);
-        // Include the following line if you are using app profiles.
-        // If you do not include the following line, the connection uses the
-        // default app profile.
-        config.set(BigtableOptionsFactory.APP_PROFILE_ID_KEY, appProfileId);
+  public static Connection connection = null;
 
-        connection = BigtableConfiguration.connect(config);
-    }
+  public static void connect() throws IOException {
+    Configuration config = BigtableConfiguration.configure(projectId, instanceId);
+    // Include the following line if you are using app profiles.
+    // If you do not include the following line, the connection uses the
+    // default app profile.
+    config.set(BigtableOptionsFactory.APP_PROFILE_ID_KEY, appProfileId);
+
+    connection = BigtableConfiguration.connect(config);
+  }
 }
 
 // [END bigtable_connecting_helper]

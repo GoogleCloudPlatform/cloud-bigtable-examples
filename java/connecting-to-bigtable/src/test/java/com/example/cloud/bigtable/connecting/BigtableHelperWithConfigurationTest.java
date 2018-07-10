@@ -8,11 +8,11 @@ import org.junit.runners.JUnit4;
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class BigtableHelperWithConfigurationTest {
 
-    @Test
-    public void connection() throws Exception {
-        BigtableHelperWithConfiguration helper = new BigtableHelperWithConfiguration();
-        helper.connect();
+  @Test
+  public void connection() throws Exception {
+    BigtableHelperWithConfiguration helper = new BigtableHelperWithConfiguration();
+    helper.connect();
 
-        helper.connection.getAdmin().listTables();
-    }
+    helper.connection.getAdmin().listTables();
+  }
 }
