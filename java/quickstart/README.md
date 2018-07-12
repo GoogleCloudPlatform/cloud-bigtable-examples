@@ -79,7 +79,7 @@ client libraries.
 
 1. Enable [billing][billing] for your project.
 
-1. Enable the Cloud Bigtable API][enable_api].
+1. Enable the [Cloud Bigtable API][enable_api].
 
     Note: The quickstart performs an operation on an existing table.
     If you require your code to create instances or tables,
