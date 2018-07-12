@@ -37,7 +37,7 @@ public class BigtableHelper {
     // Include the following line if you are using app profiles.
     // If you do not include the following line, the connection uses the
     // default app profile.
-    appProfileId = args[2];    // my-bigtable-app-profile-id
+//    appProfileId = args[2];    // my-bigtable-app-profile-id
   }
 
   public static Connection connection = null;
@@ -47,7 +47,7 @@ public class BigtableHelper {
     // Include the following line if you are using app profiles.
     // If you do not include the following line, the connection uses the
     // default app profile.
-    config.set(BigtableOptionsFactory.APP_PROFILE_ID_KEY, appProfileId);
+//    config.set(BigtableOptionsFactory.APP_PROFILE_ID_KEY, appProfileId);
 
     connection = BigtableConfiguration.connect(config);
   }
