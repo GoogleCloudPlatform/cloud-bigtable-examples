@@ -28,26 +28,29 @@ public class BigtableHelper {
 
   public static String projectId;
   public static String instanceId;
-  public static String appProfileId;
+  public static String appProfileId = "default";
+  public static Connection connection = null;
 
   public static void main(String... args) {
     projectId = args[0];  // my-gcp-project-id
     instanceId = args[1]; // my-bigtable-instance-id
 
-    // Include the following line if you are using app profiles.
-    // If you do not include the following line, the connection uses the
-    // default app profile.
-//    appProfileId = args[2];    // my-bigtable-app-profile-id
-  }
 
-  public static Connection connection = null;
+    if (args.length > 2) {
+      // Include the following line if you are using app profiles.
+      // If you do not include the following line, the connection uses the
+      // default app profile.
+      appProfileId = args[2];    // my-bigtable-app-profile-id
+    }
+  }
 
   public static void connect() throws IOException {
     Configuration config = BigtableConfiguration.configure(projectId, instanceId);
+
     // Include the following line if you are using app profiles.
     // If you do not include the following line, the connection uses the
     // default app profile.
-//    config.set(BigtableOptionsFactory.APP_PROFILE_ID_KEY, appProfileId);
+    config.set(BigtableOptionsFactory.APP_PROFILE_ID_KEY, appProfileId);
 
     connection = BigtableConfiguration.connect(config);
   }

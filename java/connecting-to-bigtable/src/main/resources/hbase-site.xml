@@ -19,7 +19,7 @@
   -->
   <property>
     <name>google.bigtable.app.profile.id</name>
-    <value>${bigtable.appProfileID}</value>
+    <value>${bigtable.appProfileID || "default"}</value>
   </property>
 </configuration>
   <!--[END bigtable_hbase_site_xml]-->
