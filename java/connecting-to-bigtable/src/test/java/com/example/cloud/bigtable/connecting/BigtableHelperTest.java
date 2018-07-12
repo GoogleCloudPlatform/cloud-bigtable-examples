@@ -20,7 +20,7 @@ public class BigtableHelperTest {
     helper.main(projectId, instanceId);
     helper.connect();
 
-    assertThat(helper.connection.toString()).contains("project="+projectId);
-    assertThat(helper.connection.toString()).contains("instance="+instanceId);
+    assertThat(helper.connection.toString()).contains("project=" + projectId);
+    assertThat(helper.connection.toString()).contains("instance=" + instanceId);
   }
 }

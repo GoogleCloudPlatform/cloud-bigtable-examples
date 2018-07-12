@@ -35,7 +35,6 @@ public class BigtableHelper {
     projectId = args[0];  // my-gcp-project-id
     instanceId = args[1]; // my-bigtable-instance-id
 
-
     if (args.length > 2) {
       // Include the following line if you are using app profiles.
       // If you do not include the following line, the connection uses the

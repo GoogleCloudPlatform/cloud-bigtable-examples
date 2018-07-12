@@ -9,6 +9,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
 public class BigtableHelperWithConfigurationTest {
+
   private final String projectId = System.getProperty("bigtable.projectID");
   private final String instanceId = System.getProperty("bigtable.instanceID");
 
@@ -17,7 +18,7 @@ public class BigtableHelperWithConfigurationTest {
     BigtableHelperWithConfiguration helper = new BigtableHelperWithConfiguration();
     helper.connect();
 
-    assertThat(helper.connection.toString()).contains("project="+projectId);
-    assertThat(helper.connection.toString()).contains("instance="+instanceId);
+    assertThat(helper.connection.toString()).contains("project=" + projectId);
+    assertThat(helper.connection.toString()).contains("instance=" + instanceId);
   }
 }
