@@ -29,8 +29,10 @@ public class BigtableHelperWithConfiguration {
   public static Connection connection = null;
 
   public static void connect() throws IOException {
+    // [START bigtable_creating_connection_object]
     Configuration config = HBaseConfiguration.create();
     connection = ConnectionFactory.createConnection(config);
+    // [END bigtable_creating_connection_object]
   }
 }
 // [START bigtable_connecting_helper_with_config]
