@@ -7,6 +7,6 @@ This is a collection of samples relating to connecting to Cloud Bigtable.
 
 To run tests:
 ```
-export GCLOUD_PROJECT=my-project-id
+export GCLOUD_PROJECT=test-project
 mvn test -Dbigtable.projectID=test-project -Dbigtable.instanceID=test-instance
 ```
