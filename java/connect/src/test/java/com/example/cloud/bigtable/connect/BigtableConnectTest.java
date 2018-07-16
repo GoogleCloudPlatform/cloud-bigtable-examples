@@ -36,17 +36,20 @@ public class BigtableConnectTest {
   public void prepare() throws Exception {
     helper = new BigtableConnect();
     helper.main(projectId, instanceId);
-    helper.connect();
   }
 
   @Test
   public void connection() throws Exception {
+    helper.connect();
+
     assertThat(helper.connection.toString()).contains("project=" + projectId);
     assertThat(helper.connection.toString()).contains("instance=" + instanceId);
   }
 
   @Test
   public void connectionWithConfiguration() throws Exception {
+    helper.connectWithConfiguration();
+
     assertThat(helper.connection.toString()).contains("project=" + projectId);
     assertThat(helper.connection.toString()).contains("instance=" + instanceId);
   }
