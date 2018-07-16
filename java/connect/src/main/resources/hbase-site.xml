@@ -1,3 +1,6 @@
+<!--Define the projectID, instanceID, and appProfileID by using system properties
+e.g. -Dbigtable.projectID=test-project -Dbigtable.instanceID=test-instance
+-->
 <!--[START bigtable_hbase_site_xml]-->
 <configuration>
   <property>

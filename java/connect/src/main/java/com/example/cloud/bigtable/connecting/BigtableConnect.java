@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-// [START bigtable_connecting_helper]
-
-package com.example.cloud.bigtable.connecting;
+package com.example.cloud.bigtable.connect;
 
 import com.google.cloud.bigtable.hbase.BigtableConfiguration;
 import com.google.cloud.bigtable.hbase.BigtableOptionsFactory;
 import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Connection;
+import org.apache.hadoop.hbase.client.ConnectionFactory;
 
-public class BigtableHelper {
+public class BigtableConnect {
 
   public static String projectId;
   public static String instanceId;
@@ -43,6 +43,7 @@ public class BigtableHelper {
     }
   }
 
+  // [START bigtable_connect]
   public static void connect() throws IOException {
     Configuration config = BigtableConfiguration.configure(projectId, instanceId);
 
@@ -53,6 +54,15 @@ public class BigtableHelper {
 
     connection = BigtableConfiguration.connect(config);
   }
-}
+  // [END bigtable_connect]
 
-// [END bigtable_connecting_helper]
+
+  // [START bigtable_connect_with_configuration]
+  public static void connectWithConfiguration() throws IOException {
+    // Define the HBase configuration with the projectID, instanceID, and optional appProfileID
+    // from resources/hbase_site.xml
+    Configuration config = HBaseConfiguration.create();
+    connection = ConnectionFactory.createConnection(config);
+  }
+  // [END bigtable_connect_with_configuration]
+}
