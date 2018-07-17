@@ -41,9 +41,10 @@ import com.google.cloud.bigtable.beam.CloudBigtableScanConfiguration;
  * This pipeline needs to be configured with four command line options for bigtable:
  * </p>
  * <ul>
- * <li> --bigtableProjectId=[bigtable project]
- * <li> --bigtableInstanceId=[bigtable instance id]
- * <li> --bigtableTableId=[bigtable tableName]
+ * <li>--bigtableProjectId=[bigtable project]</li>
+ * <li>--bigtableInstanceId=[bigtable instance id]</li>
+ * <li>--bigtableTableId=[bigtable tableName]</li>
+ * </ul>
  * <p>
  * To run this starter example locally using DirectPipelineRunner, just execute it with the four
  * Bigtable parameters from your favorite development environment.

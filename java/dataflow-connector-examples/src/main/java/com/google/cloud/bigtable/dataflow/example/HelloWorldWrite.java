@@ -41,9 +41,10 @@ import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
  * This pipeline needs to be configured with three command line options for bigtable:
  * </p>
  * <ul>
- * <li>--bigtableProjectId=[bigtable project]
- * <li>--bigtableInstanceId=[bigtable instance id]
- * <li>--bigtableTableId=[bigtable tableName]
+ * <li>--bigtableProjectId=[bigtable project]</li>
+ * <li>--bigtableInstanceId=[bigtable instance id]</li>
+ * <li>--bigtableTableId=[bigtable tableName]</li>
+ * </ul>
  * <p>
  * To run this starter example locally using DirectPipelineRunner, just execute it with the three
  * Bigtable parameters from your favorite development environment.
@@ -79,17 +80,18 @@ public class HelloWorldWrite {
   /**
    * <p>Creates a dataflow pipeline that creates the following chain:</p>
    * <ol>
-   * <li> Puts an array of "Hello", "World" into the Pipeline
-   * <li> Creates Puts from each of the words in the array
-   * <li> Performs a Bigtable Put on the items in the
+   * <li>Puts an array of "Hello", "World" into the Pipeline</li>
+   * <li>Creates Puts from each of the words in the array</li>
+   * <li>Performs a Bigtable Put on the items in the</li>
    * </ol>
    *
    * @param args Arguments to use to configure the Dataflow Pipeline.  The first three are required
    * when running via managed resource in Google Cloud Platform.  Those options should be omitted
    * for LOCAL runs.  The last four arguments are to configure the Bigtable connection.
-   * --runner=BlockingDataflowPipelineRunner --project=[dataflow project] \\
+   * <code>--runner=BlockingDataflowPipelineRunner --project=[dataflow project] \\
    * --stagingLocation=gs://[your google storage bucket] \\ --bigtableProject=[bigtable project] \\
    * --bigtableInstanceId=[bigtable instance id] \\ --bigtableTableId=[bigtable tableName]
+   * </code>
    */
 
   public static void main(String[] args) {
