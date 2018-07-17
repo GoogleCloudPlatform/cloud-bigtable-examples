@@ -56,6 +56,7 @@ import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
  * configuration of the project specified by --project.
  */
 public class HelloWorldWrite {
+
   private static final byte[] FAMILY = Bytes.toBytes("cf");
   private static final byte[] QUALIFIER = Bytes.toBytes("qualifier");
 
@@ -63,6 +64,8 @@ public class HelloWorldWrite {
   // each time the job runs.
   private static final byte[] VALUE = Bytes.toBytes("value_" + (60 * Math.random()));
 
+
+  // [START bigtable_dataflow_connector_process_element]
   static final DoFn<String, Mutation> MUTATION_TRANSFORM = new DoFn<String, Mutation>() {
     private static final long serialVersionUID = 1L;
 
@@ -71,44 +74,51 @@ public class HelloWorldWrite {
       c.output(new Put(c.element().getBytes()).addColumn(FAMILY, QUALIFIER, VALUE));
     }
   };
+  // [END bigtable_dataflow_connector_process_element]
 
   /**
    * <p>Creates a dataflow pipeline that creates the following chain:</p>
    * <ol>
-   *   <li> Puts an array of "Hello", "World" into the Pipeline
-   *   <li> Creates Puts from each of the words in the array
-   *   <li> Performs a Bigtable Put on the items in the
+   * <li> Puts an array of "Hello", "World" into the Pipeline
+   * <li> Creates Puts from each of the words in the array
+   * <li> Performs a Bigtable Put on the items in the
    * </ol>
    *
    * @param args Arguments to use to configure the Dataflow Pipeline.  The first three are required
-   *   when running via managed resource in Google Cloud Platform.  Those options should be omitted
-   *   for LOCAL runs.  The last four arguments are to configure the Bigtable connection.
-   *        --runner=BlockingDataflowPipelineRunner
-   *        --project=[dataflow project] \\
-   *        --stagingLocation=gs://[your google storage bucket] \\
-   *        --bigtableProject=[bigtable project] \\
-   *        --bigtableInstanceId=[bigtable instance id] \\
-   *        --bigtableTableId=[bigtable tableName]
+   * when running via managed resource in Google Cloud Platform.  Those options should be omitted
+   * for LOCAL runs.  The last four arguments are to configure the Bigtable connection.
+   * --runner=BlockingDataflowPipelineRunner --project=[dataflow project] \\
+   * --stagingLocation=gs://[your google storage bucket] \\ --bigtableProject=[bigtable project] \\
+   * --bigtableInstanceId=[bigtable instance id] \\ --bigtableTableId=[bigtable tableName]
    */
 
   public static void main(String[] args) {
+    // [START bigtable_dataflow_connector_create_pipeline]
     // CloudBigtableOptions is one way to retrieve the options.  It's not required.
     CloudBigtableOptions options =
         PipelineOptionsFactory.fromArgs(args).withValidation().as(CloudBigtableOptions.class);
+    Pipeline p = Pipeline.create(options);
+    // [END bigtable_dataflow_connector_create_pipeline]
 
+    String PROJECT_ID = options.getBigtableProjectId();
+    String INSTANCE_ID = options.getBigtableInstanceId();
+    String TABLE_ID = options.getBigtableTableId();
+
+    // [START bigtable_dataflow_connector_config]
     CloudBigtableTableConfiguration config =
         new CloudBigtableTableConfiguration.Builder()
-        .withProjectId(options.getBigtableProjectId())
-        .withInstanceId(options.getBigtableInstanceId())
-        .withTableId(options.getBigtableTableId())
-        .build();
+            .withProjectId(PROJECT_ID)
+            .withInstanceId(INSTANCE_ID)
+            .withTableId(TABLE_ID)
+            .build();
+    // [END bigtable_dataflow_connector_config]
 
-    Pipeline p = Pipeline.create(options);
-
+    // [START bigtable_dataflow_connector_write_helloworld]
     p
-       .apply(Create.of("Hello", "World"))
-       .apply(ParDo.of(MUTATION_TRANSFORM))
-       .apply(CloudBigtableIO.writeToTable(config));
+        .apply(Create.of("Hello", "World"))
+        .apply(ParDo.of(MUTATION_TRANSFORM))
+        .apply(CloudBigtableIO.writeToTable(config));
+    // [END bigtable_dataflow_connector_write_helloworld]
 
     p.run().waitUntilFinish();
   }

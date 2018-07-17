@@ -35,21 +35,21 @@ import com.google.cloud.bigtable.beam.CloudBigtableScanConfiguration;
  * Bigtable table of your choice.</p>
  *
  * <p>
- * The example takes two strings, converts them to their upper-case representation and writes
- * them to Bigtable.
+ * The example takes two strings, converts them to their upper-case representation and writes them
+ * to Bigtable.
  * <p>
  * This pipeline needs to be configured with four command line options for bigtable:
  * </p>
  * <ul>
- *  <li> --bigtableProjectId=[bigtable project]
- *  <li> --bigtableInstanceId=[bigtable instance id]
- *  <li> --bigtableTableId=[bigtable tableName]
+ * <li> --bigtableProjectId=[bigtable project]
+ * <li> --bigtableInstanceId=[bigtable instance id]
+ * <li> --bigtableTableId=[bigtable tableName]
  * <p>
  * To run this starter example locally using DirectPipelineRunner, just execute it with the four
  * Bigtable parameters from your favorite development environment.
  * <p>
- * To run this starter example using managed resource in Google Cloud Platform, you should also specify
- * the following command-line options: --project=<YOUR_PROJECT_ID>
+ * To run this starter example using managed resource in Google Cloud Platform, you should also
+ * specify the following command-line options: --project=<YOUR_PROJECT_ID>
  * --stagingLocation=<STAGING_LOCATION_IN_CLOUD_STORAGE> --runner=BlockingDataflowPipelineRunner In
  * Eclipse, you can just modify the existing 'SERVICE' run configuration.  The managed resource does
  * not require the GOOGLE_APPLICATION_CREDENTIALS, since the pipeline will use the security
@@ -59,10 +59,11 @@ public class SourceRowCount {
 
   /**
    * Options needed for running the pipelne.  It needs a
-   *
    */
   public static interface CountOptions extends CloudBigtableOptions {
+
     void setResultLocation(String resultLocation);
+
     String getResultLocation();
   }
 
@@ -79,7 +80,11 @@ public class SourceRowCount {
   public static void main(String[] args) {
     CountOptions options =
         PipelineOptionsFactory.fromArgs(args).withValidation().as(CountOptions.class);
+    String PROJECT_ID = options.getBigtableProjectId();
+    String INSTANCE_ID = options.getBigtableInstanceId();
+    String TABLE_ID = options.getBigtableTableId();
 
+    // [START bigtable_dataflow_connector_scan_config]
     // See the hbase hadoop job at
     // https://github.com/apache/hbase/blob/master/hbase-server/src/main/java/org/apache/hadoop/hbase/mapreduce/RowCounter.java#L151
     // for more ways to configure this scan.
@@ -91,19 +96,19 @@ public class SourceRowCount {
     // You can supply an optional Scan() to filter the rows that will be read.
     CloudBigtableScanConfiguration config =
         new CloudBigtableScanConfiguration.Builder()
-        .withProjectId(options.getBigtableProjectId())
-        .withInstanceId(options.getBigtableInstanceId())
-        .withTableId(options.getBigtableTableId())
-        .withScan(scan)
-        .build();
+            .withProjectId(PROJECT_ID)
+            .withInstanceId(INSTANCE_ID)
+            .withTableId(TABLE_ID)
+            .withScan(scan)
+            .build();
 
     Pipeline p = Pipeline.create(options);
 
-    p
-       .apply(Read.from(CloudBigtableIO.read(config)))
-       .apply(Count.<Result>globally())
-       .apply(ParDo.of(stringifier))
-       .apply(TextIO.write().to(options.getResultLocation()));
+    p.apply(Read.from(CloudBigtableIO.read(config)))
+        .apply(Count.<Result>globally())
+        .apply(ParDo.of(stringifier))
+        .apply(TextIO.write().to(options.getResultLocation()));
+    // [END bigtable_dataflow_connector_scan_config]
 
     p.run().waitUntilFinish();
 
