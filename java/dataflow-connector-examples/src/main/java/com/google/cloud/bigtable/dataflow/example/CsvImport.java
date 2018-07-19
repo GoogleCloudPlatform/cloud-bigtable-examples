@@ -15,6 +15,7 @@
  */
 package com.google.cloud.bigtable.dataflow.example;
 
+import com.google.common.base.Preconditions;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
@@ -29,6 +30,7 @@ import org.apache.beam.sdk.io.TextIO;
 import com.google.cloud.bigtable.beam.CloudBigtableIO;
 import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
 
+import org.joda.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +72,7 @@ public class CsvImport {
         String[] headers = c.getPipelineOptions().as(BigtableCsvOptions.class).getHeaders()
             .split(",");
         String[] values = c.element().split(",");
+        Preconditions.checkArgument(headers.length == values.length);
 
         byte[] rowkey = Bytes.toBytes(values[0]);
         byte[][] headerBytes = new byte[headers.length][];
@@ -78,12 +81,14 @@ public class CsvImport {
         }
 
         Put row = new Put(rowkey);
+        Instant timestamp = c.timestamp();
         for (int i = 1; i < values.length; i++) {
-          row.addColumn(FAMILY, headerBytes[i], Bytes.toBytes(values[i]));
+          row.addColumn(FAMILY, headerBytes[i], timestamp.getMillis(), Bytes.toBytes(values[i]));
         }
         c.output(row);
       } catch (Exception e) {
         LOG.error("Failed to process input {}", c.element(), e);
+        throw e;
       }
 
     }
