@@ -38,14 +38,14 @@ import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
  * The example takes two strings, converts them to their upper-case representation and writes them
  * to Bigtable.
  * <p>
- * This pipeline needs to be configured with four command line options for bigtable:
+ * This pipeline needs to be configured with three command line options for bigtable:
  * </p>
  * <ul>
  * <li>--bigtableProjectId=[bigtable project]
  * <li>--bigtableInstanceId=[bigtable instance id]
  * <li>--bigtableTableId=[bigtable tableName]
  * <p>
- * To run this starter example locally using DirectPipelineRunner, just execute it with the four
+ * To run this starter example locally using DirectPipelineRunner, just execute it with the three
  * Bigtable parameters from your favorite development environment.
  * <p>
  * To run this starter example using managed resource in Google Cloud Platform, you should also
