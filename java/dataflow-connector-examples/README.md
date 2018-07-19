@@ -70,7 +70,7 @@ SourceRowCount shows the use of a Bigtable Source - a construct that knows how t
 
     mvn package exec:exec -DSourceRowCount -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> -Dgs=<Your bucket>
 
-You can verify the results by frist typing:
+You can verify the results by first typing:
 
     gsutil ls gs://my_bucket/**
 
@@ -78,6 +78,28 @@ There should be a file that looks like count-XXXXXX-of-YYYYYY.  Type:
 
     gsutil cp gs://my_bucket/count-XXXXXX-of-YYYYYY .
     cat count-XXXXXX-of-YYYYYY
+
+# CsvImport - Reading data from GCS and then Writing Data
+Use the Hbase shell to add a column family to your table called 'csv' for this example
+
+    `alter 'Dataflow_test',  'csv'`
+    
+## Required Options for CSV import
+
+This pipeline needs to be configured with two additional command line options:
+
+ * `-Dheaders="id,header1,header2"` - Comma separated list of headers 
+ * `-DinputFile="gs://my_bucket/my_csv_file"` - A Google Cloud Storage object.
+
+The examples take a CSV file in a GCS bucket and writes each row to Bigtable.
+
+    mvn package exec:exec -DCsvImport -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> 
+    -DinputFile="<Your file>" -Dheaders="<Your headers>"
+    
+You can verify that the data was written by using HBase shell and typing `scan 'Dataflow_test'`. You can also delete the table, if you wish, using:
+
+    disable 'Dataflow_test'
+    drop 'Dataflow_test'
 
 # BigQueryBigtableTransfer - Copying records from BigQuery to Cloud Bigtable
 
