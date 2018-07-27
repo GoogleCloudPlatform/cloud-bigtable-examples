@@ -24,13 +24,11 @@ import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.hadoop.hbase.client.Mutation;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
-import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.sdk.io.TextIO;
 
 import com.google.cloud.bigtable.beam.CloudBigtableIO;
 import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
 
-import org.joda.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,9 +79,9 @@ public class CsvImport {
         }
 
         Put row = new Put(rowkey);
-        Instant timestamp = c.timestamp();
+        long timestamp = System.currentTimeMillis();
         for (int i = 1; i < values.length; i++) {
-          row.addColumn(FAMILY, headerBytes[i], timestamp.getMillis(), Bytes.toBytes(values[i]));
+          row.addColumn(FAMILY, headerBytes[i], timestamp, Bytes.toBytes(values[i]));
         }
         c.output(row);
       } catch (Exception e) {
