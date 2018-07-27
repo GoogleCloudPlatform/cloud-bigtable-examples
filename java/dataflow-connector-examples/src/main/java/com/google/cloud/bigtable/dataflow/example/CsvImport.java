@@ -80,7 +80,8 @@ public class CsvImport {
 
         Put row = new Put(rowkey);
         for (int i = 1; i < values.length; i++) {
-          row.addColumn(FAMILY, headerBytes[i], System.currentTimeMillis(), Bytes.toBytes(values[i]));
+          row.addColumn(FAMILY, headerBytes[i], System.currentTimeMillis(),
+              Bytes.toBytes(values[i]));
         }
         c.output(row);
       } catch (Exception e) {
