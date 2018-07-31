@@ -45,13 +45,7 @@ public class BigtableConnect {
 
   // [START bigtable_connect]
   public static void connect() throws IOException {
-    Configuration config = BigtableConfiguration.configure(projectId, instanceId);
-
-    // Include the following line if you are using app profiles.
-    // If you do not include the following line, the connection uses the
-    // default app profile.
-    config.set(BigtableOptionsFactory.APP_PROFILE_ID_KEY, appProfileId);
-
+    Configuration config = BigtableConfiguration.configure(projectId, instanceId, appProfileId);
     connection = BigtableConfiguration.connect(config);
   }
   // [END bigtable_connect]
