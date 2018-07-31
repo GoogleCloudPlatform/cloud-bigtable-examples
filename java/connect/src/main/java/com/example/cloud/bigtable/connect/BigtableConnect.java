@@ -45,11 +45,17 @@ public class BigtableConnect {
 
   // [START bigtable_connect]
   public static void connect() throws IOException {
-    Configuration config = BigtableConfiguration.configure(projectId, instanceId, appProfileId);
+    Configuration config = BigtableConfiguration.configure(projectId, instanceId);
     connection = BigtableConfiguration.connect(config);
   }
   // [END bigtable_connect]
 
+  // [START bigtable_connect_app_profile]
+  public static void connectWithAppProfile() throws IOException {
+    Configuration config = BigtableConfiguration.configure(projectId, instanceId, appProfileId);
+    connection = BigtableConfiguration.connect(config);
+  }
+  // [END bigtable_connect_app_profile]
 
   // [START bigtable_connect_with_configuration]
   public static void connectWithConfiguration() throws IOException {

@@ -47,6 +47,14 @@ public class BigtableConnectTest {
   }
 
   @Test
+  public void connectionWithAppProfile() throws Exception {
+    helper.connectWithAppProfile();
+
+    assertThat(helper.connection.toString()).contains("project=" + projectId);
+    assertThat(helper.connection.toString()).contains("instance=" + instanceId);
+  }
+
+  @Test
   public void connectionWithConfiguration() throws Exception {
     helper.connectWithConfiguration();
 
