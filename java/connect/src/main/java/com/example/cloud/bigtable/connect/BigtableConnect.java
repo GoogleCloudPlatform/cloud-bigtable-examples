@@ -36,10 +36,7 @@ public class BigtableConnect {
     instanceId = args[1]; // my-bigtable-instance-id
 
     if (args.length > 2) {
-      // Include the following line if you are using app profiles.
-      // If you do not include the following line, the connection uses the
-      // default app profile.
-      appProfileId = args[2];    // my-bigtable-app-profile-id
+      appProfileId = args[2];    // my-bigtable-app-profile-id or default if not provided.
     }
   }
 
