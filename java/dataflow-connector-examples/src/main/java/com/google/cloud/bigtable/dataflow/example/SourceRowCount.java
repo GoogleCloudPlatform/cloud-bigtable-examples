@@ -30,13 +30,13 @@ import com.google.cloud.bigtable.beam.CloudBigtableIO;
 import com.google.cloud.bigtable.beam.CloudBigtableScanConfiguration;
 
 /**
- * <p>This is a Source example of Bigtable with Dataflow. The main method outs the
+ * <p>This is a Source example of Cloud Bigtable with Dataflow. The main method outs the
  * words "Hello" and "World" into the pipeline, converts them to Puts, and then writes the Puts to a
- * Bigtable table of your choice.</p>
+ * Cloud Bigtable table of your choice.</p>
  *
  * <p>
  * The example takes two strings, converts them to their upper-case representation and writes them
- * to Bigtable.
+ * to Cloud Bigtable.
  * <p>
  * This pipeline needs to be configured with four command line options for bigtable:
  * </p>
@@ -47,7 +47,7 @@ import com.google.cloud.bigtable.beam.CloudBigtableScanConfiguration;
  * </ul>
  * <p>
  * To run this starter example locally using DirectPipelineRunner, just execute it with the four
- * Bigtable parameters from your favorite development environment.
+ * Cloud Bigtable parameters from your favorite development environment.
  * <p>
  * To run this starter example using managed resource in Google Cloud Platform, you should also
  * specify the following command-line options: --project=<YOUR_PROJECT_ID>

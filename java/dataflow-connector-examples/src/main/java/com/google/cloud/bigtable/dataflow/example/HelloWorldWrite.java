@@ -82,12 +82,12 @@ public class HelloWorldWrite {
    * <ol>
    * <li>Puts an array of "Hello", "World" into the Pipeline</li>
    * <li>Creates Puts from each of the words in the array</li>
-   * <li>Performs a Bigtable Put on the items in the</li>
+   * <li>Performs a Cloud Bigtable Put on the items in the</li>
    * </ol>
    *
    * @param args Arguments to use to configure the Dataflow Pipeline.  The first three are required
    * when running via managed resource in Google Cloud Platform.  Those options should be omitted
-   * for LOCAL runs.  The last four arguments are to configure the Bigtable connection.
+   * for LOCAL runs.  The last four arguments are to configure the Cloud Bigtable connection.
    * <code>--runner=BlockingDataflowPipelineRunner --project=[dataflow project] \\
    * --stagingLocation=gs://[your google storage bucket] \\ --bigtableProject=[bigtable project] \\
    * --bigtableInstanceId=[bigtable instance id] \\ --bigtableTableId=[bigtable tableName]
