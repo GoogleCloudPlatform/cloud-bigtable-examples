@@ -42,15 +42,13 @@ public class BigtableConnect {
 
   // [START bigtable_connect]
   public static void connect() throws IOException {
-    Configuration config = BigtableConfiguration.configure(projectId, instanceId);
-    connection = BigtableConfiguration.connect(config);
+    connection = BigtableConfiguration.connect(projectId, instanceId);
   }
   // [END bigtable_connect]
 
   // [START bigtable_connect_app_profile]
   public static void connectWithAppProfile() throws IOException {
-    Configuration config = BigtableConfiguration.configure(projectId, instanceId, appProfileId);
-    connection = BigtableConfiguration.connect(config);
+    connection = BigtableConfiguration.connect(projectId, instanceId, appProfileId);
   }
   // [END bigtable_connect_app_profile]
 
