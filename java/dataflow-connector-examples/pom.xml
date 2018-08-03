@@ -75,11 +75,14 @@ limitations under the License.
        <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
        <version>${beam.version}</version>
     </dependency>
+
+    <!-- [START bigtable_dataflow_connector_dep] -->
     <dependency>
         <groupId>com.google.cloud.bigtable</groupId>
         <artifactId>bigtable-hbase-beam</artifactId>
-        <version>${bigtable.version}</version>
+        <version>1.5.0</version>
     </dependency>
+    <!-- [END bigtable_dataflow_connector_dep] -->
 
     <dependency>
         <groupId>org.slf4j</groupId>
