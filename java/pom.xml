@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 Copyright 2016 Google Inc. All Rights Reserved.
 
@@ -26,15 +27,14 @@ limitations under the License.
     Removing or replacing it should not affect the execution of the samples in anyway.
   -->
   <parent>
-		<groupId>com.google.cloud.samples</groupId>
-		<artifactId>shared-configuration</artifactId>
-		<version>1.0.10</version>
-	</parent>
+    <groupId>com.google.cloud.samples</groupId>
+    <artifactId>shared-configuration</artifactId>
+    <version>1.0.10</version>
+  </parent>
 
   <modules>
     <module>dataflow-coinbase</module>
     <module>dataflow-connector-examples</module>
-    <module>dataflow-import-examples</module>
     <module>dataflow-load-books</module>
     <module>dataproc-wordcount</module>
     <module>gae-flexible-helloworld</module>
@@ -45,5 +45,6 @@ limitations under the License.
     <module>simple-performance-test</module>
     <module>dataflow-bulk-delete</module>
     <module>quickstart</module>
+    <module>connect</module>
   </modules>
 </project>
