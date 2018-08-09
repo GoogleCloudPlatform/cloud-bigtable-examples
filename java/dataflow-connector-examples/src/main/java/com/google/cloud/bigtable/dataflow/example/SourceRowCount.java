@@ -52,14 +52,14 @@ import com.google.cloud.bigtable.beam.CloudBigtableScanConfiguration;
  * To run this starter example using managed resource in Google Cloud Platform, you should also
  * specify the following command-line options: --project=<YOUR_PROJECT_ID>
  * --stagingLocation=<STAGING_LOCATION_IN_CLOUD_STORAGE> --runner=BlockingDataflowPipelineRunner In
- * Eclipse, you can just modify the existing 'SERVICE' run configuration.  The managed resource does
+ * Eclipse, you can just modify the existing 'SERVICE' run configuration. The managed resource does
  * not require the GOOGLE_APPLICATION_CREDENTIALS, since the pipeline will use the security
  * configuration of the project specified by --project.
  */
 public class SourceRowCount {
 
   /**
-   * Options needed for running the pipelne.  It needs a
+   * Options needed for running the pipelne. It needs a
    */
   public static interface CountOptions extends CloudBigtableOptions {
 
@@ -86,9 +86,6 @@ public class SourceRowCount {
     String TABLE_ID = options.getBigtableTableId();
 
     // [START bigtable_dataflow_connector_scan_config]
-    // See the hbase hadoop job at
-    // https://github.com/apache/hbase/blob/master/hbase-server/src/main/java/org/apache/hadoop/hbase/mapreduce/RowCounter.java#L151
-    // for more ways to configure this scan.
     Scan scan = new Scan();
     scan.setCacheBlocks(false);
     scan.setFilter(new FirstKeyOnlyFilter());
