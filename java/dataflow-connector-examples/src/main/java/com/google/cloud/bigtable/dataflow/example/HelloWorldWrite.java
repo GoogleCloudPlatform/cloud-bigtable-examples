@@ -85,9 +85,9 @@ public class HelloWorldWrite {
    * <li>Performs a Cloud Bigtable Put on the items in the</li>
    * </ol>
    *
-   * @param args Arguments to use to configure the Dataflow Pipeline.  The first three are required
-   * when running via managed resource in Google Cloud Platform.  Those options should be omitted
-   * for LOCAL runs.  The last four arguments are to configure the Cloud Bigtable connection.
+   * @param args Arguments to use to configure the Dataflow Pipeline. The first three are required
+   * when running via managed resource in Google Cloud Platform. Those options should be omitted
+   * for LOCAL runs. The last four arguments are to configure the Cloud Bigtable connection.
    * <code>--runner=BlockingDataflowPipelineRunner --project=[dataflow project] \\
    * --stagingLocation=gs://[your google storage bucket] \\ --bigtableProject=[bigtable project] \\
    * --bigtableInstanceId=[bigtable instance id] \\ --bigtableTableId=[bigtable tableName]
@@ -96,7 +96,6 @@ public class HelloWorldWrite {
 
   public static void main(String[] args) {
     // [START bigtable_dataflow_connector_create_pipeline]
-    // CloudBigtableOptions is one way to retrieve the options.  It's not required.
     CloudBigtableOptions options =
         PipelineOptionsFactory.fromArgs(args).withValidation().as(CloudBigtableOptions.class);
     Pipeline p = Pipeline.create(options);
