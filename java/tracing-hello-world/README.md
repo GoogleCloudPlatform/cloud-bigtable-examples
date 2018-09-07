@@ -53,7 +53,8 @@ Download the sample app and navigate into the app directory:
 
 This sample uses billable components of Cloud Platform, including:
 
-+   Google Cloud Bigtable
++   [Google Cloud Bigtable][google-cloud-bigtable-pricing]
++   [Stackdriver][stackdriver-pricing]
 
 Use the [Pricing Calculator][bigtable-pricing] to generate a cost estimate
 based on your projected usage.  New Cloud Platform users might be eligible for
@@ -61,7 +62,8 @@ a [free trial][free-trial].
 
 [bigtable-pricing]: https://cloud.google.com/products/calculator/#id=1eb47664-13a2-4be1-9d16-6722902a7572
 [free-trial]: https://cloud.google.com/free-trial
-
+[stackdriver-pricing]: https://cloud.google.com/stackdriver/pricing_v2
+[google-cloud-bigtable-pricing]: https://cloud.google.com/bigtable/pricing
 
 ## Before you begin
 
