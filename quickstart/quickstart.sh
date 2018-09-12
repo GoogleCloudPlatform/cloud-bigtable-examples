@@ -25,6 +25,9 @@
 
 beta="beta"
 
+# Allow executing from any directory
+cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 # Allow overriding the date function for unit testing.
 function my_date() {
   date "$@"
