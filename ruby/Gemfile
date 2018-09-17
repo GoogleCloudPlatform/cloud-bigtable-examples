@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 source "https://rubygems.org"
 
-git 'git@github.com:GoogleCloudPlatform/google-cloud-ruby.git' do
-  gem 'google-cloud-bigtable'
-end
+
+gem 'google-cloud-bigtable', '~> 0.1.2'

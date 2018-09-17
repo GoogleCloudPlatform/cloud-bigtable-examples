@@ -35,12 +35,10 @@ class HelloWorld
   def create_table table_id, column_family
     puts "Creating table '#{table_id}'"
 
-    instance = bigtable.instance(instance_id)
-
-    if instance.table(table_id)
+    if bigtable.table(instance_id, table_id).exists?
       puts " '#{table_id}' is already exists."
     else
-      instance.create_table(table_id) do |column_families|
+      bigtable.create_table(instance_id, table_id) do |column_families|
         column_families.add(
           column_family,
           Google::Cloud::Bigtable::GcRule.max_versions(3)
@@ -68,8 +66,7 @@ class HelloWorld
   # @param column_family [String] Column family name
   #
   def write_and_read table_id, column_family, column_qualifier
-    client = bigtable.client(instance_id)
-    table = client.table(table_id)
+    table = bigtable.table(instance_id, table_id)
 
     puts "Write some greetings to the table '#{table_id}'"
     greetings = ['Hello World!', 'Hello Bigtable!', 'Hello Ruby!']
@@ -79,7 +76,7 @@ class HelloWorld
     greetings.each_with_index do |value, i|
       puts "  Writing,  Row key: greeting#{i}, Value: #{value}"
 
-      entry = table.mutation_entry("greeting#{i}")
+      entry = table.new_mutation_entry("greeting#{i}")
       entry.set_cell(
         column_family,
         column_qualifier,
@@ -104,8 +101,7 @@ class HelloWorld
   def delete_table table_id
     puts "Deleting the table '#{table_id}'"
 
-    instance = bigtable.instance(instance_id)
-    instance.table(table_id).delete
+    bigtable.delete_table(instance_id, table_id)
   end
 
   def do_hello_world
@@ -129,6 +125,10 @@ end
 # hello_world.do_hello_world
 
 # Using keyfile
-# hello_world = HelloWorld.new(ENV['PROJECT_ID'], ENV['INSTANCE_ID'],
-#   keyfile: 'keyfile.json')
-# hello_world.do_hello_world
+# hello_world = HelloWorld.new(
+#  ENV['PROJECT_ID'],
+#  ENV['INSTANCE_ID'],
+#  'keyfile.json'
+#)
+
+hello_world.do_hello_world
