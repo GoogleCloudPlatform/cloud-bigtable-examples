@@ -45,6 +45,9 @@ Bigger than a data warehouse, fast enough for real-time access, and less expensi
 ## NodeJS
 * [Hello World](node/hello-world) - A minimal application that demonstrates using the [`nodejs-bigtable`][nodejs-bigtable] library to create a temporary table, write some rows, read them back and clean up
 
+## Ruby
+* [Hello World](ruby) - A minimal application that demonstrates using the [`ruby-bigtable`][ruby-bigtable] library to create a temporary table, write some rows, read them back and clean up
+
 ## Questions and discussions
 
 If you have questions or run into issues with Google Cloud Bigtable or the
@@ -75,3 +78,4 @@ Apache 2.0; see [LICENSE](LICENSE) for details.
 [stackoverflow-link]: http://stackoverflow.com/search?q=[google-cloud-bigtable]
 [google-cloud-bigtable-discuss]: https://groups.google.com/group/google-cloud-bigtable-discuss
 [google-cloud-bigtable-announce]: https://groups.google.com/group/google-cloud-bigtable-announce
+[ruby-bigtable]: https://github.com/GoogleCloudPlatform/google-cloud-ruby/tree/master/google-cloud-bigtable
