@@ -131,4 +131,3 @@ end
 #  'keyfile.json'
 #)
 
-hello_world.do_hello_world
