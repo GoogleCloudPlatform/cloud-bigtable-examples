@@ -133,7 +133,7 @@ if [[ $HAVECLCMD == ERROR* ]]; then
   _instanceID=$PROMPT_RESPONSE
 else
   ix=0
-  for item in $(gcloud $beta bigtable clusters list  --format 'value (INSTANCE)'); do
+  for item in $(gcloud $beta bigtable clusters list --project ${_projectID} --format 'value (INSTANCE)'); do
     _c[$ix]=$item
     ((ix++))
   done
