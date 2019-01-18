@@ -25,7 +25,7 @@ add_ppa() {
   ppa=$1
   # Install the apt-add-repository command.
   sudo apt-get -qqy install \
-      software-properties-common python-software-properties
+      software-properties-common
   sudo apt-add-repository -y "${ppa}"
   sudo apt-get -qq update || true
 }

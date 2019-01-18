@@ -99,7 +99,7 @@ public class CsvImport {
 
     void setHeaders(String headers);
 
-    @Description("The Cloud Storage path to the CSV file..")
+    @Description("The Cloud Storage path to the CSV file.")
     String getInputFile();
 
     void setInputFile(String location);
@@ -124,9 +124,16 @@ public class CsvImport {
    * --bigtableTableId=[bigtable tableName]
    */
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IllegalArgumentException {
     BigtableCsvOptions options =
         PipelineOptionsFactory.fromArgs(args).withValidation().as(BigtableCsvOptions.class);
+
+    if (options.getInputFile().equals("")) {
+      throw new IllegalArgumentException("Please provide value for inputFile.");
+    }
+    if (options.getHeaders().equals("")) {
+      throw new IllegalArgumentException("Please provide value for headers.");
+    }
 
     CloudBigtableTableConfiguration config =
         new CloudBigtableTableConfiguration.Builder()
