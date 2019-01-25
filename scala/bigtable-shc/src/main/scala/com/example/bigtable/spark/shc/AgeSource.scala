@@ -16,68 +16,79 @@
 
 package com.example.bigtable.spark.shc
 
-import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.execution.datasources.hbase.HBaseTableCatalog
-
-case class PersonRecord(
-                           name: String,
-                           age: Int)
-
 /**
   * This is a companion example with people name and ages, which may be
   * more concrete and easier to understand than `BigtableSource`.
   */
-object AgeSource {
+object AgeSource extends App {
 
-  def main(args: Array[String]) {
-    val tableName = args(0)
+  val tableName = args(0)
+  val cat =
+    s"""{
+       |"table":{"namespace":"default", "name":"$tableName", "tableCoder":"PrimitiveType"},
+       |"rowkey":"name",
+       |"columns":{
+       |"name":{"cf":"rowkey", "col":"name", "type":"string"},
+       |"age":{"cf":"age", "col":"age", "type":"int"}
+       |}
+       |}""".stripMargin
+  val appName = getClass.getSimpleName.replace("$", "")
 
-    val cat = s"""{
-                 |"table":{"namespace":"default", "name":\"$tableName\", "tableCoder":"PrimitiveType"},
-                 |"rowkey":"name",
-                 |"colum-ns":{
-                 |"name":{"cf":"rowkey", "col":"name", "type":"string"},
-                 |"age":{"cf":"age", "col":"age", "type":"int"}
-                 |}
-                 |}""".stripMargin
+  import org.apache.spark.sql.SparkSession
 
-    val spark = SparkSession.builder()
-      .appName("PersonExample")
-      .getOrCreate()
+  val spark = SparkSession
+    .builder
+    .appName(appName)
+    .getOrCreate
 
-    val sc = spark.sparkContext
-    val sqlContext = spark.sqlContext
+  import spark.implicits._
 
-    import sqlContext.implicits._
+  case class PersonRecord(name: String, age: Int)
+  val people = Seq(
+    PersonRecord("bill", 30),
+    PersonRecord("solomon", 27),
+    PersonRecord("misha", 30),
+    PersonRecord("jeff", 30),
+    PersonRecord("les", 27),
+    PersonRecord("ramesh", 31),
+    PersonRecord("jacek", 45)
+  ).toDF
 
-    val people = Seq(
-      ("bill", 30),
-      ("solomon", 27),
-      ("misha", 30),
-      ("jeff", 30),
-      ("les", 27),
-      ("ramesh", 31)
-    ).toDF("name", "age")
+  import org.apache.spark.sql.execution.datasources.hbase.HBaseTableCatalog
 
-    people.write.options(
-      Map(HBaseTableCatalog.tableCatalog -> cat, HBaseTableCatalog.newTable -> "5"))
-      .format("org.apache.spark.sql.execution.datasources.hbase")
-      .save()
+  val format = "org.apache.spark.sql.execution.datasources.hbase"
+  val opts = Map(
+    HBaseTableCatalog.tableCatalog -> cat,
+    HBaseTableCatalog.newTable -> "5")
 
-    val df = sqlContext
-      .read
-      .options(Map(HBaseTableCatalog.tableCatalog->cat))
-      .format("org.apache.spark.sql.execution.datasources.hbase")
-      .load()
-    df.show
-    df.filter($"age" >= "29")
-      .select($"name", $"age").show
-    df.groupBy("age").count().show()
-    df.createOrReplaceTempView("peopletable")
-    sqlContext.sql(
-      s"select avg(age) from peopletable"
-    ).show
-    spark.stop()
-  }
+  people
+    .write
+    .options(opts)
+    .format(format)
+    .save
+
+  val df = spark
+    .read
+    .option(HBaseTableCatalog.tableCatalog, cat)
+    .format(format)
+    .load
+  // Optimization: cache the dataset as it is going to be used in multiple queries
+  // Please note that the caching is lazy, but the following show action should trigger it
+  df.cache
+  df.show
+
+  df.filter($"age" >= "29")
+    .select($"name", $"age")
+    .show
+  df.groupBy("age")
+    .count()
+    .show
+
+  df.createOrReplaceTempView("peopletable")
+  spark
+    .sql(s"select avg(age) from peopletable")
+    .show
+
+  spark.stop
 
 }
