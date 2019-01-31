@@ -16,6 +16,9 @@
 
 package com.example.bigtable.spark.shc
 
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.execution.datasources.hbase.HBaseTableCatalog
+
 /**
   * This is a companion example with people name and ages, which may be
   * more concrete and easier to understand than `BigtableSource`.
@@ -34,8 +37,6 @@ object AgeSource extends App {
        |}""".stripMargin
   val appName = getClass.getSimpleName.replace("$", "")
 
-  import org.apache.spark.sql.SparkSession
-
   val spark = SparkSession
     .builder
     .appName(appName)
@@ -53,8 +54,6 @@ object AgeSource extends App {
     PersonRecord("ramesh", 31),
     PersonRecord("jacek", 45)
   ).toDF
-
-  import org.apache.spark.sql.execution.datasources.hbase.HBaseTableCatalog
 
   val format = "org.apache.spark.sql.execution.datasources.hbase"
   val opts = Map(

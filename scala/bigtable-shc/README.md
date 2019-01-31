@@ -20,16 +20,20 @@ The versions used:
 
 The project contains the following sample applications:
 
-1. [BigtableSource.scala](src/main/scala/com/example/bigtable/spark/shc/BigtableSource.scala) shows how to write and execute
-SQL queries against data defined in a Bigtable database.
+1. [BigtableSource.scala](src/main/scala/com/example/bigtable/spark/shc/BigtableSource.scala) shows how to write and execute SQL queries against data defined in a Bigtable database.
+The sample creates a table schema consisting of a single column family, and a few columns of various types, and writes some generated data to the table.
+It then demonstrates some relational SQL queries that can be used on top of the Bigtable data and outputs them to the screen.
 
 1. [AgeSource.scala](src/main/scala/com/example/bigtable/spark/shc/AgeSource.scala) also shows how to write and execute SQL queries against data defined in a Bigtable database with other example usages that may be easier to understand.
 
+**TIP** The [cbt](https://cloud.google.com/bigtable/docs/go/cbt-overview) tool can
+be used to view the data with a traditional Bigtable/HBase interface.
+
 ## Prerequisites
 
-1. A [Google Cloud project](https://console.cloud.google.com/) with billing enabled. Please
-be aware of [Bigtable](https://cloud.google.com/bigtable/pricing)
-and [Dataproc](https://cloud.google.com/dataproc/docs/resources/pricing) pricing.
+1. A [Google Cloud project](https://console.cloud.google.com/) with billing enabled.
+Please be aware of [Cloud Bigtable](https://cloud.google.com/bigtable/pricing)
+and [Cloud Dataproc](https://cloud.google.com/dataproc/docs/resources/pricing) pricing.
 
 1. [Google Cloud SDK](https://cloud.google.com/sdk/) installed.
 
@@ -39,7 +43,7 @@ and [Dataproc](https://cloud.google.com/dataproc/docs/resources/pricing) pricing
 
 1. A basic familiarity with [Apache Spark](https://spark.apache.org/) and [Scala](https://www.scala-lang.org/).
 
-## Configuring CLI and Authentication
+## Configure the CLI and Authentication
 
 Make sure you are using the correct Google Cloud project:
 
@@ -53,43 +57,31 @@ Authenticate to a Google Cloud Platform API using service or user accounts.
 
 Learn about [authenticating to a GCP API](https://cloud.google.com/docs/authentication/) in the Google Cloud documentation.
 
-## Creating Cloud Bigtable Instance
+## Create a Cloud Bigtable Instance
 
 If you don't already have a Cloud Bigtable instance, create one
 
      gcloud beta bigtable instances create test-instance --cluster test-cluster --cluster-zone us-east1-b --cluster-num-nodes 3
 
-## Creating Cloud Dataproc Cluster
+## Create a Cloud Dataproc Cluster
 
 Create a Cloud Dataproc instance:
 
     gcloud dataproc clusters create spark-cluster
 
-## Running Example
+## Configure the Example
 
-The sample creates a table schema consisting of a single column family, and a
-few columns of various types, and writes some generated data to the table. It then
-demonstrates some relational SQL queries that can be used on top of the Bigtable data
-and outputs them to the screen.
-
-The [cbt](https://cloud.google.com/bigtable/docs/go/cbt-overview) tool can also
-be used to view the data with a traditional Bigtable/HBase interface.
-
-## Configuring Example
-
-The sample's connection to Bigtable is defined in [hbase-site.xml](src/main/resources/hbase-site.xml).
-
-Set the Google Cloud Project ID and Bigtable instance in `hbase-site.xml` configuration file.
+Set the Google Cloud Project ID and Cloud Bigtable instance ID in [hbase-site.xml](src/main/resources/hbase-site.xml) configuration file.
 
 The other configuration variables should be left unchanged. Specifically, the configuration
-disables the Bigtable client from throwing exceptions on namespace operations that `shc` uses.
+disables the Cloud Bigtable client from throwing exceptions on namespace operations that `shc` uses.
 
 Create environment variables for the following commands:
 
     BIGTABLE_TABLE=my-table
     SPARK_CLUSTER=spark-cluster
 
-## Building (Assembling) Example
+## Assemble the Example
 
 The Spark application is assembled into an uber/fat jar with all of its dependencies and hbase configuration. To build, run:
 
@@ -97,15 +89,15 @@ The Spark application is assembled into an uber/fat jar with all of its dependen
 
 The above command should build `target/cloud-bigtable-dataproc-spark-shc-0.1-jar-with-dependencies.jar` file.
 
-**NOTE**: Since the Bigtable configuration is included in the fat jar, any changes
- will require a repackaging of the uberjar.
+**NOTE**: Since the Cloud Bigtable configuration is included in the (fat) jar, any changes
+ will require a re-assembling it.
 
-## Testing Locally (Optional but Recommended)
+## Test Locally
 
 This step requires a local installation of Apache Spark.
 
-While you need a real Bigtable cluster, you can test the sample locally,
-if you have Spark installed. For testing, consider a Bigtable development
+While you need a real Cloud Bigtable cluster, you can test the sample locally,
+if you have Spark installed. For testing, consider a Cloud Bigtable development
 cluster.
 
     $SPARK_HOME/bin/spark-submit \
@@ -115,9 +107,9 @@ cluster.
 
 **NOTE**: `BIGTABLE_TABLE` is one of the environment variables defined when [configuring the sample](#configuring-the-sample).
 
-### Submitting Example to Google Cloud Dataproc
+### Submit Job to Cloud Dataproc
 
-Submit the sample Spark application to a Google Cloud Dataproc instance. Use the following command:
+Submit the sample Spark application to a Cloud Dataproc instance. Use the following command:
 
     gcloud dataproc jobs submit spark --cluster $SPARK_CLUSTER \
       --class com.example.bigtable.spark.shc.BigtableSource \
@@ -126,9 +118,9 @@ Submit the sample Spark application to a Google Cloud Dataproc instance. Use the
 
 **NOTE**: `SPARK_CLUSTER` and `BIGTABLE_TABLE` are the environment variables defined when [configuring the sample](#configuring-the-sample).
 
-## Cleaning Up Resources
+## Clean up Resources
 
-In order to avoid any extra charges for continued usage of Bigtable and Dataproc,
+In order to avoid any extra charges for continued usage of Cloud Bigtable and Cloud Dataproc,
 delete the sample resources.
 
     gcloud beta bigtable instances delete test-instance
