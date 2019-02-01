@@ -31,7 +31,7 @@
     </property>
     <property>
         <name>hbase.client.connection.impl</name>
-        <value>com.google.cloud.bigtable.hbase1_x.BigtableConnection</value>
+        <value>com.google.cloud.bigtable.hbase2_x.BigtableConnection</value>
     </property>
 
     <!-- shc uses namespaces, which bigtable doesn't support. This has the
