@@ -22,7 +22,7 @@
     <bigtable.projectID>YOUR_PROJECT_ID</bigtable.projectID>
     <bigtable.instanceID>YOUR_INSTANCE_ID</bigtable.instanceID>
 
-    <bigtable.version>1.0.0</bigtable.version>
+    <bigtable.version>1.9.0</bigtable.version>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
@@ -46,12 +46,12 @@
     <dependency>
       <groupId>commons-cli</groupId>
       <artifactId>commons-cli</artifactId>
-      <version>1.2</version>
+      <version>1.4</version>
     </dependency>
     <dependency>
       <groupId>commons-configuration</groupId>
       <artifactId>commons-configuration</artifactId>
-      <version>1.6</version>
+      <version>1.10</version>
     </dependency>
   </dependencies>
 
