@@ -32,9 +32,9 @@
   </parent>
 
   <properties>
-    <bigtable.version>1.5.0</bigtable.version>
-    <google-cloud.version>0.54.0-alpha</google-cloud.version>
-    <opencensus.version>0.12.3</opencensus.version>
+    <bigtable.version>1.9.0</bigtable.version>
+    <google-cloud.version>0.80.0-alpha</google-cloud.version>
+    <opencensus.version>0.19.2</opencensus.version>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
@@ -79,7 +79,7 @@
     <!-- OpenCensus Java implementation -->
     <dependency>
       <groupId>io.opencensus</groupId>
-      <artifactId>opencensus-impl</artifactId>
+      <artifactId>opencensus-api</artifactId>
       <version>${opencensus.version}</version>
       <exclusions>
         <exclusion>
@@ -87,6 +87,12 @@
           <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.opencensus</groupId>
+      <artifactId>opencensus-impl</artifactId>
+      <version>${opencensus.version}</version>
+      <scope>runtime</scope>
     </dependency>
 
     <!-- Dependency for Z-Pages -->
