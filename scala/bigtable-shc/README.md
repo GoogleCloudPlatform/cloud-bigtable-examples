@@ -8,9 +8,11 @@ with [Google Cloud Dataproc](https://cloud.google.com/dataproc/) and
 
 The versions used:
 
-* Google Cloud Bigtable 1.8.0 (hbase2_x)
+* Google Cloud Bigtable 1.9.0 (hbase2_x)
 * Apache Spark 2.4.0
 * Apache Spark - Apache HBase Connector 1.1.3-2.4
+
+The project uses [sbt](https://www.scala-sbt.org/) as the build tool.
 
 **Google Cloud Dataproc** is a fully-managed cloud service for running [Apache Spark](https://spark.apache.org/) applications and [Apache Hadoop](https://hadoop.apache.org/) clusters.
 
@@ -37,9 +39,13 @@ and [Cloud Dataproc](https://cloud.google.com/dataproc/docs/resources/pricing) p
 
 1. [Google Cloud SDK](https://cloud.google.com/sdk/) installed.
 
-1. [Apache Maven](https://maven.apache.org/) installed.
+1. [sbt](https://www.scala-sbt.org/) installed.
 
-1. [Apache Spark](https://spark.apache.org/) installed.
+1. [Apache Maven](https://maven.apache.org/) installed (to build Apache Spark - Apache HBase Connector locally).
+
+    **NOTE**: The project uses Apache Spark - Apache HBase Connector 1.1.3-2.4 that has not been released to any of the known public repositories. You should package the library locally as described in the [Compile](https://github.com/hortonworks-spark/shc#compile) section of the official documentation of Apache Spark - Apache HBase Connector.
+
+1. [Apache Spark](https://spark.apache.org/) installed. Download Spark built for Scala 2.11.
 
 1. A basic familiarity with [Apache Spark](https://spark.apache.org/) and [Scala](https://www.scala-lang.org/).
 
@@ -83,14 +89,14 @@ Create environment variables for the following commands:
 
 ## Assemble the Example
 
-The Spark application is assembled into an uber/fat jar with all of its dependencies and hbase configuration. To build, run:
+The Spark application is assembled into an uber/fat jar with all of its dependencies and HBase configuration. To build use `sbt` as follows:
 
-    mvn clean assembly:assembly
+    sbt clean assembly
 
-The above command should build `target/cloud-bigtable-dataproc-spark-shc-0.1-jar-with-dependencies.jar` file.
+The above command should build `target/scala-2.11/cloud-bigtable-dataproc-spark-shc-assembly-0.1.jar` file.
 
 **NOTE**: Since the Cloud Bigtable configuration is included in the (fat) jar, any changes
- will require a re-assembling it.
+ will require re-assembling it.
 
 ## Test Locally
 
@@ -102,7 +108,7 @@ cluster.
 
     $SPARK_HOME/bin/spark-submit \
       --class com.example.bigtable.spark.shc.BigtableSource \
-      target/cloud-bigtable-dataproc-spark-shc-0.1-jar-with-dependencies.jar \
+      target/scala-2.11/cloud-bigtable-dataproc-spark-shc-assembly-0.1.jar \
       $BIGTABLE_TABLE
 
 **NOTE**: `BIGTABLE_TABLE` is one of the environment variables defined when [configuring the sample](#configuring-the-sample).
@@ -113,7 +119,7 @@ Submit the sample Spark application to a Cloud Dataproc instance. Use the follow
 
     gcloud dataproc jobs submit spark --cluster $SPARK_CLUSTER \
       --class com.example.bigtable.spark.shc.BigtableSource \
-      --jars target/cloud-bigtable-dataproc-spark-shc-0.1-jar-with-dependencies.jar \
+      --jars target/scala-2.11/cloud-bigtable-dataproc-spark-shc-assembly-0.1.jar \
       -- $BIGTABLE_TABLE
 
 **NOTE**: `SPARK_CLUSTER` and `BIGTABLE_TABLE` are the environment variables defined when [configuring the sample](#configuring-the-sample).
