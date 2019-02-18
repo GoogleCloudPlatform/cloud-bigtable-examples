@@ -37,7 +37,7 @@ limitations under the License.
   <url>http://maven.apache.org</url>
 
   <properties>
-    <bigtable.version>1.0.0</bigtable.version>
+    <bigtable.version>1.9.0</bigtable.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -58,7 +58,7 @@ limitations under the License.
     <dependency>
       <groupId>com.google.cloud.bigtable</groupId>
       <artifactId>bigtable-hbase-1.x</artifactId>
-      <version>1.5.0</version>
+      <version>${bigtable.version}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

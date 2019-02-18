@@ -126,7 +126,7 @@ application.
 ## Running the application
 
 
-    mvn clean compile exec:java -Dexec.mainClass="com.example.bigtable.simpleperf.WritePerfTest" -Dexec.args="[project id] [instance id] [table] [row count] [value size]
+    mvn clean compile exec:java -Dexec.mainClass="com.example.bigtable.simpleperf.WritePerfTest" -Dexec.args="[project id] [instance id] [table] [row count] [value size]"
 
 
 ## Cleaning up
