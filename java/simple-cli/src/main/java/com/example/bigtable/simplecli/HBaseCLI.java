@@ -100,6 +100,7 @@ public class HBaseCLI {
         commands.put("get", new GetCommand("get"));
         commands.put("put", new PutCommand("put"));
         commands.put("list", new ListCommand("list"));
+        commands.put("delete", new DeleteCommand("delete"));
 
         Command command = null;
         List<String> argsList = Arrays.asList(args);
@@ -497,6 +498,34 @@ public class HBaseCLI {
 
         public String getDescription() {
             return "List tables";
+        }
+    }
+
+    /** Delete table from cbt */
+    protected static class DeleteCommand extends Command {
+
+        public DeleteCommand(String name) {
+            super(name);
+        }
+
+        public void run(Connection connection, List<String> args) throws InvalidArgsException, IOException {
+            if (args.size() < 1) {
+                throw new InvalidArgsException(args);
+            }
+            String tableId = args.get(0);
+
+            // Deletes the table based on the passed tableId in arguments.
+            // We used the standard HBase Admin and HTableDescriptor classes.
+            Admin admin = connection.getAdmin();
+            admin.deleteTable(TableName.valueOf(tableId));
+        }
+
+        public String getOptions() {
+            return "TABLENAME";
+        }
+
+        public String getDescription() {
+            return "delete an existing table";
         }
     }
 

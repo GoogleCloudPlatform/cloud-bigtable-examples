@@ -29,7 +29,7 @@ You can run a command using the hbasecli.sh script. Try checking the available c
 
 You can create a new table using the `create` command:
 
-    $ ./hbasecli.sh create mytable
+    $ ./hbasecli.sh create mytable columnfamily
 
 You can verify that the table was created using the `list` command:
 
@@ -47,28 +47,32 @@ You can also `scan` the table to get all rows, or a filtered set of rows:
 
     $ ./hbasecli.sh scan mytable filterexp
 
-### Filter expressions
+- ### Filter expressions
 
-The `scan` command allows you to specify a filter expression, which uses the
-following format:
+    The `scan` command allows you to specify a filter expression, which uses the
+    following format:
 
-    [column_family]:[column_qualifier][operator][value]
+        [column_family]:[column_qualifier][operator][value]
 
-The following operators are supported:
+    The following operators are supported:
 
-* `=`: Equal to
-* `<`: Less than
-* `<=`: Less than or equal to
-* `>`: Greater than
-* `>=`: Greater than or equal to
+    * `=`: Equal to
+    * `<`: Less than
+    * `<=`: Less than or equal to
+    * `>`: Greater than
+    * `>=`: Greater than or equal to
 
-For example, the filter expression `cf1:mycolumn>po` would match rows in which
-`cf1:mycolumn` contains a byte string whose value comes after the byte string
-`po`. This expression would match the values `pony` and `sunrise`, because these
-values come after the value `po`. The expression would not match the values
-`apple` or `pi`, which come before `po`.
+    For example, the filter expression `cf1:mycolumn>po` would match rows in which
+    `cf1:mycolumn` contains a byte string whose value comes after the byte string
+    `po`. This expression would match the values `pony` and `sunrise`, because these
+    values come after the value `po`. The expression would not match the values
+    `apple` or `pi`, which come before `po`.
 
-NOTE - the operators should be escaped with a backslash.
+    NOTE - the operators should be escaped with a backslash.
+
+You can finally delete the an existing table using the `delete` command:
+
+    $ ./hbasecli.sh delete mytable
 
 ## Understanding the code
 
