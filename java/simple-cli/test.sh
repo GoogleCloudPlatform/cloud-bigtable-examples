@@ -35,3 +35,6 @@ echo 'scan'
 
 echo 'scan w/ escaped predicate'
 ./hbasecli.sh scan simple-table f:name\>Jane
+
+echo 'deleting the table'
+./hbasecli.sh delete simple-table
