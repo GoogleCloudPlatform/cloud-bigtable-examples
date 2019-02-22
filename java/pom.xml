@@ -48,6 +48,7 @@ limitations under the License.
     <module>dataflow-bulk-delete</module>
     <module>quickstart</module>
     <module>connect</module>
+    <module>simple-async-samples</module>
   </modules>
 </project>
 
