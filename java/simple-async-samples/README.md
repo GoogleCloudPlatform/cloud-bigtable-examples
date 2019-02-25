@@ -139,6 +139,10 @@ Build and run the sample using Maven.
     mvn package
     mvn exec:java -Dbigtable.projectID=GCLOUDPROJECT -Dbigtable.instanceID=BIGTABLEINSTANCE
 
+To run the Integration tests
+
+    mvn clean verify -Dbigtable.projectID=ignored -Dbigtable.instanceID=ignored
+
 You will see output resembling the following, interspersed with informational logging
 from the underlying libraries:
 
@@ -170,7 +174,7 @@ from the underlying libraries:
 To run this example against a local Bigtable emulator:
 
  1. Start the emulator.
-    ```
+    ```sh
      gcloud beta emulators bigtable start &
      $(gcloud beta emulators bigtable env-init)
     ```
@@ -186,7 +190,7 @@ To run this example against a local Bigtable emulator:
     ...
     ``` 
  3. Build and run the samples using Maven.
-    ```
+    ```sh
      mvn package
      mvn exec:java -Dbigtable.projectID=ignored -Dbigtable.instanceID=ignored
     ```

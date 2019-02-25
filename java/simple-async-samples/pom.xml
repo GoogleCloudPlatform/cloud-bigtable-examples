@@ -13,11 +13,11 @@
         <groupId>com.google.cloud</groupId>
         <artifactId>bigtable-samples</artifactId>
         <version>1.0.0</version>
-        <relativePath>..</relativePath>
+        <relativePath>../</relativePath>
     </parent>
 
     <properties>
-        <bigtable.version>1.9.0</bigtable.version>
+        <bigtable.version>1.11.0</bigtable.version>
         <guava.version>27.0.1-jre</guava.version>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -48,6 +48,20 @@
             <groupId>commons-configuration</groupId>
             <artifactId>commons-configuration</artifactId>
             <version>1.10</version>
+        </dependency>
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.truth</groupId>
+            <artifactId>truth</artifactId>
+            <version>0.42</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

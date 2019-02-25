@@ -15,6 +15,11 @@
  */
 package com.example.bigtable.simpleasync;
 
+import static com.example.bigtable.simpleasync.Utility.FAMILY_2;
+import static com.example.bigtable.simpleasync.Utility.createSingleRowData;
+import static com.example.bigtable.simpleasync.Utility.createTable;
+
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -27,25 +32,22 @@ import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
 
-import static com.example.bigtable.simpleasync.Utitlity.FAMILY_2;
-import static com.example.bigtable.simpleasync.Utitlity.createSingleRowData;
-import static com.example.bigtable.simpleasync.Utitlity.createTable;
-
 /**
- * This example creates a {@link AsyncConnection} with properties provided at hbase-site.xml in
- * the classpath.
+ * This example creates a {@link AsyncConnection} with properties provided at hbase-site.xml in the
+ * classpath.
  */
 public class BasicOperations {
 
-  private final CompletableFuture<AsyncConnection> asyncConn;
+  private final CompletableFuture<AsyncConnection> asyncConnection;
   private final TableName tableName;
 
-  public BasicOperations(){
-    //Creates a future for a AsyncConnection.
-    asyncConn = ConnectionFactory.createAsyncConnection();
+  public BasicOperations() {
+    // Creates a future for a AsyncConnection.
+    asyncConnection = ConnectionFactory.createAsyncConnection();
 
     // Creates a future of TableName
-    Future<TableName> tableFuture = asyncConn.thenCompose(conn -> createTable(conn.getAdmin()));
+    Future<TableName> tableFuture =
+        asyncConnection.thenCompose(conn -> createTable(conn.getAdmin()));
     try {
       System.out.println("Blocking and waiting for tableName future to resolve");
       tableName = tableFuture.get();
@@ -55,53 +57,58 @@ public class BasicOperations {
     }
   }
 
-  /**
-   * Returns a future of {@link AsyncTable} for an input tableName.
-   */
+  /** Getter for asyncConnection. */
+  public CompletableFuture<AsyncConnection> getAsyncConntion() {
+    return asyncConnection;
+  }
+
+  /** Getter for tableName. */
+  public TableName getTableName() {
+    return tableName;
+  }
+
+  /** Returns a future of {@link AsyncTable} for an input tableName. */
   public CompletableFuture<AsyncTable<AdvancedScanResultConsumer>> getAsyncTable() {
-    return asyncConn.thenApply(conn -> conn.getTable(tableName));
+    return asyncConnection.thenApply(conn -> conn.getTable(tableName));
   }
 
   /**
    * Creates a row, then fetches present details of "first-row" using {@link AsyncTable#get(Get)}.
-   * Prints the received details with {@link Utitlity#printData(Result)}.
    */
-  public CompletableFuture<Void> putAndGet() {
-    //To fetch details of a row with provided row-id.
+  public CompletableFuture<Result> putAndGet() {
+    // To fetch details of a row with provided row-id.
     Get get = new Get("first-row".getBytes());
-    return getAsyncTable().thenCompose(table ->
-        // creates data in the provided table.
-        createSingleRowData(table)
-            // fetches the Result object.
-            .thenCompose(next -> table.get(get))
-            // Prints the details in the console.
-            .thenAccept(Utitlity::printData));
+    return getAsyncTable()
+        .thenCompose(
+            table ->
+                // creates data in the provided table.
+                createSingleRowData(table)
+                    // fetches the Result object.
+                    .thenCompose(next -> table.get(get)));
   }
 
   /**
-   * Creates multiple row in the table, Once finished it scans with filter condition using
-   * {@link AsyncTable#scanAll(Scan)} and prints the received data.
+   * Creates multiple row in the table, Once finished it scans with filter condition using {@link
+   * AsyncTable#scanAll(Scan)}.
    */
-  public CompletableFuture<Void> putAllAndScanAll() {
-    //To be used for scanning the table.
+  public CompletableFuture<List<Result>> putAllAndScanAll() {
+    // To be used for scanning the table.
     Scan scan = new Scan();
     System.out.println("\n -------- Applying scan filter with \"cf-2\"  --------");
     scan.addFamily(FAMILY_2);
     // Sets filter condition to  ".*".
-    return getAsyncTable().thenCompose(table ->
-        //Creates a table with multiple row-ids.
-        Utitlity.createMultiRowData(table)
-            // Scans the table with provided filter conditions.
-            .thenCompose(next -> table.scanAll(scan))
-            // Prints each Result present in the List.
-            .thenAccept(results -> results.forEach(Utitlity::printData)));
+    return getAsyncTable()
+        .thenCompose(
+            table ->
+                // Creates a table with multiple row-ids.
+                Utility.createMultiRowData(table)
+                    // Scans the table with provided filter conditions.
+                    .thenCompose(next -> table.scanAll(scan)));
   }
 
-  /**
-   * Deletes table present in bigtable.
-   */
+  /** Deletes table present in bigtable. */
   public CompletableFuture<Void> deleteTable() {
-    return asyncConn.thenCompose(conn -> conn.getAdmin().deleteTable(tableName));
+    return asyncConnection.thenCompose(conn -> conn.getAdmin().deleteTable(tableName));
   }
 
   // necessary properties to connect with bigtable.
@@ -109,10 +116,11 @@ public class BasicOperations {
   private static String instanceId = System.getProperty("bigtable.instanceID");
 
   public static void main(String[] args) {
-    // Confirms presence of projectId & instanceId in classpath.
+    // Confirms presence of projectId and instanceId in classpath.
     if (projectId == null || instanceId == null) {
-      System.out.println("\nPlease provide bigtable.projectID & bigtable.instanceID in "
-          + "environment variable before running this program.\n");
+      System.out.println(
+          "\nPlease provide bigtable.projectID & bigtable.instanceID in "
+              + "environment variable before running this program.\n");
       throw new RuntimeException("Can not run without projectId & instanceId");
     }
 
@@ -121,10 +129,21 @@ public class BasicOperations {
 
     try {
       System.out.println("\n -------- Started put and get against a single row -------- ");
-      example.putAndGet().get();
+      example
+          .putAndGet()
+          // Prints the received details with {@link Utitlity#printData(Result)}.
+          .thenAccept(Utility::printData)
+          // Blocks the Future<Result> to finish fetching and printing
+          .get();
 
       System.out.println("\n -------- Started putAll and scanAll for multiple row -------- ");
-      example.putAllAndScanAll().get();
+
+      example
+          .putAllAndScanAll()
+          // Prints each Result present in the List.
+          .thenAccept(results -> results.forEach(Utility::printData))
+          // Blocks the Future<List<Result>> to finish fetching and printing
+          .get();
 
       System.out.println("\n -------- Deleting table -------- ");
       example.deleteTable().get();
