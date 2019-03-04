@@ -1,6 +1,6 @@
 # Cloud Bigtable Hello World DotNet
  
- This is a simple application that demonstrates using the Ruby Google Cloud
+ This is a simple application that demonstrates using the C# Google Cloud
  API to connect to and interact with Cloud Bigtable.
  
  **Table of Contents**
@@ -12,7 +12,6 @@
  - [Downloading the sample](#downloading-the-sample)
  - [Costs](#costs)
  - [Before you begin](#before-you-begin)
-   - [Installing Ruby dependencies](#installing-ruby-dependencies)
    - [Creating a Project in the Google Cloud Platform Console](#creating-a-project-in-the-google-cloud-platform-console)
    - [Enabling billing for your project.](#enabling-billing-for-your-project)
    - [Enable the Cloud Bigtable APIs.](#enable-the-cloud-bigtable-apis)
