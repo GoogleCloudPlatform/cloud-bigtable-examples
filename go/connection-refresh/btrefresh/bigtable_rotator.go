@@ -13,6 +13,12 @@ import (
 // take longer than this amount of time.
 const lameduckTime = 1 * time.Minute
 
+// Number of requests to issue on a new client
+// to warm up each underlying client in the pool.
+// The default pool size is 4, so we run 2n to have
+// good chances of hitting them all.
+const nWarmConnections = 2 * 4
+
 // RotatingTable is a bigtable.Table that automatically
 // reconnects to Cloud Bigtable at a given interval.
 type RotatingTable struct {
@@ -81,7 +87,7 @@ func warmTable(tbl *bigtable.Table) {
 	wg := sync.WaitGroup{}
 	// Run the warming requests across threads to saturate the
 	// connection pool.
-	for i := 0; i < 32; i++ {
+	for i := 0; i < nWarmConnections; i++ {
 		wg.Add(1)
 		go func() {
 			// Send a request that does not actually return data.
