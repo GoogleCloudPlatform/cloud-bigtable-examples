@@ -60,7 +60,7 @@ func NewRotatingTable(dialer BtDialer, table string, refresh time.Duration) (*Ro
 	ticker := time.NewTicker(refresh)
 	rt := &RotatingTable{tbl, client, ticker, errors}
 	go func() {
-		for _ = range ticker.C {
+		for range ticker.C {
 			// Close the old client after waiting a bit
 			go func() {
 				oldC := rt.client
