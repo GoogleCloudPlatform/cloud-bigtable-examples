@@ -97,6 +97,9 @@ public class BigQueryBigtableTransfer {
    *        --bigtableProject=[bigtable project] \\
    *        --bigtableInstanceId=[bigtable instance id] \\
    *        --bigtableTableId=[bigtable tableName]
+   *
+   * <p>Note:The Hbase-Bigtable client currently supports upto 100K columns in a single {@link Put}.
+   *       If your data is exceeding 100K columns, please create multiple {@link Put} objects.
    */
 
   public static void main(String[] args) {

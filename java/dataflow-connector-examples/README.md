@@ -57,7 +57,11 @@ The HelloWorld examples take two strings, converts them to their upper-case repr
 
 HelloWorldWrite does a few Puts to show the basics of writing to Cloud Bigtable through Cloud Dataflow.
 
-    mvn package exec:exec -DHelloWorldWrite -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> -Dgs=<Your bucket>
+    mvn package exec:exec \
+        -DHelloWorldWrite \
+        -Dbigtable.projectID=<projectID> \
+        -Dbigtable.instanceID=<instanceID> \
+        -Dgs=<Your bucket>
 
 You can verify that the data was written by using HBase shell and typing `scan 'Dataflow_test'`. You can also remove the data, if you wish, using:
 
@@ -68,7 +72,11 @@ You can verify that the data was written by using HBase shell and typing `scan '
 
 SourceRowCount shows the use of a Bigtable Source - a construct that knows how to scan a Bigtable Table.  SourceRowCount performs a simple row count using the Cloud Bigtable Source and writes the count to a file in Google Storage.
 
-    mvn package exec:exec -DSourceRowCount -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> -Dgs=<Your bucket>
+    mvn package exec:exec \
+        -DSourceRowCount \
+        -Dbigtable.projectID=<projectID> \
+        -Dbigtable.instanceID=<instanceID> \
+        -Dgs=<Your bucket>
 
 You can verify the results by first typing:
 
@@ -93,8 +101,12 @@ This pipeline needs to be configured with two additional command line options:
 
 The examples take a CSV file in a GCS bucket and writes each row to Bigtable.
 
-    mvn package exec:exec -DCsvImport -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> 
-    -DinputFile="<Your file>" -Dheaders="<Your headers>"
+    mvn package exec:exec \
+        -DCsvImport \
+        -Dbigtable.projectID=<projectID> \
+        -Dbigtable.instanceID=<instanceID> \
+        -DinputFile="<Your file>" \
+        -Dheaders="<Your headers>"
     
 You can verify that the data was written by using HBase shell and typing `scan 'Dataflow_test'`. You can also delete the table, if you wish, using:
 
@@ -105,7 +117,12 @@ You can verify that the data was written by using HBase shell and typing `scan '
 
 BigQueryBigtableTransfer shows the use of BigQuery as a source, and writes the records into Bigtable.  To make this sample generic, UUID is generated as the item key for each record.  This has to be designed before putting into actual use.
 
-    mvn package exec:exec -DBigQueryBigtableTransfer -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> -Dgs=<Your bucket> -Dbq.query='<BigQuery SQL (Standard SQL)>'
+    mvn package exec:exec \
+        -DBigQueryBigtableTransfer \
+        -Dbigtable.projectID=<projectID> \
+        -Dbigtable.instanceID=<instanceID> \
+        -Dgs=<Your bucket> \
+        -Dbq.query='<BigQuery SQL (Standard SQL)>'
 
 You can verify the results by looking into BigTable:
 
