@@ -110,6 +110,7 @@ object WordCount {
     val createTableConnection = createConnection(projectId, instanceId)
     try {
       createTableIfNotExists(createTableConnection, tableName)
+      
     } finally {
       createTableConnection.close()
     }
