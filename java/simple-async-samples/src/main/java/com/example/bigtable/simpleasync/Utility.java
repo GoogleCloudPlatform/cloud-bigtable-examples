@@ -49,13 +49,13 @@ final class Utility {
 
   /**
    * Create asynchronously a table in Bigtable instance. First checks if a table with the same name
-   * already exist. If yes then uniquely generates another tableName with UUID.
+   * already exist. If yes, then uniquely generates another tableName with UUID.
    */
   @VisibleForTesting
   static CompletableFuture<TableName> createTable(AsyncAdmin admin) {
     final TableName table = TableName.valueOf(getTableName());
 
-    // Creates columnFamily to be used throughout out rows.
+    // Creates columnFamily to be used throughout rows.
     ColumnFamilyDescriptor cf_1 =
         ColumnFamilyDescriptorBuilder.newBuilder(FAMILY_1)
             .setValue(QUALIFIER, "first-CF-value")
@@ -83,7 +83,7 @@ final class Utility {
         .thenCompose(
             tableName -> {
 
-              // Adds ColumnFamilies to table
+              // Adds ColumnFamilies to table.
               TableDescriptor tableDescriptor =
                   TableDescriptorBuilder.newBuilder(tableName)
                       .setColumnFamilies(ImmutableList.of(cf_1, cf_2))
@@ -138,18 +138,17 @@ final class Utility {
     // AsyncAdmin#putAll expects List<Put>, so creating an immutable list.
     ImmutableList<Put> puts = ImmutableList.of(firstRow, secondRow);
 
-    // After below future success, table will have two more rows.
+    // After it resolves, table will have two more rows.
     return asyncTable.putAll(puts);
   }
 
   /** Prints data present in {@link Result} object. */
   @VisibleForTesting
   static void printData(Result result) {
-    // Iterate of the results. Each Cell is a value for column
-    // so multiple Cells will be processed for each row.
+    // Iterates the results. Each Cell is a value for column, So multiple Cells will be
+    // processed for each row.
     for (Cell cell : result.listCells()) {
-      // We use the CellUtil class to clone values
-      // from the returned cells.
+      // We use the CellUtil class to clone values from the returned cells.
       String row = new String(CellUtil.cloneRow(cell));
       String family = new String(CellUtil.cloneFamily(cell));
       String column = new String(CellUtil.cloneQualifier(cell));

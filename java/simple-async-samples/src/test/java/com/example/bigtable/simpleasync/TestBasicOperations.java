@@ -78,7 +78,7 @@ public class TestBasicOperations {
     } catch (InterruptedException | ExecutionException e) {
       throw new AssertionError("error while fetching row details");
     }
-    // Making sure that we received row details
+    // Make sure that you receive row details.
     Truth.assertThat(result).isNotNull();
 
     byte[] rowKey = "first-row".getBytes();
@@ -98,7 +98,7 @@ public class TestBasicOperations {
     } catch (InterruptedException | ExecutionException e) {
       throw new AssertionError("error while fetching row details");
     }
-    // Making sure that we received row details
+    // Make sure that you receive row details.
     Truth.assertThat(result).isNotEmpty();
 
     List<String> expectedRows = ImmutableList.of("first-scan-row", "second-scan-row");

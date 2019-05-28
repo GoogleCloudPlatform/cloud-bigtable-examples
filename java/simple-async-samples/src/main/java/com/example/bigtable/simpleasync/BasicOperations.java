@@ -45,7 +45,7 @@ public class BasicOperations {
     // Creates a future for a AsyncConnection.
     asyncConnection = ConnectionFactory.createAsyncConnection();
 
-    // Creates a future of TableName
+    // Creates a future of TableName.
     Future<TableName> tableFuture =
         asyncConnection.thenCompose(conn -> createTable(conn.getAdmin()));
     try {
@@ -81,14 +81,14 @@ public class BasicOperations {
     return getAsyncTable()
         .thenCompose(
             table ->
-                // creates data in the provided table.
+                // Creates data in the provided table.
                 createSingleRowData(table)
-                    // fetches the Result object.
+                    // Fetches the Result object.
                     .thenCompose(next -> table.get(get)));
   }
 
   /**
-   * Creates multiple row in the table, Once finished it scans with filter condition using {@link
+   * Creates multiple row in the table; once finished, it scans with filter condition using {@link
    * AsyncTable#scanAll(Scan)}.
    */
   public CompletableFuture<List<Result>> putAllAndScanAll() {
@@ -106,12 +106,12 @@ public class BasicOperations {
                     .thenCompose(next -> table.scanAll(scan)));
   }
 
-  /** Deletes table present in bigtable. */
+  /** Deletes table present in Bigtable. */
   public CompletableFuture<Void> deleteTable() {
     return asyncConnection.thenCompose(conn -> conn.getAdmin().deleteTable(tableName));
   }
 
-  // necessary properties to connect with bigtable.
+  // Necessary properties to connect with Bigtable.
   private static String projectId = System.getProperty("bigtable.projectID");
   private static String instanceId = System.getProperty("bigtable.instanceID");
 
@@ -133,7 +133,7 @@ public class BasicOperations {
           .putAndGet()
           // Prints the received details with {@link Utitlity#printData(Result)}.
           .thenAccept(Utility::printData)
-          // Blocks the Future<Result> to finish fetching and printing
+          // Blocks the Future<Result> to finish fetching and printing.
           .get();
 
       System.out.println("\n -------- Started putAll and scanAll for multiple row -------- ");
