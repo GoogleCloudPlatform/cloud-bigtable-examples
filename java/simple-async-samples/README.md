@@ -1,6 +1,6 @@
 # Cloud Bigtable Basic Async Operations
 
-This is a simple application that demonstrates using the native HBase API
+This is a simple application that demonstrates using the native HBase 2.* Async API
 to connect to and interact with Cloud Bigtable.
 
 To learn more about [Cloud Bigtable Hello World](), please see the [documentation of Hello World](https://cloud.google.com/bigtable/docs/samples-java-hello) for a brief
