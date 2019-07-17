@@ -86,11 +86,11 @@ start)  # start [<clusterName>]
   gcloud dataproc jobs submit hadoop --cluster "$CLUSTER" \
     --jar target/wordcount-mapreduce-0-SNAPSHOT-jar-with-dependencies.jar \
     -- wordcount-hbase \
-    gs://lesv-big-public-data/books/book \
-    gs://lesv-big-public-data/books/b10 \
-    gs://lesv-big-public-data/books/b100 \
-    gs://lesv-big-public-data/books/b1232 \
-    gs://lesv-big-public-data/books/b6130 \
+    gs://apache-beam-samples/shakespeare/1kinghenryiv.txt \
+    gs://apache-beam-samples/shakespeare/1kinghenryvi.txt \
+    gs://apache-beam-samples/shakespeare/2kinghenryiv.txt \
+    gs://apache-beam-samples/shakespeare/2kinghenryvi.txt \
+    gs://apache-beam-samples/shakespeare/3kinghenryvi.txt \
     "${TARGET}"
     echo "Output table is: ${TARGET}"
   ;;
