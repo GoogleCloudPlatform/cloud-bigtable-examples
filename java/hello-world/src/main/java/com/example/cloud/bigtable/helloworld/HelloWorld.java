@@ -66,7 +66,6 @@ public class HelloWorld {
       // [END bigtable_hw_connect]
 
       try {
-
         // [START bigtable_hw_create_table]
         // Create a table with a single column family
         HTableDescriptor descriptor = new HTableDescriptor(TableName.valueOf(TABLE_NAME));
