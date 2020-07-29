@@ -2,12 +2,18 @@
 
 ## Overview
 
-This sample demonstrates how to use  [Google Cloud Dataproc](https://cloud.google.com/dataproc), which
-provides a managed [Apache Spark](https://spark.apache.org/) environment with
-[Google Cloud Bigtable](https://cloud.google.com/bigtable/docs).
+This sample demonstrates how to use [Cloud Bigtable](https://cloud.google.com/bigtable) with [Apache Spark](https://spark.apache.org/) using [Dataproc](https://cloud.google.com/dataproc) (which
+provides a managed Apache Spark environment).
 
 This specific example provides the classic map reduce example of counting words
-in a text file.
+in a text file using [RDD API](https://spark.apache.org/docs/latest/rdd-programming-guide.html).
+
+**NOTE:** [Dataproc Bigtable Spark-HBase Connector Example](../bigtable-shc) is an example project that shows how to use [DataFrame API](https://spark.apache.org/docs/latest/sql-programming-guide.html) for structured data processing.
+
+There are two ways to deploy the sample Spark application:
+
+1. For production usage we recommend using [Dataproc](https://cloud.google.com/dataproc)
+1. For local testing use [Cloud Bigtable Emulator](https://cloud.google.com/bigtable/docs/emulator)
 
 ## Prerequisites
 
@@ -15,14 +21,22 @@ in a text file.
 be aware of [Bigtable](https://cloud.google.com/bigtable/pricing)
 and [Dataproc](https://cloud.google.com/dataproc/docs/resources/pricing) pricing.
 
-1. You have the [Google Cloud SDK](https://cloud.google.com/sdk/) installed.
+1. [Google Cloud SDK](https://cloud.google.com/sdk/) installed.
 
-1. (Optional but recommended) You have [Scala](https://www.scala-lang.org/) installed.
+1. [Maven](https://maven.apache.org/) installed.
 
 1. You have basic familiarity with Spark and Scala. It may be helpful to
 install Spark locally.
 
-1. You have [Maven](https://maven.apache.org/) installed.
+## Optional Prerequisites
+
+The following is a list of optional but highly recommended prerequisites to be installed on your laptop:
+
+1. [Cloud Bigtable Emulator](https://cloud.google.com/bigtable/docs/emulator)
+
+1. [Cloud Bigtable CLI](https://cloud.google.com/bigtable/docs/cbt-overview)
+
+1. [Scala](https://www.scala-lang.org/)
 
 ## Create a Cloud Bigtable Instance
 
@@ -38,9 +52,38 @@ Create a Cloud DataProc instance:
 
 ## Build the jar
 
-The Spark job is assembled into a fat jar with all of its dependencies. To build, run:
+The Spark application is assembled into a fat jar with all of its dependencies. To build, run:
 
     mvn assembly:assembly
+
+## Test your job locally with Cloud Bigtable Emulator (optional but recommended)
+
+This step requires a local Spark installation and [Cloud Bigtable Emulator](https://cloud.google.com/bigtable/docs/emulator).
+
+    // Start Cloud Bigtable Emulator
+    $ gcloud beta emulators bigtable start &
+
+    // Initialize environment to use the emulator
+    $ $(gcloud beta emulators bigtable env-init)
+
+    // Make sure you're using Java 8
+    $ java -version
+
+    // SPARK_HOME is the directory where you installed Spark
+    $ $SPARK_HOME/bin/spark-submit \
+        --class com.example.bigtable.spark.wordcount.WordCount \
+        target/cloud-bigtable-dataproc-spark-wordcount-0.1-jar-with-dependencies.jar \
+        projID instID wordcount src/test/resources/countme.txt
+
+    // List tables and column families
+    // There should actually be just one wordcount
+    $ cbt -project=projID -instance=instID ls
+    wordcount
+
+    // Read rows
+    $ cbt -project=projID -instance=instID read wordcount
+
+The Spark application will create the table specified on the command line (e.g. `wordcount`) unless exists already.
 
 ## Setting environment variables
 
@@ -60,10 +103,11 @@ While you will need a real Bigtable cluster, you can test the Spark job locally,
 if you have Spark insatlled. For testing, consider a Bigtable development
 cluster.
 
-    spark-submit --master local --class com.example.bigtable.spark.wordcount.WordCount \
-    target/cloud-bigtable-dataproc-spark-wordcount-0.1-jar-with-dependencies.jar \
-    $GOOGLE_CLOUD_PROJECT $BIGTABLE_INSTANCE $BIGTABLE_TABLE \
-    $WORDCOUNT_FILE
+    spark-submit \
+        --class com.example.bigtable.spark.wordcount.WordCount \
+        target/cloud-bigtable-dataproc-spark-wordcount-0.1-jar-with-dependencies.jar \
+        $GOOGLE_CLOUD_PROJECT $BIGTABLE_INSTANCE $BIGTABLE_TABLE \
+        $WORDCOUNT_FILE
 
 The job will create the table specified (here, `wordcount-scratch`) if it doesn't already exist.
 
