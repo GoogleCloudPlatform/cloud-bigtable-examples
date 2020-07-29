@@ -127,15 +127,17 @@ object WordCount {
     job.setOutputFormatClass(classOf[TableOutputFormat[ImmutableBytesWritable]])
     conf = job.getConfiguration()
 
-    val wordCounts = sc.textFile(fileName).
-      flatMap(_.split(" ")).
-      filter(_ != "").map((_, 1)).
-      reduceByKey((a, b) => a + b)
-      .map({
-        case (word, count) =>
-          (null, new Put(Bytes.toBytes(word))
-            .addColumn(ColumnFamilyBytes, ColumnNameBytes, Bytes.toBytes(count)))
-      })
+    val wordCounts = sc
+      .textFile(fileName)
+      .flatMap(_.split("\\s+"))
+      .filter(!_.isEmpty)
+      .map { word => (word, 1) }
+      .reduceByKey(_ + _)
+      .map { case (word, count) =>
+        val put = new Put(Bytes.toBytes(word))
+          .addColumn(ColumnFamilyBytes, ColumnNameBytes, Bytes.toBytes(count))
+        (null, put)
+      }
     wordCounts.saveAsNewAPIHadoopDataset(conf)
   }
 
@@ -148,7 +150,15 @@ object WordCount {
     val InstanceID = args(1)
     val WordCountTableName = args(2)
     val File = args(3)
-    val sc = new SparkContext()
+
+    // There seems to be a bug in HBase 1.6.0
+    // See https://stackoverflow.com/a/51959451/1305344
+    // Read https://spark.apache.org/docs/2.4.6/configuration.html#execution-behavior
+    import org.apache.spark.SparkConf
+    val sparkConf = new SparkConf()
+      .set("spark.hadoop.validateOutputSpecs", "false")
+    val sc = new SparkContext(sparkConf)
+
     runner(ProjectId, InstanceID, WordCountTableName, File, sc)
   }
 }
