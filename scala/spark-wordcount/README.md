@@ -87,11 +87,11 @@ This step requires a local Spark installation and [Cloud Bigtable Emulator](http
 
     // List tables and column families
     // There should actually be just one wordcount
-    $ cbt -project=projID -instance=instID ls
-    wordcount
+    $ cbt -project=$GOOGLE_CLOUD_PROJECT -instance=$BIGTABLE_INSTANCE ls
+    wordcount-scratch
 
     // Read rows
-    $ cbt -project=projID -instance=instID read wordcount
+    $ cbt -project=$GOOGLE_CLOUD_PROJECT -instance=$BIGTABLE_INSTANCE read $BIGTABLE_TABLE
 
 The Spark application will create the table specified on the command line (based on `$BIGTABLE_TABLE`) unless exists already.
 
