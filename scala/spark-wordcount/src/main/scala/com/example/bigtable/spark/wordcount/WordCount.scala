@@ -151,12 +151,13 @@ object WordCount {
     val WordCountTableName = args(2)
     val File = args(3)
 
-    // There seems to be a bug in HBase 1.6.0
-    // See https://stackoverflow.com/a/51959451/1305344
-    // Read https://spark.apache.org/docs/2.4.6/configuration.html#execution-behavior
     import org.apache.spark.SparkConf
     val sparkConf = new SparkConf()
-      .set("spark.hadoop.validateOutputSpecs", "false")
+
+    // Workaround for a bug in TableOutputFormat in HBase 1.6.0
+    // See https://stackoverflow.com/a/51959451/1305344
+    sparkConf.set("spark.hadoop.validateOutputSpecs", "false")
+
     val sc = new SparkContext(sparkConf)
 
     runner(ProjectId, InstanceID, WordCountTableName, File, sc)
