@@ -1,4 +1,4 @@
-# Dataproc Bigtable WordCount Sample
+# Dataproc Bigtable WordCount Sample (RDD API)
 
 ## Overview
 
@@ -12,8 +12,8 @@ in a text file using [RDD API](https://spark.apache.org/docs/latest/rdd-programm
 
 There are two ways to deploy the sample Spark application:
 
-1. For production usage we recommend using [Dataproc](https://cloud.google.com/dataproc)
-1. For local testing use [Cloud Bigtable Emulator](https://cloud.google.com/bigtable/docs/emulator)
+1. For development, we recommend to use Apache Spark installed locally and the [Cloud Bigtable Emulator](https://cloud.google.com/bigtable/docs/emulator)
+1. For production, we recommend [Dataproc](https://cloud.google.com/dataproc) and a real [Cloud Bigtable](https://cloud.google.com/bigtable) instance.
 
 ## Prerequisites
 
@@ -54,9 +54,19 @@ Create a Cloud DataProc instance:
 
 The Spark application is assembled into a fat jar with all of its dependencies. To build, run:
 
-    mvn assembly:assembly
+    mvn clean assembly:assembly
 
-## Test your job locally with Cloud Bigtable Emulator (optional but recommended)
+## Set environment variables
+
+To simplify copying the commands below, set the following environment variables:
+
+    SPARK_CLUSTER=your-spark-cluster
+    GOOGLE_CLOUD_PROJECT=your-project-id
+    BIGTABLE_INSTANCE=your-bigtable-instance
+    BIGTABLE_TABLE=wordcount-scratch
+    WORDCOUNT_FILE=src/test/resources/countme.txt
+
+## Run locally using Cloud Bigtable Emulator
 
 This step requires a local Spark installation and [Cloud Bigtable Emulator](https://cloud.google.com/bigtable/docs/emulator).
 
@@ -73,7 +83,7 @@ This step requires a local Spark installation and [Cloud Bigtable Emulator](http
     $ $SPARK_HOME/bin/spark-submit \
         --class com.example.bigtable.spark.wordcount.WordCount \
         target/cloud-bigtable-dataproc-spark-wordcount-0.1-jar-with-dependencies.jar \
-        projID instID wordcount src/test/resources/countme.txt
+        $GOOGLE_CLOUD_PROJECT $BIGTABLE_INSTANCE $BIGTABLE_TABLE $WORDCOUNT_FILE
 
     // List tables and column families
     // There should actually be just one wordcount
@@ -83,33 +93,27 @@ This step requires a local Spark installation and [Cloud Bigtable Emulator](http
     // Read rows
     $ cbt -project=projID -instance=instID read wordcount
 
-The Spark application will create the table specified on the command line (e.g. `wordcount`) unless exists already.
+The Spark application will create the table specified on the command line (based on `$BIGTABLE_TABLE`) unless exists already.
 
-## Setting environment variables
+## Run locally using Cloud Bigtable
 
-To simplify copying the commands below, set the following environment variables:
+This step requires a local Spark installation and a real Cloud Bigtable instance.
 
-    SPARK_CLUSTER=your-spark-cluster
-    GOOGLE_CLOUD_PROJECT=your-project-id
-    BIGTABLE_INSTANCE=your-bigtable-instance
-    BIGTABLE_TABLE=wordcount-scratch
-    WORDCOUNT_FILE=src/test/resources/countme.txt
-
-## Test your job locally (optional but recommended)
-
-This step requires a local Spark installation.
-
-While you will need a real Bigtable cluster, you can test the Spark job locally,
-if you have Spark insatlled. For testing, consider a Bigtable development
+While you need a real Bigtable cluster, you can test the Spark job locally,
+if you have Spark installed. For testing, consider a Bigtable development
 cluster.
 
-    spark-submit \
+    // Don't forget to unset BIGTABLE_EMULATOR_HOST
+    // This is only required for Cloud Bigtable Emulator
+    $ unset BIGTABLE_EMULATOR_HOST
+
+    // SPARK_HOME is the directory where you installed Spark
+    $ $SPARK_HOME/bin/spark-submit \
         --class com.example.bigtable.spark.wordcount.WordCount \
         target/cloud-bigtable-dataproc-spark-wordcount-0.1-jar-with-dependencies.jar \
-        $GOOGLE_CLOUD_PROJECT $BIGTABLE_INSTANCE $BIGTABLE_TABLE \
-        $WORDCOUNT_FILE
+        $GOOGLE_CLOUD_PROJECT $BIGTABLE_INSTANCE $BIGTABLE_TABLE $WORDCOUNT_FILE
 
-The job will create the table specified (here, `wordcount-scratch`) if it doesn't already exist.
+The Spark application will create the table specified on the command line (based on `$BIGTABLE_TABLE`) unless exists already.
 
 ## Submit your job to Dataproc
 
@@ -127,7 +131,6 @@ Once done, upload the sample file (or a file of your choice) to the bucket:
 Now set an appropriate environment variable:
 
     WORDCOUNT_FILE=gs://your-unique-bucket-id/countme.txt
-
 
 ### Submit the job to Cloud Dataproc
 
@@ -147,11 +150,11 @@ delete your resources.
     gcloud beta bigtable instances delete test-instance
     gcloud dataproc clusters delete spark-cluster
 
+## Run tests
 
-## Running tests
-
-Currently the tests use a local Spark instance but require a real Bigtable
-cluster to run again. Set the following environmet variables:
+The tests can use either a real Cloud Bigtable instance or Cloud Bigtable Emulator.
+Set the following environment variables accordingly.
+Don't forget to use `$(gcloud beta emulators bigtable env-init)` for Cloud Bigtable Emulator.
 
      GOOGLE_CLOUD_PROJECT=your-project-id
      CLOUD_BIGTABLE_INSTANCE=your-bigtable-instance
