@@ -104,7 +104,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>WordCount</mainClass>
+                            <mainClass>com.example.bigtable.spark.wordcount.WordCount</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
