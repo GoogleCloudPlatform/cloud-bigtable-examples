@@ -136,6 +136,8 @@ object WordCount {
       .map { case (word, count) =>
         val put = new Put(Bytes.toBytes(word))
           .addColumn(ColumnFamilyBytes, ColumnNameBytes, Bytes.toBytes(count))
+        // The underlying writer ignores keys, only the value matter here.
+        // https://github.com/apache/hbase/blob/1b9269/hbase-mapreduce/src/main/java/org/apache/hadoop/hbase/mapreduce/TableOutputFormat.java#L138-L145
         (null, put)
       }
     wordCounts.saveAsNewAPIHadoopDataset(conf)
