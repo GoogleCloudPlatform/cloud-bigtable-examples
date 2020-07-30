@@ -1,24 +1,3 @@
----
-![status: inactive](https://img.shields.io/badge/status-inactive-red.svg)
-
-###Note: Examples have moved
-
-
-Google Cloud Bigtable examples samples have moved. This directory is no
-longer actively developed or maintained.
-
-* [Java](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/bigtable)
-* [Python](https://github.com/GoogleCloudPlatform/python-docs-samples/tree/master/bigtable)
-* [Node](https://github.com/googleapis/nodejs-bigtable/tree/master/samples)
-* [Go](https://github.com/GoogleCloudPlatform/golang-samples/tree/master/bigtable)
-* [Dotnet](https://github.com/GoogleCloudPlatform/dotnet-docs-samples/tree/master/bigtable/api)
-* [C++](https://github.com/googleapis/google-cloud-cpp/tree/master/google/cloud/bigtable/examples)
-* [Ruby](https://github.com/GoogleCloudPlatform/ruby-docs-samples/tree/master/bigtable)
-* [PHP](https://github.com/GoogleCloudPlatform/php-docs-samples/tree/master/bigtable)
-
----
-
-
 # Google Cloud Bigtable examples
 
 [![Travis CI status][travis-shield]][travis-link]
@@ -80,6 +59,20 @@ infrequent product and client library announcements.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for more information on how to contribute
 to this project.
+
+## More examples
+
+More Google Cloud Bigtable examples are available in in the following languages:
+
+* [Java](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/bigtable)
+* [Python](https://github.com/GoogleCloudPlatform/python-docs-samples/tree/master/bigtable)
+* [Node](https://github.com/googleapis/nodejs-bigtable/tree/master/samples)
+* [Go](https://github.com/GoogleCloudPlatform/golang-samples/tree/master/bigtable)
+* [Dotnet](https://github.com/GoogleCloudPlatform/dotnet-docs-samples/tree/master/bigtable/api)
+* [C++](https://github.com/googleapis/google-cloud-cpp/tree/master/google/cloud/bigtable/examples)
+* [Ruby](https://github.com/GoogleCloudPlatform/ruby-docs-samples/tree/master/bigtable)
+* [PHP](https://github.com/GoogleCloudPlatform/php-docs-samples/tree/master/bigtable)
+
 
 ## License
 
