@@ -35,6 +35,9 @@ trait SparkSpec extends BeforeAndAfterAll {
     val conf = new SparkConf()
       .setMaster("local[*]")
       .setAppName(this.getClass.getSimpleName)
+    // Workaround for a bug in TableOutputFormat in HBase 1.6.0
+    // See https://stackoverflow.com/a/51959451/1305344
+    conf.set("spark.hadoop.validateOutputSpecs", "false")
 
     sparkConfig.foreach { case (k, v) => conf.setIfMissing(k, v) }
 

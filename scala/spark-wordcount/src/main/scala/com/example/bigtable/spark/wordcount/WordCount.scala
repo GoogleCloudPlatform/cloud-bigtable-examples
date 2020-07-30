@@ -129,7 +129,7 @@ object WordCount {
 
     val wordCounts = sc
       .textFile(fileName)
-      .flatMap(_.split("\\s+"))
+      .flatMap(_.split("\\W+"))
       .filter(!_.isEmpty)
       .map { word => (word, 1) }
       .reduceByKey(_ + _)
