@@ -12,7 +12,7 @@
 
     <properties>
         <bigtable.version>1.15.0</bigtable.version>
-        <hbase.version>1.6.0</hbase.version>
+        <hbase.version>1.5.0</hbase.version>
         <hadoop.version>2.10.0</hadoop.version>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
