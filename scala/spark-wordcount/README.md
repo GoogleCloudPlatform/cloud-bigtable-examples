@@ -93,7 +93,7 @@ This step requires a local Spark installation and [Cloud Bigtable Emulator](http
     // Read rows
     $ cbt -project=$GOOGLE_CLOUD_PROJECT -instance=$BIGTABLE_INSTANCE read $BIGTABLE_TABLE
 
-The Spark application will create the table specified on the command line (based on `$BIGTABLE_TABLE`) unless exists already.
+The Spark application will create the table specified on the command line (based on `$BIGTABLE_TABLE`) unless it already exists.
 
 ## Run locally using Cloud Bigtable
 
@@ -113,7 +113,7 @@ cluster.
         target/cloud-bigtable-dataproc-spark-wordcount-0.1-jar-with-dependencies.jar \
         $GOOGLE_CLOUD_PROJECT $BIGTABLE_INSTANCE $BIGTABLE_TABLE $WORDCOUNT_FILE
 
-The Spark application will create the table specified on the command line (based on `$BIGTABLE_TABLE`) unless exists already.
+The Spark application will create the table specified on the command line (based on `$BIGTABLE_TABLE`) unless it already exists.
 
 ## Submit your job to Dataproc
 
