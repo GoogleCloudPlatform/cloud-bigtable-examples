@@ -11,7 +11,8 @@
     <version>0.1</version>
 
     <!--
-       - hbase, hadoop, spark, scala versions follow Dataproc 1.5.x
+       - hbase, hadoop, spark versions follow Dataproc 1.5.x
+       - Spark 2.x is pre-built with Scala 2.11
        -->
     <properties>
         <bigtable.version>1.15.0</bigtable.version>
