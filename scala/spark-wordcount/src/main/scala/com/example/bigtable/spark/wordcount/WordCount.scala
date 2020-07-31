@@ -127,15 +127,19 @@ object WordCount {
     job.setOutputFormatClass(classOf[TableOutputFormat[ImmutableBytesWritable]])
     conf = job.getConfiguration()
 
-    val wordCounts = sc.textFile(fileName).
-      flatMap(_.split(" ")).
-      filter(_ != "").map((_, 1)).
-      reduceByKey((a, b) => a + b)
-      .map({
-        case (word, count) =>
-          (null, new Put(Bytes.toBytes(word))
-            .addColumn(ColumnFamilyBytes, ColumnNameBytes, Bytes.toBytes(count)))
-      })
+    val wordCounts = sc
+      .textFile(fileName)
+      .flatMap(_.split("\\W+"))
+      .filter(!_.isEmpty)
+      .map { word => (word, 1) }
+      .reduceByKey(_ + _)
+      .map { case (word, count) =>
+        val put = new Put(Bytes.toBytes(word))
+          .addColumn(ColumnFamilyBytes, ColumnNameBytes, Bytes.toBytes(count))
+        // The underlying writer ignores keys, only the value matter here.
+        // https://github.com/apache/hbase/blob/1b9269/hbase-mapreduce/src/main/java/org/apache/hadoop/hbase/mapreduce/TableOutputFormat.java#L138-L145
+        (null, put)
+      }
     wordCounts.saveAsNewAPIHadoopDataset(conf)
   }
 
@@ -148,7 +152,16 @@ object WordCount {
     val InstanceID = args(1)
     val WordCountTableName = args(2)
     val File = args(3)
-    val sc = new SparkContext()
+
+    import org.apache.spark.SparkConf
+    val sparkConf = new SparkConf()
+
+    // Workaround for a bug in TableOutputFormat in HBase 1.6.0
+    // See https://stackoverflow.com/a/51959451/1305344
+    sparkConf.set("spark.hadoop.validateOutputSpecs", "false")
+
+    val sc = new SparkContext(sparkConf)
+
     runner(ProjectId, InstanceID, WordCountTableName, File, sc)
   }
 }

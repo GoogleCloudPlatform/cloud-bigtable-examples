@@ -1,13 +1,19 @@
-# Dataproc Bigtable WordCount Sample
+# Dataproc Bigtable WordCount Sample (RDD API)
 
 ## Overview
 
-This sample demonstrates how to use  [Google Cloud Dataproc](https://cloud.google.com/dataproc), which
-provides a managed [Apache Spark](https://spark.apache.org/) environment with
-[Google Cloud Bigtable](https://cloud.google.com/bigtable/docs).
+This sample demonstrates how to use [Cloud Bigtable](https://cloud.google.com/bigtable) with [Apache Spark](https://spark.apache.org/) using [Dataproc](https://cloud.google.com/dataproc) (which
+provides a managed Apache Spark environment).
 
 This specific example provides the classic map reduce example of counting words
-in a text file.
+in a text file using [RDD API](https://spark.apache.org/docs/latest/rdd-programming-guide.html).
+
+**NOTE:** [Dataproc Bigtable Spark-HBase Connector Example](../bigtable-shc) is an example project that shows how to use [DataFrame API](https://spark.apache.org/docs/latest/sql-programming-guide.html) for structured data processing.
+
+There are two ways to deploy the sample Spark application:
+
+1. For development, we recommend to use Apache Spark installed locally and the [Cloud Bigtable Emulator](https://cloud.google.com/bigtable/docs/emulator)
+1. For production, we recommend [Dataproc](https://cloud.google.com/dataproc) and a real [Cloud Bigtable](https://cloud.google.com/bigtable) instance.
 
 ## Prerequisites
 
@@ -15,14 +21,22 @@ in a text file.
 be aware of [Bigtable](https://cloud.google.com/bigtable/pricing)
 and [Dataproc](https://cloud.google.com/dataproc/docs/resources/pricing) pricing.
 
-1. You have the [Google Cloud SDK](https://cloud.google.com/sdk/) installed.
+1. [Google Cloud SDK](https://cloud.google.com/sdk/) installed.
 
-1. (Optional but recommended) You have [Scala](https://www.scala-lang.org/) installed.
+1. [Maven](https://maven.apache.org/) installed.
 
 1. You have basic familiarity with Spark and Scala. It may be helpful to
 install Spark locally.
 
-1. You have [Maven](https://maven.apache.org/) installed.
+## Optional Prerequisites
+
+The following is a list of optional but highly recommended prerequisites to be installed on your laptop:
+
+1. [Cloud Bigtable Emulator](https://cloud.google.com/bigtable/docs/emulator)
+
+1. [Cloud Bigtable CLI](https://cloud.google.com/bigtable/docs/cbt-overview)
+
+1. [Scala](https://www.scala-lang.org/)
 
 ## Create a Cloud Bigtable Instance
 
@@ -38,11 +52,11 @@ Create a Cloud DataProc instance:
 
 ## Build the jar
 
-The Spark job is assembled into a fat jar with all of its dependencies. To build, run:
+The Spark application is assembled into a fat jar with all of its dependencies. To build, run:
 
-    mvn assembly:assembly
+    mvn clean assembly:assembly
 
-## Setting environment variables
+## Set environment variables
 
 To simplify copying the commands below, set the following environment variables:
 
@@ -52,20 +66,54 @@ To simplify copying the commands below, set the following environment variables:
     BIGTABLE_TABLE=wordcount-scratch
     WORDCOUNT_FILE=src/test/resources/countme.txt
 
-## Test your job locally (optional but recommended)
+## Run locally using Cloud Bigtable Emulator
 
-This step requires a local Spark installation.
+This step requires a local Spark installation and [Cloud Bigtable Emulator](https://cloud.google.com/bigtable/docs/emulator).
 
-While you will need a real Bigtable cluster, you can test the Spark job locally,
-if you have Spark insatlled. For testing, consider a Bigtable development
+    // Start Cloud Bigtable Emulator
+    $ gcloud beta emulators bigtable start &
+
+    // Initialize environment to use the emulator
+    $ $(gcloud beta emulators bigtable env-init)
+
+    // Make sure you're using Java 8
+    $ java -version
+
+    // SPARK_HOME is the directory where you installed Spark
+    $ $SPARK_HOME/bin/spark-submit \
+        --class com.example.bigtable.spark.wordcount.WordCount \
+        target/cloud-bigtable-dataproc-spark-wordcount-0.1-jar-with-dependencies.jar \
+        $GOOGLE_CLOUD_PROJECT $BIGTABLE_INSTANCE $BIGTABLE_TABLE $WORDCOUNT_FILE
+
+    // List tables and column families
+    // There should actually be just one wordcount
+    $ cbt -project=$GOOGLE_CLOUD_PROJECT -instance=$BIGTABLE_INSTANCE ls
+    wordcount-scratch
+
+    // Read rows
+    $ cbt -project=$GOOGLE_CLOUD_PROJECT -instance=$BIGTABLE_INSTANCE read $BIGTABLE_TABLE
+
+The Spark application will create the table specified on the command line (based on `$BIGTABLE_TABLE`) unless it already exists.
+
+## Run locally using Cloud Bigtable
+
+This step requires a local Spark installation and a real Cloud Bigtable instance.
+
+While you need a real Bigtable cluster, you can test the Spark job locally,
+if you have Spark installed. For testing, consider a Bigtable development
 cluster.
 
-    spark-submit --master local --class com.example.bigtable.spark.wordcount.WordCount \
-    target/cloud-bigtable-dataproc-spark-wordcount-0.1-jar-with-dependencies.jar \
-    $GOOGLE_CLOUD_PROJECT $BIGTABLE_INSTANCE $BIGTABLE_TABLE \
-    $WORDCOUNT_FILE
+    // Don't forget to unset BIGTABLE_EMULATOR_HOST
+    // This is only required for Cloud Bigtable Emulator
+    $ unset BIGTABLE_EMULATOR_HOST
 
-The job will create the table specified (here, `wordcount-scratch`) if it doesn't already exist.
+    // SPARK_HOME is the directory where you installed Spark
+    $ $SPARK_HOME/bin/spark-submit \
+        --class com.example.bigtable.spark.wordcount.WordCount \
+        target/cloud-bigtable-dataproc-spark-wordcount-0.1-jar-with-dependencies.jar \
+        $GOOGLE_CLOUD_PROJECT $BIGTABLE_INSTANCE $BIGTABLE_TABLE $WORDCOUNT_FILE
+
+The Spark application will create the table specified on the command line (based on `$BIGTABLE_TABLE`) unless it already exists.
 
 ## Submit your job to Dataproc
 
@@ -83,7 +131,6 @@ Once done, upload the sample file (or a file of your choice) to the bucket:
 Now set an appropriate environment variable:
 
     WORDCOUNT_FILE=gs://your-unique-bucket-id/countme.txt
-
 
 ### Submit the job to Cloud Dataproc
 
@@ -103,11 +150,11 @@ delete your resources.
     gcloud beta bigtable instances delete test-instance
     gcloud dataproc clusters delete spark-cluster
 
+## Run tests
 
-## Running tests
-
-Currently the tests use a local Spark instance but require a real Bigtable
-cluster to run again. Set the following environmet variables:
+The tests can use either a real Cloud Bigtable instance or Cloud Bigtable Emulator.
+Set the following environment variables accordingly.
+Don't forget to use `$(gcloud beta emulators bigtable env-init)` for Cloud Bigtable Emulator.
 
      GOOGLE_CLOUD_PROJECT=your-project-id
      CLOUD_BIGTABLE_INSTANCE=your-bigtable-instance
