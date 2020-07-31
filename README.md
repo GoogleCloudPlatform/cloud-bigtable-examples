@@ -31,6 +31,7 @@ Bigger than a data warehouse, fast enough for real-time access, and less expensi
 * [usercounter](https://github.com/GoogleCloudPlatform/golang-samples/tree/master/bigtable/usercounter) - Accessing Cloud Bigtable from App Engine Flexible
 * [search](https://github.com/GoogleCloudPlatform/golang-samples/tree/master/bigtable/search) - Create and search a Cloud Bigtable.
 
+
 ## Python
 * [Hello
   World](https://github.com/GoogleCloudPlatform/python-docs-samples/tree/master/bigtable/hello)
@@ -41,9 +42,6 @@ Bigger than a data warehouse, fast enough for real-time access, and less expensi
   (Happybase)](https://github.com/GoogleCloudPlatform/python-docs-samples/tree/master/bigtable/hello_happybase)
   A minimal application that demonstrates using the Happybase API create a
   temporary table, write some rows, read them back and clean up.
-
-## NodeJS
-* [Hello World](node/hello-world) - A minimal application that demonstrates using the [`nodejs-bigtable`][nodejs-bigtable] library to create a temporary table, write some rows, read them back and clean up
 
 ## Questions and discussions
 
@@ -61,6 +59,20 @@ infrequent product and client library announcements.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for more information on how to contribute
 to this project.
+
+## More examples
+
+More Google Cloud Bigtable examples are available in in the following languages:
+
+* [Java](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/bigtable)
+* [Python](https://github.com/GoogleCloudPlatform/python-docs-samples/tree/master/bigtable)
+* [Node](https://github.com/googleapis/nodejs-bigtable/tree/master/samples)
+* [Go](https://github.com/GoogleCloudPlatform/golang-samples/tree/master/bigtable)
+* [Dotnet](https://github.com/GoogleCloudPlatform/dotnet-docs-samples/tree/master/bigtable/api)
+* [C++](https://github.com/googleapis/google-cloud-cpp/tree/master/google/cloud/bigtable/examples)
+* [Ruby](https://github.com/GoogleCloudPlatform/ruby-docs-samples/tree/master/bigtable)
+* [PHP](https://github.com/GoogleCloudPlatform/php-docs-samples/tree/master/bigtable)
+
 
 ## License
 
