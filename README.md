@@ -62,7 +62,7 @@ to this project.
 
 ## More examples
 
-More Google Cloud Bigtable examples are available in in the following languages:
+More Google Cloud Bigtable examples are available in the following languages:
 
 * [Java](https://github.com/GoogleCloudPlatform/java-docs-samples/tree/master/bigtable)
 * [Python](https://github.com/GoogleCloudPlatform/python-docs-samples/tree/master/bigtable)
