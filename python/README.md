@@ -5,5 +5,5 @@ longer actively developed or maintained.
 
 For new work on this check out the
 [Bigtable
-samples](https://github.com/GoogleCloudPlatform/python-docs-samples/tree/master/bigtable)
-in the Google Cloud Platform Python samples repository.
+samples](https://github.com/googleapis/python-bigtable/tree/main/samples)
+in the Google Cloud Platform Python Bigtable repository.
