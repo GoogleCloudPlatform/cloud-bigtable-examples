@@ -17,7 +17,7 @@ limitations under the License.
 <!--
   To run the samples:
 
-    mvn package exec:exec -DHelloWorldWrite -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> -Dgs=<Your bucket>
+    mvn package exec:exec -DHelloWorldWrite -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> -Dbigtable.region=<region> -Dgs=<Your bucket>
 
     mvn package exec:exec -DSourceRowCount -Dbigtable.projectID=<projectID> -Dbigtable.instanceID=<instanceID> -Dgs=<Your bucket>
 
@@ -46,8 +46,8 @@ limitations under the License.
   -->
 
   <properties>
-    <beam.version>2.25.0</beam.version>
-    <bigtable.version>1.18.0</bigtable.version>
+    <beam.version>2.32.0</beam.version>
+    <bigtable.version>1.26.1</bigtable.version>
     <slf4j.version>1.7.21</slf4j.version>
 
     <bigtable.table>Dataflow_test</bigtable.table>
@@ -158,6 +158,7 @@ limitations under the License.
                 <argument>--bigtableInstanceId=${bigtable.instanceID}</argument>
                 <argument>--bigtableTableId=${bigtable.table}</argument>
                 <argument>--stagingLocation=${gs}/staging</argument>
+                <argument>--region=${bigtable.region}</argument>
               </arguments>
             </configuration>
           </plugin>
