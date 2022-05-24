@@ -15,22 +15,29 @@
  */
 package com.google.cloud.bigtable.dataflow.example;
 
-import com.google.common.base.Preconditions;
+import com.google.cloud.bigtable.beam.CloudBigtableIO;
+import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
 import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.io.FileIO;
+import org.apache.beam.sdk.io.TextIO;
+import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.apache.hadoop.hbase.client.Mutation;
 import org.apache.hadoop.hbase.client.Put;
-import org.apache.hadoop.hbase.util.Bytes;
-import org.apache.beam.sdk.io.TextIO;
-
-import com.google.cloud.bigtable.beam.CloudBigtableIO;
-import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
 /**
@@ -59,47 +66,124 @@ import org.slf4j.LoggerFactory;
  * configuration of the project specified by --project.
  */
 public class CsvImport {
-
-  private static final byte[] FAMILY = Bytes.toBytes("csv");
   private static final Logger LOG = LoggerFactory.getLogger(CsvImport.class);
 
-  static final DoFn<String, Mutation> MUTATION_TRANSFORM = new DoFn<String, Mutation>() {
+  private static final class MutationTransform extends DoFn<String, Mutation> {
+
+    private final byte[] bigTableFamilyNameBytes;
+
+    private final CSVFormat csvFormat;
+
+    private final String[] csvHeaders;
+
+    private final String rowKeyColumnName;
+
+    public MutationTransform(CSVFormat csvFormat, String bigTableFamilyName, List<String> csvHeaders, String rowKeyColumnName) {
+      this.csvFormat = csvFormat;
+      this.bigTableFamilyNameBytes = bigTableFamilyName.getBytes(StandardCharsets.UTF_8);
+      this.csvHeaders = csvHeaders.toArray(new String[0]);
+      this.rowKeyColumnName = isBlank(rowKeyColumnName) ? csvHeaders.get(0) : rowKeyColumnName;
+    }
+
     @ProcessElement
-    public void processElement(DoFn<String, Mutation>.ProcessContext c) throws Exception {
+    public void processElement(@Element String csvRowString, OutputReceiver<Mutation> outputReceiver) throws IOException {
       try {
-        String[] headers = c.getPipelineOptions().as(BigtableCsvOptions.class).getHeaders()
-            .split(",");
-        String[] values = c.element().split(",");
-        Preconditions.checkArgument(headers.length == values.length);
-
-        byte[] rowkey = Bytes.toBytes(values[0]);
-        byte[][] headerBytes = new byte[headers.length][];
-        for (int i = 0; i < headers.length; i++) {
-          headerBytes[i] = Bytes.toBytes(headers[i]);
-        }
-
-        Put row = new Put(rowkey);
-        long timestamp = System.currentTimeMillis();
-        for (int i = 1; i < values.length; i++) {
-          row.addColumn(FAMILY, headerBytes[i], timestamp, Bytes.toBytes(values[i]));
-        }
-        c.output(row);
+        outputReceiver.output(makePutFromCsvRecord(CSVParser.parse(csvRowString, makeCsvFormatWithHeaders()).getRecords().get(0)));
       } catch (Exception e) {
-        LOG.error("Failed to process input {}", c.element(), e);
+        LOG.error("Failed to process input {}", csvRowString, e);
         throw e;
       }
-
     }
-  };
 
-  public static interface BigtableCsvOptions extends CloudBigtableOptions {
+    private Put makePutFromCsvRecord(CSVRecord record) {
+      Put rowPut = new Put(record.get(rowKeyColumnName).getBytes(StandardCharsets.UTF_8));
+      long timestamp = System.currentTimeMillis();
+
+      record.toMap().forEach((csvHeader, value) -> {
+        if (csvHeader.equals(rowKeyColumnName)) {
+          return;
+        }
+
+        rowPut.addColumn(bigTableFamilyNameBytes, csvHeader.getBytes(StandardCharsets.UTF_8), timestamp, value.getBytes(StandardCharsets.UTF_8));
+
+      });
+
+      return rowPut;
+    }
+
+    private CSVFormat makeCsvFormatWithHeaders() {
+      return csvFormat.builder().setHeader(csvHeaders).setSkipHeaderRecord(true).build();
+    }
+
+    public static Builder builder() {
+      return new Builder().setCsvFormat(CSVFormat.DEFAULT);
+    }
+
+    private static class Builder {
+      private String bigTableFamilyName;
+
+      private CSVFormat csvFormat;
+
+      private List<String> csvHeaders;
+
+      private String rowKeyColumnName;
+
+      public Builder setBigTableFamilyName(String bigTableFamilyName) {
+        this.bigTableFamilyName = bigTableFamilyName;
+        return this;
+      }
+
+      public Builder setCsvFormat(CSVFormat csvFormat) {
+        this.csvFormat = csvFormat;
+        return this;
+      }
+
+      public Builder setCsvFormat(CSVFormat.Predefined csvFormat) {
+        this.csvFormat = csvFormat.getFormat();
+        return this;
+      }
+
+      public Builder setCsvHeaders(List<String> csvHeaders) {
+        this.csvHeaders = csvHeaders;
+        return this;
+      }
+
+      public Builder setRowKeyColumnName(String rowKeyColumnName) {
+        this.rowKeyColumnName = rowKeyColumnName;
+        return this;
+      }
+
+      public MutationTransform build() {
+        return new MutationTransform(csvFormat, bigTableFamilyName, csvHeaders, rowKeyColumnName);
+      }
+    }
+  }
+
+  public interface BigtableCsvOptions extends CloudBigtableOptions {
 
     @Description("The headers for the CSV file.")
-    String getHeaders();
+    List<String> getHeaders();
 
-    void setHeaders(String headers);
+    void setHeaders(List<String> headers);
 
-    @Description("The Cloud Storage path to the CSV file.")
+    @Description("The column Name to use as RowKey")
+    String getRowKeyHeader();
+
+    void setRowKeyHeader(String rowKeyHeader);
+
+    @Description("The CSV Format as per CSVFormat class. Default: Default")
+    @Default.String("Default")
+    CSVFormat.Predefined getCsvFormat();
+
+    void setCsvFormat(CSVFormat.Predefined predefinedCsvFormat);
+
+    @Description("The name of the BigTable column family to put the csv columns under")
+    @Default.String("csv")
+    String getBigTableColumnFamilyName();
+
+    void setBigTableColumnFamilyName(String bigTableColumnFamilyName);
+
+    @Description("The Cloud Storage path to the CSV file. (Can contain wildcard)")
     String getInputFile();
 
     void setInputFile(String location);
@@ -115,23 +199,23 @@ public class CsvImport {
    * </ol>
    *
    * @param args Arguments to use to configure the Dataflow Pipeline.  The first three are required
-   * when running via managed resource in Google Cloud Platform.  Those options should be omitted
-   * for LOCAL runs.  The next two are to configure your CSV file. And the last four arguments are
-   * to configure the Bigtable connection. --runner=BlockingDataflowPipelineRunner
-   * --project=[dataflow project] \\ --stagingLocation=gs://[your google storage bucket] \\
-   * --headers=[comma separated list of headers] \\ --inputFile=gs://[your google storage object] \\
-   * --bigtableProject=[bigtable project] \\ --bigtableInstanceId=[bigtable instance id] \\
-   * --bigtableTableId=[bigtable tableName]
+   *             when running via managed resource in Google Cloud Platform.  Those options should be omitted
+   *             for LOCAL runs.  The next two are to configure your CSV file. And the last four arguments are
+   *             to configure the Bigtable connection. --runner=BlockingDataflowPipelineRunner
+   *             --project=[dataflow project] \\ --stagingLocation=gs://[your google storage bucket] \\
+   *             --headers=[comma separated list of headers] \\ --inputFile=gs://[your google storage object] \\
+   *             --bigtableProject=[bigtable project] \\ --bigtableInstanceId=[bigtable instance id] \\
+   *             --bigtableTableId=[bigtable tableName]
    */
 
   public static void main(String[] args) throws IllegalArgumentException {
     BigtableCsvOptions options =
         PipelineOptionsFactory.fromArgs(args).withValidation().as(BigtableCsvOptions.class);
 
-    if (options.getInputFile().equals("")) {
+    if (isBlank(options.getInputFile())) {
       throw new IllegalArgumentException("Please provide value for inputFile.");
     }
-    if (options.getHeaders().equals("")) {
+    if (options.getHeaders() == null || options.getHeaders().size() == 0) {
       throw new IllegalArgumentException("Please provide value for headers.");
     }
 
@@ -144,8 +228,17 @@ public class CsvImport {
 
     Pipeline p = Pipeline.create(options);
 
-    p.apply("ReadMyFile", TextIO.read().from(options.getInputFile()))
-        .apply("TransformParsingsToBigtable", ParDo.of(MUTATION_TRANSFORM))
+    p.apply("DefineCsvFileMatches", FileIO.match().filepattern(options.getInputFile()))
+        .apply("MatchCsvFiles", FileIO.readMatches())
+        .apply("ReadCsvFiles", TextIO.readFiles())
+        .apply("TransformParsingsToBigtable",
+            ParDo.of(
+                MutationTransform.builder()
+                    .setCsvFormat(options.getCsvFormat().getFormat())
+                    .setCsvHeaders(options.getHeaders())
+                    .setRowKeyColumnName(options.getRowKeyHeader())
+                    .setBigTableFamilyName(options.getBigTableColumnFamilyName())
+                    .build()))
         .apply("WriteToBigtable", CloudBigtableIO.writeToTable(config));
 
     p.run().waitUntilFinish();

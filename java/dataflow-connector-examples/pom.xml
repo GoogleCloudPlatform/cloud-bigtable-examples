@@ -46,12 +46,9 @@ limitations under the License.
   -->
 
   <properties>
-    <beam.version>2.32.0</beam.version>
-    <bigtable.version>1.26.1</bigtable.version>
-    <slf4j.version>1.7.21</slf4j.version>
-
-    <bigtable.table>Dataflow_test</bigtable.table>
-    <inputFile></inputFile>
+    <beam.version>2.38.0</beam.version>
+    <bigtable.version>2.3.0</bigtable.version>
+    <slf4j.version>1.7.36</slf4j.version>
     <region>us-central1</region>
     <network>default</network>
     <subnetwork></subnetwork>
@@ -61,9 +58,9 @@ limitations under the License.
     <bq.query>SELECT year, month, day, wikimedia_project, language, title, views FROM `bigquery-samples.wikipedia_benchmark.Wiki1M` limit 1000000</bq.query>
     <pubsubTopic>projects/${bigtable.projectID}/topics/shakes</pubsubTopic>
     <bigtable.hbase.version>${bigtable.version}</bigtable.hbase.version>
-    <maven.compiler.target>1.7</maven.compiler.target>
-    <maven.compiler.source>1.7</maven.compiler.source>
-     <java.version>1.7</java.version>
+    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>11</maven.compiler.source>
+     <java.version>11</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -83,13 +80,30 @@ limitations under the License.
        <version>${beam.version}</version>
     </dependency>
 
-    <!-- [START bigtable_dataflow_connector_dep] -->
     <dependency>
         <groupId>com.google.cloud.bigtable</groupId>
         <artifactId>bigtable-hbase-beam</artifactId>
         <version>${bigtable.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+          </exclusion>
+        </exclusions>
     </dependency>
-    <!-- [END bigtable_dataflow_connector_dep] -->
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-csv</artifactId>
+      <version>1.9.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.12.0</version>
+    </dependency>
+
 
     <dependency>
         <groupId>org.slf4j</groupId>
