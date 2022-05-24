@@ -82,6 +82,6 @@ class WordCountIT extends FlatSpec with BeforeAndAfterEach with BeforeAndAfterAl
       count += 1
       rs = scanner.next
     }
-    count should equal(162)
+    count should equal(139)
   }
 }

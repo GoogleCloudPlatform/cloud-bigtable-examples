@@ -8,7 +8,7 @@
 
 Otherwise please do the following: 
 
-- [Istall Google Cloud SDK](https://cloud.google.com/sdk/)
+- [Install Google Cloud SDK](https://cloud.google.com/sdk/)
 - [Initialize Cloud SDK](https://cloud.google.com/sdk/docs/initializing)
 
 # Lets get started
@@ -56,7 +56,7 @@ Otherwise please do the following:
  
   - Run cbt command to list bigtable instances in a project
   - Replace [MY-PROJECT_NAME] with your project name
-  - You can followthe link to explore other cbt [commands](https://cloud.google.com/bigtable/docs/go/cbt-reference) to operate on bigtable instance
+  - You can follow the link to explore other cbt [commands](https://cloud.google.com/bigtable/docs/go/cbt-reference) to operate on bigtable instance
 
   ```sh
   ~$ cbt -project [PROJECT_NAME] listinstances
