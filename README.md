@@ -17,7 +17,6 @@ Bigger than a data warehouse, fast enough for real-time access, and less expensi
 * [Hello World](java/hello-world) - This sample has been migrated to: https://github.com/GoogleCloudPlatform/java-docs-samples/blob/main/bigtable/hbase/snippets/src/main/java/com/example/bigtable/HelloWorld.java
 * [Import HBase Sequence files](java/dataflow-import-examples) Import HBase sequence files directly to Cloud Bigtable using Dataflow.
 * [Dataproc Wordcount using Map/Reduce](java/dataproc-wordcount) - How to load data to Cloud Bigtable using Dataproc on GCE
-* [GAE flexible-Hello World](java/gae-flexible-helloworld) - Accessing Cloud Bigtable from App Engine flexible / JSON Upload / Download
 * [GAE J8 Std-Hello World](https://github.com/googlecloudplatform/java-docs-samples/tree/master/appengine-java8/bigtable) - Accessing Cloud Bigtable from App Engine standard
 
 ## Dataflow
