@@ -14,7 +14,7 @@ Bigger than a data warehouse, fast enough for real-time access, and less expensi
 
 ## Java
 * [Simple-CLI](java/simple-cli) - A simple command line interface for Cloud Bigtable that shows you how to do basic operations with the native HBase API
-* [Hello World](java/hello-world) - A minimal application that demonstrates using the native HBase API to create a temporary table, write some rows, read them back and clean up
+* [Hello World](java/hello-world) - This sample has been migrated to: https://github.com/GoogleCloudPlatform/java-docs-samples/blob/main/bigtable/hbase/snippets/src/main/java/com/example/bigtable/HelloWorld.java
 * [Import HBase Sequence files](java/dataflow-import-examples) Import HBase sequence files directly to Cloud Bigtable using Dataflow.
 * [Dataproc Wordcount using Map/Reduce](java/dataproc-wordcount) - How to load data to Cloud Bigtable using Dataproc on GCE
 * [GAE flexible-Hello World](java/gae-flexible-helloworld) - Accessing Cloud Bigtable from App Engine flexible / JSON Upload / Download
