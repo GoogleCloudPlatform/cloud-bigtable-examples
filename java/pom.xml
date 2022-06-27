@@ -43,7 +43,6 @@ limitations under the License.
     <module>hello-world</module>
     <module>tracing-hello-world</module>
     <module>metric-scaler</module>
-    <module>simple-cli</module>
     <module>simple-performance-test</module>
     <module>dataflow-bulk-delete</module>
     <module>quickstart</module>
