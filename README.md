@@ -13,7 +13,6 @@ Bigger than a data warehouse, fast enough for real-time access, and less expensi
 [Quickstart/HBase](quickstart) - Create a Cloud Bigtable Cluster and the hbase shell from within a docker container on your local machine
 
 ## Java
-* [Simple-CLI](java/simple-cli) - A simple command line interface for Cloud Bigtable that shows you how to do basic operations with the native HBase API
 * [Hello World](java/hello-world) - This sample has been migrated to: https://github.com/GoogleCloudPlatform/java-docs-samples/blob/main/bigtable/hbase/snippets/src/main/java/com/example/bigtable/HelloWorld.java
 * [Import HBase Sequence files](java/dataflow-import-examples) Import HBase sequence files directly to Cloud Bigtable using Dataflow.
 * [Dataproc Wordcount using Map/Reduce](java/dataproc-wordcount) - How to load data to Cloud Bigtable using Dataproc on GCE
