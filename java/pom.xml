@@ -35,7 +35,6 @@ limitations under the License.
   -->
 
   <modules>
-    <module>dataflow-coinbase</module>
     <module>dataflow-connector-examples</module>
     <module>dataflow-load-books</module>
     <module>dataproc-wordcount</module>
@@ -43,7 +42,6 @@ limitations under the License.
     <module>hello-world</module>
     <module>metric-scaler</module>
     <module>simple-performance-test</module>
-    <module>dataflow-bulk-delete</module>
     <module>quickstart</module>
     <module>connect</module>
   </modules>
