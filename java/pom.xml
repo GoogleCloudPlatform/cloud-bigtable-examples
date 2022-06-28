@@ -41,7 +41,6 @@ limitations under the License.
     <module>gae-flexible-helloworld</module>
     <module>hello-world</module>
     <module>metric-scaler</module>
-    <module>simple-performance-test</module>
     <module>quickstart</module>
     <module>connect</module>
   </modules>
