@@ -36,7 +36,6 @@ limitations under the License.
 
   <modules>
     <module>dataflow-connector-examples</module>
-    <module>dataflow-load-books</module>
     <module>dataproc-wordcount</module>
     <module>gae-flexible-helloworld</module>
     <module>hello-world</module>
