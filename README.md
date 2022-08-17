@@ -13,17 +13,14 @@ Bigger than a data warehouse, fast enough for real-time access, and less expensi
 [Quickstart/HBase](quickstart) - Create a Cloud Bigtable Cluster and the hbase shell from within a docker container on your local machine
 
 ## Java
-* [Simple-CLI](java/simple-cli) - A simple command line interface for Cloud Bigtable that shows you how to do basic operations with the native HBase API
-* [Hello World](java/hello-world) - A minimal application that demonstrates using the native HBase API to create a temporary table, write some rows, read them back and clean up
+* [Hello World](java/hello-world) - This sample has been migrated to: https://github.com/GoogleCloudPlatform/java-docs-samples/blob/main/bigtable/hbase/snippets/src/main/java/com/example/bigtable/HelloWorld.java
 * [Import HBase Sequence files](java/dataflow-import-examples) Import HBase sequence files directly to Cloud Bigtable using Dataflow.
 * [Dataproc Wordcount using Map/Reduce](java/dataproc-wordcount) - How to load data to Cloud Bigtable using Dataproc on GCE
-* [GAE flexible-Hello World](java/gae-flexible-helloworld) - Accessing Cloud Bigtable from App Engine flexible / JSON Upload / Download
 * [GAE J8 Std-Hello World](https://github.com/googlecloudplatform/java-docs-samples/tree/master/appengine-java8/bigtable) - Accessing Cloud Bigtable from App Engine standard
 
 ## Dataflow
 * [Connector-Examples](java/dataflow-connector-examples) - Using the cloud dataflow connector for Bigtable, do write Hello World to two rows, Use Cloud Pub / Sub to count Shakespeare, count the number of rows in a Table, and copy records from BigQuery to BigTable.
 * [Pardo-HelloWorld](java/dataflow-pardo-helloworld) - example of using Cloud Dataflow without the connector.
-* [dataflow-coinbase](java/dataflow-coinbase) - An end to end example that takes the last four hours of Bitcoin data and sends it to Google Cloud Dataflow, which process it and sends it to Google Cloud Bigtable.  Then there is an App Engine Flexible application that displays the data in an angularJS app.
 
 ## Go
 * [cbt](https://github.com/GoogleCloudPlatform/gcloud-golang/tree/master/bigtable/cmd/cbt) [doc](https://godoc.org/google.golang.org/cloud/bigtable/cmd/cbt) Basic command line interactions with Cloud Bigtable - A really great place to start learning the Go Client.
