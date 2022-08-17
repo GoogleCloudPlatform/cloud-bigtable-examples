@@ -80,6 +80,7 @@ limitations under the License.
        <version>${beam.version}</version>
     </dependency>
 
+    <!-- [START bigtable_dataflow_connector_dep] -->
     <dependency>
         <groupId>com.google.cloud.bigtable</groupId>
         <artifactId>bigtable-hbase-beam</artifactId>
@@ -91,6 +92,7 @@ limitations under the License.
           </exclusion>
         </exclusions>
     </dependency>
+    <!-- [END bigtable_dataflow_connector_dep] -->
 
     <dependency>
       <groupId>org.apache.commons</groupId>

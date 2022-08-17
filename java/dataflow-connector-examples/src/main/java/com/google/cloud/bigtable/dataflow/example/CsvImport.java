@@ -181,7 +181,7 @@ public class CsvImport {
     @Default.String("csv")
     String getBigTableColumnFamilyName();
 
-    void setBigTableColumnFamilyName(String bigTableColumnFamilyName);
+    void setBigtableColumnFamilyName(String bigTableColumnFamilyName);
 
     @Description("The Cloud Storage path to the CSV file. (Can contain wildcard)")
     String getInputFile();
