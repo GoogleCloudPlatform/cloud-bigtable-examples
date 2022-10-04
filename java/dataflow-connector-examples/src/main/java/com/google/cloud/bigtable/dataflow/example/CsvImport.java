@@ -70,7 +70,7 @@ public class CsvImport {
 
   private static final class MutationTransform extends DoFn<String, Mutation> {
 
-    private final byte[] bigTableFamilyNameBytes;
+    private final byte[] bigtableFamilyNameBytes;
 
     private final CSVFormat csvFormat;
 
@@ -78,9 +78,9 @@ public class CsvImport {
 
     private final String rowKeyColumnName;
 
-    public MutationTransform(CSVFormat csvFormat, String bigTableFamilyName, List<String> csvHeaders, String rowKeyColumnName) {
+    public MutationTransform(CSVFormat csvFormat, String bigtableFamilyName, List<String> csvHeaders, String rowKeyColumnName) {
       this.csvFormat = csvFormat;
-      this.bigTableFamilyNameBytes = bigTableFamilyName.getBytes(StandardCharsets.UTF_8);
+      this.bigtableFamilyNameBytes = bigtableFamilyName.getBytes(StandardCharsets.UTF_8);
       this.csvHeaders = csvHeaders.toArray(new String[0]);
       this.rowKeyColumnName = isBlank(rowKeyColumnName) ? csvHeaders.get(0) : rowKeyColumnName;
     }
@@ -104,7 +104,7 @@ public class CsvImport {
           return;
         }
 
-        rowPut.addColumn(bigTableFamilyNameBytes, csvHeader.getBytes(StandardCharsets.UTF_8), timestamp, value.getBytes(StandardCharsets.UTF_8));
+        rowPut.addColumn(bigtableFamilyNameBytes, csvHeader.getBytes(StandardCharsets.UTF_8), timestamp, value.getBytes(StandardCharsets.UTF_8));
 
       });
 
@@ -116,11 +116,11 @@ public class CsvImport {
     }
 
     public static Builder builder() {
-      return new Builder().setCsvFormat(CSVFormat.DEFAULT);
+      return new Builder().setCsvFormat("Default");
     }
 
     private static class Builder {
-      private String bigTableFamilyName;
+      private String bigtableFamilyName;
 
       private CSVFormat csvFormat;
 
@@ -128,18 +128,13 @@ public class CsvImport {
 
       private String rowKeyColumnName;
 
-      public Builder setBigTableFamilyName(String bigTableFamilyName) {
-        this.bigTableFamilyName = bigTableFamilyName;
+      public Builder setBigtableFamilyName(String bigtableFamilyName) {
+        this.bigtableFamilyName = bigtableFamilyName;
         return this;
       }
 
-      public Builder setCsvFormat(CSVFormat csvFormat) {
-        this.csvFormat = csvFormat;
-        return this;
-      }
-
-      public Builder setCsvFormat(CSVFormat.Predefined csvFormat) {
-        this.csvFormat = csvFormat.getFormat();
+      public Builder setCsvFormat(String csvFormat) {
+        this.csvFormat = CSVFormat.Predefined.valueOf(csvFormat).getFormat();
         return this;
       }
 
@@ -154,7 +149,7 @@ public class CsvImport {
       }
 
       public MutationTransform build() {
-        return new MutationTransform(csvFormat, bigTableFamilyName, csvHeaders, rowKeyColumnName);
+        return new MutationTransform(csvFormat, bigtableFamilyName, csvHeaders, rowKeyColumnName);
       }
     }
   }
@@ -173,15 +168,15 @@ public class CsvImport {
 
     @Description("The CSV Format as per CSVFormat class. Default: Default")
     @Default.String("Default")
-    CSVFormat.Predefined getCsvFormat();
+    String getCsvFormat();
 
-    void setCsvFormat(CSVFormat.Predefined predefinedCsvFormat);
+    void setCsvFormat(String predefinedCsvFormat);
 
     @Description("The name of the BigTable column family to put the csv columns under")
     @Default.String("csv")
-    String getBigTableColumnFamilyName();
+    String getBigtableColumnFamilyName();
 
-    void setBigtableColumnFamilyName(String bigTableColumnFamilyName);
+    void setBigtableColumnFamilyName(String bigtableColumnFamilyName);
 
     @Description("The Cloud Storage path to the CSV file. (Can contain wildcard)")
     String getInputFile();
@@ -234,10 +229,10 @@ public class CsvImport {
         .apply("TransformParsingsToBigtable",
             ParDo.of(
                 MutationTransform.builder()
-                    .setCsvFormat(options.getCsvFormat().getFormat())
+                    .setCsvFormat(options.getCsvFormat())
                     .setCsvHeaders(options.getHeaders())
                     .setRowKeyColumnName(options.getRowKeyHeader())
-                    .setBigTableFamilyName(options.getBigTableColumnFamilyName())
+                    .setBigtableFamilyName(options.getBigtableColumnFamilyName())
                     .build()))
         .apply("WriteToBigtable", CloudBigtableIO.writeToTable(config));
 

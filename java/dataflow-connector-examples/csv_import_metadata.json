@@ -1,0 +1,43 @@
+{
+  "name": "CSV Import into BigTable",
+  "description": "Import multiple CSV files into Bigtable",
+  "parameters": [
+    {
+      "name": "bigtableProjectId",
+      "label": "Bigtable's GCP Project Id",
+      "helpText": "The GCP project Id of having the Bigtable resource."
+    },
+    {
+      "name": "bigtableInstanceId",
+      "label": "Bigtable's Instance Id",
+      "helpText": "The Bigtable's Instance Id"
+    },
+    {
+      "name": "inputFile",
+      "label": "GCS File path",
+      "helpText": "The GCS files to import. Supports standard wildcard characters"
+    },
+    {
+      "name": "headers",
+      "label": "CSV Header in sequence",
+      "helpText": "List of headers of the CSV file"
+    },
+    {
+      "name": "rowKeyHeader",
+      "label": "CSV Header to use as rowKey",
+      "helpText": "The CSV Header to be used as a row Key."
+    },
+    {
+      "name": "csvFormat",
+      "label": "CSV file format",
+      "helpText": "The CSV Fileformat to use as per CSVFormat.Predefined.",
+      "isOptional": true
+    },
+    {
+      "name": "bigtableColumnFamilyName",
+      "label": "Bigtable Column Family Name",
+      "helpText": "The Column family used to create the provided CSV columns. Default: csv",
+      "isOptional": true
+    }
+  ]
+}

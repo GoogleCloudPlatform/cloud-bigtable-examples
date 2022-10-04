@@ -94,19 +94,43 @@ Use the Hbase shell to add a column family to your table called 'csv' for this e
     
 ## Required Options for CSV import
 
-This pipeline needs to be configured with two additional command line options:
 
- * `-Dheaders="id,header1,header2"` - Comma separated list of headers 
- * `-DinputFile="gs://my_bucket/my_csv_file"` - A Google Cloud Storage object.
+Create Dataflow template image:
 
-The examples take a CSV file in a GCS bucket and writes each row to Bigtable.
+    PROJECT_ID="<your-project-id>"
+    CSV_IMPORT_TEMPLATE_IMAGE_TAG="gcr.io/${PROJECT_ID}/csvimport-to-bigtable:latest"
 
-    mvn package exec:exec \
-        -DCsvImport \
-        -Dbigtable.projectID=<projectID> \
-        -Dbigtable.instanceID=<instanceID> \
-        -DinputFile="<Your file>" \
-        -Dheaders="<Your headers>"
+    gcloud builds submit --config=cloudbuild.yaml \
+    --substitutions _TEMPLATE_IMAGE_TAG="${CSV_IMPORT_TEMPLATE_IMAGE_TAG}",_MAIN_CLASS="com.google.cloud.bigtable.dataflow.example.CsvImport" \
+    --project "${PROJECT_ID}"
+
+Create Dataflow flex template:
+
+    CSV_IMPORT_TEMPLATE_GCS_PATH="<GCS_PATH_TO_STORE_TEMPLATE>"    
+
+    gcloud dataflow flex-template build \
+    "${CSV_IMPORT_TEMPLATE_GCS_PATH}" \
+    --project="${PROJECT_ID}" \
+    --image="${CSV_IMPORT_TEMPLATE_IMAGE_TAG}" \
+    --metadata-file="csv_import_metadata.json" \
+    --sdk-language="JAVA"
+
+Launch the Dataflow pipeline using template:
+    
+    REGION_ID="<your-dataflow-region>"
+
+    gcloud dataflow flex-template run \
+    "csvimport-to-bigtable-$(date +%Y%m%d%H%M%S)" \
+    --template-file-gcs-location="${CSV_IMPORT_TEMPLATE_GCS_PATH}" \
+    --project="${PROJECT_ID}" \
+    --region="${REGION_ID}" \
+    --temp-location="gs://${TEMP_GCS_BUCKET}/temp/" \
+    --staging-location="gs://${TEMP_GCS_BUCKET}/staging/" \
+    --parameters=inputFile="<Your file GCS path>" \
+    --parameters=headers="<yourheaders-e.g. col1,col2>" \
+    --parameters=bigtableProjectId="${PROJECT_ID}" \
+    --parameters=bigtableInstanceId="<your Instance Id>" \
+    --parameters=rowKeyHeader="<col1>"
     
 You can verify that the data was written by using HBase shell and typing `scan 'Dataflow_test'`. You can also delete the table, if you wish, using:
 
