@@ -13,6 +13,11 @@
       "helpText": "The Bigtable's Instance Id"
     },
     {
+      "name": "bigtableTableId",
+      "label": "Bigtable's Table Id",
+      "helpText": "The Bigtable's Table Id"
+    },
+    {
       "name": "inputFile",
       "label": "GCS File path",
       "helpText": "The GCS files to import. Supports standard wildcard characters"

@@ -127,7 +127,7 @@ Launch the Dataflow pipeline using template:
     --temp-location="gs://${TEMP_GCS_BUCKET}/temp/" \
     --staging-location="gs://${TEMP_GCS_BUCKET}/staging/" \
     --parameters=inputFile="<Your file GCS path>" \
-    --parameters=headers="<yourheaders-e.g. col1,col2>" \
+    --parameters=^#^headers="<yourheaders-e.g. col1,col2>" \
     --parameters=bigtableProjectId="${PROJECT_ID}" \
     --parameters=bigtableInstanceId="<your Instance Id>" \
     --parameters=rowKeyHeader="<col1>"
