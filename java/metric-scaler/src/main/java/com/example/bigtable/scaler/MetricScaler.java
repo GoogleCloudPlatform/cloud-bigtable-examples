@@ -144,6 +144,7 @@ public class MetricScaler {
    * @throws IOException
    */
   Point getLatestValue() throws IOException {
+    // [START bigtable_cpu]
     // [START get_bigtable_cpu]
     Timestamp now = timeXMinutesAgo(0);
     Timestamp fiveMinutesAgo = timeXMinutesAgo(5);
@@ -154,6 +155,7 @@ public class MetricScaler {
         metricServiceClient.listTimeSeries(projectName, filter, interval, TimeSeriesView.FULL);
     return response.getPage().getValues().iterator().next().getPointsList().get(0);
     // [END get_bigtable_cpu]
+    // [END bigtable_cpu]
   }
 
   /**
@@ -165,6 +167,7 @@ public class MetricScaler {
       @Override
       public void run() {
         try {
+          // [START bigtable_scale]
           // [START scale_bigtable]
           double latestValue = getLatestValue().getValue().getDoubleValue();
           if (latestValue < CPU_PERCENT_TO_DOWNSCALE) {
@@ -181,6 +184,7 @@ public class MetricScaler {
             }
           }
           // [END scale_bigtable]
+          // [END bigtable_scale]
         } catch (Exception e) {
           e.printStackTrace();
         }
