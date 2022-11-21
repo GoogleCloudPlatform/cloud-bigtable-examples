@@ -145,7 +145,6 @@ public class MetricScaler {
    */
   Point getLatestValue() throws IOException {
     // [START bigtable_cpu]
-    // [START get_bigtable_cpu]
     Timestamp now = timeXMinutesAgo(0);
     Timestamp fiveMinutesAgo = timeXMinutesAgo(5);
     TimeInterval interval =
@@ -154,7 +153,6 @@ public class MetricScaler {
     ListTimeSeriesPagedResponse response =
         metricServiceClient.listTimeSeries(projectName, filter, interval, TimeSeriesView.FULL);
     return response.getPage().getValues().iterator().next().getPointsList().get(0);
-    // [END get_bigtable_cpu]
     // [END bigtable_cpu]
   }
 
@@ -168,7 +166,6 @@ public class MetricScaler {
       public void run() {
         try {
           // [START bigtable_scale]
-          // [START scale_bigtable]
           double latestValue = getLatestValue().getValue().getDoubleValue();
           if (latestValue < CPU_PERCENT_TO_DOWNSCALE) {
             int clusterSize = clusterUtility.getClusterNodeCount(clusterId, zoneId);
@@ -183,7 +180,6 @@ public class MetricScaler {
                 Math.min(clusterSize + SIZE_CHANGE_STEP, MAX_NODE_COUNT));
             }
           }
-          // [END scale_bigtable]
           // [END bigtable_scale]
         } catch (Exception e) {
           e.printStackTrace();
