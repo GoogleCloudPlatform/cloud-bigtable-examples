@@ -179,7 +179,7 @@ public class CsvImport {
 
     @Description("The name of the BigTable column family to put the csv columns under")
     @Default.String("csv")
-    String getBigTableColumnFamilyName();
+    String getBigtableColumnFamilyName();
 
     void setBigtableColumnFamilyName(String bigTableColumnFamilyName);
 
@@ -237,7 +237,7 @@ public class CsvImport {
                     .setCsvFormat(options.getCsvFormat().getFormat())
                     .setCsvHeaders(options.getHeaders())
                     .setRowKeyColumnName(options.getRowKeyHeader())
-                    .setBigTableFamilyName(options.getBigTableColumnFamilyName())
+                    .setBigTableFamilyName(options.getBigtableColumnFamilyName())
                     .build()))
         .apply("WriteToBigtable", CloudBigtableIO.writeToTable(config));
 
