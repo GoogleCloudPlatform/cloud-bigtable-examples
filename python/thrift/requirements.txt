@@ -1,4 +1,4 @@
-Flask==1.0
+Flask==2.2.5
 itsdangerous==0.24
 Jinja2==2.11.3
 MarkupSafe==0.23
