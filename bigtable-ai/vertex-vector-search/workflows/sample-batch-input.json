@@ -1,0 +1,19 @@
+{
+  "project_id": "<GCP PROJECT ID>",
+  "location": "<Location/Region for Dataflow and Vertex>",
+  "dataflow": {
+    "temp_location": "<Cloud Storage Location to store temporary files (eg: gs://<bucket_name>/<folder_name>>/)>"
+  },
+  "gcs": {
+    "output_folder": "<Cloud Storage Location to store generated embeddings (eg: gs://<bucket_name>/<folder_name>/)>"
+  },
+  "bigtable": {
+    "instance_id": "<Bigtable Instance Id>",
+    "database_id": "<Bigtable Database Id>",
+    "table_name": "<Bigtable Table Name>",
+    "columns_aliases": "<Columns to Export from Bigtable Table>"
+  },
+  "vertex": {
+    "vector_search_index_id": "<Vertex Vector Search Index ID>"
+  }
+}

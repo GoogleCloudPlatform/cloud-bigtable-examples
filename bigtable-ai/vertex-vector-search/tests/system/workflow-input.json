@@ -1,0 +1,21 @@
+{
+  "project_id": "{{project_id}}",
+  "location": "{{location}}",
+  "dataflow": {
+    "job_name_prefix": "test-bigtable-vvs-integration",
+    "temp_location": "gs://bigtable-vertex-vector-search-test-suite/temp/batch-vector-embeddings/"
+  },
+  "gcs": {
+    "output_folder": "gs://bigtable-vertex-vector-search-test-suite/batch-vector-embeddings/",
+    "output_file_prefix": "test-vector-embedding-"
+  },
+  "bigtable": {
+    "instance_id": "{{instance_id}}",
+    "database_id": "{{database_id}}",
+    "table_name": "{{table_name}}",
+    "columns_aliases": "rowkey;id,cf:embeddings;embedding,cf:restricts;restricts,cf:crowding_tag;crowding_tag"
+  },
+  "vertex": {
+    "vector_search_index_id": "{{vector_search_index_id}}"
+  }
+}

@@ -1,0 +1,206 @@
+# Copyright 2023 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+main:
+  params: [params]
+  steps:
+    - initialize_project:
+        steps:
+          - dataflow_project:
+              switch:
+                  - condition: ${not ("project_id" in params.dataflow)}
+                    assign:
+                      - params.dataflow.project_id: ${params.project_id}
+          - bigtable_project:
+              switch:
+                  - condition: ${not ("project_id" in params.bigtable)}
+                    assign:
+                      - params.bigtable.project_id: ${params.project_id}
+          - vertex_project:
+              switch:
+                  - condition: ${not ("project_id" in params.vertex)}
+                    assign:
+                      - params.vertex.project_id: ${params.project_id}
+    - initialize_location:
+        steps:
+          - dataflow_location:
+              switch:
+                  - condition: ${not ("location" in params.dataflow)}
+                    assign:
+                      - params.dataflow.location: ${params.location}
+          - vertex_location:
+              switch:
+                  - condition: ${not ("location" in params.vertex)}
+                    assign:
+                      - params.vertex.location: ${params.location}
+    - check_vector_search_index_exists:
+          call: http.request
+          args:
+            url: ${"https://" + params.vertex.location + "-aiplatform.googleapis.com/v1/projects/" + params.vertex.project_id + "/locations/" + params.vertex.location + "/indexes/" + params.vertex.vector_search_index_id}
+            method: GET
+            auth:
+              type: OAuth2
+          result: index_response
+    - define_timestamp:
+        assign:
+          - current_timestamp: ${time.format(sys.now())}
+    - log_timestamp:
+        call: sys.log
+        args:
+          text: ${"Bigtable Version Time chosen for exporting data is " + current_timestamp}
+    - initialize_dataflow_job_variables:
+        steps:
+          - max_workers:
+              switch:
+                  - condition: ${not ("max_workers" in params.dataflow)}
+                    assign:
+                      - params.dataflow.max_workers: 0
+          - num_workers:
+              switch:
+                  - condition: ${not ("num_workers" in params.dataflow)}
+                    assign:
+                      - params.dataflow.num_workers: 0
+          - service_account_email:
+              switch:
+                  - condition: ${not ("service_account_email" in params.dataflow)}
+                    assign:
+                      - params.dataflow.service_account_email: ""
+          - job_name_prefix:
+              switch:
+              - condition: ${not ("job_name_prefix" in params.dataflow)}
+                assign:
+                - params.dataflow.job_name_prefix: "bigtable-vectors-export"
+          - output_file_prefix:
+              switch:
+              - condition: ${not ("output_file_prefix" in params.gcs)}
+                assign:
+                - params.gcs.output_file_prefix: "vector-embeddings"
+    - initialize_dataflow_job_name_and_gcs_folder:
+        assign:
+        - bigtable_export_job_name: ${params.dataflow.job_name_prefix + "_" + current_timestamp}
+        - embeddings_output_folder: ${params.gcs.output_folder + "embeddings-" + current_timestamp + "/"}
+        - dataflow_template_path: ${"gs://dataflow-templates-us-central1/latest/Cloud_Bigtable_to_GCS_Json"}
+    - log_gcs_folder_path:
+        call: sys.log
+        args:
+          text: ${"Exporting Vector Embeddings to gcs folder - " + embeddings_output_folder}
+    - dataflow_bigtable_export_job:
+        call: googleapis.dataflow.v1b3.projects.locations.templates.create
+        args:
+          projectId: ${params.dataflow.project_id}
+          location: ${params.dataflow.location}
+          body:
+            jobName: ${bigtable_export_job_name}
+            parameters:
+              bigtableProjectId: ${params.bigtable.project_id}
+              bigtableInstanceId: ${params.bigtable.instance_id}
+              bigtableTableId: ${params.bigtable.table_name}
+              columnsAliases: ${params.bigtable.columns_aliases}
+              outputDirectory: ${embeddings_output_folder}
+              filenamePrefix: ${params.gcs.output_file_prefix}
+              userOption: "FLATTEN"
+            environment:
+              tempLocation: ${params.dataflow.temp_location}
+              numWorkers: ${params.dataflow.num_workers}
+              maxWorkers: ${params.dataflow.max_workers}
+              serviceAccountEmail: ${params.dataflow.service_account_email}
+            gcsPath: ${dataflow_template_path}
+          connector_params:
+              timeout: 43200
+        result: dataflow_bigtable_export_job_result
+    - set_dataflow_bigtable_export_job_id:
+        assign:
+          - dataflow_export_job_id: ${dataflow_bigtable_export_job_result.id}
+    - log_dataflow_job:
+        call: sys.log
+        args:
+          text: ${"Export of data to gcs complete. You can view the job details at " + "https://console.cloud.google.com/dataflow/jobs/" + params.dataflow.location + "/" + dataflow_export_job_id}
+    - trigger_vector_search_index_update:
+        try:
+          call: http.request
+          args:
+              url: ${"https://" + params.vertex.location + "-aiplatform.googleapis.com/v1/projects/" + params.vertex.project_id + "/locations/" + params.vertex.location + "/indexes/" + params.vertex.vector_search_index_id}
+              method: PATCH
+              body:
+                metadata:
+                  contentsDeltaUri: ${embeddings_output_folder}
+                  isCompleteOverwrite: true
+              auth:
+                type: OAuth2
+          result: index_update_response
+        retry: ${http.default_retry_non_idempotent}
+    - set_vector_search_index_update_operation:
+        assign:
+          - vector_search_operation: ${index_update_response.body.name}
+          - vector_search_index_update_completed: False
+    - log_vector_search_operation:
+        call: sys.log
+        args:
+          text: ${"Vector search index update operation started - " + vector_search_operation}
+    - polling_vector_search_index_update_operation:
+        try:
+          steps:
+            - index_update_lro_url:
+                try:
+                  call: http.request
+                  args:
+                    url: ${"https://" + params.vertex.location + "-aiplatform.googleapis.com/v1/" + vector_search_operation}
+                    method: GET
+                    auth:
+                      type: OAuth2
+                  result: index_update_operation_response
+                retry: ${http.default_retry}
+            - index_state:
+                switch:
+                    - condition: ${"done" in index_update_operation_response.body}
+                      assign:
+                        - vector_search_index_update_completed:  ${index_update_operation_response.body.done}
+            - log_index_state:
+                switch:
+                      - condition: ${vector_search_index_update_completed != true}
+                        call: sys.log
+                        args:
+                          text: ${"Vertex Vector Search Index update is in progress."}
+                      - condition: ${vector_search_index_update_completed == true}
+                        call: sys.log
+                        args:
+                          text: ${"Vertex Vector Search Index update completed."}
+            - induce_backoff_retry_if_index_build_not_completed:
+                switch:
+                  - condition: ${vector_search_index_update_completed != true}
+                    raise: False
+
+        retry:
+          predicate: ${job_state_predicate}
+          max_retries: 1000
+          backoff:
+            initial_delay: 300
+            max_delay: 1800
+            multiplier: 1.25
+    - workflow_output:
+        switch:
+            - condition: ${"error" in index_update_operation_response.body}
+              return: ${index_update_operation_response.body.error}
+            - condition: ${"response" in index_update_operation_response.body}
+              return: ${index_update_operation_response.body.response}
+
+job_state_predicate:
+  params: [vector_search_index_update_completed]
+  steps:
+    - condition_to_retry:
+        switch:
+          - condition: ${vector_search_index_update_completed != true}
+            return: True # do retry
+    - otherwise:
+        return: False # stop retrying

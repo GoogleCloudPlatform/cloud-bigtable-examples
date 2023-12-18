@@ -1,0 +1,4 @@
+google-cloud-bigtable==2.22.0
+google-cloud-workflows==1.12.1
+google-cloud-aiplatform
+pytest
