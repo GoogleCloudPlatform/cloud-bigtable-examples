@@ -13,7 +13,14 @@
     "instance_id": "{{instance_id}}",
     "database_id": "{{database_id}}",
     "table_name": "{{table_name}}",
-    "columns_aliases": "rowkey;id,cf:embeddings;embedding,cf:restricts;restricts,cf:crowding_tag;crowding_tag"
+    "id_column": "_key",
+    "embedding_column": "cf:embeddings",
+    "crowding_tag_column": "cf:crowding_tag",
+    "allow_restricts_mappings": "cf:allow",
+    "deny_restricts_mappings": "cf:deny",
+    "int_numeric_restricts_mappings": "cf:int",
+    "float_numeric_restricts_mappings": "cf:float",
+    "double_numeric_restricts_mappings": "cf:double"
   },
   "vertex": {
     "vector_search_index_id": "{{vector_search_index_id}}"

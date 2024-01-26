@@ -1,6 +1,5 @@
 import nox
 
-
 DEFAULT_PYTHON_VERSION = "3.11"
 BLACK_VERSION = "black==22.3.0"
 LINT_PATHS = ["system", "noxfile.py"]

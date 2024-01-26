@@ -12,15 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from google.cloud import bigtable
+import json
+import logging
+import os
+import random
+import string
+import struct
+import threading
+import time
+
+import pytest
+from google.cloud import aiplatform_v1beta1, bigtable, workflows_v1
 from google.cloud.workflows import executions_v1
 from google.cloud.workflows.executions_v1 import Execution
-from google.cloud import workflows_v1
-import random, json, string, time, pytest, os
-import logging
-import threading
-from google.cloud import aiplatform_v1beta1
-
 
 # Configure Variables
 PROJECT_ID = "span-cloud-testing"
@@ -113,7 +117,13 @@ def generate_vector_data(number_of_rows, vector_dimension, table):
         row = table.row(str.encode("row_key_{}".format(i)))
 
         # Generating random vector embeddings
-        row.set_cell("cf", "embeddings", str.encode(json.dumps([random.uniform(0, 1) for _ in range(vector_dimension)])))
+        row.set_cell(
+            "cf",
+            "embeddings",
+            str.encode(
+                json.dumps([random.uniform(0, 1) for _ in range(vector_dimension)])
+            ),
+        )
 
         # Generate a random sentence with up to 200 words
         max_words = 200
@@ -123,18 +133,19 @@ def generate_vector_data(number_of_rows, vector_dimension, table):
                 for _ in range(random.randint(1, 10))
             )
             for _ in range(random.randint(1, max_words))
-        )        
+        )
         row.set_cell("cf", "text", str.encode(random_sentence))
 
-
         # Restricts
-        restricts = {"allow_list": ["even"], "namespace": "class"}
-        row.set_cell("cf", "restricts", str.encode(json.dumps(restricts)))
-
+        row.set_cell("cf", "allow", str.encode("thing 1"))
+        row.set_cell("cf", "deny", str.encode("thing 2"))
+        row.set_cell("cf", "int", int.to_bytes(5, byteorder="big"))
+        row.set_cell("cf", "float", struct.pack("f", 3.14))
+        row.set_cell("cf", "double", struct.pack("d", 2.71))
 
         crowding_tag = b"a" if i % 2 == 0 else b"b"
 
-        row.set_cell("cf", "crowding_tag", crowding_tag)
+        row.set_cell("cf", "crowding_tag", str.encode(crowding_tag))
 
         rows.append(row)
 
@@ -166,7 +177,9 @@ def setup_bigtable(project_id, instance_id, table_name):
     rows = generate_vector_data(NUMBER_OF_ROWS_IN_BIGTABLE, VECTOR_DIMENSION, table)
 
     logger.info(
-        "Inserting generated vector embeddings in Bigtable Table: {}.".format(table_name)
+        "Inserting generated vector embeddings in Bigtable Table: {}.".format(
+            table_name
+        )
     )
     batcher = table.mutations_batcher()
 
@@ -176,7 +189,9 @@ def setup_bigtable(project_id, instance_id, table_name):
     batcher.flush()
 
     logger.info(
-        "Inserted {} records in table {}.".format(NUMBER_OF_ROWS_IN_BIGTABLE, table_name)
+        "Inserted {} records in table {}.".format(
+            NUMBER_OF_ROWS_IN_BIGTABLE, table_name
+        )
     )
 
     return rows
@@ -455,9 +470,7 @@ def bigtable_vertex_vector_search_data():
 
     # 1 Setting up Bigtable
     try:
-        rows = setup_bigtable(
-            PROJECT_ID, BIGTABLE_INSTANCE_ID, BIGTABLE_TABLE_NAME
-        )
+        rows = setup_bigtable(PROJECT_ID, BIGTABLE_INSTANCE_ID, BIGTABLE_TABLE_NAME)
     except Exception as e:
         logger.error(
             "An exception occurred while setting up Bigtable table: %s",
@@ -477,9 +490,7 @@ def bigtable_vertex_vector_search_data():
             exc_info=True,
         )
 
-    cleanup_bigtable_resources(
-        PROJECT_ID, BIGTABLE_INSTANCE_ID, BIGTABLE_TABLE_NAME
-    )
+    cleanup_bigtable_resources(PROJECT_ID, BIGTABLE_INSTANCE_ID, BIGTABLE_TABLE_NAME)
 
 
 def compare_float_lists(list1, list2, tolerance=1e-5):

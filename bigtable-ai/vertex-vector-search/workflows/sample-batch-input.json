@@ -11,7 +11,15 @@
     "instance_id": "<Bigtable Instance Id>",
     "database_id": "<Bigtable Database Id>",
     "table_name": "<Bigtable Table Name>",
-    "columns_aliases": "<Columns to Export from Bigtable Table>"
+    "columns_aliases": "<Columns to Export from Bigtable Table>",
+    "id_column": "<The fully qualified column name where the ID is stored. In the format cf:col or _key>",
+    "embedding_column": "<The fully qualified column name where the embeddings are stored. In the format cf:col or _key>",
+    "crowding_tag_column": "<The fully qualified column name where the crowding tag is stored. In the format cf:col or _key>",
+    "allow_restricts_mappings": "<Columns to Export from Bigtable Table to allow restricts>",
+    "deny_restricts_mappings": "<Columns to Export from Bigtable Table to deny restricts>",
+    "int_numeric_restricts_mappings": "<Columns to Export from Bigtable Table to int numeric restricts>",
+    "float_numeric_restricts_mappings": "<Columns to Export from Bigtable Table to float numeric restricts>",
+    "double_numeric_restricts_mappings": "<Columns to Export from Bigtable Table to double numeric restricts>"
   },
   "vertex": {
     "vector_search_index_id": "<Vertex Vector Search Index ID>"

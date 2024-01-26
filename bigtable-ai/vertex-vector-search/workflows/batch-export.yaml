@@ -90,7 +90,7 @@ main:
         assign:
         - bigtable_export_job_name: ${params.dataflow.job_name_prefix + "_" + current_timestamp}
         - embeddings_output_folder: ${params.gcs.output_folder + "embeddings-" + current_timestamp + "/"}
-        - dataflow_template_path: ${"gs://dataflow-templates-us-central1/latest/Cloud_Bigtable_to_GCS_Json"}
+        - dataflow_template_path: ${"gs://dataflow-templates-us-central1/latest/Cloud_Bigtable_to_Vector_Embeddings"}
     - log_gcs_folder_path:
         call: sys.log
         args:
@@ -105,8 +105,15 @@ main:
             parameters:
               bigtableProjectId: ${params.bigtable.project_id}
               bigtableInstanceId: ${params.bigtable.instance_id}
-              bigtableTableId: ${params.bigtable.table_name}
-              columnsAliases: ${params.bigtable.columns_aliases}
+              bigtableTableId: ${params.bigtable.table_name}              
+              idColumn: ${params.bigtable.id_column}
+              embeddingColumn: ${params.bigtable.embedding_column}
+              crowdingTagColumn: ${params.bigtable.crowding_tag_column}
+              allowRestrictsMappings: ${params.bigtable.allow_restricts_mappings}
+              denyRestrictsMappings: ${params.bigtable.deny_restricts_mappings}
+              intNumericRestrictsMappings: ${params.bigtable.int_numeric_restricts_mappings}
+              floatNumericRestrictsMappings: ${params.bigtable.float_numeric_restricts_mappings}
+              doubleNumericRestrictsMappings: ${params.bigtable.double_numeric_restricts_mappings}
               outputDirectory: ${embeddings_output_folder}
               filenamePrefix: ${params.gcs.output_file_prefix}
               userOption: "FLATTEN"
