@@ -197,24 +197,20 @@ resources from different projects.
 
 ##### Bigtable Parameters
 
-Enter the `instance_id`, and `table_name`. The
-`columns_aliases` parameter is used to list the columns to export as well as
-which
-[Vector Search field](https://cloud.google.com/vertex-ai/docs/vector-search/setup/format-structure#json)
-the column should map to if the column name differs from the field name expected by
-Vector Search. The `id` and `embedding` fields are required in the update index
-request. The `restricts` and `crowding_tag` fields are optional.
-
-The format of the `columns_aliases` parameter is a comma separated list of
+Enter the `instance_id` and `table_name`. 
+The following parameters: `id_column`, `embedding_column`, `crowding_tag_column`
+help map which column in Bigtable (cf:col or `_key` for rowkey) to map into id, embedding and crowding_tag respecively.
+`id_column` and `embedding_column` are mandatory.
+In addition, `allow_restricts_mappings`, `deny_restricts_mappings`, `int_numeric_restricts_mappings`, `float_numeric_restricts_mappings` and `double_numeric_restricts_mappings` are mapping which columns to map to allow, deny, numeric int, float and double restricts respectively.
+The format of the `.*_restricts_mappings` parameter is a comma separated list of
 fields in the following form:
 
-`<bigtable_column_family>:<bigtable_column_name>;<vertex_field_name>`
+`<bigtable_column_family>:<bigtable_column_name>-><vertex_field_name>`
 
-For example, if the Bigtable table contains the key `rowkey`, and the column 
-family `cf` contains the columns `embedding`, and `crowding`, the `columns_aliases`
+For example, if the Bigtable table contains the column family `cf` and in it columns called `color` and `shape` that you wish to add to allow restricts, the `allow_restricts_mappings`
 parameter needs to contain the following columns and aliases:
 
-`rowkey;id,cf:embedding;embedding,cf:crowding;crowding_tag`
+`cf:color->color,cf:shape->shape`
 
 ##### Dataflow Parameters
 
@@ -308,7 +304,7 @@ updating the index.
 
 When defining your Bigtable schema, you must have columns that will contain the
 data for the required arguments. You
-need to alias in the Cloud Workflow `columns_aliases` parameter as described
+need to alias in the Cloud Workflow parameters as described
 in [Bigtable Parameters](#bigtable-parameters).
 
 The data type for each of the columns in the Bigtable schema should be as shown
@@ -320,7 +316,8 @@ below.
 * `crowding_tag`: String.
 
 **Note**: The table may contain columns that are not relevant for the export and
-sync workflow. The columns not specified in the `columns_aliases` parameter
+sync workflow. The columns not specified in the `id_column`, `embedding_column`,
+`crowding_tag_column` and the various `.*_restricts_mappings` parameters
 are ignored.
 
 
