@@ -66,12 +66,12 @@ console_handler.setFormatter(logging.Formatter(log_format, log_datefmt))
 logger.addHandler(console_handler)
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def project_id() -> Iterator[str]:
     yield get_env_var("PROJECT_ID", "ID of the Cloud Bigtable project")
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def instance_id() -> Iterator[str]:
     yield get_env_var("INSTANCE_ID", "ID of the Cloud Bigtable instance")
 
@@ -124,27 +124,15 @@ def generate_vector_data(number_of_rows, vector_dimension, table):
     rows = []
 
     for i in range(number_of_rows):
-        row = table.row(str.encode("row_key_{}".format(i)))
+        row = table.direct_row(str.encode(f"row_key_{i}"))
 
         # Generating random vector embeddings
+        embeddings = [random.uniform(0, 1) for _ in range(100)]
         row.set_cell(
             "cf",
             "embeddings",
-            str.encode(
-                json.dumps([random.uniform(0, 1) for _ in range(vector_dimension)])
-            ),
+            struct.pack("!I" + "d" * len(embeddings), len(embeddings), *embeddings),
         )
-
-        # Generate a random sentence with up to 200 words
-        max_words = 200
-        random_sentence = " ".join(
-            "".join(
-                random.choice(string.ascii_lowercase)
-                for _ in range(random.randint(1, 10))
-            )
-            for _ in range(random.randint(1, max_words))
-        )
-        row.set_cell("cf", "text", str.encode(random_sentence))
 
         # Restricts
         row.set_cell("cf", "allow", str.encode("thing 1"))
@@ -153,9 +141,8 @@ def generate_vector_data(number_of_rows, vector_dimension, table):
         row.set_cell("cf", "float", struct.pack("f", 3.14))
         row.set_cell("cf", "double", struct.pack("d", 2.71))
 
-        crowding_tag = b"a" if i % 2 == 0 else b"b"
-
-        row.set_cell("cf", "crowding_tag", str.encode(crowding_tag))
+        # Crowding tag
+        row.set_cell("cf", "crowding_tag", b"a" if i % 2 == 0 else b"b")
 
         rows.append(row)
 
@@ -180,7 +167,8 @@ def setup_bigtable(project_id, instance_id, table_name):
 
     client = bigtable.Client(admin=True, project=project_id)
     instance = client.instance(instance_id)
-    table = instance.table(table_name).create(
+    table = instance.table(table_name)
+    table.create(
         column_families={
             "cf": column_family.MaxVersionsGCRule(1),
         }
@@ -437,7 +425,7 @@ def cleanup_bigtable_resources(project_id, instance_id, table_name):
     """
     client = bigtable.Client(admin=True, project=project_id)
     instance = client.instance(instance_id)
-    table = instance.table(table_name).delete()
+    instance.table(table_name).delete()
 
     logger.info("Dropped Bigtable table with name: {}.".format(table_name))
 
@@ -569,7 +557,7 @@ def read_and_compare_vertex_data(
 
     # Dictionary from id -> row
     bigtable_vertex_vector_search_data_dict = {
-        item[0]: item for item in bigtable_vertex_vector_search_data
+        item.row_key: item for item in bigtable_vertex_vector_search_data
     }
 
     data_point_id_list = list(bigtable_vertex_vector_search_data_dict.keys())

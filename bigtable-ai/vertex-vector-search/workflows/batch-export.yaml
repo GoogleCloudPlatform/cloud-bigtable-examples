@@ -116,7 +116,6 @@ main:
               doubleNumericRestrictsMappings: ${params.bigtable.double_numeric_restricts_mappings}
               outputDirectory: ${embeddings_output_folder}
               filenamePrefix: ${params.gcs.output_file_prefix}
-              userOption: "FLATTEN"
             environment:
               tempLocation: ${params.dataflow.temp_location}
               numWorkers: ${params.dataflow.num_workers}
