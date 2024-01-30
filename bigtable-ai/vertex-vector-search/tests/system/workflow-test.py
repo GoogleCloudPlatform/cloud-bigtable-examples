@@ -35,7 +35,7 @@ BIGTABLE_TABLE_NAME = "test_bigtable_vertex_integration_" + str(
 WORKFLOW_NAME = "test-bigtable-vvi-" + str(random.randint(10000, 99999))
 WORKFLOW_LOCATION = "us-central1"
 VERTEX_VECTOR_SEARCH_INDEX_ENDPOINT = (
-    "998879972.us-central1-545418958905.vdb.vertexai.goog"
+    "1597640674.us-central1-818418350420.vdb.vertexai.goog"
 )
 VERTEX_VECTOR_SEARCH_INDEX = "3193900958782324736"
 
