@@ -20,15 +20,15 @@ import string
 import struct
 import threading
 import time
+from typing import Iterator
 
 import pytest
 from google.cloud import aiplatform_v1beta1, bigtable, workflows_v1
+from google.cloud.bigtable import column_family
 from google.cloud.workflows import executions_v1
 from google.cloud.workflows.executions_v1 import Execution
 
 # Configure Variables
-PROJECT_ID = "span-cloud-testing"
-BIGTABLE_INSTANCE_ID = "vertex-vector-search-tests"
 BIGTABLE_TABLE_NAME = "test_bigtable_vertex_integration_" + str(
     random.randint(10000, 99999)
 )
@@ -66,10 +66,20 @@ console_handler.setFormatter(logging.Formatter(log_format, log_datefmt))
 logger.addHandler(console_handler)
 
 
+@pytest.fixture
+def project_id() -> Iterator[str]:
+    yield get_env_var("PROJECT_ID", "ID of the Cloud Bigtable project")
+
+
+@pytest.fixture
+def instance_id() -> Iterator[str]:
+    yield get_env_var("INSTANCE_ID", "ID of the Cloud Bigtable instance")
+
+
 @pytest.fixture(scope="module")
-def setup_workflow():
+def setup_workflow(project_id: str):
     # Deploy Workflow
-    deploy_workflow(PROJECT_ID, WORKFLOW_LOCATION, WORKFLOW_NAME)
+    deploy_workflow(project_id, WORKFLOW_LOCATION, WORKFLOW_NAME)
 
     yield
 
@@ -77,7 +87,7 @@ def setup_workflow():
 
     workflow_full_path = (
         "projects/{project}/locations/{location}/workflows/{workflow_name}".format(
-            project=PROJECT_ID, location=WORKFLOW_LOCATION, workflow_name=WORKFLOW_NAME
+            project=project_id, location=WORKFLOW_LOCATION, workflow_name=WORKFLOW_NAME
         )
     )
 
@@ -170,7 +180,11 @@ def setup_bigtable(project_id, instance_id, table_name):
 
     client = bigtable.Client(admin=True, project=project_id)
     instance = client.instance(instance_id)
-    table = instance.table(table_name).create().column_family("cf")
+    table = instance.table(table_name).create(
+        column_families={
+            "cf": column_family.MaxVersionsGCRule(1),
+        }
+    )
 
     logger.info("Created {} table on instance {}.".format(table_name, instance_id))
 
@@ -456,7 +470,7 @@ def read_index_datapoints(api_endpoint, keys):
 
 
 @pytest.fixture
-def bigtable_vertex_vector_search_data():
+def bigtable_vertex_vector_search_data(project_id: str, instance_id: str):
     """
     Setting up Bigtable Table with vector embeddings to test the workflow.
     The function does following operations:
@@ -470,7 +484,7 @@ def bigtable_vertex_vector_search_data():
 
     # 1 Setting up Bigtable
     try:
-        rows = setup_bigtable(PROJECT_ID, BIGTABLE_INSTANCE_ID, BIGTABLE_TABLE_NAME)
+        rows = setup_bigtable(project_id, instance_id, BIGTABLE_TABLE_NAME)
     except Exception as e:
         logger.error(
             "An exception occurred while setting up Bigtable table: %s",
@@ -490,7 +504,7 @@ def bigtable_vertex_vector_search_data():
             exc_info=True,
         )
 
-    cleanup_bigtable_resources(PROJECT_ID, BIGTABLE_INSTANCE_ID, BIGTABLE_TABLE_NAME)
+    cleanup_bigtable_resources(project_id, instance_id, BIGTABLE_TABLE_NAME)
 
 
 def compare_float_lists(list1, list2, tolerance=1e-5):
@@ -584,7 +598,7 @@ def read_and_compare_vertex_data(
 
 
 def test_bigtable_vertex_vector_search_integration(
-    setup_workflow, bigtable_vertex_vector_search_data
+    project_id, instance_id, setup_workflow, bigtable_vertex_vector_search_data
 ):
     """
     Tests integration between Bigtable and Vertex Vector Search.
@@ -594,11 +608,11 @@ def test_bigtable_vertex_vector_search_integration(
     """
     # Execute Workflow
     sync_execute_workflow(
-        PROJECT_ID,
+        project_id,
         WORKFLOW_LOCATION,
         WORKFLOW_NAME,
         {
-            "instance_id": BIGTABLE_INSTANCE_ID,
+            "instance_id": instance_id,
             "table_name": BIGTABLE_TABLE_NAME,
         },
         VERTEX_VECTOR_SEARCH_INDEX,
@@ -657,7 +671,7 @@ def setup_and_execute_workflow(
     )
 
 
-def test_concurrent_workflow_execution(setup_workflow):
+def test_concurrent_workflow_execution(project_id, instance_id, setup_workflow):
     """
     Test the concurrent execution of workflow in separate threads.
 
@@ -681,11 +695,11 @@ def test_concurrent_workflow_execution(setup_workflow):
     thread_1 = threading.Thread(
         target=setup_and_execute_workflow,
         args=(
-            PROJECT_ID,
+            project_id,
             WORKFLOW_LOCATION,
             WORKFLOW_NAME,
             {
-                "instance_id": BIGTABLE_INSTANCE_ID,
+                "instance_id": instance_id,
                 "table_name": BIGTABLE_TABLE_NAME + "_first",
             },
             VERTEX_VECTOR_SEARCH_INDEX,
@@ -701,11 +715,11 @@ def test_concurrent_workflow_execution(setup_workflow):
     thread_2 = threading.Thread(
         target=setup_and_execute_workflow,
         args=(
-            PROJECT_ID,
+            project_id,
             WORKFLOW_LOCATION,
             WORKFLOW_NAME,
             {
-                "instance_id": BIGTABLE_INSTANCE_ID,
+                "instance_id": instance_id,
                 "table_name": BIGTABLE_TABLE_NAME + "_second",
             },
             VERTEX_VECTOR_SEARCH_INDEX,
@@ -719,3 +733,10 @@ def test_concurrent_workflow_execution(setup_workflow):
 
     # Vertex should have data points which were latest
     read_and_compare_vertex_data(result_list2[0], VERTEX_VECTOR_SEARCH_INDEX_ENDPOINT)
+
+
+def get_env_var(key: str, desc: str) -> str:
+    v = os.environ.get(key)
+    if v is None:
+        raise ValueError(f"Must set env var {key} to: {desc}")
+    return v
