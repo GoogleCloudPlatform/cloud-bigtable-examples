@@ -37,7 +37,7 @@ WORKFLOW_LOCATION = "us-central1"
 VERTEX_VECTOR_SEARCH_INDEX_ENDPOINT = (
     "1597640674.us-central1-818418350420.vdb.vertexai.goog"
 )
-VERTEX_VECTOR_SEARCH_INDEX = "3193900958782324736"
+VERTEX_VECTOR_SEARCH_INDEX = "8834272463970893824"
 
 # Get the directory where this test file is located
 THIS_FILE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
@@ -127,19 +127,19 @@ def generate_vector_data(number_of_rows, vector_dimension, table):
         row = table.direct_row(str.encode(f"row_key_{i}"))
 
         # Generating random vector embeddings
-        embeddings = [random.uniform(0, 1) for _ in range(100)]
+        embeddings = [random.uniform(0, 1) for _ in range(vector_dimension)]
         row.set_cell(
             "cf",
             "embeddings",
-            struct.pack("!I" + "d" * len(embeddings), len(embeddings), *embeddings),
+            struct.pack(">" + "f" * len(embeddings), *embeddings),
         )
 
         # Restricts
         row.set_cell("cf", "allow", str.encode("thing 1"))
         row.set_cell("cf", "deny", str.encode("thing 2"))
-        row.set_cell("cf", "int", int.to_bytes(5, byteorder="big"))
-        row.set_cell("cf", "float", struct.pack("f", 3.14))
-        row.set_cell("cf", "double", struct.pack("d", 2.71))
+        row.set_cell("cf", "int", (5).to_bytes(8, byteorder="big"))
+        row.set_cell("cf", "float", struct.pack(">f", 3.14))
+        row.set_cell("cf", "double", struct.pack(">d", 2.71))
 
         # Crowding tag
         row.set_cell("cf", "crowding_tag", b"a" if i % 2 == 0 else b"b")

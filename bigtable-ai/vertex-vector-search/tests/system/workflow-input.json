@@ -3,24 +3,23 @@
   "location": "{{location}}",
   "dataflow": {
     "job_name_prefix": "test-bigtable-vvs-integration",
-    "temp_location": "gs://bigtable-vertex-vector-search-test-suite/temp/batch-vector-embeddings/"
+    "temp_location": "gs://rongal-test-vertexme/temp/batch-vector-embeddings/"
   },
   "gcs": {
-    "output_folder": "gs://bigtable-vertex-vector-search-test-suite/batch-vector-embeddings/",
+    "output_folder": "gs://rongal-test-vertexme/",
     "output_file_prefix": "test-vector-embedding-"
   },
   "bigtable": {
     "instance_id": "{{instance_id}}",
-    "database_id": "{{database_id}}",
     "table_name": "{{table_name}}",
-    "id_column": "_key",
+    "id_column": "row_key",
     "embedding_column": "cf:embeddings",
     "crowding_tag_column": "cf:crowding_tag",
-    "allow_restricts_mappings": "cf:allow",
-    "deny_restricts_mappings": "cf:deny",
-    "int_numeric_restricts_mappings": "cf:int",
-    "float_numeric_restricts_mappings": "cf:float",
-    "double_numeric_restricts_mappings": "cf:double"
+    "allow_restricts_mappings": "cf:allow;allow",
+    "deny_restricts_mappings": "cf:deny;deny",
+    "int_numeric_restricts_mappings": "cf:int;int",
+    "float_numeric_restricts_mappings": "cf:float;float",
+    "double_numeric_restricts_mappings": "cf:double;double"
   },
   "vertex": {
     "vector_search_index_id": "{{vector_search_index_id}}"
