@@ -121,34 +121,49 @@ def generate_vector_data(number_of_rows, vector_dimension, table):
         )
     )
 
+    rows_dict = dict()
     rows = []
 
     for i in range(number_of_rows):
-        row = table.direct_row(str.encode(f"row_key_{i}"))
-
         # Generating random vector embeddings
         embeddings = [random.uniform(0, 1) for _ in range(vector_dimension)]
+
+        rowEntry = {
+            "row_key": f"row_key_{i}",
+            "embeddings": embeddings,
+            "allow": "thing 1",
+            "deny": "thing 2",
+            "int": 20938472,
+            "float": 3.14,
+            "double": 2.71,
+            "crowding_tag": "a" if i % 2 == 0 else "b",
+        }
+
+        row = table.direct_row(str.encode(rowEntry["row_key"]))
         row.set_cell(
             "cf",
             "embeddings",
-            struct.pack(">" + "f" * len(embeddings), *embeddings),
+            struct.pack(
+                ">" + "f" * len(rowEntry["embeddings"]), *rowEntry["embeddings"]
+            ),
         )
 
         # Restricts
-        row.set_cell("cf", "allow", str.encode("thing 1"))
-        row.set_cell("cf", "deny", str.encode("thing 2"))
-        row.set_cell("cf", "int", struct.pack(">i", 5))
-        row.set_cell("cf", "float", struct.pack(">f", 3.14))
-        row.set_cell("cf", "double", struct.pack(">d", 2.71))
+        row.set_cell("cf", "allow", str.encode(rowEntry["allow"]))
+        row.set_cell("cf", "deny", str.encode(rowEntry["deny"]))
+        row.set_cell("cf", "int", rowEntry["int"])
+        row.set_cell("cf", "float", struct.pack(">f", rowEntry["float"]))
+        row.set_cell("cf", "double", struct.pack(">d", rowEntry["double"]))
 
         # Crowding tag
-        row.set_cell("cf", "crowding_tag", b"a" if i % 2 == 0 else b"b")
+        row.set_cell("cf", "crowding_tag", str.encode(rowEntry["crowding_tag"]))
 
+        rows_dict[rowEntry["row_key"]] = rowEntry
         rows.append(row)
 
     logger.info("Vector Embeddings generated.")
 
-    return rows
+    return rows, rows_dict
 
 
 def setup_bigtable(project_id, instance_id, table_name):
@@ -176,7 +191,9 @@ def setup_bigtable(project_id, instance_id, table_name):
 
     logger.info("Created {} table on instance {}.".format(table_name, instance_id))
 
-    rows = generate_vector_data(NUMBER_OF_ROWS_IN_BIGTABLE, VECTOR_DIMENSION, table)
+    rows, rows_dict = generate_vector_data(
+        NUMBER_OF_ROWS_IN_BIGTABLE, VECTOR_DIMENSION, table
+    )
 
     logger.info(
         "Inserting generated vector embeddings in Bigtable Table: {}.".format(
@@ -196,7 +213,7 @@ def setup_bigtable(project_id, instance_id, table_name):
         )
     )
 
-    return rows
+    return rows_dict
 
 
 def deploy_workflow(project, location, workflow_name):
@@ -425,7 +442,7 @@ def cleanup_bigtable_resources(project_id, instance_id, table_name):
     """
     client = bigtable.Client(admin=True, project=project_id)
     instance = client.instance(instance_id)
-    instance.table(table_name).delete()
+    # instance.table(table_name).delete()
 
     logger.info("Dropped Bigtable table with name: {}.".format(table_name))
 
@@ -447,7 +464,8 @@ def read_index_datapoints(api_endpoint, keys):
 
     # Initialize request argument(s)
     request = aiplatform_v1beta1.ReadIndexDatapointsRequest(
-        deployed_index_id="bigtable_vector_batch_inte_1706731206928", ids=keys
+        deployed_index_id="bigtable_vector_batch_inte_1706731206928",
+        ids=keys,
     )
 
     # Make the request
@@ -554,41 +572,26 @@ def read_and_compare_vertex_data(
     Returns:
         None: This function does not return a value but raises assertions if comparisons fail.
     """
-
-    # Dictionary from id -> row
-    print("bigtable_vertex_vector_search_data")
-    print(bigtable_vertex_vector_search_data)
-    bigtable_vertex_vector_search_data_dict = {
-        item.row_key: item for item in bigtable_vertex_vector_search_data
-    }
-    print("bigtable_vertex_vector_search_data_dict")
-    print(bigtable_vertex_vector_search_data_dict)
-
-    data_point_id_list = list(bigtable_vertex_vector_search_data_dict.keys())
-    print("data_point_id_list")
-    print(data_point_id_list)
+    data_point_id_list = list(bigtable_vertex_vector_search_data.keys())
     data_point_id_list = [
         # Convert keys to strings
-        str(key)
+        key
         for key in data_point_id_list
     ]
-    print("data_point_id_list")
-    print(data_point_id_list)
     # Fetching data from Vertex Index
     vertex_vector_search_data = read_index_datapoints(
         vertex_index_end_point_url, data_point_id_list
     )
-    print("vertex_vector_search_data")
-    print(vertex_vector_search_data)
 
     for data_point in vertex_vector_search_data.datapoints:
-        actual_data = bigtable_vertex_vector_search_data_dict.get(
-            int(data_point.datapoint_id), None
+        actual_data = bigtable_vertex_vector_search_data.get(
+            data_point.datapoint_id, None
         )
 
         assert actual_data is not None
 
-        actual_vector_embeddings = actual_data[1]
+        print(actual_data)
+        actual_vector_embeddings = actual_data["embeddings"]
         vertex_index_vector_embeddings = list(data_point.feature_vector)
 
         assert compare_float_lists(
@@ -620,7 +623,6 @@ def test_bigtable_vertex_vector_search_integration(
     read_and_compare_vertex_data(
         bigtable_vertex_vector_search_data, VERTEX_VECTOR_SEARCH_INDEX_ENDPOINT
     )
-
 
 def setup_and_execute_workflow(
     project, location, workflow_name, bigtable_arguments, vertex_index_id, result_list
@@ -670,7 +672,7 @@ def setup_and_execute_workflow(
     )
 
 
-def dont_test_concurrent_workflow_execution(project_id, instance_id, setup_workflow):
+def test_concurrent_workflow_execution(project_id, instance_id, setup_workflow):
     """
     Test the concurrent execution of workflow in separate threads.
 
