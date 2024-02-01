@@ -442,7 +442,7 @@ def cleanup_bigtable_resources(project_id, instance_id, table_name):
     """
     client = bigtable.Client(admin=True, project=project_id)
     instance = client.instance(instance_id)
-    # instance.table(table_name).delete()
+    instance.table(table_name).delete()
 
     logger.info("Dropped Bigtable table with name: {}.".format(table_name))
 
@@ -623,6 +623,7 @@ def test_bigtable_vertex_vector_search_integration(
     read_and_compare_vertex_data(
         bigtable_vertex_vector_search_data, VERTEX_VECTOR_SEARCH_INDEX_ENDPOINT
     )
+
 
 def setup_and_execute_workflow(
     project, location, workflow_name, bigtable_arguments, vertex_index_id, result_list
