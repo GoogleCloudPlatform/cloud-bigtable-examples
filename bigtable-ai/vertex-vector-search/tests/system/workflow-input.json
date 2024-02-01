@@ -3,10 +3,10 @@
   "location": "{{location}}",
   "dataflow": {
     "job_name_prefix": "test-bigtable-vvs-integration",
-    "temp_location": "gs://rongal-test-vertexme/temp/batch-vector-embeddings/"
+    "temp_location": "gs://bigtable-vertex-vector-search-test-suite/temp/batch-vector-embeddings/"
   },
   "gcs": {
-    "output_folder": "gs://rongal-test-vertexme/",
+    "output_folder": "gs://bigtable-vertex-vector-search-test-suite/batch-vector-embeddings/",
     "output_file_prefix": "test-vector-embedding-"
   },
   "bigtable": {

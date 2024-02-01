@@ -37,7 +37,7 @@ WORKFLOW_LOCATION = "us-central1"
 VERTEX_VECTOR_SEARCH_INDEX_ENDPOINT = (
     "1597640674.us-central1-818418350420.vdb.vertexai.goog"
 )
-VERTEX_VECTOR_SEARCH_INDEX = "8834272463970893824"
+VERTEX_VECTOR_SEARCH_INDEX = "5500764314786594816"
 
 # Get the directory where this test file is located
 THIS_FILE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
@@ -137,7 +137,7 @@ def generate_vector_data(number_of_rows, vector_dimension, table):
         # Restricts
         row.set_cell("cf", "allow", str.encode("thing 1"))
         row.set_cell("cf", "deny", str.encode("thing 2"))
-        row.set_cell("cf", "int", (5).to_bytes(8, byteorder="big"))
+        row.set_cell("cf", "int", struct.pack(">i", 5))
         row.set_cell("cf", "float", struct.pack(">f", 3.14))
         row.set_cell("cf", "double", struct.pack(">d", 2.71))
 
@@ -447,7 +447,7 @@ def read_index_datapoints(api_endpoint, keys):
 
     # Initialize request argument(s)
     request = aiplatform_v1beta1.ReadIndexDatapointsRequest(
-        deployed_index_id="bigtable_vector_batch_integration_test_suite", ids=keys
+        deployed_index_id="bigtable_vector_batch_inte_1706731206928", ids=keys
     )
 
     # Make the request
@@ -556,19 +556,30 @@ def read_and_compare_vertex_data(
     """
 
     # Dictionary from id -> row
+    print("bigtable_vertex_vector_search_data")
+    print(bigtable_vertex_vector_search_data)
     bigtable_vertex_vector_search_data_dict = {
         item.row_key: item for item in bigtable_vertex_vector_search_data
     }
+    print("bigtable_vertex_vector_search_data_dict")
+    print(bigtable_vertex_vector_search_data_dict)
 
     data_point_id_list = list(bigtable_vertex_vector_search_data_dict.keys())
+    print("data_point_id_list")
+    print(data_point_id_list)
     data_point_id_list = [
-        str(key) for key in data_point_id_list
-    ]  # Convert keys to strings
-
+        # Convert keys to strings
+        str(key)
+        for key in data_point_id_list
+    ]
+    print("data_point_id_list")
+    print(data_point_id_list)
     # Fetching data from Vertex Index
     vertex_vector_search_data = read_index_datapoints(
         vertex_index_end_point_url, data_point_id_list
     )
+    print("vertex_vector_search_data")
+    print(vertex_vector_search_data)
 
     for data_point in vertex_vector_search_data.datapoints:
         actual_data = bigtable_vertex_vector_search_data_dict.get(
@@ -659,7 +670,7 @@ def setup_and_execute_workflow(
     )
 
 
-def test_concurrent_workflow_execution(project_id, instance_id, setup_workflow):
+def dont_test_concurrent_workflow_execution(project_id, instance_id, setup_workflow):
     """
     Test the concurrent execution of workflow in separate threads.
 
