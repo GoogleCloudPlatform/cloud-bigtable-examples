@@ -35,7 +35,7 @@ This tutorial uses billable components of Google Cloud, including:
 2.  **Vertex AI**: Generate embeddings using models served by Vertex AI.
 3.  **Cloud Dataflow**: Use a dataflow template to export the embeddings from
     Bigtable to Cloud Storage.
-4.  **Google Cloud Storage (GCS)**: Store exported embeddings from SpannBigtableer in a GCS
+4.  **Google Cloud Storage (GCS)**: Store exported embeddings from Bigtable in a GCS
     bucket in the input JSON format expected by Vector Search.
 5.  **Cloud Workflow**: Orchestrate these two steps for the end-to-end flow..
     1.  Export embeddings from Bigtable to GCS as JSON.
