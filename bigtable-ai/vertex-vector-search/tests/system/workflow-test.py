@@ -133,7 +133,7 @@ def generate_vector_data(number_of_rows, vector_dimension, table):
             "embeddings": embeddings,
             "allow": "thing 1",
             "deny": "thing 2",
-            "int": 20938472,
+            "int": 45000,
             "float": 3.14,
             "double": 2.71,
             "crowding_tag": "a" if i % 2 == 0 else "b",
@@ -151,7 +151,7 @@ def generate_vector_data(number_of_rows, vector_dimension, table):
         # Restricts
         row.set_cell("cf", "allow", str.encode(rowEntry["allow"]))
         row.set_cell("cf", "deny", str.encode(rowEntry["deny"]))
-        row.set_cell("cf", "int", rowEntry["int"])
+        row.set_cell("cf", "int", rowEntry["int"].to_bytes(4, "big"))
         row.set_cell("cf", "float", struct.pack(">f", rowEntry["float"]))
         row.set_cell("cf", "double", struct.pack(">d", rowEntry["double"]))
 
@@ -615,7 +615,7 @@ def read_and_compare_vertex_data(
                 assert restrict.value_double == actual_data["double"]
 
 
-def dont_test_bigtable_vertex_vector_search_integration(
+def test_bigtable_vertex_vector_search_integration(
     project_id, instance_id, setup_workflow, bigtable_vertex_vector_search_data
 ):
     """
@@ -636,12 +636,6 @@ def dont_test_bigtable_vertex_vector_search_integration(
         VERTEX_VECTOR_SEARCH_INDEX,
     )
 
-    read_and_compare_vertex_data(
-        bigtable_vertex_vector_search_data, VERTEX_VECTOR_SEARCH_INDEX_ENDPOINT
-    )
-
-
-def test_lol(bigtable_vertex_vector_search_data):
     read_and_compare_vertex_data(
         bigtable_vertex_vector_search_data, VERTEX_VECTOR_SEARCH_INDEX_ENDPOINT
     )
@@ -695,7 +689,7 @@ def setup_and_execute_workflow(
     )
 
 
-def dont_test_concurrent_workflow_execution(project_id, instance_id, setup_workflow):
+def test_concurrent_workflow_execution(project_id, instance_id, setup_workflow):
     """
     Test the concurrent execution of workflow in separate threads.
 
