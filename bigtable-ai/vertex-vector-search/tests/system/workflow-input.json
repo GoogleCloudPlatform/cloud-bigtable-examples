@@ -12,14 +12,14 @@
   "bigtable": {
     "instance_id": "{{instance_id}}",
     "table_name": "{{table_name}}",
-    "id_column": "row_key",
+    "id_column": "_key",
     "embedding_column": "cf:embeddings",
     "crowding_tag_column": "cf:crowding_tag",
-    "allow_restricts_mappings": "cf:allow;allow",
-    "deny_restricts_mappings": "cf:deny;deny",
-    "int_numeric_restricts_mappings": "cf:int;int",
-    "float_numeric_restricts_mappings": "cf:float;float",
-    "double_numeric_restricts_mappings": "cf:double;double"
+    "allow_restricts_mappings": "cf:allow->allow",
+    "deny_restricts_mappings": "cf:deny->deny",
+    "int_numeric_restricts_mappings": "cf:int->int",
+    "float_numeric_restricts_mappings": "cf:float->float",
+    "double_numeric_restricts_mappings": "cf:double->double"
   },
   "vertex": {
     "vector_search_index_id": "{{vector_search_index_id}}"
