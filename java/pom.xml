@@ -39,6 +39,7 @@ limitations under the License.
     <module>dataproc-wordcount</module>
     <module>metric-scaler</module>
     <module>quickstart</module>
+    <module>bigtable-proxy</module>
   </modules>
 </project>
 
