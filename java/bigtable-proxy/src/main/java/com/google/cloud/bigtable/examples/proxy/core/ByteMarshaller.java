@@ -13,21 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.cloud.bigtable.examples.proxy;
+package com.google.cloud.bigtable.examples.proxy.core;
 
-import com.google.cloud.bigtable.examples.proxy.commands.Serve;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.bridge.SLF4JBridgeHandler;
-import picocli.CommandLine;
-import picocli.CommandLine.Command;
+import com.google.common.io.ByteStreams;
+import io.grpc.MethodDescriptor;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
-@Command(subcommands = {Serve.class})
-public class Main {
-  private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+class ByteMarshaller implements MethodDescriptor.Marshaller<byte[]> {
 
-  public static void main(String[] args) {
-    SLF4JBridgeHandler.install();
-    new CommandLine(new Main()).execute(args);
+  @Override
+  public byte[] parse(InputStream stream) {
+    try {
+      return ByteStreams.toByteArray(stream);
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
+    }
+  }
+
+  @Override
+  public InputStream stream(byte[] value) {
+    return new ByteArrayInputStream(value);
   }
 }
