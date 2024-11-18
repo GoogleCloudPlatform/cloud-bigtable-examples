@@ -15,6 +15,8 @@
 
     <!-- dep versions -->
     <grpc.version>1.68.1</grpc.version>
+    <otel.version>1.44.1</otel.version>
+    <exporter-metrics.version>0.33.0</exporter-metrics.version>
     <bigtable.version>2.47.0</bigtable.version>
     <common-protos.version>2.49.0</common-protos.version>
 
@@ -49,9 +51,24 @@
         <scope>import</scope>
       </dependency>
       <dependency>
+        <groupId>io.opentelemetry</groupId>
+        <artifactId>opentelemetry-bom</artifactId>
+        <version>${otel.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava-bom</artifactId>
         <version>33.3.1-jre</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-bom</artifactId>
+        <version>5.14.2</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -109,6 +126,21 @@
       <version>${common-protos.version}</version>
     </dependency>
 
+    <!-- Metrics -->
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-metrics</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud.opentelemetry</groupId>
+      <artifactId>exporter-metrics</artifactId>
+      <version>${exporter-metrics.version}</version>
+    </dependency>
+
     <!-- Logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -158,6 +190,11 @@
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
       <version>${truth.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

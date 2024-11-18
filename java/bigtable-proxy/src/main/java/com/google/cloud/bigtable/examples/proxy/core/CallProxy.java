@@ -15,6 +15,7 @@
  */
 package com.google.cloud.bigtable.examples.proxy.core;
 
+import com.google.cloud.bigtable.examples.proxy.metrics.Tracer;
 import io.grpc.ClientCall;
 import io.grpc.Metadata;
 import io.grpc.ServerCall;
@@ -23,10 +24,14 @@ import javax.annotation.concurrent.GuardedBy;
 
 /** A per RPC proxy. */
 class CallProxy<ReqT, RespT> {
+
+  private final Tracer tracer;
   final RequestProxy serverCallListener;
   final ResponseProxy clientCallListener;
 
-  public CallProxy(ServerCall<ReqT, RespT> serverCall, ClientCall<ReqT, RespT> clientCall) {
+  public CallProxy(
+      Tracer tracer, ServerCall<ReqT, RespT> serverCall, ClientCall<ReqT, RespT> clientCall) {
+    this.tracer = tracer;
     serverCallListener = new RequestProxy(clientCall);
     clientCallListener = new ResponseProxy(serverCall);
   }
@@ -93,6 +98,8 @@ class CallProxy<ReqT, RespT> {
 
     @Override
     public void onClose(Status status, Metadata trailers) {
+      tracer.onCallFinished(status);
+
       serverCall.close(status, trailers);
     }
 
