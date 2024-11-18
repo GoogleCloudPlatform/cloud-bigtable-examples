@@ -4,6 +4,7 @@ import static com.google.cloud.bigtable.examples.proxy.utils.MetadataSubject.ass
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import com.google.auth.Credentials;
 import com.google.bigtable.admin.v2.BigtableInstanceAdminGrpc;
 import com.google.bigtable.admin.v2.BigtableInstanceAdminGrpc.BigtableInstanceAdminFutureStub;
 import com.google.bigtable.admin.v2.BigtableInstanceAdminGrpc.BigtableInstanceAdminImplBase;
@@ -19,6 +20,7 @@ import com.google.bigtable.v2.BigtableGrpc.BigtableFutureStub;
 import com.google.bigtable.v2.BigtableGrpc.BigtableImplBase;
 import com.google.bigtable.v2.CheckAndMutateRowRequest;
 import com.google.bigtable.v2.CheckAndMutateRowResponse;
+import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.longrunning.GetOperationRequest;
 import com.google.longrunning.Operation;
@@ -47,6 +49,9 @@ import io.grpc.stub.StreamObserver;
 import io.grpc.testing.GrpcCleanupRule;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
@@ -78,6 +83,7 @@ public class ServeTest {
   private FakeTableAdminService tableAdminService;
   private OperationService operationService;
   private ManagedChannel fakeServiceChannel;
+  private FakeCredentials fakeCredentials;
 
   // Proxy
   private Serve serve;
@@ -91,6 +97,8 @@ public class ServeTest {
     instanceAdminService = new FakeInstanceAdminService();
     tableAdminService = new FakeTableAdminService();
     operationService = new OperationService();
+
+    fakeCredentials = new FakeCredentials();
 
     grpcCleanup.register(
         InProcessServerBuilder.forName(TARGET_SERVER_NAME)
@@ -107,7 +115,7 @@ public class ServeTest {
             InProcessChannelBuilder.forName(TARGET_SERVER_NAME).usePlaintext().build());
 
     // Create the proxy
-    serve = createAndStartCommand(fakeServiceChannel);
+    serve = createAndStartCommand(fakeServiceChannel, fakeCredentials);
 
     proxyChannel =
         grpcCleanup.register(
@@ -303,11 +311,84 @@ public class ServeTest {
     assertThat(clientRecvTrailer.get()).hasValue("trailer", "trailer-value");
   }
 
-  private static Serve createAndStartCommand(ManagedChannel targetChannel) throws IOException {
+  @Test
+  public void testCredentials() throws InterruptedException, ExecutionException, TimeoutException {
+    BigtableFutureStub proxyStub = BigtableGrpc.newFutureStub(proxyChannel);
+
+    CheckAndMutateRowRequest request =
+        CheckAndMutateRowRequest.newBuilder().setTableName("some-table").build();
+    ListenableFuture<CheckAndMutateRowResponse> proxyFuture = proxyStub.checkAndMutateRow(request);
+    StreamObserver<CheckAndMutateRowResponse> serverObserver =
+        dataService
+            .calls
+            .computeIfAbsent(request, (ignored) -> new LinkedBlockingDeque<>())
+            .poll(1, TimeUnit.SECONDS);
+
+    assertWithMessage("Timed out waiting for the proxied RPC on the fake server")
+        .that(serverObserver)
+        .isNotNull();
+
+    serverObserver.onNext(CheckAndMutateRowResponse.newBuilder().setPredicateMatched(true).build());
+    serverObserver.onCompleted();
+    proxyFuture.get(1, TimeUnit.SECONDS);
+
+    assertThat(metadataInterceptor.requestHeaders.poll(1, TimeUnit.SECONDS))
+        .hasValue("authorization", "fake-token");
+  }
+
+  @Test
+  public void testCredentialsClobber()
+      throws InterruptedException, ExecutionException, TimeoutException {
+    BigtableFutureStub proxyStub =
+        BigtableGrpc.newFutureStub(proxyChannel)
+            .withInterceptors(
+                new ClientInterceptor() {
+                  @Override
+                  public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(
+                      MethodDescriptor<ReqT, RespT> methodDescriptor,
+                      CallOptions callOptions,
+                      Channel channel) {
+                    return new SimpleForwardingClientCall<ReqT, RespT>(
+                        channel.newCall(methodDescriptor, callOptions)) {
+                      @Override
+                      public void start(Listener<RespT> responseListener, Metadata headers) {
+                        headers.put(
+                            Metadata.Key.of("authorization", Metadata.ASCII_STRING_MARSHALLER),
+                            "pre-proxied-value");
+                        super.start(responseListener, headers);
+                      }
+                    };
+                  }
+                });
+
+    CheckAndMutateRowRequest request =
+        CheckAndMutateRowRequest.newBuilder().setTableName("some-table").build();
+    ListenableFuture<CheckAndMutateRowResponse> proxyFuture = proxyStub.checkAndMutateRow(request);
+    StreamObserver<CheckAndMutateRowResponse> serverObserver =
+        dataService
+            .calls
+            .computeIfAbsent(request, (ignored) -> new LinkedBlockingDeque<>())
+            .poll(1, TimeUnit.SECONDS);
+
+    assertWithMessage("Timed out waiting for the proxied RPC on the fake server")
+        .that(serverObserver)
+        .isNotNull();
+
+    serverObserver.onNext(CheckAndMutateRowResponse.newBuilder().setPredicateMatched(true).build());
+    serverObserver.onCompleted();
+    proxyFuture.get(1, TimeUnit.SECONDS);
+
+    Metadata serverRequestHeaders = metadataInterceptor.requestHeaders.poll(1, TimeUnit.SECONDS);
+    assertThat(serverRequestHeaders).hasValue("authorization", "fake-token");
+  }
+
+  private static Serve createAndStartCommand(
+      ManagedChannel targetChannel, FakeCredentials targetCredentials) throws IOException {
     for (int i = 10; i >= 0; i--) {
       Serve s = new Serve();
       s.dataChannel = targetChannel;
       s.adminChannel = targetChannel;
+      s.credentials = targetCredentials;
 
       try (ServerSocket serverSocket = new ServerSocket(0)) {
         s.listenPort = serverSocket.getLocalPort();
@@ -402,6 +483,36 @@ public class ServeTest {
       calls
           .computeIfAbsent(request, (ignored) -> new LinkedBlockingDeque<>())
           .add(responseObserver);
+    }
+  }
+
+  private static class FakeCredentials extends Credentials {
+    private static final String HEADER_NAME = "authorization";
+    private String fakeValue = "fake-token";
+
+    @Override
+    public String getAuthenticationType() {
+      return "fake";
+    }
+
+    @Override
+    public Map<String, List<String>> getRequestMetadata(URI uri) throws IOException {
+      return Map.of(HEADER_NAME, Lists.newArrayList(fakeValue));
+    }
+
+    @Override
+    public boolean hasRequestMetadata() {
+      return true;
+    }
+
+    @Override
+    public boolean hasRequestMetadataOnly() {
+      return true;
+    }
+
+    @Override
+    public void refresh() throws IOException {
+      // noop
     }
   }
 }

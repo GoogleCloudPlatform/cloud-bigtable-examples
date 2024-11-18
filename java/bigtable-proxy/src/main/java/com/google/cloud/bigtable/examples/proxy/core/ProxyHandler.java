@@ -15,6 +15,7 @@
  */
 package com.google.cloud.bigtable.examples.proxy.core;
 
+import io.grpc.CallCredentials;
 import io.grpc.CallOptions;
 import io.grpc.Channel;
 import io.grpc.ClientCall;
@@ -24,15 +25,23 @@ import io.grpc.ServerCallHandler;
 
 /** A factory to pairing of an incoming server call to an outgoing client client. */
 public final class ProxyHandler<ReqT, RespT> implements ServerCallHandler<ReqT, RespT> {
-  private final Channel channel;
+  private final Metadata.Key<String> AUTHORIZATION_KEY =
+      Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER);
 
-  public ProxyHandler(Channel channel) {
+  private final Channel channel;
+  private final CallCredentials callCredentials;
+
+  public ProxyHandler(Channel channel, CallCredentials callCredentials) {
     this.channel = channel;
+    this.callCredentials = callCredentials;
   }
 
   @Override
   public ServerCall.Listener<ReqT> startCall(ServerCall<ReqT, RespT> serverCall, Metadata headers) {
-    CallOptions callOptions = CallOptions.DEFAULT;
+    // Strip incoming credentials
+    headers.removeAll(AUTHORIZATION_KEY);
+    // Inject proxy credentials
+    CallOptions callOptions = CallOptions.DEFAULT.withCallCredentials(callCredentials);
 
     ClientCall<ReqT, RespT> clientCall =
         channel.newCall(serverCall.getMethodDescriptor(), callOptions);

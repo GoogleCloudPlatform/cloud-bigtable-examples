@@ -15,14 +15,18 @@
  */
 package com.google.cloud.bigtable.examples.proxy.commands;
 
+import com.google.auth.Credentials;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.bigtable.examples.proxy.core.ProxyHandler;
 import com.google.cloud.bigtable.examples.proxy.core.Registry;
 import com.google.common.collect.ImmutableMap;
+import io.grpc.CallCredentials;
 import io.grpc.InsecureServerCredentials;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Server;
 import io.grpc.ServerCallHandler;
+import io.grpc.auth.MoreCallCredentials;
 import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -62,6 +66,7 @@ public class Serve implements Callable<Void> {
 
   ManagedChannel adminChannel = null;
   ManagedChannel dataChannel = null;
+  Credentials credentials = null;
   Server server;
 
   @Override
@@ -89,17 +94,21 @@ public class Serve implements Callable<Void> {
               .disableRetry()
               .build();
     }
+    if (credentials == null) {
+      credentials = GoogleCredentials.getApplicationDefault();
+    }
+    CallCredentials callCredentials = MoreCallCredentials.from(credentials);
 
     Map<String, ServerCallHandler<byte[], byte[]>> serviceMap =
         ImmutableMap.of(
             "google.bigtable.v2.Bigtable",
-            new ProxyHandler<>(dataChannel),
+            new ProxyHandler<>(dataChannel, callCredentials),
             "google.bigtable.admin.v2.BigtableInstanceAdmin",
-            new ProxyHandler<>(adminChannel),
+            new ProxyHandler<>(adminChannel, callCredentials),
             "google.bigtable.admin.v2.BigtableTableAdmin",
-            new ProxyHandler<>(adminChannel),
+            new ProxyHandler<>(adminChannel, callCredentials),
             "google.longrunning.Operations",
-            new ProxyHandler<>(adminChannel));
+            new ProxyHandler<>(adminChannel, callCredentials));
 
     server =
         NettyServerBuilder.forAddress(
