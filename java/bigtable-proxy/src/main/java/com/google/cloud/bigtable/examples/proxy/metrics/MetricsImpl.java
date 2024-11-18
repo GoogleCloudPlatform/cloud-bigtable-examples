@@ -29,6 +29,7 @@ import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.metrics.DoubleHistogram;
 import io.opentelemetry.api.metrics.LongCounter;
 import io.opentelemetry.api.metrics.LongHistogram;
+import io.opentelemetry.api.metrics.LongUpDownCounter;
 import io.opentelemetry.api.metrics.Meter;
 import io.opentelemetry.sdk.metrics.SdkMeterProvider;
 import io.opentelemetry.sdk.metrics.export.MetricExporter;
@@ -58,6 +59,7 @@ public class MetricsImpl implements Closeable, Metrics {
   private final LongHistogram requestSizes;
   private final LongHistogram responseSizes;
 
+  private final LongUpDownCounter channelCounter;
   private final AtomicInteger numOutstandingRpcs = new AtomicInteger();
   private final AtomicInteger maxSeen = new AtomicInteger();
 
@@ -128,6 +130,13 @@ public class MetricsImpl implements Closeable, Metrics {
             .histogramBuilder(METRIC_PREFIX + "client.call.duration")
             .setDescription("Total duration of how long the outbound call took")
             .setUnit("ms")
+            .build();
+
+    channelCounter =
+        meter
+            .upDownCounterBuilder(METRIC_PREFIX + "client.channel.count")
+            .setDescription("Number of open channels")
+            .setUnit("{channel}")
             .build();
 
     meter
@@ -223,5 +232,10 @@ public class MetricsImpl implements Closeable, Metrics {
 
     clientCallLatencies.record(duration.toMillis(), attributes);
     numOutstandingRpcs.decrementAndGet();
+  }
+
+  @Override
+  public void updateChannelCount(int delta) {
+    channelCounter.add(delta);
   }
 }

@@ -35,4 +35,6 @@ public interface Metrics {
   void recordGfeHeaderMissing(CallLabels labels);
 
   void recordCallLatency(CallLabels labels, Status status, Duration duration);
+
+  void updateChannelCount(int delta);
 }

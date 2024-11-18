@@ -106,4 +106,8 @@ public class Tracer extends ClientStreamTracer {
   public void onCredentialsFetch(Status status, Duration duration) {
     metrics.recordCredLatency(callLabels, status, duration);
   }
+
+  public CallLabels getCallLabels() {
+    return callLabels;
+  }
 }
