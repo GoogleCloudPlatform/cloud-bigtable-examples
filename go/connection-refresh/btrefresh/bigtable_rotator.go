@@ -61,12 +61,9 @@ func NewRotatingTable(dialer BtDialer, table string, refresh time.Duration) (*Ro
 	rt := &RotatingTable{tbl, client, ticker, errors}
 	go func() {
 		for range ticker.C {
-			// Close the old client after waiting a bit
-			go func() {
-				oldC := rt.client
-				time.Sleep(lameduckTime)
-				oldC.Close()
-			}()
+			// save the old client so that we can close it
+			oldC := rt.client
+			
 			client, err := dialer()
 			if err != nil {
 				errors <- err
@@ -74,7 +71,15 @@ func NewRotatingTable(dialer BtDialer, table string, refresh time.Duration) (*Ro
 			}
 			tbl := client.Open(table)
 			warmTable(tbl)
+			
+			rt.client = client
 			rt.Table = tbl
+
+			// Close the old client after waiting a bit
+			go func() {
+				time.Sleep(lameduckTime)
+				oldC.Close()
+			}()
 		}
 	}()
 	return rt, nil
