@@ -17,7 +17,7 @@
 ################################################################################
 
 # Download the stunnel certificate from GCS bucket
-gsutil cp $KEY_OBJECT .
+gcloud storage cp $KEY_OBJECT .
 
 cat > hbase-1.1.2/conf/hbase-site.xml << EOF
 <configuration>

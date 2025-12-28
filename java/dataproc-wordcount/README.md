@@ -39,7 +39,7 @@ files to the VMs.  There are two ways to make a GCS Bucket:
 
 1. Use the `gsutil`'s **m**ake **b**ucket command:
 
-        $ gsutil mb -p <project ID> gs://<bucketName>
+        $ gcloud storage buckets create --project <project ID> gs://<bucketName>
 
 ### Build the Jar File
 

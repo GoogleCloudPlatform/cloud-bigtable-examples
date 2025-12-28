@@ -80,11 +80,11 @@ SourceRowCount shows the use of a Bigtable Source - a construct that knows how t
 
 You can verify the results by first typing:
 
-    gsutil ls gs://my_bucket/**
+    gcloud storage ls gs://my_bucket/**
 
 There should be a file that looks like count-XXXXXX-of-YYYYYY.  Type:
 
-    gsutil cp gs://my_bucket/count-XXXXXX-of-YYYYYY .
+    gcloud storage cp gs://my_bucket/count-XXXXXX-of-YYYYYY .
     cat count-XXXXXX-of-YYYYYY
 
 # CsvImport - Reading data from GCS and then Writing Data
@@ -126,7 +126,7 @@ BigQueryBigtableTransfer shows the use of BigQuery as a source, and writes the r
 
 You can verify the results by looking into BigTable:
 
-    gsutil ls gs://my_bucket/**
+    gcloud storage ls gs://my_bucket/**
 
 
 <!--
