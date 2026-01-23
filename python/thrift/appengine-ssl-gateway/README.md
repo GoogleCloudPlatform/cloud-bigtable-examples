@@ -301,7 +301,7 @@ Or even see the standard out of the docker container that failed to start
 
 Perhaps it couldn't download the `stunnel.pem` object due to a 403 permissions
 error. Verify you can access the object yourself from the GCE instance using
-`gsutil`.
+`gcloud storage`.
 
 If the Python client is able to connect but is throwing an error, perhaps you
 didn't enable the Bigtable APIs in the project.

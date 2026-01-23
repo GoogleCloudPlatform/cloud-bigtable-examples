@@ -28,8 +28,8 @@ $(KEY_FILE):
 	$(VERB) cp -f $(KEY_FILE) ../appengine
 
 copy-ssl-key-to-gcs: $(KEY_FILE) env_project_id env_bucket
-	$(VERB) gsutil mb -p $$PROJECT_ID gs://$$BUCKET || gsutil ls gs://$$BUCKET
-	$(VERB) gsutil cp $(KEY_FILE) gs://$$BUCKET/$(KEY_FILE)
+	$(VERB) gcloud storage buckets create --project $$PROJECT_ID gs://$$BUCKET || gcloud storage ls gs://$$BUCKET
+	$(VERB) gcloud storage cp $(KEY_FILE) gs://$$BUCKET/$(KEY_FILE)
 
 DEPLOYMENT_CONFIG = deployment.yaml
 DEPLOYMENT = thrift-gateway
