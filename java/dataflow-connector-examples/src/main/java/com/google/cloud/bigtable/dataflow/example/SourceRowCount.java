@@ -87,7 +87,6 @@ public class SourceRowCount {
 
     // [START bigtable_dataflow_connector_scan_config]
     Scan scan = new Scan();
-    scan.setCacheBlocks(false);
     scan.setFilter(new FirstKeyOnlyFilter());
 
     // CloudBigtableTableConfiguration contains the project, zone, cluster and table to connect to.
